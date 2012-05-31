@@ -1,8 +1,8 @@
-/*
-Abstract(Database structure functions)
+/* Database structure functions
 Author(Prof1983 prof1983@ya.ru)
 Created(03.04.2012)
 LastMod(05.04.2012)
+Version(0.5)
 */
 
 #include <stdio.h>
@@ -28,7 +28,7 @@ char STR_FIELD_TYPE_FB[][16] = {
 	"INTEGER",   // AFiedType_Integer
 	"INT64",     // AFiedType_Int64
 	"NUMERIC",   // AFiedType_Numeric
-	"CHAR",      // AFiedType_Boolean // Аналогично 'CHAR(1)'
+	"CHAR",      // AFiedType_Boolean // Analog 'CHAR(1)'
 	"FLOAT",     // AFiedType_Float
 	"TIMESTAMP", //'DATE',      // AFiedType_Date
 	"TIME",      // AFiedType_Time

@@ -1,4 +1,4 @@
-/*
+﻿/*
 Abstract(AStrings)
 Author(Prof1983 prof1983@ya.ru)
 Created(07.02.2012)

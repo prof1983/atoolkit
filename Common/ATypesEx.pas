@@ -7,6 +7,8 @@
 }
 unit ATypesEx;
 
+TODO: Separate ATypesEx and ATypesAcl
+
 interface
 
 uses

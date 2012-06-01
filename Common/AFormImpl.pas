@@ -7,6 +7,8 @@
 }
 unit AFormImpl;
 
+TODO: Separate AFormImpl and AFormImplEx
+
 interface
 
 uses

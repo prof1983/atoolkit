@@ -7,7 +7,7 @@
 
 Прототип: java.lang.Collection
 }
-unit ACollection;
+unit ACollectionIntf;
 
 // TODO: Rename to ACollectionIntf.pas
 

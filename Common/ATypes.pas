@@ -2,7 +2,7 @@
 @Abstract(Глобальные типы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(20.02.2007)
-@LastMod(18.05.2012)
+@LastMod(04.06.2012)
 @Version(0.5)
 
 0.0.5.8 - 30.12.2011
@@ -42,7 +42,7 @@ type
 type
   //** @abstract(Результат выполнения функций. Если 0 - нет ошибки, меньше нуля - ошибка, больше нуля - сообщение)
   TProfError = ABase.AError;
-  TError = TProfError;
+  TError = ABase.AError;
 const
   PROF_RESULT_OK          = 0;
 const // Префиксы, указывающие тип сообщения

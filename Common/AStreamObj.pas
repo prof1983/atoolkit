@@ -2,7 +2,7 @@
 @Abstract(Базовый класс потока ввода/вывода)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(18.04.2004)
-@LastMod(17.05.2012)
+@LastMod(04.06.2012)
 @Version(0.5)
 }
 unit AStreamObj;
@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, SysUtils,
-  AIoTypes, ATypes;
+  ABase, AIoTypes, ATypes;
 
 type //** Поток
   TProfStream = class
@@ -62,8 +62,8 @@ type //** Поток
     FStream: TStream{TStreamAdapter};
     FOpened: Boolean;
   public
-    function Clear(): TError; override;
-    function Close(): TError; override;
+    function Clear(): AError; override;
+    function Close(): AError; override;
     function GetSize(): UInt64; override;
     function LoadFromFileN(FileName: String): TError; override;
     procedure Open(); override;
@@ -72,7 +72,7 @@ type //** Поток
     function ReadInt16(var Value: Int16): TError; override;
     function ReadInt32(var Value: Int32): TError; override;
     function ReadInt64(var Value: Int64): TError; override;
-    function ReadUInt08(var Value: UInt08): TError; override;
+    function ReadUInt08(var Value: UInt08): AError; override;
     function ReadUInt16(var Value: UInt16): TError; override;
     function ReadUInt32(var Value: UInt32): TError; override;
     function ReadUInt64(var Value: UInt64): TError; override;
@@ -100,7 +100,7 @@ type //** Файл
     FFileName: String;
     FStream: TProfStream;
   public
-    function Close(): TError;
+    function Close(): AError;
     function FileDelete(FileName: String): Boolean;
     function FileExist(FileName: String): Boolean;
     property FileName: String read FFileName write FFileName;
@@ -267,17 +267,21 @@ end;
 
 { TProfFile }
 
-function TProfFile.Close: TError;
+function TProfFile.Close(): AError;
 begin
-  Result := 0;
-  if not(Assigned(FStream)) then Exit;
-  FStream.Free;
+  if not(Assigned(FStream)) then
+  begin
+    Result := -1;
+    Exit;
+  end;
+  FStream.Free();
   FStream := nil;
+  Result := 0;
 end;
 
 function TProfFile.FileDelete(FileName: String): Boolean;
 begin
-  Result := DeleteFile(FileName);
+  Result := SysUtils.DeleteFile(FileName);
 end;
 
 function TProfFile.FileExist(FileName: String): Boolean;
@@ -302,22 +306,42 @@ begin
 end;
 
 function TProfFile.Open(FileName: String; Mode: TProfFileOpenMode): Boolean;
+var
+  Stream: TFileStream;
 begin
-  Result := True;
   Close;
-  if not(Assigned(FStream)) then Exit;
-  {if FileName <> '' then FFileName := FileName;
+
+  {if not(Assigned(FStream)) then
+  begin
+    Result := False;
+    Exit;
+  end;}
+
+  if (FileName <> '') then
+    FFileName := FileName;
+
+  if (Mode = Prof_fmCreate) then
+  begin
+    Result := (OpenCreate(FileName) >= 0);
+    Exit;
+  end;
+
   case Mode of
-    fmCreate: Result := OpenCreate(FileName);
-    fmOpenRead: FStream := TFileStream.Create(FFileName, fmOpenRead);
-    fmOpenWrite: FStream := TFileStream.Create(FFileName, SysUtils.fmOpenWrite);
-    fmOpenReadWrite: FStream := TFileStream.Create(FFileName, SysUtils.fmOpenReadWrite);
+    Prof_fmOpenRead: Stream := TFileStream.Create(FFileName, fmOpenRead);
+    Prof_fmOpenWrite: Stream := TFileStream.Create(FFileName, SysUtils.fmOpenWrite);
+    Prof_fmOpenReadWrite: Stream := TFileStream.Create(FFileName, SysUtils.fmOpenReadWrite);
   else
     if FileExist(FFileName) then
-      FStream := TFileStream.Create(FFileName, SysUtils.fmOpenReadWrite)
+      Stream := TFileStream.Create(FFileName, SysUtils.fmOpenReadWrite)
     else
-      Result := OpenCreate(FileName);
-  end;}
+    begin
+      Result := (OpenCreate(FileName) >= 0);
+      Exit;
+    end;
+  end;
+
+  FStream := TProfStreamAdapter.Create(Stream);
+  Result := True;
 end;
 
 function TProfFile.OpenCreate(FileName: String): TError;
@@ -828,15 +852,17 @@ end;
 
 { TProfStreamAdapter }
 
-function TProfStreamAdapter.Clear(): TError;
+function TProfStreamAdapter.Clear(): AError;
 begin
   Result := -1;
 end;
 
-function TProfStreamAdapter.Close: TError;
+function TProfStreamAdapter.Close(): AError;
 begin
-  Result := 0;
+  FStream.Free();
+  FStream := nil;
   FOpened := False;
+  Result := 0;
 end;
 
 constructor TProfStreamAdapter.Create(Stream: TStream);
@@ -846,9 +872,9 @@ begin
   FOpened := False;
 end;
 
-function TProfStreamAdapter.GetSize: UInt64;
+function TProfStreamAdapter.GetSize(): UInt64;
 begin
-  Result := 0;
+  Result := FStream.Size;
 end;
 
 function TProfStreamAdapter.LoadFromFileN(FileName: String): TError;
@@ -868,52 +894,79 @@ end;
 
 function TProfStreamAdapter.ReadInt08(var Value: Int08): TError;
 begin
-  Result := -1;
+  if (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value)) then
+    Result := 0
+  else
+    Result := -1;
 end;
 
 function TProfStreamAdapter.ReadInt16(var Value: Int16): TError;
 begin
-  Result := -1;
+  if (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value)) then
+    Result := 0
+  else
+    Result := -1;
 end;
 
 function TProfStreamAdapter.ReadInt32(var Value: Int32): TError;
 begin
-  Result := -1;
+  if (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value)) then
+    Result := 0
+  else
+    Result := -1;
 end;
 
 function TProfStreamAdapter.ReadInt64(var Value: Int64): TError;
 begin
-  Result := -1;
+  if (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value)) then
+    Result := 0
+  else
+    Result := -1;
 end;
 
 function TProfStreamAdapter.ReadInteger(var Value: Integer): WordBool;
 begin
-  Result := False;
+  Result := (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value));
 end;
 
-function TProfStreamAdapter.ReadUInt08(var Value: UInt08): TError;
+function TProfStreamAdapter.ReadUInt08(var Value: UInt08): AError;
 begin
-  Result := -1;
+  if (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value)) then
+    Result := 0
+  else
+    Result :=  -1;
 end;
 
 function TProfStreamAdapter.ReadUInt16(var Value: UInt16): TError;
 begin
-  Result := -1;
+  if (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value)) then
+    Result := 0
+  else
+    Result := -1;
 end;
 
 function TProfStreamAdapter.ReadUInt32(var Value: UInt32): TError;
 begin
-  Result := -1;
+  if (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value)) then
+    Result := 0
+  else
+    Result := -1;
 end;
 
 function TProfStreamAdapter.ReadUInt64(var Value: UInt64): TError;
 begin
-  Result := -1;
+  if (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value)) then
+    Result := 0
+  else
+    Result := -1;
 end;
 
 function TProfStreamAdapter.Seek(Offset: Int64; Mode: TStreamSeekMode): TError;
 begin
-  Result := -1;
+  if (FStream.Seek(Offset, Word(Mode)) = Offset) then
+    Result := 0
+  else
+    Result := -1;
 end;
 
 function TProfStreamAdapter.WriteArray(A: TArrayByte; Count: UInt64): UInt64;

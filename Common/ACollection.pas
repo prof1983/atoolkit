@@ -2,12 +2,14 @@
 @Abstract(Коллекция объектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(03.06.2007)
-@LastMod(23.03.2012)
+@LastMod(04.06.2012)
 @Version(0.5)
 
 Прототип: java.lang.Collection
 }
 unit ACollection;
+
+// TODO: Rename to ACollectionIntf.pas
 
 interface
 
@@ -15,11 +17,16 @@ uses
   AIterableIntf, AIteratorIntf;
 
 type
+    //** Коллекция
   IACollection = interface
+    //** Создает и возвращает итератор
+    function GetIterator(): IAIterator;
+
+    property Iterator: IAIterator read GetIterator;
   end;
 
 type //** Коллекция объектов
-  IACollection2 = interface(IIterable)
+  IACollection2 = interface(IAIterable)
     function GetCount(): Integer;
     function GetIsEmpty(): Boolean;
 

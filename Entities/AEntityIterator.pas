@@ -2,25 +2,21 @@
 @Abstract(Итератор сущностей)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(19.03.2008)
-@LastMod(23.04.2011)
+@LastMod(04.06.2011)
 @Version(0.5)
 }
 unit AEntityIterator;
 
+// TODO: Rename to AEntityIteratorIntf.pas
+
 interface
 
 uses
-  ABase, AEntitiesBase;
+  AIteratorIntf;
 
 type
-  IAEntityIterator = interface
-    function Next(): TAID;
-  end;
-
-{type
-  TAEntityIterator = class // TODO: Добавить? (TInterfacedObject, IAEntityIterator)
-    function Next(): TAID; virtual; abstract;
-  end;}
+  IAEntityIterator = AIteratorIntf.IAIterator;
+  IAiIterator = AIteratorIntf.IAIterator;
 
 implementation
 

@@ -2,14 +2,17 @@
 @Abstract(Итератор)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(10.05.2007)
-@LastMod(23.03.2012)
+@LastMod(04.06.2012)
 @Version(0.5)
 
-Прототип: java.util.Iterator
+Прототип: java.util.Iterator.java 1.24, 01/17/04
 }
 unit AIteratorIntf;
 
 interface
+
+uses
+  ABase;
 
 type
   {**
@@ -22,17 +25,13 @@ type
     </ul><p>
 
     This interface is a member of the
-    <a href="{@docRoot/../guide/collections/index.html">
-    Java Collections Framework</a>.
+    <a href="{@docRoot/../guide/collections/index.html">Java Collections Framework</a>.
 
-    @author  Josh Bloch
-    @version 1.24, 01/17/04
     @see Collection
     @see ListIterator
     @see Enumeration
-    @since 1.2
   }
-  IAIterator = interface
+  (*IAIterator = interface
     {**
      * Returns <tt>true</tt> if the iteration has more elements. (In other
      * words, returns <tt>true</tt> if <tt>next</tt> would return an element
@@ -68,12 +67,34 @@ type
      *		  method.
     }
     procedure Remove();
+  end;*)
+
+  {**
+    Итератор для данных сущности, когда данные в виде коллекции.
+    //Является локальной сущностью.
+    Удаляется автоматически, когда никто не ссылается на эту сущность.
+  }
+  IAIterator = interface
+    {**
+      Returns true if the iteration has more elements.
+      In other words, returns true if next would return an element
+      rather than throwing an exception.
+      @return(true if the iterator has more elements)
+    }
+    function HasNext(): Boolean;
+      //** Вставить элемент в коллекцию
+    function Insert(Element: TAId): Boolean;
+      //** Пусто?
+    function IsEmpty(): Boolean;
+      //** Следующий элемент коллекции
+    function Next(): TAId;
+      //** Удалить текущий элемент из коллекции
+    function Remove(): Boolean;
   end;
 
-type
-  IIterator = interface
+  {IIterator = interface
     function Next(): TObject;
-  end;
+  end;}
 
 implementation
 

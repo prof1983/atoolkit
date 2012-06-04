@@ -2,7 +2,7 @@
 @Abstract(Сушность. Общий интерфейс для все элементов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(24.04.2012)
+@LastMod(04.06.2012)
 @Version(0.5)
 }
 unit AEntityIntf;
@@ -10,7 +10,41 @@ unit AEntityIntf;
 interface
 
 uses
-  ATypes;
+  ABase, ATypes;
+
+type //** Сущность - базовый интерфейс для представления знаний
+  IAEntity = interface
+    //** Возвращает идентификатор сущности
+    function GetId(): TAId;
+    //** Возвращает идентификатор сущности
+    function GetEntityId(): TAId;
+    //** Возвращает тип сущности
+    function GetEntityType(): TAId;
+    //** Задает тип сущности
+    procedure SetEntityType(Value: TAId);
+
+    {**
+      Идентификатор. Только для чтения.
+      Идентификатор залается при создании сущности и не меняется.
+      Агалоги:
+        org.framerd.OID.OID
+    }
+    property Id: TAId read GetId;
+    {**
+      Идентификатор. Только для чтения.
+      Идентификатор залается при создании сущности и не меняется.
+      Агалоги:
+        org.framerd.OID.OID
+    }
+    property EntityId: TAId read GetEntityId;
+    {**
+      Тип сущности. Номера от 0 до 1023 заререзвированы.
+      Аналоги:
+        aterm.ATermAppl.AFun
+        org.framerd.FDType.TypeName
+    }
+    property EntityType: TAId read GetEntityType write SetEntityType;
+  end;
 
 type //** Сушность. Общий интерфейс для все элементов.
   IProfEntity = interface
@@ -62,16 +96,6 @@ type
     //** Элемент по имени
     property ByName[const Name: WideString]: IProfEntity read GetByName;
   end;
-  IProfEntityList = IProfEntities;
-
-{type
-  IProfNamedEntities = interface(IProfEntities)
-    //** Возвращает элемент по имени
-    function GetByName(const Name: WideString): IProfEntity; safecall;
-
-    //** Элемент по имени
-    property ByName[const Name: WideString]: IProfEntity read GetByName;
-  end;}
 
 implementation
 

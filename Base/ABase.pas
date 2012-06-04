@@ -23,6 +23,7 @@ type // Простые типы
   AInt64 = Int64;
   AUInt16 = Word;
   AUInt32 = LongWord;
+  AUInt64 = Int64;
   AWideChar = WideChar;
 
 type // Простые типы

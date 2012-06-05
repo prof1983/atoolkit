@@ -2,14 +2,14 @@
 Abstract(AStrings)
 Author(Prof1983 prof1983@ya.ru)
 Created(07.02.2012)
-LastMod(07.02.2012)
+LastMod(05.06.2012)
 Version(0.0.0)
 */
 
 #ifndef AStrings_H
 #define AStrings_H
 
-#include "ABase.h"
+#include "ABase2.h"
 
 AError
 AFunction String_AssignC(AString S, const AAnsiString Value);

@@ -1,8 +1,8 @@
-/*
+﻿/*
 Abstract(Base consts and types)
 Author(Prof1983 prof1983@ya.ru)
 Created(06.03.2008)
-LastMod(23.05.2012)
+LastMod(05.06.2012)
 Version(0.5)
 */
 
@@ -25,6 +25,8 @@ typedef unsigned __int32 AUInt32;
 typedef unsigned __int64 AUInt64;
 
 /* --- Types1 --- */
+
+typedef char AChar; //typedef wchar_t AChar;
 
 typedef int/*BOOL*/ ABoolean;
 typedef AFloat64 AFloat;
@@ -56,13 +58,14 @@ typedef AInt AEvent;
 
 /* string define */
 typedef char* AAnsiString; //#define PChar char*
+//typedef AChar* AWideString;
 
 typedef struct
 {
 	AAnsiString Str;
-    AInt Len;
+	AInt Len;
 } AString_Type;
 
-//#define AString AString_Type*
+typedef AString_Type* AString; //#define AString AString_Type*
 
 #endif

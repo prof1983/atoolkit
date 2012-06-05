@@ -2,14 +2,13 @@
 Abstract(AStrings)
 Author(Prof1983 prof1983@ya.ru)
 Created(07.02.2012)
-LastMod(20.02.2012)
+LastMod(05.06.2012)
 Version(0.0.0)
 */
 
 #include <stdlib.h>
 #include <string.h>
 
-#include "ABase.h"
 #include "AStrings.h"
 
 AError

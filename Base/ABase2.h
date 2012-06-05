@@ -2,7 +2,7 @@
 Abstract(Base types and consts)
 Author(Prof1983 prof1983@ya.ru)
 Created(06.03.2008)
-LastMod(05.04.2012)
+LastMod(05.06.2012)
 Version(0.5)
 */
 
@@ -13,23 +13,28 @@ Version(0.5)
 #include <stddef.h>
 #include "ABase.h"
 
-#define func AInteger
+#if defined(A_BUILD_DLL)
+#  define func AInteger __export /*__declspec(dllexport)*/
+#else
+# if defined(A_BUILD_APP)
+#  define func AInteger __import /*__declspec(dllimport)*/
+# else
+#  define func AInteger
+# endif
+#endif
+
+//#define func AInteger
+
 #define AFunction /*__stdcall*/
 typedef void* APointer; //#define APointer void *
 
 //{$I A.inc}
 
-//typedef wchar_t AChar;
 typedef size_t ASize;
-
-// --- String ---
-
-//typedef AChar* AWideString;
-//typedef char* AAnsiString;
-//typedef AString_Type* AString; //#define AString AString_Type*
 
 // --- Proc ---
 
+// TODO: int AFunction -> func
 typedef int	AFunction /*__stdcall*/ (*AProc)();
 typedef void AFunction /*__stdcall*/ (*ACallbackProc)(AInteger Obj, AInteger Data);
 

@@ -2,7 +2,7 @@
 @Abstract(Класс для работы с динамическими модулями (библиотеками .dll, .so))
 @Author(Prof1983 prof1983@ya.ru)
 @Created(02.10.2005)
-@LastMod(12.12.2011)
+@LastMod(05.06.2012)
 @Version(0.5)
 }
 unit ALibraries;
@@ -51,7 +51,7 @@ const
 
 function FreeLibrary(hLibModule: HMODULE): BOOL; stdcall; external kernel32 name 'FreeLibrary';
 function GetProcAddress(hModule: HMODULE; lpProcName: LPCSTR): FARPROC; stdcall; external kernel32 name 'GetProcAddress';
-function LoadLibrary(lpLibFileName: PChar): HMODULE; stdcall; external kernel32 name 'LoadLibraryA';
+function LoadLibrary(lpLibFileName: PAnsiChar): HMODULE; stdcall; external kernel32 name 'LoadLibraryA';
 
 { Private functions }
 
@@ -164,9 +164,9 @@ end;
 function Library_Open(const FileName: APascalString; Flags: ALibraryFlags): ALibrary; stdcall;
 var
   //Error: LongWord;
-  P: PChar;
   Index: Integer;
   Handle: Integer;
+  S: AnsiString;
 begin
   Index := FindLibraryByFileName(FileName);
   if (Index >= 0) then
@@ -180,13 +180,8 @@ begin
     Result := 0;
     Exit;
   end;
-  {$IFNDEF VER170}
-  P := PChar(string(FileName));
-  Handle := LoadLibrary(P);
-  //Handle := Windows.LoadLibrary(P);
-  {$ELSE}
-  Handle := Windows.LoadLibrary(FileName);
-  {$ENDIF}
+  S := string(FileName);
+  Handle := LoadLibrary(PAnsiChar(S));
   if (Handle <= 32) then
   begin
     //Error := GetLastError;

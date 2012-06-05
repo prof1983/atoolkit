@@ -2,17 +2,28 @@
 Abstract(A define)
 Author(Prof1983 prof1983@ya.ru)
 Created(18.06.2011)
-LastMod(27.04.2012)
+LastMod(05.06.2012)
 Version(0.5)
 }
 
+  // RadStudio XE2
+  {$IFDEF VER230}
+    {$DEFINE COMPILER_15}
+    {$DEFINE DELPHI}
+    {$DEFINE DELPHI_15}
+    {$DEFINE DELPHI_XE2}
+  {$ENDIF}
+
+  // Rad Studio XE
   {$IFDEF VER220}
     {$DEFINE COMPILER_15}
     {$DEFINE DELPHI}
     {$DEFINE DELPHI_15}
     {$DEFINE DELPHI_2011}
+    {$DEFINE DELPHI_XE}
   {$ENDIF}
 
+  // Delphi 2010
   {$IFDEF VER210}
     {$DEFINE COMPILER_13}
     {$DEFINE DELPHI}
@@ -20,6 +31,7 @@ Version(0.5)
     {$DEFINE DELPHI_2010}
   {$ENDIF}
 
+  // Delphi 2009
   {$IFDEF VER200}
     {$DEFINE COMPILER_12}
     {$DEFINE DELPHI}
@@ -27,6 +39,7 @@ Version(0.5)
     {$DEFINE DELPHI_2009}
   {$ENDIF}
 
+  // Delphi 2007
   {$IFDEF VER190}
     {$DEFINE COMPILER_11}
     {$DEFINE DELPHI}
@@ -34,24 +47,28 @@ Version(0.5)
     {$DEFINE DELPHI_2007}
   {$ENDIF}
 
+  // Delphi 2006
   {$IFDEF VER180}
     {$define COMPILER_10}
     {$define DELPHI}
     {$define DELPHI_10}
   {$ENDIF}
 
+  // Delphi 2005
   {$IFDEF VER170}
     {$define COMPILER_9}
     {$define DELPHI}
     {$define DELPHI_9}
   {$ENDIF}
 
+  // Delphi 7
   {$IFDEF VER150}
     {$define COMPILER_7}
     {$define DELPHI}
     {$define DELPHI_7}
   {$ENDIF}
 
+  // Delphi 6
   {$IFDEF VER140}
     {$define COMPILER_6}
     {$ifdef BCB}
@@ -143,10 +160,20 @@ Version(0.5)
   {$IFDEF DELPHI_3_UP} {$DEFINE DELPHI_2_UP} {$ENDIF}
   {$IFDEF DELPHI_2_UP} {$DEFINE DELPHI_1_UP} {$ENDIF}
 
+  {$IFDEF DELPHI_2005} {$DEFINE DELPHI_2005_UP} {$ENDIF}
+  {$IFDEF DELPHI_2006} {$DEFINE DELPHI_2006_UP} {$ENDIF}
+  {$IFDEF DELPHI_2007} {$DEFINE DELPHI_2007_UP} {$ENDIF}
   {$IFDEF DELPHI_2010} {$DEFINE DELPHI_2010_UP} {$ENDIF}
   {$IFDEF DELPHI_2011} {$DEFINE DELPHI_2011_UP} {$ENDIF}
+  {$IFDEF DELPHI_XE} {$DEFINE DELPHI_XE_UP} {$ENDIF}
+  {$IFDEF DELPHI_XE2} {$DEFINE DELPHI_XE2_UP} {$ENDIF}
 
+  {$IFDEF DELPHI_XE2_UP} {$DEFINE DELPHI_XE_UP} {$ENDIF}
+  {$IFDEF DELPHI_XE_UP} {$DEFINE DELPHI_2011_UP} {$ENDIF}
   {$IFDEF DELPHI_2011_UP} {$DEFINE DELPHI_2010_UP} {$ENDIF}
+  {$IFDEF DELPHI_2010_UP} {$DEFINE DELPHI_2007_UP} {$ENDIF}
+  {$IFDEF DELPHI_2007_UP} {$DEFINE DELPHI_2006_UP} {$ENDIF}
+  {$IFDEF DELPHI_2006_UP} {$DEFINE DELPHI_2005_UP} {$ENDIF}
 
   {$ifdef CPPB_3}
     {$define CPPB_3_UP}
@@ -207,7 +234,6 @@ Version(0.5)
 
 // -------------------------------------------------------------------------------------------------
 
-// Версия копмилятора ----------------------------------------------------------
 {$IFDEF ver100} {$DEFINE Delphi3} {$ENDIF}
 {$IFDEF ver110} {$DEFINE Delphi3} {$ENDIF}
 {$IFDEF ver120} {$DEFINE Delphi4} {$ENDIF}

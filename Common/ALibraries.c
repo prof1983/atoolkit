@@ -2,30 +2,36 @@
 Abstract(Функции для работы с динамическими модулями (библиотеками .dll, .so))
 Author(Prof1983 prof1983@ya.ru)
 Created(20.02.2012)
-LastMod(20.02.2012)
+LastMod(05.06.2012)
 Version(0.5)
 */
 
-#include "ABase.h"
+#include <windows.h>
+#include "ALibraries.h"
 
-typedef int ALibrary;
-typedef int ALibraryFlags;
 #define APointer void* //typedef void* APointer;
 
-// Открывает модуль (библиотеку). Возвращает идентификатор.
-ALibrary
-AFunction Library_Open(const AAnsiString FileName, ALibraryFlags Flags)
+/** Close dinamic library
+	Закрывает модуль (библиотеку)
+	@return(AError value) */
+func ALibrary_Close(ALibrary Lib)
 {
-	// ...
+	FreeLibrary((HMODULE)Lib);
 	return 0;
 }
 
-// Закрывает модуль (библиотеку)
-ABoolean
-AFunction Library_Close(ALibrary Lib)
+/** Open dynamic library.
+	Открывает модуль (библиотеку). Возвращает идентификатор.
+	@return(ALibrary identifier) */
+func ALibrary_Open(const AAnsiString FileName, ALibraryFlags Flags)
 {
-	// ...
-	return A_BOOL_TRUE; //false;
+	HMODULE HLib;
+
+	HLib = LoadLibrary(FileName);
+	if ((int)HLib < 32) {
+		return 0;
+	}
+	return (ALibrary)HLib;
 }
 
 //function Library_BuildPath(const Directory, LibraryName: APascalString): APascalString; stdcall;
@@ -34,7 +40,7 @@ AFunction Library_Close(ALibrary Lib)
 
 // Возвращает адрес функции
 APointer
-AFunction Library_GetProcAddress(ALibrary Lib, const AAnsiString Name)
+AFunction ALibrary_GetProcAddress(ALibrary Lib, const AAnsiString Name)
 {
 	// ...
 	return NULL;

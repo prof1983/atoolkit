@@ -2,7 +2,7 @@
 Abstract(Base types and consts)
 Author(Prof1983 prof1983@ya.ru)
 Created(06.03.2008)
-LastMod(05.06.2012)
+LastMod(06.06.2012)
 Version(0.5)
 */
 
@@ -13,17 +13,16 @@ Version(0.5)
 #include <stddef.h>
 #include "ABase.h"
 
+// --- API function define ---
 #if defined(A_BUILD_DLL)
-#  define func AInteger __export /*__declspec(dllexport)*/
+#  define func __export
 #else
 # if defined(A_BUILD_APP)
-#  define func AInteger __import /*__declspec(dllimport)*/
+#  define func __import
 # else
-#  define func AInteger
+#  define func
 # endif
 #endif
-
-//#define func AInteger
 
 #define AFunction /*__stdcall*/
 typedef void* APointer; //#define APointer void *

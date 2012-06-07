@@ -2,7 +2,7 @@
 @Abstract(Базовый модуль основных типов и их преобразования. Базовые функции for Delphi 5,7,2005,2006)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.06.2004)
-@LastMod(16.05.2012)
+@LastMod(07.06.2012)
 @Version(0.5)
 }
 unit ABaseUtils2;
@@ -182,6 +182,7 @@ function cStrToUInt08(Str: string): UInt08;
 function cStrToUInt16(Str: string): UInt16;
 function cStrToUInt32(Str: string): UInt32;
 function cStrToUInt64(Str: string): UInt64;
+function cUInt064ToStr(Value: Integer): string; deprecated; // Use cUInt64ToStr()
 function cUInt08ToHex(I: UInt08): string;
 function cUInt32ToStr(I: UInt32): string;
 function cUInt64ToInt32(Value: UInt64): Int32;
@@ -880,6 +881,11 @@ begin
   else
     Result := Convert.ToUInt64(Value);
 end;}
+
+function cUInt064ToStr(Value: Integer): string;
+begin
+  Result := IntToStr(Value);
+end;
 
 function cUInt08ToHex(I: UInt08): String;
   function a(I: UInt08): Char08;

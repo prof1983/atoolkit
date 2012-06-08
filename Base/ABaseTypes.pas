@@ -2,7 +2,7 @@
 @Abstract(ABaseTypes)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(23.06.2011)
-@LastMod(31.01.2012)
+@LastMod(08.06.2012)
 @Version(0.5)
 }
 unit ABaseTypes;
@@ -97,6 +97,7 @@ type
   TBoolArray = array of Boolean;
 
 type
+  ACollection = type AInt; //IACollection
   AStream = type Integer; //TFileStream
 
 implementation

@@ -2,10 +2,12 @@
 @Abstract(Сущность)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(11.05.2007)
-@LastMod(23.04.2012)
+@LastMod(08.06.2012)
 @Version(0.5)
 }
 unit AEntity;
+
+// TODO: Rename to AEntityObj.pas
 
 interface
 
@@ -13,17 +15,18 @@ uses
   ABase, AEntitiesBase;
 
 type
-  TAEntity = class
+  TAEntityObject = class
   protected
-    FEntityID: TAID;
-    FEntityType: TAID;
+    FEntityId: TAId;
+    FEntityType: TAId;
   public
-    constructor Create(EntityID, EntityType: TAID);
+    constructor Create(EntityId, EntityType: TAId);
   public
-    // TODO: Убрать "write FEntityID"
-    property EntityID: TAID read FEntityID write FEntityID;
-    property EntityType: TAID read FEntityType;
+    // TODO: Убрать "write FEntityId"
+    property EntityId: TAId read FEntityId write FEntityId;
+    property EntityType: TAId read FEntityType;
   end;
+  //TAEntity = TAEntityObject;
 
 // Базовые типы сущностей [0..1024]
 
@@ -42,12 +45,12 @@ const
 
 implementation
 
-{ TEntity }
+{ TAEntity }
 
-constructor TAEntity.Create(EntityID, EntityType: TAID);
+constructor TAEntityObject.Create(EntityId, EntityType: TAId);
 begin
   inherited Create();
-  FEntityID := EntityID;
+  FEntityId := EntityId;
   FEntityType := EntityType;
 end;
 

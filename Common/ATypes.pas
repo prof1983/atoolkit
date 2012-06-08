@@ -2,7 +2,7 @@
 @Abstract(Глобальные типы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(20.02.2007)
-@LastMod(04.06.2012)
+@LastMod(08.06.2012)
 @Version(0.5)
 
 0.0.5.8 - 30.12.2011
@@ -77,7 +77,11 @@ type
       //** предупреждение
     ltWarning,
       //** сообщение
-    ltInformation
+    ltInformation,
+      //** операция выполнена успешно
+    ltOk,
+      //** операция отменена
+    ltCancel
   );
 {
 type
@@ -132,7 +136,7 @@ const // -----------------------------------------------------------------------
       'Non', 'Net', 'Set', 'Gen', 'DB', 'Key', 'Equ', 'Alg', 'Sys', 'Usr', 'Agn'
     );
   CHR_LOG_TYPE_MESSAGE: array[TLogTypeMessage] of string = (
-      'N', 'E', 'W', 'I'
+      'N', 'E', 'W', 'I', '+', '-'
     );
 
 // --- Constants for enum EnumGroupMessage ---
@@ -317,7 +321,7 @@ const
 
 const
   OLE_TYPE_MESSAGE: array[TLogTypeMessage] of EnumTypeMessage = (
-      eltNone, eltError, eltWarning, eltInformation {eltOk, eltCancel}
+      eltNone, eltError, eltWarning, eltInformation, eltOk, eltCancel
     );
 
 // ---
@@ -376,8 +380,6 @@ type // Тип callback функции для добавления в лог ф�
 type //** Тип callback функции для добавления в лог файл
   TAddToLogProc = function(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
       const AStrMsg: WideString): Integer of object;
-  //TAddToLogW = TAddToLogProc;
-  //TAddToLogA = TAddToLogProc;
   TProcAddToLog = TAddToLogProc;
   TProcAddToLogA = TAddToLogProc;
   TProcToLog = TAddToLogProc;
@@ -392,11 +394,9 @@ type
   TProcMessageSafe = function(const AMsg: WideString): Integer of object; safecall;
   TProcMessage = TProcMessageSafe;
 
-type // Prof1983: 26.06.2011 from unProfGlobals-old.pas
+type
   // Формат команды: Вариант 1: 'comand param1="value1" param2="value2"'
   //                 Вариант 2: '<comand param1="value1" param2="value2">data</comand>'
-  //TProfMessage = function(const AMsg: WideString): WordBool of object;
-  // Prof1983: 09.07.2011
   TProfMessage = function(const AMsg: WideString): WordBool of object;
   TProfMessageSafe = function(const AMsg: WideString): WordBool of object; safecall;
 
@@ -446,27 +446,55 @@ type //** Сообщение
 type //** Тип версии системы
   TWinVersion = (wvUnknown, wv95, wv98, wvME, wvNT3, wvNT4, wvW2K, wvXP, wv2003);
 
-const // Текстовых описания глобальных типов (unConst)
-  STR_WIN_VERSION: array[TWinVersion] of string =
-    ('неизвестно', 'Windows 95', 'Windows 98', 'Windows ME', 'Windows NT3',
-     'Windows NT4', 'Windows 2000', 'Windows XP', 'Windows 2003');
-  STR_GROUP_LOG: array[TLogGroupMessage] of string =
-    ('все', 'сеть', 'настройки', 'общее', 'база данных', 'ключ', 'оборудование',
-     'алгоритм', 'система', 'пользователь', 'lgAgent');
-  STR_GROUP_LOG_ENG: array[TLogGroupMessage] of string =
-    (' none     ', ' network  ', ' setup    ', ' general  ', ' database ', ' key      ',
-     ' equipment', ' algorithm', ' system   ', ' user     ', 'lgAgent');
-  STR_TYPE_LOG: array[TLogTypeMessage] of string =
-    ('неизвестно', 'ошибка', 'предупреждение', 'сообщение');
-  STR_TYPE_LOG_ENG: array[TLogTypeMessage] of string =
-    (' none  ', ' error ', ' warn  ', ' info  ');
-  STR_MODEL_KEY: array[0..4] of string =
-    ('Guardant Stealth (LPT)', 'Guardant Stealth (USB)', 'Guardant Fidus (LPT)',
-     'Guardant Stealth II (LPT)', 'Guardant Stealth II (USB)');
-  {STR_KEY_TYPE: array[TKeyType] of string =
-    ('неизвестно', 'пользовательский ключ', 'служебный ключ', 'старый ключ');}
-  {STR_CLIENT_TYPE: array[TClientType] of string =
-    ('Неизвестно', 'Информация', 'Конфигурирования', 'Рабочий');}
+const // Текстовых описания глобальных типов
+  STR_WIN_VERSION: array[TWinVersion] of string = (
+      'неизвестно',
+      'Windows 95',
+      'Windows 98',
+      'Windows ME',
+      'Windows NT3',
+      'Windows NT4',
+      'Windows 2000',
+      'Windows XP',
+      'Windows 2003');
+  STR_GROUP_LOG: array[TLogGroupMessage] of string = (
+      'все',
+      'сеть',
+      'настройки',
+      'общее',
+      'база данных',
+      'ключ',
+      'оборудование',
+      'алгоритм',
+      'система',
+      'пользователь',
+      'lgAgent');
+  STR_GROUP_LOG_ENG: array[TLogGroupMessage] of string = (
+      ' none     ',
+      ' network  ',
+      ' setup    ',
+      ' general  ',
+      ' database ',
+      ' key      ',
+      ' equipment',
+      ' algorithm',
+      ' system   ',
+      ' user     ',
+      ' lgAgent  ');
+  STR_TYPE_LOG: array[TLogTypeMessage] of string = (
+      'неизвестно',
+      'ошибка',
+      'предупреждение',
+      'сообщение',
+      'ok',
+      'cancel');
+  STR_TYPE_LOG_ENG: array[TLogTypeMessage] of string = (
+      ' none  ',
+      ' error ',
+      ' warn  ',
+      ' info  ',
+      ' ok    ',
+      ' cancel');
 
 // --- from ProfGlobals.pas ---
 

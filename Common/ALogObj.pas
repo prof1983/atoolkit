@@ -2,7 +2,7 @@
 @Abstract(Предок для всех объектов требующих логирования)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(05.02.2005)
-@LastMod(02.05.2012)
+@LastMod(08.05.2012)
 @Version(0.5)
 
 Компонент для вывода лог информаци
@@ -14,7 +14,7 @@ unit ALogObj;
 interface
 
 uses
-  ATypes;
+  ABase, ATypes;
 
 type
   TProcedure = procedure of object;
@@ -23,11 +23,13 @@ type
   TLog = class
   private
     FProc: TProcedure;
-    FS: String;
+    FText: String;
   public
-    procedure Add(S: String);
+      {** Return new log node identifier
+          @return(log node identifier) }
+    function Add(const Msg: APascalString): AInt; virtual;
     constructor Create(Proc: TProcedure);
-    property S: String read FS;
+    property S: String read FText;
   end;
 
 type //** Предок для всех объектов требующих логирования
@@ -62,10 +64,16 @@ implementation
 
 { TLog }
 
-procedure TLog.Add(S: String);
+function TLog.Add(const Msg: APascalString): AInt;
 begin
-  FS := S;
-  FProc;
+  if not(Assigned(FProc)) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  FText := Msg;
+  FProc();
+  Result := 0;
 end;
 
 constructor TLog.Create(Proc: TProcedure);

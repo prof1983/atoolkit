@@ -5,14 +5,12 @@
 @LastMod(08.06.2012)
 @Version(0.5)
 }
-unit AEntity;
-
-// TODO: Rename to AEntityObj.pas
+unit AEntityObj;
 
 interface
 
 uses
-  ABase, AEntitiesBase;
+  ABase;
 
 type
   TAEntityObject = class

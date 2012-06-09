@@ -2,7 +2,7 @@
 @Abstract(Объект с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.12.2005)
-@LastMod(30.05.2012)
+@LastMod(09.06.2012)
 @Version(0.5)
 }
 unit AObjectImpl;

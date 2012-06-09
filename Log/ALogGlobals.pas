@@ -2,37 +2,26 @@
 @Abstract(Работа с Log. Классы для записи собщений программы в БД или файл или отображения в окне Log)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.08.2005)
-@LastMod(26.04.2012)
+@LastMod(09.06.2012)
 @Version(0.5)
 
 15.02.2012 - Вынес классы TProfLogDocument в ProfLogDocumentImpl.pas
 }
 unit ALogGlobals;
 
+// TODO: ALogGlobals.pas -> ALogTypes.pas and ALogUtils.pas
+
 interface
 
 uses
-  Graphics,
   ATypes;
-
-type //** Тип сообщений для записи в лог файл
-  TLogTypeMessageColor = Graphics.TColor;
-const
-    //** неизвестно или неопределено
-  ltNoneColor        = clBlack;
-    //** ошибка
-  ltErrorColor       = clRed;
-    //** предупреждение
-  ltWarningColor     = clYellow;
-    //** сообщение
-  ltInformationColor = clBlue;
 
 const // -----------------------------------------------------------------------
   OLE_MESSAGE_GROUP: array[TLogGroupMessage] of EnumGroupMessage = (
       elgNone, elgNetwork, elgSetup, elgGeneral, elgDataBase, elgKey, elgEquipment, elgAlgorithm, elgSystem, elgUser, elgAgent
     );
   OLE_MESSAGE_TYPE: array[TLogTypeMessage] of EnumTypeMessage = (
-      eltNone, eltError, eltWarning, eltInformation
+      eltNone, eltError, eltWarning, eltInformation, eltOk, eltCancel
     );
   OLE_NODE_STATUS: array[TLogNodeStatus] of EnumNodeStatus = (
       elsNone, elsOk, elsCancel, elsError, elsWarning, elsInformation
@@ -43,7 +32,6 @@ const // -----------------------------------------------------------------------
 
 // --- Functions ---
 
-function GetLogTypeColor(ALogType: TLogTypeMessage): TLogTypeMessageColor;
 function GetLogTypeStr(AType: TLogTypeMessage; Prefix, Postfix: WideString): WideString;
 
 function IntToLogGroupMessage(Value: EnumGroupMessage): TLogGroupMessage;
@@ -51,18 +39,6 @@ function IntToLogTypeMessage(Value: EnumLogTypeMessage): TLogTypeMessage;
 function IntToLogTypeSet(Value: Integer): TLogTypeSet;
 
 implementation
-
-function GetLogTypeColor(ALogType: TLogTypeMessage): TLogTypeMessageColor;
-begin
-  case ALogType of
-    ltNone: Result := ltNoneColor;
-    ltError: Result := ltErrorColor;
-    ltWarning: Result := ltWarningColor;
-    ltInformation: Result := ltInformationColor;
-  else
-    Result := ltNoneColor;
-  end;
-end;
 
 function GetLogTypeStr(AType: TLogTypeMessage; Prefix, Postfix: WideString): WideString;
 begin

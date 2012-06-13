@@ -212,8 +212,6 @@ type //** Объект с логированием и конфигурациям
     property OnAddToLog: TProfAddToLog read FOnAddToLog write FOnAddToLog;
   end;
 
-  //TProfObject3 = TProfObject;
-
 const // Сообщения
   stAlreadyFinalize   = 'Уже финализировано';
   stAlreadyInitialize = 'Уже инициализировано';

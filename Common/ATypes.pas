@@ -259,7 +259,7 @@ const
 
 type
   //** @abstract(Тип сущности)
-  TProfEntityType = Integer;
+  TProfEntityType = TAId;
 const
   ENTITY_TYPE_NONE          = $01;
   ENTITY_TYPE_UNKNOWN       = $02;

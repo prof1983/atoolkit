@@ -2,7 +2,7 @@
 @Abstract(Сущность)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(10.04.2007)
-@LastMod(25.04.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
 }
 unit AEntityImpl;
@@ -10,7 +10,7 @@ unit AEntityImpl;
 interface
 
 uses
-  AEntityIntf, ATypes;
+  ABase, AEntityIntf, ATypes;
 
 type //** Сущность
   TProfEntity = class(TInterfacedObject, IProfEntity)
@@ -18,7 +18,7 @@ type //** Сущность
       //** Тип сущности
     FEntityType: TProfEntityType;
       //** Идентификатор
-    FId: Int64;
+    FId: TAId;
       //** Префикс лог-сообщений
     FLogPrefix: WideString;
       //** Имя
@@ -29,7 +29,7 @@ type //** Сущность
       //** Возвращает тип сущности
     function GetEntityType(): TProfEntityType; safecall;
       //** Возвращает идентификатор сущности
-    function GetId(): Int64; safecall;
+    function GetId(): TAId; safecall;
       //** Возвращает имя
     function GetName(): WideString; safecall;
       //** Задать имя
@@ -41,7 +41,7 @@ type //** Сущность
       //** Тип сущности
     property EntityType: TProfEntityType read GetEntityType;
       //** Идентификатор
-    property Id: Int64 read GetId;
+    property Id: TAId read GetId;
       //** Префикс лог-сообщений
     property LogPrefix: WideString read FLogPrefix write FLogPrefix;
       //** Имя
@@ -50,8 +50,7 @@ type //** Сущность
     property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
   end;
 
-type
-  TProfEntity3 = TProfEntity;
+  //TProfEntity3 = TProfEntity;
 
 implementation
 
@@ -72,9 +71,9 @@ begin
   Result := FEntityType;
 end;
 
-function TProfEntity.GetID(): Int64;
+function TProfEntity.GetId(): TAId;
 begin
-  Result := FID;
+  Result := FId;
 end;
 
 function TProfEntity.GetName(): WideString;

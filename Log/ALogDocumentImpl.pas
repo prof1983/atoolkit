@@ -2,7 +2,7 @@
 @Abstract(Работа с Log. Классы для записи собщений программы в БД или файл или отображения в окне Log)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.08.2005)
-@LastMod(27.04.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
 }
 unit ALogDocumentImpl;
@@ -10,12 +10,11 @@ unit ALogDocumentImpl;
 interface
 
 uses
-  {ComObj,} Graphics, SysUtils, XmlIntf,
+  Graphics, SysUtils, XmlIntf,
   ADocumentImpl, ALogDocumentIntf, ALogNodeImpl, ALogNodeIntf, AMessageConst, ANodeIntf, ATypes;
-  {ALogGlobals, AObjectImpl,}
 
 type //** Документ работы с Log
-  TLogDocument = class(TLogNode, IProfLogDocument, IProfLogNode)
+  TLogDocument = class(TALogNode, IProfLogDocument, IProfLogNode)
   private
     FAddToLog: TProcAddToLog;
     FConfig: IProfNode;
@@ -72,9 +71,8 @@ type //** Документ работы с Log
     property OnCommand: TProcMessage read FOnCommand write SetOnCommand;
   end;
 
-type
-  TLogDocument1 = class(TALogNode2, ILogDocument2)
-  private
+  TALogDocument2 = class(TALogNode2, ILogDocument2)
+  protected
     FAddToLog: TAddToLog;
     FConfig: IProfNode;
     FLogType: TLogType;
@@ -84,30 +82,26 @@ type
   public
     function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: string; AParams: array of const): Boolean; override;
-      // Загрузить конфигурации
-    //function ConfigureLoad(AConfig: IXmlNode = nil): WordBool; override; safecall;
-      // Сохранить конфигурации
-    //function ConfigureSave(AConfig: IXmlNode = nil): WordBool; override; safecall;
-    constructor Create(ALogType: TLogType; AName: WideString = ''; AParent: TLogDocument1 = nil);
-    destructor Destroy(); override;
-    // Финализировать
-    function Finalize(): TProfError; override; //safecall;
-    procedure Free(); override;
-    function GetNodeByID(ID: Integer): TALogNode2; virtual;
-    procedure Hide(); override; safecall;
-    // Инициализировать
-    function Initialize(): TProfError; override; //safecall;
-    // Тип лог-документа
+      {** Загрузить конфигурации }
+    function ConfigureLoad(): WordBool; virtual;
+      {** Сохранить конфигурации }
+    function ConfigureSave(): WordBool; virtual;
+    constructor Create(ALogType: TLogType; AName: WideString = ''; AParent: ALogDocument2 = 0);
+      {** Финализировать }
+    function Finalize(): TProfError; virtual;
+    function GetNodeById(Id: Integer): TALogNode2; virtual;
+      {** Инициализировать }
+    function Initialize(): TProfError; virtual;
+      {** Тип лог-документа }
     function NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode2; virtual;
-    procedure Show(); override; safecall;
     function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer; override;
-    //function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer; override;
   published
     property Config: IProfNode read FConfig write FConfig;
     property LogType: TLogType read FLogType;
     property OnAddToLog: TAddToLog read FAddToLog write FAddToLog;
     property OnCommand: TProfMessage read FOnCommand write SetOnCommand;
   end;
+  TLogDocument1 = TALogDocument2;
 
 type //** Документ записи/обображения Log
   TLogDocumentA = class(TLogDocument)
@@ -122,7 +116,7 @@ type //** Документ записи/обображения Log
   end;
 
 type // Документ записи/отображения Log
-  TLogDocumentA1 = class(TLogDocument1)
+  TLogDocumentA1 = class(TALogDocument2)
   private
     FNodes: array of TALogNode2;
   public
@@ -219,7 +213,7 @@ end;
 
 { TLogDocument1 }
 
-function TLogDocument1.AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+function TALogDocument2.AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
     const AStrMsg: string; AParams: array of const): Boolean;
 begin
   if Assigned(FAddToLog) then
@@ -228,65 +222,47 @@ begin
     Result := False;
 end;
 
-{function TLogDocument1.ConfigureLoad(AConfig: IXmlNode = nil): WordBool;
+function TALogDocument2.ConfigureLoad(): WordBool;
 begin
-  Result := inherited ConfigureLoad(AConfig);
-end;}
+  Result := Assigned(FConfig);
+end;
 
-{function TLogDocument1.ConfigureSave(AConfig: IXmlNode = nil): WordBool;
+function TALogDocument2.ConfigureSave(): WordBool;
 begin
-  Result := inherited ConfigureSave(AConfig);
-end;}
+  Result := Assigned(FConfig);
+end;
 
-constructor TLogDocument1.Create(ALogType: TLogType; AName: WideString = ''; AParent: TLogDocument1 = nil);
+constructor TALogDocument2.Create(ALogType: TLogType; AName: WideString = ''; AParent: ALogDocument2 = 0);
 begin
   inherited Create(AParent, 0, AName, 0);
 end;
 
-destructor TLogDocument1.Destroy();
-begin
-  inherited Destroy();
-end;
-
-function TLogDocument1.Finalize(): TProfError;
+function TALogDocument2.Finalize(): TProfError;
 begin
   Result := 0;
 end;
 
-procedure TLogDocument1.Free();
-begin
-  inherited Free();
-end;
-
-function TLogDocument1.GetNodeById(Id: Integer): TALogNode2;
+function TALogDocument2.GetNodeById(Id: Integer): TALogNode2;
 begin
   Result := nil;
 end;
 
-procedure TLogDocument1.Hide();
-begin
-end;
-
-function TLogDocument1.Initialize(): TProfError;
+function TALogDocument2.Initialize(): TProfError;
 begin
   Result := 0;
 end;
 
-function TLogDocument1.NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode2;
+function TALogDocument2.NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode2;
 begin
   Result := nil;
 end;
 
-procedure TLogDocument1.SetOnCommand(Value: TProfMessage);
+procedure TALogDocument2.SetOnCommand(Value: TProfMessage);
 begin
   FOnCommand := Value;
 end;
 
-procedure TLogDocument1.Show();
-begin
-end;
-
-function TLogDocument1.ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+function TALogDocument2.ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
     const AStrMsg: WideString; AParams: array of const): Integer;
 var
   s: WideString;
@@ -296,7 +272,6 @@ begin
   except
     s := AStrMsg;
   end;
-  //Result := ToLogA(OLE_GROUP_MESSAGE[AGroup], OLE_TYPE_MESSAGE[AType], s);
   Result := ToLogA(AGroup, AType, s);
 end;
 
@@ -337,7 +312,7 @@ begin
   DateTimeToString(S, 'dd.mm.yyyy hh:mm:ss', Now);
   S := S + ' ' + AMsg;
   if AId = 0 then AId := GetFreeId;
-  Result := TLogNode.Create(Self, S, AId);
+  Result := TALogNode.Create(Self, S, AId);
   AddNode(Result);
 end;
 
@@ -377,7 +352,7 @@ begin
   DateTimeToString(S, 'dd.mm.yyyy hh:mm:ss', Now);
   S := S + ' ' + AMsg;
   if AId = 0 then AId := GetFreeId;
-  Result := TALogNode2.Create(Self, AParent, S, AId);
+  Result := TALogNode2.Create(ALogDocument2(Self), AParent, S, AId);
   AddNode(Result);
 end;
 

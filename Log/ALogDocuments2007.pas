@@ -2,7 +2,7 @@
 @Abstract(Класс, объединяющий вывод логов сразу в несколько мест)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(26.01.2006)
-@LastMod(02.05.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
 }
 unit ALogDocuments2007;
@@ -20,24 +20,20 @@ type //** @abstract(Класс для записи Log сразу в неско�
   protected
     procedure SetOnCommand(Value: TProfMessage); override;
   public
-    function AddLogDocument(ADocument: ILogDocument2): Integer; safecall;
-    {IFDEF NEW}
+    function AddLogDocument(ADocument: ILogDocument2): Integer;
     procedure AddMsg(const AMsg: WideString); override;
     procedure AddStr(const AStr: WideString); override;
-    {ENDIF}
     function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: string; AParams: array of const): Boolean; override;
     constructor Create();
-    function ConfigureLoad2(AConfig: IXmlNode = nil): WordBool; override; safecall;
-    function ConfigureSave2(AConfig: IXmlNode = nil): WordBool; override; safecall;
     function NewNode(AType: TLogTypeMessage; const AMsg: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode2; override;
-    procedure Show(); override; safecall;
+    procedure Show(); override;
     function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: WideString; AParams: array of const): Integer; override;
     function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer; override; {$IFNDEF CLR}safecall;{$ENDIF}
+        const AStrMsg: WideString): Integer; override;
     function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
-        const AStrMsg: WideString): Integer; override; {$IFNDEF CLR}safecall;{$ENDIF}
+        const AStrMsg: WideString): Integer; override;
   end;
 
 implementation
@@ -51,7 +47,6 @@ begin
   FDocuments[Result] := ADocument;
 end;
 
-{IFDEF NEW}
 procedure TLogDocuments.AddMsg(const AMsg: WideString);
 var
   i: Integer;
@@ -69,30 +64,11 @@ begin
   for i := 0 to High(FDocuments) do
     FDocuments[i].AddStr(AStr);
 end;
-{ENDIF}
 
 function TLogDocuments.AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
     const AStrMsg: string; AParams: array of const): Boolean;
 begin
   Result := (ToLog(AGroup, AType, AStrMsg, AParams) >= 0);
-end;
-
-function TLogDocuments.ConfigureLoad2(AConfig: IXmlNode = nil): WordBool;
-var
-  i: Integer;
-begin
-  Result := inherited ConfigureLoad2(AConfig);
-  {for i := 0 to High(FDocuments) do
-    FDocuments[i].ConfigureLoad2(nil);}
-end;
-
-function TLogDocuments.ConfigureSave2(AConfig: IXmlNode = nil): WordBool;
-var
-  I: Integer;
-begin
-  Result := inherited ConfigureSave2(AConfig);
-  {for I := 0 to High(FDocuments) do
-    FDocuments[I].ConfigureSave2(nil);}
 end;
 
 constructor TLogDocuments.Create();

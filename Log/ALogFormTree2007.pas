@@ -2,7 +2,7 @@
 @Abstract(Окно вывода сообщений программы в виде дерева)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(13.10.2005)
-@LastMod(26.04.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
 }
 unit ALogFormTree2007;
@@ -52,7 +52,7 @@ type //** Окно вывода сообщений программы в вид�
   end;
 
 const
-  LOG_IMAGE_INDEX: array[TLogTypeMessage] of Integer = (IndexGreenBox, IndexRedBox, IndexFuchsiaBox, -1);
+  LOG_IMAGE_INDEX: array[TLogTypeMessage] of Integer = (IndexGreenBox, IndexRedBox, IndexFuchsiaBox, -1, -1, -1);
 
 implementation
 

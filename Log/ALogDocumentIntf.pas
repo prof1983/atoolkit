@@ -2,7 +2,7 @@
 @Abstract(Общие интерфейсы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(26.04.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
 }
 unit ALogDocumentIntf;
@@ -24,7 +24,7 @@ type //** Интерфейс документов логирования
 
 type //** Интерфейс документов логирования
   ILogDocuments2 = interface(ILogDocument2)
-    function AddLogDocument(ADocument: ILogDocument2): Integer; safecall;
+    function AddLogDocument(ADocument: ILogDocument2): Integer;
   end;
 
 type //** Интерфейс документа логирования

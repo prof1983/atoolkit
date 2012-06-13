@@ -2,7 +2,7 @@
 @Abstract(Объект с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.12.2005)
-@LastMod(09.06.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
 }
 unit AObjectImpl;
@@ -108,10 +108,11 @@ type //** Объект с логированием и конфигурациям
     function AddMessageX(AMsg: IProfNode): Integer; virtual; safecall;
     function AssignedConfig(): Boolean;
     function CheckInitialized(): Boolean; virtual;
-    constructor Create(); virtual;
-    destructor Destroy(); override;
     procedure Free(); virtual;
     function SendMessageX(const AMsg: IProfNode): Integer; virtual; safecall;
+  public
+    constructor Create(); virtual;
+    destructor Destroy(); override;
   public
       //** Конфигурации объекта
     property Config: IProfNode read GetConfigNode write SetConfigNode;

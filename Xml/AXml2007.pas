@@ -2,19 +2,20 @@
 @Abstract(Работа с XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(09.10.2005)
-@LastMod(22.05.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
 }
 unit AXml2007;
 
 // TODO: Build TProfXmlNodeList
 
+{$I A.inc}
 {$DEFINE XML1}
 
 interface
 
 uses
-  {$IFDEF VER220}XmlDom,{$ENDIF}
+  {$ifdef Delphi_XE_UP}XmlDom,{$endif}
   Classes, ComCtrls, ComObj, SysUtils, Variants, XmlIntf,
   ABase, AConsts2, ATypes, AXmlCollectionIntf, AXmlDocumentIntf, AXmlNodeIntf;
 
@@ -227,7 +228,7 @@ type                   // TInterfacedObject
     function Get_item(index: Integer): IXmlNode{IXmlDomNode}; safecall;
     function Get_length(): Integer; safecall;
     function nextNode(): IXmlNode{IXmlDomNode}; safecall;
-    procedure reset(); safecall;
+    procedure Reset(); safecall;
     function Get__newEnum(): IUnknown; safecall;
   protected
     // IXMLNodeList
@@ -235,38 +236,38 @@ type                   // TInterfacedObject
     procedure BeginUpdate();
     procedure Clear();
     function Delete(const Index: Integer): Integer; overload;
-    {$IFDEF VER220}
+    {$ifdef Delphi_XE_Up}
     function Delete(const Name: DOMString): Integer; overload;
     function Delete(const Name, NamespaceURI: DOMString): Integer; overload;
-    {$ELSE}
+    {$else}
     function Delete(const Name: WideString): Integer; overload;
     function Delete(const Name, NamespaceURI: WideString): Integer; overload;
-    {$ENDIF}
+    {$endif Delphi_XE_Up}
     procedure EndUpdate();
     function First: IXmlDomNode;
-    {$IFDEF VER220}
+    {$ifdef Delphi_XE_Up}
     function FindNode(NodeName: DOMString): IXMLNode; overload;
     function FindNode(NodeName, NamespaceURI: DOMString): IXMLNode; overload;
     function FindNode(ChildNodeType: TGuid): IXMLNode; overload;
-    {$ELSE}
+    {$else}
     function FindNode(NodeName: WideString): IXmlDomNode; overload;
     function FindNode(NodeName, NamespaceURI: WideString): IXmlDomNode; overload;
     function FindNode(ChildNodeType: TGuid): IXmlDomNode; overload;
-    {$ENDIF}
+    {$endif Delphi_XE_Up}
     function FindSibling(const Node: IXmlDomNode; Delta: Integer): IXmlDomNode;
     function Get(Index: Integer): IXmlDomNode;
     function GetCount(): Integer;
     function GetNode(const IndexOrName: OleVariant): IXmlDomNode;
     function GetUpdateCount(): Integer;
-    {$IFDEF VER220}
+    {$ifdef Delphi_XE_Up}
     function IndexOf(const Node: IXMLNode): Integer; overload;
     function IndexOf(const Name: DOMString): Integer; overload;
     function IndexOf(const Name, NamespaceURI: DOMString): Integer; overload;
-    {$ELSE}
+    {$else}
     function IndexOf(const Node: IXmlDomNode): Integer; overload;
     function IndexOf(const Name: WideString): Integer; overload;
     function IndexOf(const Name, NamespaceURI: WideString): Integer; overload;
-    {$ENDIF}
+    {$endif Delphi_XE_Up}
     procedure Insert(Index: Integer; const Node: IXmlDomNode);
     function Last(): IXmlDomNode;
     function Remove(const Node: IXmlDomNode): Integer;
@@ -1546,52 +1547,52 @@ begin
   Result := List.IndexOf(Node as IXMLNode)
 end;
 
-{$IFDEF VER220}
+{$ifdef Delphi_XE_Up}
 function TProfXmlNodeList.IndexOf(const Name: DOMString): Integer;
 begin
   //Result := IndexOf(Name, DefaultNamespaceURI);
 end;
-{$ELSE}
+{$else}
 function TProfXmlNodeList.IndexOf(const Name: WideString): Integer;
 begin
   //Result := IndexOf(Name, DefaultNamespaceURI);
 end;
-{$ENDIF}
+{$endif Delphi_XE_Up}
 
-{$IFDEF VER220}
+{$ifdef Delphi_XE_Up}
 function TProfXmlNodeList.IndexOf(const Name, NamespaceURI: DOMString): Integer;
 begin
   {for Result := 0 to Count - 1 do
     if NodeMatches(Get(Result).DOMNode, Name, NamespaceURI) then Exit;}
   Result := -1;
 end;
-{$ELSE}
+{$else}
 function TProfXmlNodeList.IndexOf(const Name, NamespaceURI: WideString): Integer;
 begin
   {for Result := 0 to Count - 1 do
     if NodeMatches(Get(Result).DOMNode, Name, NamespaceURI) then Exit;}
   Result := -1;
 end;
-{$ENDIF}
+{$endif Delphi_XE_Up}
 
 {function TProfXmlNodeList.IndexOf(const Node: IXmlDomNode): Integer;
 begin
   // ...
 end;}
 
-{$IFDEF VER220}
+{$ifdef Delphi_XE_Up}
 function TProfXmlNodeList.FindNode(NodeName: DOMString): IXMLNode;
 begin
   //Result := FindNode(NodeName, DefaultNamespaceURI);
 end;
-{$ELSE}
+{$else}
 function TProfXmlNodeList.FindNode(NodeName: WideString): IXMLNode;
 begin
   //Result := FindNode(NodeName, DefaultNamespaceURI);
 end;
-{$ENDIF}
+{$endif Delphi_XE_Up}
 
-{$IFDEF VER220}
+{$ifdef Delphi_XE_Up}
 function TProfXmlNodeList.FindNode(NodeName, NamespaceURI: DOMString): IXMLNode;
 var
   Index: Integer;
@@ -1602,7 +1603,7 @@ begin
   else
     Result := nil;
 end;
-{$ELSE}
+{$else}
 function TProfXmlNodeList.FindNode(NodeName, NamespaceURI: WideString): IXMLNode;
 var
   Index: Integer;
@@ -1613,7 +1614,7 @@ begin
   else
     Result := nil;
 end;
-{$ENDIF}
+{$endif Delphi_XE_Up}
 
 function TProfXmlNodeList.FindNode(ChildNodeType: TGuid): IXMLNode;
 var
@@ -1746,19 +1747,19 @@ begin
   Result := Remove(Get(Index));
 end;
 
-{$IFDEF VER220}
+{$ifdef Delphi_XE_Up}
 function TProfXmlNodeList.Delete(const Name: DOMString): Integer;
 begin
   //Result := Delete(Name, DefaultNamespaceURI);
 end;
-{$ELSE}
+{$else}
 function TProfXmlNodeList.Delete(const Name: WideString): Integer;
 begin
   //Result := Delete(Name, DefaultNamespaceURI);
 end;
-{$ENDIF}
+{$endif Delphi_XE_Up}
 
-{$IFDEF VER220}
+{$ifdef Delphi_XE_Up}
 function TProfXmlNodeList.Delete(const Name, NamespaceURI: DOMString): Integer;
 var
   Node: IXMLNode;
@@ -1770,7 +1771,7 @@ begin
    { No error when named nodes doesn't exist }
     Result := -1;
 end;
-{$ELSE}
+{$else}
 function TProfXmlNodeList.Delete(const Name, NamespaceURI: WideString): Integer;
 var
   Node: IXMLNode;
@@ -1782,7 +1783,7 @@ begin
    { No error when named nodes doesn't exist }
     Result := -1;
 end;
-{$ENDIF}
+{$endif Delphi_XE_Up}
 
 function TProfXmlNodeList.Remove(const Node: IXMLNode): Integer;
 begin
@@ -1800,9 +1801,8 @@ begin
   Result := OldNode;
 end;
 
-procedure TProfXmlNodeList.reset;
+procedure TProfXmlNodeList.Reset();
 begin
-
 end;
 
 procedure TProfXmlNodeList.Clear;

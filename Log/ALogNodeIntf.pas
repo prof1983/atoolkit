@@ -2,7 +2,7 @@
 @Abstract(Интерфейс элемента логирования)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(12.03.2012)
-@LastMod(26.04.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
 }
 unit ALogNodeIntf;
@@ -76,19 +76,19 @@ type //** Интерфейс элемента логирования
 
       //** Функция логирования
     function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer; safecall;
+        const AStrMsg: WideString): Integer; {safecall;}
       //** Функция логирования c Enum
     function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
-        const AStrMsg: WideString): Integer; safecall;
+        const AStrMsg: WideString): Integer; {safecall;}
 
-    procedure AddStr(const AStr: WideString); safecall;
-    procedure AddMsg(const AMsg: WideString); safecall;
-    procedure Hide(); safecall;
-    procedure Show(); safecall;
+    procedure AddStr(const AStr: WideString); {safecall;}
+    procedure AddMsg(const AMsg: WideString); {safecall;}
+    procedure Hide(); {safecall;}
+    procedure Show(); {safecall;}
     //function ToLogA(AGroup: EnumGroupMessage; AType: EnumTypeMessage; const AStrMsg: WideString): Integer;
 
     property GroupEnum: EnumGroupMessage read Get_GroupEnum write Set_GroupEnum;
-    property ID: Integer read Get_ID write Set_ID;
+    property Id: Integer read Get_Id write Set_Id;
     //property Document: ILogDocument read Get_Document;
     property LogType: EnumTypeMessage read Get_LogType write Set_LogType;
     property StrMsg: WideString read Get_StrMsg write Set_StrMsg;

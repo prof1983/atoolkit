@@ -4,6 +4,9 @@
 @Created(25.04.2006)
 @LastMod(27.04.2012)
 @Version(0.5)
+
+Как получить последнюю версию пакета обновлений для Microsoft Jet 4.0 Database Engine
+http://support.microsoft.com/kb/239114/ru
 }
 unit ADbCheckMsAccess;
 
@@ -71,7 +74,7 @@ type //** Выполняет проверку базы данных MSAccess и 
     constructor Create();
     destructor Destroy(); override;
   public
-    function CheckDBUser(const ADBDataFile: string): boolean;
+    function CheckDBUser(const ADBDataFile, ADbSysDataFile: string): Boolean;
     function CheckDBData(const ADBDataFile: string; ADBMain: PDBMain): boolean;
     function CheckDBDescr(const ADBDescrFile: string; ADBMain: PDBMain): boolean;
   end;
@@ -128,11 +131,13 @@ const // -----------------------------------------------------------------------
 function CheckDBUser(const ADBDataFile: WideString; AFunc: TProcAddToLog): Boolean;
 var
   tmpCheck: TCheckAccessDB;
+  Path: String;
 begin
   tmpCheck := TCheckAccessDB.Create();
   try
     tmpCheck.OnAddToLog := AFunc;
-    Result := tmpCheck.CheckDBUser(ADBDataFile);
+    Path := ExtractFilePath(ADbDataFile);
+    Result := tmpCheck.CheckDBUser(ADbDataFile, Path + 'ar.mdw');
   finally
     FreeAndNil(tmpCheck);
   end;
@@ -168,7 +173,7 @@ end;
 // Проверить пользователя БД
 function MSAccess_CheckUser(const ADBDataFile: WideString; AFunc: TProcAddToLog): boolean;
 begin
-  Result := True; //CheckDBUser(ADBDataFile, AFunc);
+  Result := CheckDBUser(ADBDataFile, AFunc);
 end;
 
 // Проверить структуру таблиц и полей в БД
@@ -262,7 +267,7 @@ begin
   inherited;
 end;
 
-function TCheckAccessDB.CheckDBUser(const ADBDataFile: string): boolean;
+function TCheckAccessDB.CheckDBUser(const ADBDataFile, ADbSysDataFile: string): boolean;
 var
   tmpChangeAdminPwd: boolean;
 begin
@@ -272,11 +277,14 @@ begin
     FCurrDBFileName := ExtractFileName(ADBDataFile);
     AddToLog(lgDataBase, ltInformation, Format(info_StartCheckUser, [FCurrDBFileName]));
     // Проверим наличие файлов
-    if not FileExists(ADBDataFile) then
-      CreateAccessDB(ADBDataFile);
+    if not(FileExists(ADbDataFile)) then
+      CreateAccessDB(ADbDataFile);
     // Подключаемся к БД
     FMainConn := TNativADOConnection.Create();
     try
+      FMainConn.ConnectionString.Make_MSAccess(ADbDataFile, ADbSysDataFile);
+      //FMainConn.ConnectionString.ConnectionString := Format(conn_MsAccess_NoSysDb_NoSecurity, [ADbDataFile]);
+      //'Provider=Microsoft.Jet.OLEDB.4.0; Data Source=' + ADbDataFile + ';Jet OLEDB:Engine Type=5;';
       FMainConn.ConnectionString.UserName := DB_ADMIN_NAME;
       FMainConn.ConnectionString.UserPass := DB_ADMIN_PASSWORD;
       try
@@ -291,7 +299,8 @@ begin
       // Устанавливаем активное соединение
       FadoShema.Set_ActiveConnection(FMainConn.Connection);
       // Проверяем наличие пароля у пользователя Admin
-      if tmpChangeAdminPwd then FadoShema.Users[DB_ADMIN_NAME].ChangePassword('', DB_ADMIN_PASSWORD);
+      if tmpChangeAdminPwd then
+        FadoShema.Users[DB_ADMIN_NAME].ChangePassword('', DB_ADMIN_PASSWORD);
       // Проверяем наличие пользователя AR
       try
         FadoShema.Users[DB_USERNAME];
@@ -337,9 +346,10 @@ begin
   Result := False;
   try
     FCurrDBFileName := ExtractFileName(ADBDataFile);
-    AddToLog(lgDataBase, ltInformation, info_StartDataDB); //[FCurrDBFileName]);
+    AddToLog(lgDataBase, ltInformation, Format(info_StartDataDB, [FCurrDBFileName]));
     // Проверим наличие файлов
-    if not FileExists(ADBDataFile) then CreateAccessDB(ADBDataFile);
+    if not FileExists(ADBDataFile) then
+      CreateAccessDB(ADBDataFile);
     // Подключаемся к БД
     FMainConn := TNativADOConnection.Create();
     try
@@ -356,7 +366,7 @@ begin
       for n:=0 to ADBMain.dbViewsCount - 1 do
         Result := CheckDataView(ADBMain.dbViews[n]^) and Result;
       // Все ОК
-      AddToLog(lgDataBase, ltInformation, info_CheckDataDBSucc); //[FCurrDBFileName]);
+      AddToLog(lgDataBase, ltInformation, Format(info_CheckDataDBSucc, [FCurrDBFileName]));
     finally
       FadoShema := nil;
       FreeAndNil(FMainConn);
@@ -375,7 +385,8 @@ begin
     FCurrDBFileName := ExtractFileName(ADBDescrFile);
     AddToLog(lgDataBase, ltInformation, info_StartDescrDB); //[FCurrDBFileName]);
     // Проверим наличие файлов
-    if not FileExists(ADBDescrFile) then CreateAccessDB(ADBDescrFile);
+    if not FileExists(ADBDescrFile) then
+      CreateAccessDB(ADBDescrFile);
     // Подключаемся к БД
     FMainConn := TNativADOConnection.Create();
     try
@@ -396,7 +407,7 @@ begin
       for n:=0 to ADBMain.dbViewsCount - 1 do
         Result := CheckDescView(ADBMain.dbViews[n]^) and Result;
       // Все ОК
-      AddToLog(lgDataBase, ltInformation, info_CheckDescrDBSucc); //[FCurrDBFileName]);
+      AddToLog(lgDataBase, ltInformation, Format(info_CheckDescrDBSucc, [FCurrDBFileName]));
     finally
       if Assigned(FDescrTable) then FreeAndNil(FDescrTable);
       if Assigned(FDescrField) then FreeAndNil(FDescrField);
@@ -406,7 +417,7 @@ begin
     end;
     Result := True;
   except
-    on E: Exception do AddToLog(lgDataBase, ltError, err_CheckDescDB); //[FCurrDBFileName, E.Message]);
+    on E: Exception do AddToLog(lgDataBase, ltError, Format(err_CheckDescDB, [FCurrDBFileName, E.Message]));
   end;
 end;
 
@@ -418,7 +429,7 @@ begin
     ForceDirectories(ExtractFilePath(ADBDataFile));
     adoShem := CoCatalog.Create();
     adoShem.Create('Provider=Microsoft.Jet.OLEDB.4.0; Data Source=' + ADBDataFile + ';Jet OLEDB:Engine Type=5;');
-    AddToLog(lgDataBase, ltInformation, info_CreateDataDB); //[ExtractFileName(ADBDataFile)]);
+    AddToLog(lgDataBase, ltInformation, Format(info_CreateDataDB, [ExtractFileName(ADBDataFile)]));
   finally
     adoShem := nil;
   end;
@@ -432,7 +443,7 @@ begin
     ForceDirectories(ExtractFilePath(ADBSysFile));
     adoShem := CoCatalog.Create();
     adoShem.Create('Provider=Microsoft.Jet.OLEDB.4.0; Data Source=' + ADBSysFile + '; Jet OLEDB:Create System Database=True;Jet OLEDB:Engine Type=5;');
-    AddToLog(lgDataBase, ltInformation, info_CreateSysDB); //[FCurrDBFileName, ExtractFileName(ADBSysFile)]);
+    AddToLog(lgDataBase, ltInformation, Format(info_CreateSysDB, [FCurrDBFileName, ExtractFileName(ADBSysFile)]));
   finally
     adoShem := nil;
   end;

@@ -2,19 +2,21 @@
 @Abstract(Класс-потомок для форм с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.10.2005)
-@LastMod(26.04.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
+
+13.06.2012 - TProfForm3
 }
 unit AFormImpl;
 
-TODO: Separate AFormImpl and AFormImplEx
+//TODO: Separate AFormImpl and AFormImplEx
 
 interface
 
 uses
   Classes, Forms, SysUtils,
   AFormIntf, ALogNodeIntf, ANodeUtils, ANodeIntf, ATypes, AXmlUtils,
-  AObjectIntf, ATypesEx;
+  AObjectIntf; {ATypesEx;}
 
 type //** Класс-потомок для форм с логированием и конфигурациями
   TProfForm = class(TForm, IProfForm)
@@ -84,7 +86,8 @@ type //** Класс-потомок для форм с логированием 
   end;
 
 type //** @abstract(Класс-потомок для форм с логированием и конфигурациями)
-  TProfForm3 = class(TForm, IProfObject)
+  TProfForm3 = TProfForm;
+  (*TProfForm3 = class(TForm, IProfObject)
   protected
     FConfig: IProfNode;
     FIsInitialized: WordBool;
@@ -150,7 +153,7 @@ type //** @abstract(Класс-потомок для форм с логиров�
     //** CallBack функция. Срабатывает при добавлении сообщения.
     property OnSendMessage: TProcMessage read FOnSendMessage write FOnSendMessage;
     property OnSendMessageX: TProcMessageX read FOnSendMessageX write FOnSendMessageX;
-  end;
+  end;*)
 
 resourcestring // Сообщения ----------------------------------------------------
   stCreateOk = 'Объект создан';
@@ -348,6 +351,7 @@ end;
 
 { TProfForm3 }
 
+(*
 function TProfForm3.AddMessage(const AMsg: WideString): Integer;
 begin
   Result := 0;
@@ -549,5 +553,6 @@ procedure TProfForm3.SetName(const Value: WideString);
 begin
   Name := Value;
 end;
+*)
 
 end.

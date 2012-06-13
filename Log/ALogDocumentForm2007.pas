@@ -2,7 +2,7 @@
 @Abstract(Показывать Log в окне)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.10.2005)
-@LastMod(27.04.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
 }
 unit ALogDocumentForm2007;
@@ -20,25 +20,25 @@ type //** Показывать Log в окне
     FConfigFormLog: TConfigForm;
     //procedure SetConfig(Value: TConfigForm);
   public
-    procedure AddMsg(const AMsg: WideString); override; safecall;
-    procedure AddStr(const AStr: WideString); override; safecall;
-    function ConfigureLoad2(AConfig: IXmlNode = nil): WordBool; override; safecall;
-    function ConfigureSave2(AConfig: IXmlNode = nil): WordBool; override; safecall;
+    procedure AddMsg(const AMsg: WideString); override;
+    procedure AddStr(const AStr: WideString); override;
+    function ConfigureLoad2(AConfig: IXmlNode = nil): WordBool; virtual;
+    function ConfigureSave2(AConfig: IXmlNode = nil): WordBool; virtual;
     constructor Create(AConfig: IXmlNode = nil);
     function Finalize(): TProfError; override;
-    procedure Free(); override;
+    procedure Free(); virtual;
     //** Показать
-    procedure Show(); override; safecall;
+    procedure Show(); override;
     function NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode2; override;
     //** Скрыть
-    procedure Hide(); override; safecall;
+    procedure Hide(); override;
     //** Добавить сообщение
     function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: WideString; AParams: array of const): Integer; override;
     function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer; override; safecall;
+        const AStrMsg: WideString): Integer; override;
     function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
-        const AStrMsg: WideString): Integer; override; safecall;
+        const AStrMsg: WideString): Integer; override;
   public
     property FormLog: TFormLog read FFormLog write FFormLog;
   end;
@@ -59,16 +59,18 @@ end;
 
 function TLogForm.ConfigureLoad2(AConfig: IXmlNode = nil): WordBool;
 begin
-  Result := inherited ConfigureLoad2(AConfig);
   if Assigned(FConfigFormLog) then
-    FConfigFormLog.ConfigureLoad();
+    Result := FConfigFormLog.ConfigureLoad()
+  else
+    Result := False;
 end;
 
 function TLogForm.ConfigureSave2(AConfig: IXmlNode = nil): WordBool;
 begin
-  Result := inherited ConfigureSave2(AConfig);
   if Assigned(FConfigFormLog) then
-    FConfigFormLog.ConfigureSave();
+    Result := FConfigFormLog.ConfigureSave()
+  else
+    Result := False;
 end;
 
 constructor TLogForm.Create(AConfig: IXmlNode);
@@ -111,7 +113,7 @@ var
 begin
   Id := GetFreeId;
   FFormLog.AddNode(AType, Id, AParent, APrefix);
-  Result := TALogNode2.Create(Self, AParent, APrefix, Id);
+  Result := TALogNode2.Create(ALogDocument2(Self), AParent, APrefix, Id);
   AddNode(Result);
 end;
 

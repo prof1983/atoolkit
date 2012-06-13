@@ -2,7 +2,7 @@
 @Abstract(Класс главной форма - оболочка для TForm)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.11.2005)
-@LastMod(05.05.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
 }
 unit AFormMain20061002;
@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, Forms, SysUtils,
-  AConfig2007, AForm2006, ATypes, AXml2006;
+  AConfig2007, AForm2006, ALogDocumentsAll, ATypes, AXml2006;
 
 type
   TProfFormMain = class(TProfForm)
@@ -23,13 +23,17 @@ type
     FLogName: string;
     FLogTypeSet: TLogTypeSet;
   protected
-    //ALog: TLogDocumentsAll;
+    ALog: TLogDocumentsAll;
   public
     constructor Create(AOwner: TComponent); override;
       //** Финализация программы (конфигурации, логирование)
     procedure Done(); virtual;
       //** Инициализация программы (конфигурации, логирование)
     procedure Init(); virtual;
+      {** Initialize config }
+    procedure InitConfig(); virtual;
+      {** Initialize log }
+    procedure InitLog(); virtual;
   published
       //** Имя файла конфигураций (с путем или без него)
     property ConfigFileName: WideString read FConfigFileName write FConfigFileName;
@@ -58,7 +62,7 @@ begin
   for I := Length(St) downto 1 do if St[I] = C then begin Result := I; Exit; end;
 end;
 
-// TProfFormMain ---------------------------------------------------------------
+{ TProfFormMain }
 
 constructor TProfFormMain.Create(AOwner: TComponent);
 begin
@@ -99,22 +103,26 @@ end;
 
 procedure TProfFormMain.Init();
 begin
+  InitConfig();
+  InitLog();
+end;
+
+procedure TProfFormMain.InitConfig();
+begin
   if not(Assigned(FConfigDocument)) and not(Assigned(FConfig)) then
   try
-    if FConfigFileName = '' then
+    if (FConfigFileName = '') then
       FConfigFileName := ChangeFileExt(ExtractFileName(ParamStr(0)), '.config');
     // Получение полного имени файла
-    if ExtractFilePath(FConfigFileName) = '' then
+    if (ExtractFilePath(FConfigFileName) = '') then
     begin
-      if FConfigFilePath = '' then
+      if (FConfigFilePath = '') then
         FConfigFileName := ExtractFilePath(ParamStr(0)) + FConfigFileName
       else
         FConfigFileName := FConfigFilePath + FConfigFileName;
     end;
     // Проверка существования директории
-    {$IFDEF VER150}
     ForceDirectories(ExtractFilePath(FConfigFileName));
-    {$ENDIF}
     // Создание объекта
     FConfigDocument := TConfigDocument1.Create(FConfigFileName);
     // Проверим наличие файла
@@ -122,11 +130,12 @@ begin
     ConfigureLoad();
   except
   end;
+end;
 
-  {
-  ALog := TLogDocumentsAll.Create(FConfig.GetNodeByName('Logs'), FLogTypeSet, FLogFilePath, FLogID, FLogName);
+procedure TProfFormMain.InitLog();
+begin
+  ALog := TLogDocumentsAll.Create(nil{FConfig.GetNodeByName('Logs')}, FLogTypeSet, FLogFilePath, FLogID, FLogName);
   FLog := ALog;
-  }
 end;
 
 end.

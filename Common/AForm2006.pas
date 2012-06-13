@@ -2,7 +2,7 @@
 @Abstract(Класс-потомок для форм с логированием и конфигурациями)
 @Автор(Prof1983 prof1983@ya.ru)
 @Created(06.10.2005)
-@LastMod(28.04.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
 
 30.09.2006 - Добавил CLR
@@ -13,31 +13,31 @@ interface
 
 uses
   Classes, Forms, SysUtils,
-  ABase, AConfig2007, ALogGlobals2007, ATypes;
+  ABase, AConfig2007, ALogNodeImpl, ATypes;
 
 type
   TProfForm = class(TForm)
   protected
-    FConfig: {IXmlNode}TConfigNode1;
+    FConfig: TConfigNode1;
     FConfigDocument: TConfigDocument1;
     FInitialized: WordBool;
-    FLog: TLogNode;
+    FLog: TALogNode2;
     FLogPrefix: WideString;
     FOnAddToLog: TAddToLog;
   public
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: APascalString): AInteger; virtual;
     function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: string; AParams: array of const): Boolean; virtual;
     function AddToLogW(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): AInteger; virtual;
-    function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer; virtual;
-  public
-    property Config: {IXmlNode}TConfigNode1 read FConfig write FConfig;
-    property ConfigDocument: TConfigDocument1 read FConfigDocument write FConfigDocument;
     function ConfigureLoad(): WordBool; virtual;
     function ConfigureSave(): WordBool; virtual;
     function Finalize(): WordBool; virtual;
     function Initialize(): WordBool; virtual;
+    function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer; virtual;
+  public
+    property Config: {IXmlNode}TConfigNode1 read FConfig write FConfig;
+    property ConfigDocument: TConfigDocument1 read FConfigDocument write FConfigDocument;
     property Initialized: WordBool read FInitialized;
-    property Log: TLogNode read FLog write FLog;
+    property Log: TALogNode2 read FLog write FLog;
     property OnAddToLog: TAddToLog read FOnAddToLog write FOnAddToLog;
   end;
 

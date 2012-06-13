@@ -2,7 +2,7 @@
 @Abstract(Классы для записи собщений программы в БД или файл)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.08.2005)
-@LastMod(27.04.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
 }
 unit ALogFile;
@@ -31,10 +31,10 @@ type //** Запись в файл
         const AStrMsg: WideString; AParams: array of const): Integer; override;
       //** Добавить сообщение
     function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer; override; safecall;
+        const AStrMsg: WideString): Integer; override;
       //** Добавить сообщение
     function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
-        const AStrMsg: WideString): Integer; override; safecall;
+        const AStrMsg: WideString): Integer; override;
   end;
 
 implementation

@@ -13,7 +13,7 @@ uses
   ABase, AEntityIntf, ATypes;
 
 type //** Сущность
-  TProfEntity = class(TInterfacedObject, IProfEntity)
+  TProfEntity = class(TInterfacedObject, IAEntity, IProfEntity)
   protected
       //** Тип сущности
     FEntityType: TProfEntityType;
@@ -25,15 +25,19 @@ type //** Сущность
     FName: WideString;
       //** CallBack функция функция. Срабатывает при поступлении лог-сообщения.
     FOnAddToLog: TAddToLogProc;
-  protected
+  public
+      {** Возвращает идентификатор сущности }
+    function GetEntityId(): TAId;
       //** Возвращает тип сущности
-    function GetEntityType(): TProfEntityType; safecall;
+    function GetEntityType(): TProfEntityType;
       //** Возвращает идентификатор сущности
-    function GetId(): TAId; safecall;
+    function GetId(): TAId;
       //** Возвращает имя
-    function GetName(): WideString; safecall;
+    function GetName(): WideString;
+      {** Задает тип сущности }
+    procedure SetEntityType(Value: TAId);
       //** Задать имя
-    procedure SetName(const Value: WideString); safecall;
+    procedure SetName(const Value: WideString);
   public
       //** Добавить лог-сообщение
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AMsg: WideString): Integer; virtual;
@@ -50,8 +54,6 @@ type //** Сущность
     property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
   end;
 
-  //TProfEntity3 = TProfEntity;
-
 implementation
 
 { TProfEntity }
@@ -64,6 +66,11 @@ begin
     Result := FOnAddToLog(AGroup, AType, AMsg);
   except
   end;
+end;
+
+function TProfEntity.GetEntityId(): TAId;
+begin
+  Result := FId;
 end;
 
 function TProfEntity.GetEntityType(): TProfEntityType;
@@ -79,6 +86,11 @@ end;
 function TProfEntity.GetName(): WideString;
 begin
   Result := FName;
+end;
+
+procedure TProfEntity.SetEntityType(Value: TAId);
+begin
+  FEntityType := Value;
 end;
 
 procedure TProfEntity.SetName(const Value: WideString);

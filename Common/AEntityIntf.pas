@@ -2,7 +2,7 @@
 @Abstract(Сушность. Общий интерфейс для все элементов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(04.06.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
 }
 unit AEntityIntf;
@@ -14,48 +14,38 @@ uses
 
 type //** Сущность - базовый интерфейс для представления знаний
   IAEntity = interface
-    //** Возвращает идентификатор сущности
+      {** Возвращает идентификатор сущности }
     function GetId(): TAId;
-    //** Возвращает идентификатор сущности
+      {** Возвращает идентификатор сущности }
     function GetEntityId(): TAId;
-    //** Возвращает тип сущности
+      {** Возвращает тип сущности (TProfEntityType) }
     function GetEntityType(): TAId;
-    //** Задает тип сущности
+      {** Задает тип сущности }
     procedure SetEntityType(Value: TAId);
 
-    {**
-      Идентификатор. Только для чтения.
-      Идентификатор залается при создании сущности и не меняется.
-      Агалоги:
-        org.framerd.OID.OID
-    }
+      {** Идентификатор. Только для чтения.
+          Идентификатор залается при создании сущности и не меняется.
+          Аналоги:
+            org.framerd.OID.OID }
     property Id: TAId read GetId;
-    {**
-      Идентификатор. Только для чтения.
-      Идентификатор залается при создании сущности и не меняется.
-      Агалоги:
-        org.framerd.OID.OID
-    }
+      {** Идентификатор. Только для чтения.
+          Идентификатор залается при создании сущности и не меняется.
+          Аналоги:
+            org.framerd.OID.OID }
     property EntityId: TAId read GetEntityId;
-    {**
-      Тип сущности. Номера от 0 до 1023 заререзвированы.
-      Аналоги:
-        aterm.ATermAppl.AFun
-        org.framerd.FDType.TypeName
-    }
+      {** Тип сущности. Номера от 0 до 1023 заререзвированы. (TProfEntityType)
+          Аналоги:
+            aterm.ATermAppl.AFun
+            org.framerd.FDType.TypeName }
     property EntityType: TAId read GetEntityType write SetEntityType;
   end;
 
 type //** Сушность. Общий интерфейс для все элементов.
-  IProfEntity = interface
-      //** Возвращает тип сущности
-    function GetEntityType(): TProfEntityType; safecall;
-      //** Возвращает идентификатор сущности
-    function GetId(): Int64; safecall;
+  IProfEntity = interface(IAEntity)
       //** Возвращает имя
-    function GetName(): WideString; safecall;
+    function GetName(): WideString;
       //** Задать имя
-    procedure SetName(const Value: WideString); safecall;
+    procedure SetName(const Value: WideString);
 
       {**
         Добавляет лог-сообщение.
@@ -64,10 +54,6 @@ type //** Сушность. Общий интерфейс для все элем
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: WideString): Integer;
 
-      //** Тип сущности
-    property EntityType: TProfEntityType read GetEntityType;
-      //** Идентификатор
-    property Id: Int64 read GetId;
       //** Имя
     property Name: WideString read GetName write SetName;
   end;

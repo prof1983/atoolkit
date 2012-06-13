@@ -2,7 +2,7 @@
 @Abstract(Аттрибуты)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(15.04.2007)
-@LastMod(26.04.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
 }
 unit AAttributesImpl;
@@ -13,7 +13,7 @@ uses
   AAttributeIntf, AAttributesIntf, AEntityImpl;
 
 type //** Аттрибуты
-  TProfAttributes3 = class(TProfEntity3, IProfAttributes)
+  TProfAttributes3 = class(TProfEntity, IProfAttributes)
   private
       //** Возвращает значение атрибута по индексу
     function GetAttributeById(Id: Int64): IProfAttribute; safecall;

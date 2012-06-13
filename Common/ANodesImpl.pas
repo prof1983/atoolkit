@@ -2,7 +2,7 @@
 @Abstract(Узлы)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(15.04.2007)
-@LastMod(26.04.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
 }
 unit ANodesImpl;
@@ -13,7 +13,7 @@ uses
   AEntityImpl, ANodeIntf, ANodeImpl;
 
 type //** Узлы (Ноды)
-  TProfNodes3 = class(TProfEntity3, IProfNodes)
+  TProfNodes3 = class(TProfEntity, IProfNodes)
   private
     FNodes: array of IProfNode;
   private

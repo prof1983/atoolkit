@@ -1,8 +1,7 @@
-﻿/*
-Abstract(Base consts and types)
+﻿/* Base consts and types
 Author(Prof1983 prof1983@ya.ru)
 Created(06.03.2008)
-LastMod(05.06.2012)
+LastMod(14.06.2012)
 Version(0.5)
 */
 
@@ -26,14 +25,14 @@ typedef unsigned __int64 AUInt64;
 
 /* --- Types1 --- */
 
-typedef char AChar; //typedef wchar_t AChar;
+typedef char AChar;
 
-typedef int/*BOOL*/ ABoolean;
+typedef int ABoolean;
 typedef AFloat64 AFloat;
 typedef AInt AInteger;
 
-//const AFalse = 0;
-//const ATrue = 1;
+const AFalse = 0;
+const ATrue = 1;
 
 /* --- Types2 --- */
 

@@ -2,7 +2,7 @@
 @Abstract(Работа с XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(09.10.2005)
-@LastMod(02.05.2012)
+@LastMod(19.06.2012)
 @Version(0.5)
 }
 unit AXml2006;
@@ -21,29 +21,6 @@ uses
   MSXmlDom, Variants, XmlDoc, XmlDom, XmlIntf,
   {$ENDIF}
   AConsts2, ATypes, AXml2007, AXmlCollectionIntf, AXmlDocumentIntf, AXmlNodeIntf;
-
-type
-  Int32 = Integer;
-  Float32 = Real;
-  Float64 = Double;
-  UInt08 = Byte;
-
-{type //** Опции удаления пробелов в функции strDeleteStace
-  TDeleteSpaceOptions = (
-    dsFirst,  // Первые
-    dsLast,   // Последние
-    dsRep     // Повторяющиеся
-    );
-  TDeleteSpaceOptionsSet = set of TDeleteSpaceOptions;}
-
-{type //** Атрибут (Name="Value")
-  TAttribute = record
-    Name: WideString;
-    Value: WideString;
-  end;}
-
-{type //** Атрибуты (Name1="Value1" Name2="Value2")
-  //TAttributes = array of TAttribute;}
 
 {type
   //TProfXmlCollection = AXml2007.TProfXmlCollection;
@@ -406,8 +383,8 @@ begin
   until (Igt = 0) and (Ilt = 0);
 end;
 
-// TProfXmlDocument2 -----------------------------------------------------------
-// -----------------------------------------------------------------------------
+{ TProfXmlDocument2 }
+
 {$IFDEF XML2}
 function TProfXmlDocument2.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: String; AParams: array of const): Boolean;
 begin
@@ -417,7 +394,6 @@ begin
     Result := False;
 end;
 
-// -----------------------------------------------------------------------------
 constructor TProfXmlDocument2.Create(const AFileName: WideString = ''; AAddToLog: TAddToLog = nil);
 begin
   inherited Create;
@@ -467,7 +443,6 @@ begin
   end;
 end;
 
-// -----------------------------------------------------------------------------
 procedure TProfXmlDocument2.Free;
 begin
   try
@@ -477,20 +452,17 @@ begin
   inherited Free;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocument2.GetDocumentElement: TProfXmlNode2;
 begin
   Result := FDocumentElement;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocument2.LoadFromString(const Value: WideString): WordBool;
 begin
   FDocument.LoadFromXml(Value);
   Result := True;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocument2.SaveToFile(const AFileName: WideString): WordBool;
 begin
   try
@@ -504,7 +476,6 @@ begin
   end;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocument2.SaveToString(var Value: WideString): Boolean;
 begin
   try
@@ -515,15 +486,14 @@ begin
   end;
 end;
 
-// TProfXmlNode2 ---------------------------------------------------------------
-// -----------------------------------------------------------------------------
+{ TProfXmlNode2 }
+
 constructor TProfXmlNode2.Create(ANode: IXmlNode);
 begin
   inherited Create;
   FNode := ANode; //TXmlNode.Create(CreateDOMNode(
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.GetAsString: WideString;
 begin
   if Assigned(FNode) and ((VarType(FNode.NodeValue) = varOleStr) or (VarType(FNode.NodeValue) = varStrArg) or (VarType(FNode.NodeValue) = varString)) then
@@ -532,13 +502,11 @@ begin
     Result := '';
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.GetCollection: IXmlNodeCollection;
 begin
   if Assigned(FNode) then Result := FNode.Collection else Result := nil;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.GetCountNodes: Integer;
 begin
   if Assigned(FNode) then
@@ -547,7 +515,6 @@ begin
     Result := 0;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.GetNode(Index: Integer): TProfXmlNode2;
 var
   Node: IXmlNode;
@@ -559,7 +526,6 @@ begin
     Result := nil;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.GetNodeByName(const AName: WideString): TProfXmlNode2;
 var
   Node: IXmlNode;
@@ -575,32 +541,27 @@ begin
   Result := TProfXmlNode2.Create(Node);
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.GetNodeName: WideString;
 begin
   if Assigned(FNode) then Result := FNode.NodeName else Result := '';
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.GetNodeValue: OleVariant;
 begin
   if Assigned(FNode) then Result := FNode.NodeValue;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.GetXmlB: WideString;
 begin
   Result := '';
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.Get_Attribute(Name: WideString): WideString;
 begin
   Result := FNode.GetAttribute(Name);
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.Get_Xml: WideString;
 begin
   if Assigned(FNode) then
@@ -609,21 +570,18 @@ begin
     Result := '';
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.LoadFromXml(Xml: TProfXmlNode2): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.NewNode(const ANodeName: WideString): TProfXmlNode2;
 begin
   Result := nil;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.ReadBool(const AName: WideString; var Value: WordBool): WordBool;
 var
   Node: IXmlNode;
@@ -638,7 +596,6 @@ begin
   Value := Node.NodeValue;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.ReadDateTime(const AName: WideString; var Value: TDateTime): WordBool;
 var
   S: WideString;
@@ -653,13 +610,11 @@ begin
   end;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.ReadInt32(const AName: WideString; var Value: Int32): WordBool;
 begin
   Result := ReadInteger(AName, Value);
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.ReadInt64(const AName: WideString; var Value: Int64): WordBool;
 var
   tmpValue: Integer;
@@ -668,7 +623,6 @@ begin
   if Result then Value := tmpValue;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.ReadInteger(const AName: WideString; var Value: Integer): WordBool;
 var
   Code: Integer;
@@ -691,7 +645,6 @@ begin
   end;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.ReadString(const AName: WideString; var Value: WideString): WordBool;
 var
   Node: IXmlNode;
@@ -707,7 +660,6 @@ begin
   end else Result := False;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.ReadUInt64(const AName: WideString; var Value: UInt64): WordBool;
 var
   tmpValue: Integer;
@@ -717,20 +669,17 @@ begin
   Value := tmpValue;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.SaveToString(var Value: WideString): Boolean;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 procedure TProfXmlNode2.SetNodeName(const Value: WideString);
 begin
   //FNode.NodeName := Value;
 end;
 
-// -----------------------------------------------------------------------------
 procedure TProfXmlNode2.SetNodeValue(Value: OleVariant);
 begin
   try
@@ -739,7 +688,6 @@ begin
   end;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.SetXml(const Value: WideString): WordBool;
 begin
   //if Assigned(FNode) then
@@ -747,26 +695,22 @@ begin
   Result := False;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.SetXmlA(const Value: WideString): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 procedure TProfXmlNode2.Set_Attribute(Name, Value: WideString);
 begin
   FNode.SetAttribute(Name, Value);
 end;
 
-// -----------------------------------------------------------------------------
 procedure TProfXmlNode2.Set_Xml(const Value: WideString);
 begin
   SetXml(Value);
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.WriteBool(const AName: WideString; Value: Boolean): WordBool;
 var
   Node: IXmlNode;
@@ -781,19 +725,16 @@ begin
   Result := True;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.WriteInt32(const AName: WideString; Value: Int32): WordBool;
 begin
   Result := WriteInteger(AName, Value);
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.WriteInt64(const AName: WideString; Value: Int64): WordBool;
 begin
   Result := WriteInt32(AName, Value);
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.WriteInteger(const AName: WideString; Value: Integer): WordBool;
 var
   Node: IXmlNode;
@@ -812,7 +753,6 @@ begin
   end;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.WriteString(const AName, Value: WideString): WordBool;
 var
   Node: IXmlNode;
@@ -827,11 +767,10 @@ begin
   Result := True;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlNode2.WriteUInt64(const AName: WideString; Value: UInt64): WordBool;
 begin
   Result := WriteInteger(AName, Value);
 end;
-{$ENDIF}
+{$ENDIF XML2}
 
 end.

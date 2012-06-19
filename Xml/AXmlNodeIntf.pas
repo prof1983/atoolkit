@@ -2,7 +2,7 @@
 @Abstract(Класс работы с XML нодами)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(07.03.2007)
-@LastMod(02.05.2012)
+@LastMod(19.06.2012)
 @Version(0.5)
 }
 unit AXmlNodeIntf;
@@ -14,7 +14,9 @@ uses
   ABase, ANodeIntf, ATypes;
 
 type
-  AXmlCollection2006 = type Integer; // TProfXmlCollection // IProfXmlCollection2006
+  AXmlCollection = type AInt; // TProfXmlCollection (or IProfXmlCollection)
+  AXmlCollection2006 = AXmlCollection;
+  AProfXmlNode1 = type AInt; // TProfXmlNode1 (or IProfXmlNodeNew)
 
 type //** @abstract(Интерфейс работы с нодами XML)
   IProfXmlNode = ANodeIntf.IProfNode;
@@ -202,26 +204,38 @@ type // IProfXml
     property AsString: WideString read GetAsString write SetAsString;
   end;}
 
-  IProfXmlNode2006 = interface
-    function Attributes_Count(): Integer; safecall;
+  IProfXmlNodeNew = interface
+    function Attributes_Count: Integer;
     // Вернуть значение атрибута
-    function Get_Attribute(const Name: WideString): WideString; safecall;
-    function Get_Attribute_Name(Index: Integer): WideString; safecall;
-    function Get_Attribute_Value(Index: Integer): WideString; safecall;
+    function Get_Attribute(const Name: WideString): WideString;
+    function Get_Attribute_Name(Index: Integer): WideString;
+    function Get_Attribute_Value(Index: Integer): WideString;
     // Возвращает коллекцию вложеных нодов
-    function Get_Collection(): AXmlCollection2006{IProfXmlCollection}; safecall;
-    function Get_NodeName(): WideString; safecall;
-    function Get_NodeValue(): WideString; safecall;
+    function Get_Collection(): AXmlCollection;
+    function Get_NodeName(): WideString;
+    function Get_NodeValue(): WideString;
     // Вернуть в виде строки со всеми нодами
-    function Get_Xml(): WideString; safecall;
-
+    function Get_Xml(): WideString;
     // Установить/Создать атрибут
-    procedure Set_Attribute(const Name, Value: WideString); safecall;
-    procedure Set_NodeName(const Value: WideString); safecall;
-    procedure Set_NodeValue(const Value: WideString); safecall;
+    procedure Set_Attribute(const Name, Value: WideString);
+    procedure Set_NodeName(const Value: WideString);
+    procedure Set_NodeValue(const Value: WideString);
     // Прочитать из строки со всеми нодами
-    procedure Set_Xml(const Value: WideString); safecall;
+    procedure Set_Xml(const Value: WideString);
 
+    // Атрибуты
+    property Attributes[const Name: WideString]: WideString read Get_Attribute write Set_Attribute;
+    property Attribute_Name[Index: Integer]: WideString read Get_Attribute_Name;
+    property Attribute_Value[Index: Integer]: WideString read Get_Attribute_Value;
+    // Коллекция вложеных нодов
+    property Collection: AXmlCollection read Get_Collection;
+    property NodeName: WideString read Get_NodeName write Set_NodeName;
+    property NodeValue: WideString read Get_NodeValue write Set_NodeValue;
+    // В виде строки со всеми нодами
+    property Xml: WideString read Get_Xml write Set_Xml;
+  end;
+
+  IProfXmlNode2006 = interface(IProfXmlNodeNew)
     function GetValueAsBool(var Value: WordBool): WordBool; safecall;
     function GetValueAsDateTime(var Value: TDateTime): WordBool; safecall;
     function GetValueAsInt32(var Value: Int32): WordBool; safecall;
@@ -259,17 +273,6 @@ type // IProfXml
     function WriteUInt08(const AName: WideString; AValue: UInt08): WordBool; safecall;
     function WriteUInt64(const AName: WideString; AValue: UInt64): WordBool; safecall;
     function WriteXml(const AName, Value: WideString): WordBool; safecall;
-
-    // Атрибуты
-    property Attributes[const Name: WideString]: WideString read Get_Attribute write Set_Attribute;
-    property Attribute_Name[Index: Integer]: WideString read Get_Attribute_Name;
-    property Attribute_Value[Index: Integer]: WideString read Get_Attribute_Value;
-    // Коллекция вложеных нодов
-    property Collection: AXmlCollection2006{IProfXmlCollection} read Get_Collection;
-    property NodeName: WideString read Get_NodeName write Set_NodeName;
-    property NodeValue: WideString read Get_NodeValue write Set_NodeValue;
-    // В виде строки со всеми нодами
-    property Xml: WideString read Get_Xml write Set_Xml;
   end;
 
 implementation

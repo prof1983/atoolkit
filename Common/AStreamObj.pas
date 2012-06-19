@@ -2,7 +2,7 @@
 @Abstract(Базовый класс потока ввода/вывода)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(18.04.2004)
-@LastMod(04.06.2012)
+@LastMod(19.06.2012)
 @Version(0.5)
 }
 unit AStreamObj;
@@ -26,6 +26,7 @@ type //** Поток
     function LoadFromFileN(FileName: String): TError; virtual;
     procedure Open(); virtual;
     function ReadArray(var Value: TArrayByte; Count: UInt32): TError; virtual;
+    function ReadBuf(var Buf; Size: AInt): AError; virtual;
     function ReadInt08(var Value: Int08): TError; virtual;
     function ReadInt16(var Value: Int16): TError; virtual;
     function ReadInt32(var Value: Int32): TError; virtual;
@@ -68,6 +69,7 @@ type //** Поток
     function LoadFromFileN(FileName: String): TError; override;
     procedure Open(); override;
     function ReadArray(var Value: TArrayByte; Count: UInt32): TError; override;
+    function ReadBuf(var Buf; Size: AInt): AError; override;
     function ReadInt08(var Value: Int08): TError; override;
     function ReadInt16(var Value: Int16): TError; override;
     function ReadInt32(var Value: Int32): TError; override;
@@ -708,6 +710,11 @@ begin
   Result := -1;
 end;
 
+function TProfStream.ReadBuf(var Buf; Size: AInt): AError;
+begin
+  Result := -1;
+end;
+
 function TProfStream.ReadInt08(var Value: Int08): TError;
 begin
   Result := -1;
@@ -890,6 +897,14 @@ end;
 function TProfStreamAdapter.ReadArray(var Value: TArrayByte; Count: UInt32): TError;
 begin
   Result := -1;
+end;
+
+function TProfStreamAdapter.ReadBuf(var Buf; Size: AInt): AError;
+begin
+  if (FStream.Read(Buf, Size) = Size) then
+    Result := 0
+  else
+    Result := -2;
 end;
 
 function TProfStreamAdapter.ReadInt08(var Value: Int08): TError;

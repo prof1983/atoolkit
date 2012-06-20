@@ -2,7 +2,7 @@
 @Abstract(Сущность)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(10.04.2007)
-@LastMod(13.06.2012)
+@LastMod(20.06.2012)
 @Version(0.5)
 }
 unit AEntityImpl;
@@ -13,7 +13,7 @@ uses
   ABase, AEntityIntf, ATypes;
 
 type //** Сущность
-  TProfEntity = class(TInterfacedObject, IAEntity, IProfEntity)
+  TANamedEntity = class(TInterfacedObject, IAEntity, IANamedEntity)
   protected
       //** Тип сущности
     FEntityType: TProfEntityType;
@@ -42,7 +42,17 @@ type //** Сущность
       //** Добавить лог-сообщение
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AMsg: WideString): Integer; virtual;
   public
-      //** Тип сущности
+    {** Идентификатор сущности
+        Только для чтения.
+        Идентификатор залается при создании сущности и не меняется.
+        Аналоги:
+          org.framerd.OID.OID }
+    property EntityId: AId read GetEntityId;
+    {** Тип сущности.
+        Номера от 0 до 1023 заререзвированы.
+        Аналоги:
+          aterm.ATermAppl.AFun
+          org.framerd.FDType.TypeName }
     property EntityType: TProfEntityType read GetEntityType;
       //** Идентификатор
     property Id: TAId read GetId;
@@ -54,11 +64,13 @@ type //** Сущность
     property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
   end;
 
+  //TProfEntity = TANamedEntity;
+
 implementation
 
 { TProfEntity }
 
-function TProfEntity.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AMsg: WideString): Integer;
+function TANamedEntity.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AMsg: WideString): Integer;
 begin
   Result := 0;
   if Assigned(FOnAddToLog) then
@@ -68,32 +80,32 @@ begin
   end;
 end;
 
-function TProfEntity.GetEntityId(): TAId;
+function TANamedEntity.GetEntityId(): TAId;
 begin
   Result := FId;
 end;
 
-function TProfEntity.GetEntityType(): TProfEntityType;
+function TANamedEntity.GetEntityType(): TProfEntityType;
 begin
   Result := FEntityType;
 end;
 
-function TProfEntity.GetId(): TAId;
+function TANamedEntity.GetId(): TAId;
 begin
   Result := FId;
 end;
 
-function TProfEntity.GetName(): WideString;
+function TANamedEntity.GetName(): WideString;
 begin
   Result := FName;
 end;
 
-procedure TProfEntity.SetEntityType(Value: TAId);
+procedure TANamedEntity.SetEntityType(Value: TAId);
 begin
   FEntityType := Value;
 end;
 
-procedure TProfEntity.SetName(const Value: WideString);
+procedure TANamedEntity.SetName(const Value: WideString);
 begin
   FName := Value;
 end;

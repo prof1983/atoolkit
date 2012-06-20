@@ -2,7 +2,7 @@
 @Abstract(Сушность. Общий интерфейс для все элементов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(13.06.2012)
+@LastMod(20.06.2012)
 @Version(0.5)
 }
 unit AEntityIntf;
@@ -40,47 +40,48 @@ type //** Сущность - базовый интерфейс для предс
     property EntityType: TAId read GetEntityType write SetEntityType;
   end;
 
-type //** Сушность. Общий интерфейс для все элементов.
-  IProfEntity = interface(IAEntity)
-      //** Возвращает имя
+  {** Именованая сущность }
+  IANamedEntity = interface(IAEntity)
+    {** Возвращает имя }
     function GetName(): WideString;
-      //** Задать имя
+    {** Задает имя }
     procedure SetName(const Value: WideString);
 
-      {**
-        Добавляет лог-сообщение.
-        @returns(Возвращает номер добавленого лог-сообщения или 0)
-      }
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer;
-
-      //** Имя
+    {** Имя сущности
+        Имя. Имя используется как идентификатор для OWL объектов.
+        Аналоги:
+          aterm.ATerm.Name }
     property Name: WideString read GetName write SetName;
   end;
 
-type // Именованая сушность
-  IProfNamedEntity = IProfEntity;
+  (*IProfEntity = interface(IANamedEntity)
+    {** Добавляет лог-сообщение.
+        @returns(Возвращает номер добавленого лог-сообщения или 0) }
+    {function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+        const AStrMsg: WideString): Integer;}
+  end;*)
+
+  //IProfNamedEntity = IANamedEntity;
 
 type
-  IProfEntities = interface(IProfEntity)
+  IProfEntities = interface(IANamedEntity)
     //** Возвращает элемент по ID
-    function GetByID(ID: Int64): IProfEntity; safecall;
+    function GetByID(ID: Int64): IANamedEntity; safecall;
     //** Возвращает элемент по индексу
-    function GetByIndex(Index: Integer): IProfEntity; safecall;
+    function GetByIndex(Index: Integer): IANamedEntity; safecall;
     //** Элемент по имени
-    function GetByName(const Name: WideString): IProfEntity; safecall;
+    function GetByName(const Name: WideString): IANamedEntity; safecall;
 
-    function Add(Entity: IProfEntity): Integer; safecall;
+    function Add(Entity: IANamedEntity): Integer; safecall;
     function Delete(Index: Integer): Integer; safecall;
-    function Insert(Index: Integer; Entity: IProfEntity): Integer; safecall;
-    //function New(const Name: WideString): IProfEntity; safecall;
+    function Insert(Index: Integer; Entity: IANamedEntity): Integer; safecall;
 
     //** Элемент по ID
-    property ByID[ID: Int64]: IProfEntity read GetByID;
+    property ById[ID: Int64]: IANamedEntity read GetByID;
     //** Элемент по индексу
-    property ByIndex[Index: Integer]: IProfEntity read GetByIndex;
+    property ByIndex[Index: Integer]: IANamedEntity read GetByIndex;
     //** Элемент по имени
-    property ByName[const Name: WideString]: IProfEntity read GetByName;
+    property ByName[const Name: WideString]: IANamedEntity read GetByName;
   end;
 
 implementation

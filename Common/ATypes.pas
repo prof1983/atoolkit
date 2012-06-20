@@ -2,7 +2,7 @@
 @Abstract(Глобальные типы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(20.02.2007)
-@LastMod(13.06.2012)
+@LastMod(20.06.2012)
 @Version(0.5)
 
 0.0.5.8 - 30.12.2011
@@ -259,7 +259,7 @@ const
 
 type
   //** @abstract(Тип сущности)
-  TProfEntityType = TAId;
+  TProfEntityType = AId;
 const
   ENTITY_TYPE_NONE          = $01;
   ENTITY_TYPE_UNKNOWN       = $02;

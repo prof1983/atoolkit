@@ -1,7 +1,7 @@
 ﻿/* Base types and consts
  * Author Prof1983 prof1983@ya.ru
  * Created 06.03.2008
- * LastMod 15.06.2012
+ * LastMod 20.06.2012
  * Version 0.5
  */
 
@@ -15,14 +15,18 @@
 // --- API function define ---
 #if defined(A_BUILD_DLL)
 //#  define func __export
-#  define func __declspec(dllexport)
+#  define afunc __declspec(dllexport)
 #else
 # if defined(A_BUILD_APP)
 //#  define func __import
-#  define func __declspec(dllimport)
+#  define afunc __declspec(dllimport)
 # else
-#  define func
-# endif
+#  define afunc
+# endif // A_BUILD_APP
+#endif // A_BUILD_DLL
+
+#ifndef A_NoFunc
+#define func afunc
 #endif
 
 #define AFunction /*__stdcall*/
@@ -74,7 +78,7 @@ const int L_USERICON = 00000080x0;
 /*
 const
   STR_BOOL: array [Boolean] of string = ('False', 'True');
-  //** @abstract(Константный массив для преобразования Boolean <-> WideString) (ASettings)
+  // @abstract(Константный массив для преобразования Boolean <-> WideString) (ASettings)
   //STR_BOOL: array[Boolean] of WideString = ('False', 'True');
   STR_BOOL_FIB: array [Boolean] of string = ('''0''', '''1''');
 

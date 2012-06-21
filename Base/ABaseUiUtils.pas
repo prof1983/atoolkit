@@ -2,21 +2,22 @@
 @Abstract(Базовый модуль основных типов и их преобразования. Базовые функции for Delphi 5,7,2005,2006)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.06.2004)
-@LastMod(09.06.2012)
+@LastMod(21.06.2012)
 @Version(0.5)
-
-from ABaseUtils2.pas
 }
 unit ABaseUiUtils;
 
 interface
 
 uses
-  Dialogs, ExtCtrls, Forms; {Math, StrUtils, SysUtils, Windows,
-  ATypes;}
+  Dialogs, ExtCtrls, Forms, Windows,
+  ABase, ABaseUtils2, ATypes;
 
+type
+  TWndType = type AInt; // Windows.UINT
+  TWndRes = type AInt;
 
-{$IFNDEF VER170}
+{IFNDEF VER170}
 function wndClose(Handle: THandle32): TError;
 function wndDialogOpen(var AFileName: WideString): WordBool;
 
@@ -33,7 +34,7 @@ function wnd_InputUInt064( {}
   HParent: THandle32;          {in}{Идентификатор родительского окна}
   Caption: String;              {in}{Заголовок окна}
   Text: String;                 {in}{Текст окна}
-  var Value: UInt064;           {in/out}{Значение}
+  var Value: AUInt64;           {in/out}{Значение}
   uType: TWndType = 1           {in}{Тип окна}
   ): TWndRes;
 
@@ -43,16 +44,23 @@ function wnd_Message( {Выводит окно с сообщением}
   Text: String;                 {in}{Текст окна}
   uType: TWndType = 0           {in}{=mb_OkCancel}
   ): TWndRes;                   {Нажатая кнопка}
-{$ENDIF}
+{ENDIF}
 
 implementation
 
-{$IFNDEF VER170}
+// -- API ---
+
+function __CloseHandle(hObject: THandle32): Boolean; stdcall; external 'kernel32.dll' name 'CloseHandle';
+function __GetLastError(): AInt32; stdcall; external 'kernel32.dll' name 'GetLastError';
+
+// --- Public ---
+
+{IFNDEF VER170}
 function wndClose(Handle: THandle32): TError;
 begin
   Result := (Integer(__CloseHandle(Handle)));
 end;
-{$ENDIF}
+{ENDIF}
 
 function wndDialogOpen(var AFileName: WideString): WordBool;
 // Диалог выбора файла
@@ -65,7 +73,7 @@ begin
     Result := Dialog.Execute;
     if Result then AFileName := Dialog.FileName;
   finally
-    FreeAndNil(Dialog);
+    Dialog.Free();
   end;
 end;
 
@@ -77,8 +85,8 @@ begin
     Result := 1;
 end;
 
-{$IFNDEF VER170}
-function wnd_InputUInt064(HParent: THandle32; Caption, Text: String; var Value: UInt64; uType: TWndType = 1): TWndRes;
+{IFNDEF VER170}
+function wnd_InputUInt064(HParent: THandle32; Caption, Text: String; var Value: AUInt64; uType: TWndType = 1): TWndRes;
 var
   S: String;
 begin
@@ -98,6 +106,6 @@ function wnd_Message(HParent: THandle32; Caption, Text: String; uType: TWndType 
 begin
   Result := MessageBox(HParent, PChar(Text), PChar(Caption), uType);
 end;
-{$ENDIF}
+{ENDIF}
 
 end.

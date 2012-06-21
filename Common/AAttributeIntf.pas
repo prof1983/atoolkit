@@ -2,7 +2,7 @@
 @Abstract(Общие интерфейсы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(24.04.2012)
+@LastMod(21.06.2012)
 @Version(0.5)
 }
 unit AAttributeIntf;
@@ -13,7 +13,7 @@ uses
   AEntityIntf, ATypes;
 
 type //** Интерфейс для атрибута
-  IProfAttribute = interface(IProfNamedEntity)
+  IProfAttribute = interface(IANamedEntity)
     //function GetName(): WideString; safecall;
     function GetValue(): OleVariant; safecall;
     //procedure SetName(const Value: WideString); safecall;

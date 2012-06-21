@@ -2,7 +2,7 @@
 @Abstract(Общие интерфейсы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(24.04.2012)
+@LastMod(21.06.2012)
 @Version(0.5)
 
 История версий
@@ -18,7 +18,7 @@ uses
 type
   IProfNodes = interface;
 
-  IProfNode = interface(IProfEntity)
+  IProfNode = interface(IANamedEntity)
     function GetAttributes(): IProfAttributes; safecall;
     function GetChildNodes(): IProfNodes; safecall;
 
@@ -26,7 +26,7 @@ type
     property ChildNodes: IProfNodes read GetChildNodes;
   end;
 
-  IProfNodes = interface //(IProfEntity)
+  IProfNodes = interface
     function GetNodeById(Id: Int64): IProfNode; safecall;
     function GetNodeByIndex(Index: Integer): IProfNode; safecall;
     function GetNodeByName(const Name: WideString): IProfNode; safecall;

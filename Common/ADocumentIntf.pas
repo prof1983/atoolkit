@@ -2,7 +2,7 @@
 @Abstract(Интерфейс для любых документов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(11.04.2007)
-@LastMod(25.04.2012)
+@LastMod(21.06.2012)
 @Version(0.5)
 }
 unit ADocumentIntf;
@@ -13,7 +13,7 @@ uses
   AEntityIntf, ATypes;
 
 type //** Интерфейс для любых документов
-  IProfDocument = interface(IProfNamedEntity)
+  IProfDocument = interface(IANamedEntity)
     {**
       Открыт ли документ?
       Реализация метода IsOpened должна проверить соответствующие свойства

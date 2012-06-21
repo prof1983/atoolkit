@@ -2,7 +2,7 @@
 @Abstract(Общие интерфейсы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(24.04.2012)
+@LastMod(21.06.2012)
 @Version(0.5)
 }
 unit AAttributesIntf;
@@ -13,7 +13,7 @@ uses
   AAttributeIntf, AEntityIntf;
 
 type //** Интерфейс работы с атрибутами XML. Пока не рекомендуется использовать.
-  IProfAttributes = interface(IProfEntity)
+  IProfAttributes = interface(IANamedEntity)
       //** Возвращает значение атрибута по индексу
     function GetAttributeById(Id: Int64): IProfAttribute; safecall;
       //** Возвращает имя атрибута по индексу

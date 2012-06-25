@@ -2,10 +2,10 @@
 @Abstract(AToolkit Iterable interface)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(07.05.2007)
-@LastMod(04.06.2012)
+@LastMod(25.06.2012)
 @Version(0.5)
 
-Прототип: java.lang.Iterable
+Prototype: java.lang.Iterable
 }
 unit AIterableIntf;
 
@@ -21,23 +21,31 @@ type
   }
   IAIterable = interface
     {**
-      Returns an iterator over a set of elements of type T.
-      @return(an Iterator)
+      Returns an iterator over a set of elements.
+      There are no guarantees concerning the order in which the elements are returned
+      (unless this collection is an instance of some class that provides a
+      guarantee).
+
+      @return an Iterator
     }
     function GetIterator(): IAIterator;
+
+    {**
+      Returns an iterator over the elements in this set.  The elements are
+      returned in no particular order (unless this set is an instance of some
+      class that provides a guarantee).
+      @return an iterator over the elements in this set.
+    }
+    function Iterator(): IAIterator;
+
       //** Convert to string
     function ToString(): APascalString;
 
+    {** Returns an iterator over a set of elements }
     property Iterator: IAIterator read GetIterator;
   end;
 
-  IJavaIterable = IAIterable;
-
-  {IIterable = interface
-    function GetIterator(): IAIterator;
-
-    property Iterator: IAIterator read GetIterator;
-  end;}
+  //IJavaIterable = IAIterable;
 
 implementation
 

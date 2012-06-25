@@ -30,14 +30,6 @@ type
     }
     function GetIterator(): IAIterator;
 
-    {**
-      Returns an iterator over the elements in this set.  The elements are
-      returned in no particular order (unless this set is an instance of some
-      class that provides a guarantee).
-      @return an iterator over the elements in this set.
-    }
-    function Iterator(): IAIterator;
-
       //** Convert to string
     function ToString(): APascalString;
 

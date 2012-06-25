@@ -99,30 +99,32 @@ type
       @param o element whose presence in this collection is to be tested.
       @return <tt>true</tt> if this collection contains the specified
           element
-      @throws ClassCastException if the type of the specified element
+      @return ClassCastException if the type of the specified element
       	  is incompatible with this collection (optional).
-      @throws NullPointerException if the specified element is null and this
+      @return NullPointerException if the specified element is null and this
           collection does not support null elements (optional).
     }
-    function Contains(AObject: TObject): Boolean;
-    //function Contains(o: IUnknown): WordBool;
+    function Contains(Id: AId): AError;
 
     {**
+      Returns the number of elements in this collection.
       Analog GetSize()
     }
-    function GetCount(): Integer;
+
+    function GetCount(): AInt;
     {**
       Returns the number of elements in this collection.
       If this collection contains more than <tt>Integer.MAX_VALUE</tt> elements, returns
       <tt>Integer.MAX_VALUE</tt>.
       @return the number of elements in this collection
     }
+
     function GetSize(): AInt;
     {**
       Returns <tt>true</tt> if this collection contains no elements.
       @return <tt>true</tt> if this collection contains no elements
     }
-    function GetIsEmpty: Boolean;
+    function GetIsEmpty(): ABoolean;
 
     {**
       Returns an array containing all of the elements in this collection.
@@ -191,8 +193,8 @@ type
     // Modification Operations
 
     {**
-      Ensures that this collection contains the specified element (optional
-      operation).  Returns <tt>true</tt> if this collection changed as a
+      Ensures that this collection contains the specified element (optional operation).
+      Returns <tt>true</tt> if this collection changed as a
       result of the call.  (Returns <tt>false</tt> if this collection does
       not permit duplicates and already contains the specified element.)<p>
 
@@ -221,7 +223,8 @@ type
       @throws IllegalArgumentException some aspect of this element prevents
           it from being added to this collection.
     }
-    function Add(AObject: TObject): Boolean;
+    function Add(Id: AId): AError;
+
     {**
       Adds all of the elements in the specified collection to this collection
       (optional operation).  The behavior of this operation is undefined if
@@ -244,7 +247,8 @@ type
      	    specified collection prevents it from being added to this
      	    collection.
     }
-    function AddAll(Objects: IACollection): Boolean;
+    function AddAll(Objects: IACollection): AError;
+
     {**
       Removes all of the elements from this collection (optional operation).
       This collection will be empty after this method returns unless it
@@ -253,7 +257,8 @@ type
       @throws UnsupportedOperationException if the <tt>clear</tt> method is
           not supported by this collection.
     }
-    procedure Clear();
+    function Clear(): AError;
+
     {**
       Removes a single instance of the specified element from this
       collection, if it is present (optional operation).  More formally,
@@ -273,7 +278,8 @@ type
       @throws UnsupportedOperationException remove is not supported by this
           collection.
     }
-    function Remove(AObject: TObject): Boolean;
+    function Remove(Id: AId): AError;
+
     {**
       Removes all this collection's elements that are also contained in the
       specified collection (optional operation).  After this call returns,
@@ -296,7 +302,7 @@ type
       @see #Remove(Object)
       @see #Contains(Object)
     }
-    function RemoveAll(Objects: IACollection): Boolean;
+    function RemoveAll(Objects: IACollection): AError;
 
     // Bulk Operations
 
@@ -315,7 +321,7 @@ type
           elements (optional).
       @throws NullPointerException if the specified collection is <tt>null</tt>.
     }
-    function ContainsAll(Objects: IACollection): Boolean;
+    function ContainsAll(Objects: IACollection): AError;
 
     {**
       Retains only the elements in this collection that are contained in the
@@ -339,7 +345,7 @@ type
       @see #remove(Object)
       @see #contains(Object)
     }
-    function RetainAll(Objects: IACollection): Boolean;
+    function RetainAll(Objects: IACollection): AError;
 
     // Comparison and hashing
 
@@ -375,7 +381,8 @@ type
       @see Set#equals(Object)
       @see List#equals(Object)
     }
-    function Equals(AObject: TObject): Boolean;
+    function Equals(Id: AId): AError;
+
     {**
       Returns the hash code value for this collection.
       While the <tt>Collection</tt> interface adds no stipulations to the general
@@ -391,7 +398,7 @@ type
       @see Object#hashCode()
       @see Object#equals(Object)
     }
-    function HashCode: Integer;
+    function HashCode(): AInt;
 
     {** Returns the number of elements in this collection }
     property Count: Integer read GetCount;

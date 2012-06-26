@@ -1,8 +1,8 @@
-п»ї{**
-@Abstract(Р РµР°Р»РёР·Р°С†РёСЏ РёРЅС‚РµСЂС„РµР№СЃРѕРІ ILogNode Рё IProfLogNode)
+{**
+@Abstract(Реализация интерфейсов ILogNode и IProfLogNode)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.08.2005)
-@LastMod(26.06.2012)
+@LastMod(13.06.2012)
 @Version(0.5)
 }
 unit ALogNodeImpl;
@@ -11,52 +11,33 @@ interface
 
 uses
   SysUtils,
-  AAttributesIntf, ABase,
-  ALogDocumentIntf, ALogGlobals, ALogNodeIntf, {ANodeImpl,} ANodeIntf, AMessageConst, {AObjectImpl,} ATypes;
+  ALogDocumentIntf, ALogGlobals, ALogNodeIntf, ANodeImpl, AMessageConst, AObjectImpl, ATypes;
 
-type
-  {** РќРѕРґ Р»РѕРіРёСЂРѕРІР°РЅРёСЏ - СЌР»РµРјРµРЅС‚ РґРµСЂРµРІР° Р»РѕРіРёСЂРѕРІР°РЅРёСЏ }
-  TALogNode = class(TInterfacedObject{TProfNode}, IProfLogNode)
+type //** Нод логирования - элемент дерева логирования
+  TALogNode = class(TProfNode, IProfLogNode)
   protected
-      //** Р”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ
+      //** Дата создания
     FDTCreate: TDateTime;
       //** ID
     //FID: Integer; -> TProfEntity
-      //** РЎРѕРѕР±С‰РµРЅРёРµ
+      //** Сообщение
     FMsg: WideString;
-      //** РџР°СЂР°РјРµС‚СЂС‹ РІ РІРёРґРµ XML
+      //** Параметры в виде XML
     FParams: WideString;
-      //** РўРёРї СЃРѕРѕР±С‰РµРЅРёСЏ
+      //** Тип сообщения
     FType: TLogTypeMessage;
-      //** Р“СЂСѓРїРїР° СЃРѕРѕР±С‰РµРЅРёСЏ
+      //** Группа сообщения
     FGroup: TLogGroupMessage;
   protected
-      //** Р РѕРґРёС‚РµР»СЊСЃРєРёР№ РЅРѕРґ Р»РѕРіРёСЂРѕРІР°РЅРёСЏ Рє РєРѕС‚РѕСЂРѕРјСѓ РїСЂРёРЅР°РґР»РµР¶РёС‚ СЌС‚РѕС‚ РЅРѕРґ
+      //** Родительский нод логирования к которому принадлежит этот нод
     FParent: IProfLogNode;
-      //** Р”РѕРєСѓРјРµРЅС‚ Р»РѕРіРёСЂРѕРІР°РЅРёСЏ Рє РєРѕС‚РѕСЂРѕРјСѓ РїСЂРёРЅР°РґР»РµР¶РёС‚ СЌС‚РѕС‚ РЅРѕРґ
+      //** Документ логирования к которому принадлежит этот нод
     //FLogDoc: ILogDocument;
-      //** Р РѕРґРёС‚РµР»СЊСЃРєРёР№ РЅРѕРґ
+      //** Родительский нод
     //FParent: Integer;
-      //** РЎС‚Р°С‚СѓСЃ РЅРѕРґР°
+      //** Статус нода
     FStatus: TLogNodeStatus;
-  protected // IAEntity
-      {** Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃСѓС‰РЅРѕСЃС‚Рё }
-    function GetEntityId(): AId;
-      //** Р’РѕР·РІСЂР°С‰Р°РµС‚ С‚РёРї СЃСѓС‰РЅРѕСЃС‚Рё
-    function GetEntityType(): TProfEntityType;
-      //** Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃСѓС‰РЅРѕСЃС‚Рё
-    function GetId(): AId;
-      {** Р—Р°РґР°РµС‚ С‚РёРї СЃСѓС‰РЅРѕСЃС‚Рё }
-    procedure SetEntityType(Value: AId);
-  protected // IANamedEntity
-      //** Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРјСЏ
-    function GetName(): WideString;
-      //** Р—Р°РґР°С‚СЊ РёРјСЏ
-    procedure SetName(const Value: WideString);
-  protected // IProfNode
-    function GetAttributes(): IProfAttributes; safecall;
-    function GetChildNodes(): IProfNodes; safecall;
-  protected // IProfLogNode
+  protected
     procedure SetStatus(Value: TLogNodeStatus);
     function Get_Document(): IProfLogNode; safecall;
     function Get_LogDocument(): IProfLogNode; safecall;
@@ -66,21 +47,19 @@ type
     procedure Set_Parent(Value: Integer); safecall;
     procedure Set_StrMsg(const Value: WideString); safecall;
   public
-      {** Р”РѕР±Р°РІРёС‚СЊ СЃРѕРѕР±С‰РµРЅРёРµ
-          @returns(Р’РѕР·РІСЂР°С‰Р°РµС‚ РЅРѕРјРµСЂ РґРѕР±Р°РІР»РµРЅРѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ РёР»Рё 0) }
+      {** Добавить сообщение
+          @returns(Возвращает номер добавленого сообщения или 0) }
     function AddMsg(const AMsg: WideString): Integer; virtual; safecall;
-      {** Р”РѕР±Р°РІРёС‚СЊ СЃС‚СЂРѕРєСѓ
-          @returns(Р’РѕР·РІСЂР°С‰Р°РµС‚ РЅРѕРјРµСЂ РґРѕР±Р°РІР»РµРЅРѕР№ СЃС‚СЂРѕРєРё РёР»Рё 0) }
+      {** Добавить строку
+          @returns(Возвращает номер добавленой строки или 0) }
     function AddStr(const AStr: WideString): Integer; virtual; safecall;
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; {override;}
+    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; override;
     procedure Hide(); virtual; safecall;
     function Prefix(): string;
     procedure Show(); virtual; safecall;
   public
     constructor Create(ALogDoc: IProfLogNode; ALogPrefix: string; AID: Integer);
   public
-    property Attributes: IProfAttributes read GetAttributes;
-    property ChildNodes: IProfNodes read GetChildNodes;
     property Msg: WideString read FMsg write FMsg;
     property Params: WideString read FParams write FParams;
     property Group: TLogGroupMessage read FGroup write FGroup;
@@ -90,26 +69,26 @@ type
 
   TALogNode2 = class(TInterfacedObject{TProfObject2}, ILogNode2)
   protected
-      {** Р”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ }
+      {** Дата создания }
     FDTCreate: TDateTime;
       {** Identifier }
     FId: Integer;
-      {** РЎРѕРѕР±С‰РµРЅРёРµ }
+      {** Сообщение }
     FMsg: WideString;
-      {** РџР°СЂР°РјРµС‚СЂС‹ РІ РІРёРґРµ XML }
+      {** Параметры в виде XML }
     FParams: WideString;
-      {** РўРёРї СЃРѕРѕР±С‰РµРЅРёСЏ }
+      {** Тип сообщения }
     FType: TLogTypeMessage;
-      {** Р“СЂСѓРїРїР° СЃРѕРѕР±С‰РµРЅРёСЏ }
+      {** Группа сообщения }
     FGroup: TLogGroupMessage;
   protected
-      {** Р”РѕРєСѓРјРµРЅС‚ Р»РѕРіРёСЂРѕРІР°РЅРёСЏ Рє РєРѕС‚РѕСЂРѕРјСѓ РїСЂРёРЅР°РґР»РµР¶РёС‚ СЌС‚РѕС‚ РЅРѕРґ }
+      {** Документ логирования к которому принадлежит этот нод }
     FLogDoc: ALogDocument2;
-      // Р”РѕС‡РµСЂРЅРёРµ РЅРѕРґС‹
+      // Дочерние ноды
     //FNodes: array of Integer;
-      {** Р РѕРґРёС‚РµР»СЊСЃРєРёР№ РЅРѕРґ }
+      {** Родительский нод }
     FParent: Integer;
-      {** РЎС‚Р°С‚СѓСЃ РЅРѕРґР° }
+      {** Статус нода }
     FStatus: TLogNodeStatus;
   protected
     procedure SetStatus(Value: TLogNodeStatus);

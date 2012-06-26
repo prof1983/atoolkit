@@ -2,7 +2,7 @@
 @Abstract(Объект подключения клиента. Создается автоматический системой для каждого клиента)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.04.2006)
-@LastMod(10.05.2012)
+@LastMod(26.06.2012)
 @Version(0.5)
 
 0.0.5.7 - 21.07.2011
@@ -150,7 +150,7 @@ type
   end;
 var
   tmpLen: LongWord;
-  tknHandle: THandle;
+  tknHandle: Windows.THandle;
   tmpBuffer: pointer;
   tmpName: array[0..200]of char;
   tmpDomain: array[0..200]of char;

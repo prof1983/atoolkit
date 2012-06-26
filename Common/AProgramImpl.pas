@@ -2,7 +2,7 @@
 @Abstract(Реализация основной функциональности для главного объекта)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.05.2006)
-@LastMod(24.05.2012)
+@LastMod(26.06.2012)
 @Version(0.5)
 
 0.0.5.7 - 21.07.2011
@@ -317,7 +317,7 @@ end;
 
 function TProfProgram.DoInitialize(): TProfError;
 var
-  LogNode1: TLogNode;
+  LogNode1: TALogNode;
 begin
   Result := inherited DoInitialize();
   if not(Assigned(FLogDocuments)) then
@@ -327,7 +327,7 @@ begin
   end;
   if not(Assigned(FLog)) then
   begin
-    LogNode1 := TLogNode.Create(nil, '', 0);
+    LogNode1 := TALogNode.Create(nil, '', 0);
     LogNode1.OnAddToLog := AddToLog;
     FLog := LogNode1;
   end;

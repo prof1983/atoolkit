@@ -2,7 +2,7 @@
 @Abstract(Объект с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.12.2005)
-@LastMod(13.06.2012)
+@LastMod(26.06.2012)
 @Version(0.5)
 }
 unit AObjectImpl;
@@ -14,7 +14,7 @@ uses
   AEntityImpl, ALogGlobals, ALogNodeIntf, ANodeIntf, AObjectIntf, ATypes;
 
 type //** @abstract(Базовый класс для объект с логированием и конфигурациями)
-  TProfBaseObject3 = class(TProfEntity, IProfObject)
+  TProfBaseObject3 = class(TANamedEntity, IProfObject)
   private
     FConfig: IProfNode;
     FLog: IProfLogNode;
@@ -52,7 +52,7 @@ type //** @abstract(Базовый класс для объект с логир�
   end;
 
 type //** Объект с логированием и конфигурациями
-  TProfObject = class(TProfEntity, IProfObject)
+  TProfObject = class(TANamedEntity, IProfObject)
   protected
       //** Конфигурации
     FConfig: IProfNode;

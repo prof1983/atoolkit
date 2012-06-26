@@ -2,7 +2,7 @@
 @Abstract(Общие интерфейсы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(25.05.2012)
+@LastMod(26.06.2012)
 @Version(0.5)
 }
 unit AObjectIntf;
@@ -14,7 +14,7 @@ uses
   AEntityIntf, ALogNodeIntf, ANodeIntf, ATypes, AXmlNodeIntf;
 
 type //** Интерфейс для любого объекта
-  IProfObject = interface(IProfNamedEntity)
+  IProfObject = interface(IANamedEntity)
     function GetConfigNode(): IProfNode; safecall;
     function GetLogNode(): IProfLogNode; safecall;
     procedure SetConfigNode(Value: IProfNode); safecall;

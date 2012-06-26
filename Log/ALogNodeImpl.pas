@@ -2,7 +2,7 @@
 @Abstract(Реализация интерфейсов ILogNode и IProfLogNode)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.08.2005)
-@LastMod(13.06.2012)
+@LastMod(26.06.2012)
 @Version(0.5)
 }
 unit ALogNodeImpl;
@@ -11,10 +11,12 @@ interface
 
 uses
   SysUtils,
-  ALogDocumentIntf, ALogGlobals, ALogNodeIntf, ANodeImpl, AMessageConst, AObjectImpl, ATypes;
+  AAttributesIntf, ABase,
+  ALogDocumentIntf, ALogGlobals, ALogNodeIntf, {ANodeImpl,} ANodeIntf, AMessageConst, {AObjectImpl,} ATypes;
 
-type //** Нод логирования - элемент дерева логирования
-  TALogNode = class(TProfNode, IProfLogNode)
+type
+  {** Нод логирования - элемент дерева логирования }
+  TALogNode = class(TInterfacedObject{TProfNode}, IProfLogNode)
   protected
       //** Дата создания
     FDTCreate: TDateTime;
@@ -37,7 +39,24 @@ type //** Нод логирования - элемент дерева логир
     //FParent: Integer;
       //** Статус нода
     FStatus: TLogNodeStatus;
-  protected
+  protected // IAEntity
+      {** Возвращает идентификатор сущности }
+    function GetEntityId(): AId;
+      //** Возвращает тип сущности
+    function GetEntityType(): TProfEntityType;
+      //** Возвращает идентификатор сущности
+    function GetId(): AId;
+      {** Задает тип сущности }
+    procedure SetEntityType(Value: AId);
+  protected // IANamedEntity
+      //** Возвращает имя
+    function GetName(): WideString;
+      //** Задать имя
+    procedure SetName(const Value: WideString);
+  protected // IProfNode
+    function GetAttributes(): IProfAttributes; safecall;
+    function GetChildNodes(): IProfNodes; safecall;
+  protected // IProfLogNode
     procedure SetStatus(Value: TLogNodeStatus);
     function Get_Document(): IProfLogNode; safecall;
     function Get_LogDocument(): IProfLogNode; safecall;
@@ -53,13 +72,15 @@ type //** Нод логирования - элемент дерева логир
       {** Добавить строку
           @returns(Возвращает номер добавленой строки или 0) }
     function AddStr(const AStr: WideString): Integer; virtual; safecall;
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; override;
+    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; {override;}
     procedure Hide(); virtual; safecall;
     function Prefix(): string;
     procedure Show(); virtual; safecall;
   public
     constructor Create(ALogDoc: IProfLogNode; ALogPrefix: string; AID: Integer);
   public
+    property Attributes: IProfAttributes read GetAttributes;
+    property ChildNodes: IProfNodes read GetChildNodes;
     property Msg: WideString read FMsg write FMsg;
     property Params: WideString read FParams write FParams;
     property Group: TLogGroupMessage read FGroup write FGroup;

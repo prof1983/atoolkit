@@ -2,7 +2,7 @@
 @Abstract(Реализация интерфейса IProfNode)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(11.04.2007)
-@LastMod(26.04.2012)
+@LastMod(26.06.2012)
 @Version(0.5)
 }
 unit ANodeImpl;
@@ -13,7 +13,7 @@ uses
   AAttributesIntf, AAttributesImpl, AEntityImpl, ANodeIntf;
 
 type //** Реализация интерфейса IProfNode
-  TProfNode = class(TProfEntity, IProfNode)
+  TProfNode = class(TANamedEntity, IProfNode)
   protected
     FAttributes: IProfAttributes;
     FChildNodes: IProfNodes;

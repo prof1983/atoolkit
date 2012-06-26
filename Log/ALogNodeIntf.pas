@@ -2,7 +2,7 @@
 @Abstract(Интерфейс элемента логирования)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(12.03.2012)
-@LastMod(13.06.2012)
+@LastMod(26.06.2012)
 @Version(0.5)
 }
 unit ALogNodeIntf;
@@ -10,7 +10,7 @@ unit ALogNodeIntf;
 interface
 
 uses
-  ANodeIntf, ATypes;
+  ABase, ANodeIntf, ATypes;
 
 type //** Интерфейс элемента логирования
   IProfLogNode = interface(IProfNode)
@@ -33,17 +33,20 @@ type //** Интерфейс элемента логирования
       @returns(Возвращает номер добавленого сообщения или 0)
     }
     function AddMsg(const AMsg: WideString): Integer; safecall;
+
     {**
       Добавить строку
       @returns(Возвращает номер добавленой строки или 0)
     }
     function AddStr(const AStr: WideString): Integer; safecall;
+
     {**
-      Добавить лог-сообщение
-      @returns(Возвращает номер добавленого лог-сообщения или 0)
+      Добавляет лог-сообщение.
+      @returns Возвращает номер добавленого лог-сообщения или 0
     }
-    {function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer; -> IProfEntity}
+    function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: WideString): AInt;
+
       //** Скрыть/Свернуть
     procedure Hide(); safecall;
       //** Отобразить/развернуть

@@ -2,7 +2,7 @@
 @Abstract(Глобальные типы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(20.02.2007)
-@LastMod(20.06.2012)
+@LastMod(26.06.2012)
 @Version(0.5)
 
 0.0.5.8 - 30.12.2011
@@ -527,6 +527,28 @@ type //** @abstract(Множество значений @link(TClientType))
 
 type
   ALogDocument2 = type Integer; //TALogDocument2
+
+// --- Entity ---
+
+type
+  {** Сущность }
+  AEntity_Type = record
+      //** Тип сущности
+    EntityType: TProfEntityType;
+      //** Идентификатор
+    Id: AId;
+      //** Префикс лог-сообщений
+    LogPrefix: WideString;
+      //** Имя
+    Name: WideString;
+  end;
+
+  {** Именованая сущность }
+  ANamedEntity_Type = record
+    Entity: AEntity_Type;
+      //** Имя
+    Name: WideString;
+  end;
 
 implementation
 

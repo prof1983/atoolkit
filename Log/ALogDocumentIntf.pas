@@ -28,7 +28,7 @@ type //** Интерфейс документов логирования
   end;
 
 type //** Интерфейс документа логирования
-  IProfLogDocument = interface(IProfDocument)
+  IProfLogDocument = interface //(IProfDocument)
     function GetDocumentElement(): IProfLogNode; safecall;
 
     {**

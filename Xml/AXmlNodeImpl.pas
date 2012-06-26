@@ -2,7 +2,7 @@
 @Abstract(Класс работы с XML нодами)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(07.03.2007)
-@LastMod(26.04.2012)
+@LastMod(26.06.2012)
 @Version(0.5)
 }
 unit AXmlNodeImpl;
@@ -16,7 +16,7 @@ uses
   AAttributesIntf, AEntityImpl, ANodeIntf, ATypes, AXmlAttributesImpl;
 
 type //** Класс работы с XML нодами
-  TProfXmlNode = class(TProfEntity, IProfNode)
+  TProfXmlNode = class(TANamedEntity, IProfNode)
   protected
     //** Объект работы с атрибутами
     FAttributes: TProfXmlAttributes;

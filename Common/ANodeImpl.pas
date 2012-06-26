@@ -12,7 +12,8 @@ interface
 uses
   AAttributesIntf, AAttributesImpl, AEntityImpl, ANodeIntf;
 
-type //** Реализация интерфейса IProfNode
+type
+  {** Реализация интерфейса IProfNode }
   TProfNode = class(TANamedEntity, IProfNode)
   protected
     FAttributes: IProfAttributes;

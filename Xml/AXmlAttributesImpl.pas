@@ -2,7 +2,7 @@
 @Abstract(Класс работы с XML атрибутами)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(11.03.2007)
-@LastMod(26.04.2012)
+@LastMod(26.06.2012)
 @Version(0.5)
 }
 unit AXmlAttributesImpl;
@@ -14,7 +14,7 @@ uses
   AAttributeIntf, AAttributesIntf, AEntityImpl;
 
 type //** @abstract(Класс работы с XML атрибутами)
-  TProfXmlAttributes = class(TProfEntity, IProfAttributes)
+  TProfXmlAttributes = class(TANamedEntity, IProfAttributes)
   private
     FNode: IXmlNode;
   protected

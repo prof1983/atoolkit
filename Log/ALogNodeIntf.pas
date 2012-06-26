@@ -13,7 +13,7 @@ uses
   ABase, ANodeIntf, ATypes;
 
 type //** Интерфейс элемента логирования
-  IProfLogNode = interface(IProfNode)
+  IProfLogNode = interface //(IProfNode)
     //function Get_Document(): ILogDocument; safecall;
     //function Get_GroupEnum(): GroupMessageEnum; safecall;
     //function GetId(): Integer; safecall; -> IProfEntity

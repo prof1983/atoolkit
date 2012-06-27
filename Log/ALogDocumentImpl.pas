@@ -2,7 +2,7 @@
 @Abstract(Работа с Log. Классы для записи собщений программы в БД или файл или отображения в окне Log)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.08.2005)
-@LastMod(26.06.2012)
+@LastMod(27.06.2012)
 @Version(0.5)
 }
 unit ALogDocumentImpl;
@@ -76,9 +76,9 @@ type //** Документ работы с Log
     FAddToLog: TAddToLog;
     FConfig: IProfNode;
     FLogType: TLogType;
-    FOnCommand: TProfMessage;
+    FOnCommand: TProcMessageStr;
   protected
-    procedure SetOnCommand(Value: TProfMessage); virtual;
+    procedure SetOnCommand(Value: TProcMessageStr); virtual;
   public
     function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: string; AParams: array of const): Boolean; override;
@@ -99,7 +99,7 @@ type //** Документ работы с Log
     property Config: IProfNode read FConfig write FConfig;
     property LogType: TLogType read FLogType;
     property OnAddToLog: TAddToLog read FAddToLog write FAddToLog;
-    property OnCommand: TProfMessage read FOnCommand write SetOnCommand;
+    property OnCommand: TProcMessageStr read FOnCommand write SetOnCommand;
   end;
   TLogDocument1 = TALogDocument2;
 
@@ -257,7 +257,7 @@ begin
   Result := nil;
 end;
 
-procedure TALogDocument2.SetOnCommand(Value: TProfMessage);
+procedure TALogDocument2.SetOnCommand(Value: TProcMessageStr);
 begin
   FOnCommand := Value;
 end;

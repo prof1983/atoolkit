@@ -54,7 +54,7 @@ type //** Основной объект сервиса
   protected
     // Срабатывает при добавлении записи в лог
     function DoAddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer; virtual;
-    // Срабатывает, когда нужно выполнить внешнюю команду. см. TProfMessage
+    // Срабатывает, когда нужно выполнить внешнюю команду. см. TProcMessageStr
     function DoCommand(const AMsg: WideString): WordBool; virtual;
     procedure DoCreate(); virtual;
     procedure DoDestroy(); virtual;

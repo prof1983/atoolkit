@@ -65,7 +65,7 @@ type //** @abstract(Основной объект программы)
     function GetIsDemo(): Boolean; virtual;
     procedure SetIsDemo(Value: Boolean); virtual;
   protected
-    //** Срабатывает, когда нужно выполнить внешнюю команду. см. TProfMessage
+    //** Срабатывает, когда нужно выполнить внешнюю команду. см. TProcMessageStr
     //function DoCommand(const AMsg: WideString): Integer; override; safecall;
     //** Срабатывает при создании объекта
     procedure DoCreate(); override; safecall;

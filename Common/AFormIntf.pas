@@ -2,7 +2,7 @@
 @Abstract(AForm interface)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(12.03.2012)
-@LastMod(26.06.2012)
+@LastMod(27.06.2012)
 @Version(0.5)
 }
 unit AFormIntf;
@@ -10,22 +10,16 @@ unit AFormIntf;
 interface
 
 uses
-  ANodeIntf, ATypes;
+  ABase, ANodeIntf, ATypes;
 
 type //** Интерфейс для любой формы
   IProfForm = interface
     //** Добавление лог-сообщений
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
     //** Загрузить конфигурации
-    function ConfigureLoad(AConfig: IProfNode): WordBool; safecall;
+    function ConfigureLoad(AConfig: IProfNode): AError;
     //** Сохранить конфигурации
-    function ConfigureSave(AConfig: IProfNode): WordBool; safecall;
-    //** Срабатывает при создании объекта
-    //procedure DoCreate(); safecall;
-    //** Срабатывает при уничтожении объекта
-    //procedure DoDestroy(); safecall;
-    //** Срабатывает при добавлении сообщения ???
-    //function DoMessage(const AMsg: WideString): Integer; safecall;
+    function ConfigureSave(AConfig: IProfNode): AError;
     //** Финализировать
     function Finalize(): TProfError;
     //** Инициализировать
@@ -41,7 +35,7 @@ type //** Интерфейс для любой формы
   end;
 
   IProfForm2 = interface(IProfForm)
-    //** Срабатывает, когда нужно выполнить внешнюю команду. см. TProfMessage
+    //** Срабатывает, когда нужно выполнить внешнюю команду. см. TProcMessageStr
     function DoCommand(const AMsg: WideString): Integer; safecall;
     //** Срабатывает при добавлении сообщения
     function DoMessage(const AMsg: WideString): Integer; safecall;

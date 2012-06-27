@@ -1,9 +1,9 @@
 object ProfShablon3: TProfShablon3
   Left = 213
   Top = 106
-  Width = 495
-  Height = 304
   Caption = 'ProfShablon3'
+  ClientHeight = 277
+  ClientWidth = 487
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

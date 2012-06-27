@@ -2,7 +2,7 @@
 @Abstract(Объект с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.12.2005)
-@LastMod(26.06.2012)
+@LastMod(27.06.2012)
 @Version(0.5)
 }
 unit AObjectImpl;
@@ -61,7 +61,7 @@ type //** Объект с логированием и конфигурациям
       //** Ветка логирования
     FLog: IProfLogNode;
       //** CallBack функция. Срабатывает при поступлении сообщения.
-    FOnSendMessage: TProcMessageSafe;
+    FOnSendMessage: TProcMessageStrSafe;
     //FOnSendMessageX: TProcMessageX;
   protected
     function GetConfigNode(): IProfNode; safecall;
@@ -121,7 +121,7 @@ type //** Объект с логированием и конфигурациям
       //** Ветка догирования
     property Log: IProfLogNode read GetLogNode write SetLogNode;
       //** CallBack функция передачи сообщения
-    property OnSendMessage: TProcMessageSafe read FOnSendMessage write FOnSendMessage;
+    property OnSendMessage: TProcMessageStrSafe read FOnSendMessage write FOnSendMessage;
     //property OnSendMessageX: TProcMessageX read FOnSendMessageX write FOnSendMessageX;
   end;
 
@@ -139,7 +139,7 @@ type //** Объект с логированием и конфигурациям
     procedure SetConfig(const Value: IXmlNode); virtual; safecall;
     procedure SetLog(const Value: ILogNode2); virtual; safecall;
   protected
-    //** Срабатывает, когда нужно выполнить внешнюю команду. см. TProfMessage
+    //** Срабатывает, когда нужно выполнить внешнюю команду. см. TProcMessageStr
     function DoCommand(const AMsg: WideString): WordBool; virtual; safecall;
     //** Срабатывает при финализации
     function DoFinalize(): WordBool; virtual; safecall;

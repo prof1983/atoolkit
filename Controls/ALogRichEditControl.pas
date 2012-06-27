@@ -2,7 +2,7 @@
 @Abstract(Контрол вывода лог-сообщений в RichEdit)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(07.03.2007)
-@LastMod(26.04.2012)
+@LastMod(27.06.2012)
 @Version(0.5)
 }
 unit ALogRichEditControl;
@@ -11,7 +11,7 @@ interface
 
 uses
   ComCtrls, Graphics,
-  ALogGlobals, ALogNodeIntf, ANodeImpl, ATypes;
+  ALogGlobals, ALogNodeIntf, ALogUiUtils, ANodeImpl, ATypes;
 
 type //** Контрол вывода лог-сообщений в RichEdit
   TProfLogRichEditControl = class(TProfNode, IProfLogNode)

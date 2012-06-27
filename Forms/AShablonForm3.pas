@@ -2,7 +2,7 @@
 @Abstract(Пустая форма с картинками. Шаблон для создания форм в не визуальном режиме)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(17.03.2006)
-@LastMod(26.04.2012)
+@LastMod(27.06.2012)
 @Version(0.5)
 }
 unit AShablonForm3;
@@ -14,7 +14,7 @@ uses
   AFormImpl;
 
 type
-  TProfShablon3 = class(TProfForm3)
+  TProfShablon3 = class(TProfForm)
     RunImages: TImageList;
   protected
     //** Срабатывает при изменении размеров

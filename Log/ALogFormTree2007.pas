@@ -2,7 +2,7 @@
 @Abstract(Окно вывода сообщений программы в виде дерева)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(13.10.2005)
-@LastMod(13.06.2012)
+@LastMod(27.06.2012)
 @Version(0.5)
 }
 unit ALogFormTree2007;
@@ -26,14 +26,14 @@ type //** Окно вывода сообщений программы в вид�
       ID: Integer;
       Node: TTreeNode;
     end;
-    FOnCommand: TProfMessage;
+    FOnCommand: TProcMessageStr;
     FProgressPanel: TPanel;
     FTreeView: TTreeView;
     procedure CommandKeyPress(Sender: TObject; var Key: Word; Shift: TShiftState);
   protected
     procedure DoCreate(); override;
-    function GetOnCommand(): TProfMessage; override;
-    procedure SetOnCommand(Value: TProfMessage); override;
+    function GetOnCommand(): TProcMessageStr; override;
+    procedure SetOnCommand(Value: TProcMessageStr); override;
   public
       //** Добавить Node
     function AddNode(AType: TLogTypeMessage; AId, AParentId: Integer; const AStr: WideString): TTreeNode;
@@ -180,7 +180,7 @@ begin
   FTreeView.PopupMenu := PopupMenu;
 end;
 
-function TFormLog.GetOnCommand(): TProfMessage;
+function TFormLog.GetOnCommand(): TProcMessageStr;
 begin
   Result := FOnCommand;
 end;
@@ -191,7 +191,7 @@ begin
   SetLength(FNodes, 0);
 end;
 
-procedure TFormLog.SetOnCommand(Value: TProfMessage);
+procedure TFormLog.SetOnCommand(Value: TProcMessageStr);
 begin
   FOnCommand := Value;
   FMemoCommand.Visible := Assigned(Value);

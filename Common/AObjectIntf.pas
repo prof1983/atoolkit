@@ -2,7 +2,7 @@
 @Abstract(Общие интерфейсы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(26.06.2012)
+@LastMod(27.06.2012)
 @Version(0.5)
 }
 unit AObjectIntf;
@@ -37,55 +37,12 @@ type //** Интерфейс для любого объекта
     property LogNode: IProfLogNode read GetLogNode write SetLogNode;
   end;
 
-{type //** @abstract(Интерфейс для любого объекта)
-  IProfObject20070401 = interface
-    function GetConfig(): IProfNode; safecall;
-    //function GetLog(): ILogNode; safecall;
-    procedure SetConfig(const Value: IProfNode); safecall;
-    //procedure SetLog(const Value: ILogNode); safecall;
-
-    //** Срабатывает, когда нужно выполнить внешнюю команду. см. TProfMessage
-    //function DoCommand(const AMsg: WideString): Integer; safecall;
-    //** Срабатывает при создании объекта
-    procedure DoCreate(); safecall;
-    //** Срабатывает после создании объекта
-    procedure DoCreated(); safecall;
-    //** Срабатывает при уничтожении объекта
-    procedure DoDestroy(); safecall;
-    //** Срабатывает при финализации
-    function DoFinalize(): WordBool; safecall;
-    //** Срабатывает после финализации
-    function DoFinalized(): WordBool; safecall;
-    //** Срабатывает при инициализации
-    function DoInitialize(): WordBool; safecall;
-    //** Срабатывает после инициализации
-    function DoInitialized(): WordBool; safecall;
-    //** Срабатывает при добавлении сообщения
-    function DoMessage(const AMsg: WideString): Integer; safecall;
-
-    //** Добавление лог-сообщений
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; safecall;
-    //** Загрузить конфигурации
-    function ConfigureLoad(AConfig: IProfNode): WordBool; safecall;
-    //** Сохранить конфигурации
-    function ConfigureSave(AConfig: IProfNode): WordBool; safecall;
-
-    //** Финализировать
-    function Finalize(): WordBool; safecall;
-    //** Инициализировать
-    function Initialize(): WordBool; safecall;
-
-    property Config: IProfNode read GetConfig write SetConfig;
-    //property Log: ILogNode read GetLog write SetLog;
-  end;
-  IProfObject2007 = IProfObject20070401;}
-
   IProfObject2 = interface
       //** Загрузить конфигурации
     function ConfigureLoad2(AConfig: IXmlNode): WordBool; safecall;
       //** Сохранить конфигурации
     function ConfigureSave2(AConfig: IXmlNode): WordBool; safecall;
-      //** Срабатывает, когда нужно выполнить внешнюю команду. см. TProfMessage
+      //** Срабатывает, когда нужно выполнить внешнюю команду. см. TProcMessageStr
     function DoCommand(const AMsg: WideString): WordBool; safecall;
       //** Срабатывает при создании объекта
     procedure DoCreate(); safecall;

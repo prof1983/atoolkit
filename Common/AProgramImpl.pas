@@ -69,7 +69,7 @@ type //** Основной объект программы
   protected
       //** Срабатывает при добавлении записи в лог
     function DoAddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; virtual; safecall;
-      //** Срабатывает, когда нужно выполнить внешнюю команду. см. TProfMessage
+      //** Срабатывает, когда нужно выполнить внешнюю команду. см. TProcMessageStr
     //function DoCommand(const AMsg: WideString): Integer; override; safecall;
       //** Срабатывает при создании объекта
     procedure DoCreate(); override; safecall;

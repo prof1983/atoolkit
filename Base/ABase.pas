@@ -2,7 +2,7 @@
 @Abstract(Base types and consts (Базовые типы и константы))
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.03.2008)
-@LastMod(09.06.2012)
+@LastMod(27.06.2012)
 @Version(0.5)
 
 0.3.2
@@ -148,6 +148,33 @@ type
   }
   AId = AInt64;
   TAId = AId;
+
+  AMessage = type AInt; // = AMessage_Type*
+  AMessage_Type = record
+      {** Message identifier }
+    MsgId: AInt;
+      {** Message type }
+    MsgType: AInt;
+      {** Message data size }
+    MsgDataSize: AInt;
+    {**
+      Message data (depends on the MsgType):
+        ConversationID
+        Content
+        Encoding
+        InReplyTo
+        Language
+        Ontology
+        Protocol
+        ReceiverName
+        ReplyBy
+        ReplyWith
+        Performative
+        PersistentID
+        SenderName
+    }
+    MsgData: Pointer;
+  end;
 
 implementation
 

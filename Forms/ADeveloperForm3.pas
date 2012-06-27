@@ -2,7 +2,7 @@
 @Abstract(Главная форма для проектирования)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(08.11.2006)
-@LastMod(26.04.2012)
+@LastMod(27.06.2012)
 @Version(0.5)
 }
 unit ADeveloperForm3;
@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, ComCtrls, Controls, ExtCtrls, Forms, Menus, ValEdit,
-  AAboutForm, ANodeIntf, AShablonForm3, ATypes;
+  AAboutForm, ABase, ANodeIntf, AShablonForm3, ATypes;
 
 type //** @abstract(Тип вкладки главной области)
   TabMainTypeEnum = Integer;
@@ -106,9 +106,9 @@ type
     function AddMainTab(ATabType: TabMainTypeEnum; const ACaption: WideString): TWinControl; virtual; safecall;
   public
     //** Загрузить конфигурации
-    function ConfigureLoad(AConfig: IProfNode = nil): TProfError; override; safecall;
+    function ConfigureLoad(AConfig: IProfNode = nil): AError; override;
     //** Сохранить конфигурации
-    function ConfigureSave(AConfig: IProfNode = nil): TProfError; override; safecall;
+    function ConfigureSave(AConfig: IProfNode = nil): AError; override;
   end;
 
 type
@@ -127,9 +127,9 @@ type
     function DoTabValueListAdd(ATabType: TabValueListTypeEnum; const ACaption: WideString): TWinControl; override;
   public
     //** Загрузить конфигурации
-    function ConfigureLoad(AConfig: IProfNode = nil): TProfError; override; safecall;
+    function ConfigureLoad(AConfig: IProfNode = nil): AError; override;
     //** Сохранить конфигурации
-    function ConfigureSave(AConfig: IProfNode = nil): TProfError; override; safecall;
+    function ConfigureSave(AConfig: IProfNode = nil): AError; override;
   end;
 
 type

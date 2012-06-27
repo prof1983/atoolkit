@@ -2,7 +2,7 @@
 @Abstract(Глобальные типы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(20.02.2007)
-@LastMod(26.06.2012)
+@LastMod(27.06.2012)
 @Version(0.5)
 
 0.0.5.8 - 30.12.2011
@@ -386,19 +386,32 @@ type //** Тип callback функции для добавления в лог �
 
 type
   {**
+    Тип callback функции для посылки сообщения или команды
+    Подробнее: http://prof-ar.narod.ru/development/acl/
+  }
+  TProcMessage = function(Msg: AMessage): Integer of object;
+  {**
+    Тип callback функции для посылки сообщения или команды
+    Подробнее: http://prof-ar.narod.ru/development/acl/
+  }
+  TProcMessageSafe = function(Msg: AMessage{IProfMessage}): Integer of object; safecall;
+  {**
+    Тип callback функции для посылки сообщения или команды
+    Формат команды:
+      Вариант 1: 'comand param1="value1" param2="value2"'
+      Вариант 2: '<comand param1="value1" param2="value2">data</comand>'
+  }
+  TProcMessageStr = function(const AMsg: WideString): WordBool of object;
+  {**
     @abstract(Тип callback функции для посылки сообщения или команды)
     Формат команды: Вариант 1: 'comand param1="value1" param2="value2"' @br
                     Вариант 2: '<comand param1="value1" param2="value2">data</comand>' @br
     Подробнее: http://prof-ar.narod.ru/development/messages.html
   }
-  TProcMessageSafe = function(const AMsg: WideString): Integer of object; safecall;
-  TProcMessage = TProcMessageSafe;
+  TProcMessageStrSafe = function(const AMsg: WideString): Integer of object; safecall;
+  TProcMessageA = TProcMessageSafe;
 
-type
-  // Формат команды: Вариант 1: 'comand param1="value1" param2="value2"'
-  //                 Вариант 2: '<comand param1="value1" param2="value2">data</comand>'
-  TProfMessage = function(const AMsg: WideString): WordBool of object;
-  TProfMessageSafe = function(const AMsg: WideString): WordBool of object; safecall;
+  TProfMessage = TProcMessageStr;
 
 type //** @abstract(Тип callback функции для изменения ProgressBar)
   TProgressSafeProc = function(AID, AProgress: Integer; const AMsg: WideString): Integer of object; safecall;

@@ -15,14 +15,14 @@ uses
 type
   TProfMessageEvent = class(TEventShablon)
   private
-    FListeners: array of TProcMessage;
+    FListeners: array of TProcMessageStr;
   protected
     function GetCount(): Integer; override;
   public
     //** Подписаться на получение события
-    function Connect(Proc: TProcMessage): WordBool;
+    function Connect(Proc: TProcMessageStr): WordBool;
     //** Отписаться от события
-    function Disconnect(Proc: TProcMessage): WordBool;
+    function Disconnect(Proc: TProcMessageStr): WordBool;
     //** Выполнить при возникновении события
     function Run(const Msg: WideString): Integer; safecall;
   end;
@@ -31,7 +31,7 @@ implementation
 
 { TProfMessageEvent }
 
-function TProfMessageEvent.Connect(Proc: TProcMessage): WordBool;
+function TProfMessageEvent.Connect(Proc: TProcMessageStr): WordBool;
 var
   I: Integer;
 begin
@@ -41,7 +41,7 @@ begin
   Result := True;
 end;
 
-function TProfMessageEvent.Disconnect(Proc: TProcMessage): WordBool;
+function TProfMessageEvent.Disconnect(Proc: TProcMessageStr): WordBool;
 var
   I: Integer;
 begin

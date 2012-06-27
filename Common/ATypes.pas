@@ -390,6 +390,7 @@ type
     Подробнее: http://prof-ar.narod.ru/development/acl/
   }
   //TProcMessage = function(Msg: AMessage): Integer of object;
+  TProcMessageX = function(Msg: AMessage{IProfNode}): Integer of object;
   {**
     Тип callback функции для посылки сообщения или команды
     Подробнее: http://prof-ar.narod.ru/development/acl/

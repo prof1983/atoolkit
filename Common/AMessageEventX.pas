@@ -10,7 +10,7 @@ unit AMessageEventX;
 interface
 
 uses
-  AEventObj, ANodeIntf, ATypesEx;
+  AEventObj, ANodeIntf, ATypes;
 
 type
   TProfMessageEventX = class(TEventShablon)
@@ -67,11 +67,11 @@ var
 begin
   //if Msg.ChildNodes.NodeByIndex[0].Name = '' then
 
-  for I := 0 to High(FListeners) do
+  {for I := 0 to High(FListeners) do
   try
     FListeners[I](Msg);
   except
-  end;
+  end;}
 end;
 
 end.

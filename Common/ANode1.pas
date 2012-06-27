@@ -2,7 +2,7 @@
 @Abstract(Узел)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(20.08.2007)
-@LastMod(27.04.2012)
+@LastMod(27.06.2012)
 @Version(0.5)
 }
 unit ANode1;
@@ -10,7 +10,7 @@ unit ANode1;
 interface
 
 uses
-  ACollection, AArrayList;
+  ACollectionIntf, AArrayList;
 
 type
   TItemType = Integer;
@@ -31,11 +31,11 @@ type
 
 type
   INode = interface(IItem)
-    function GetChilds(): IACollection2;
+    function GetChilds(): IACollection;
     function GetNodeName(): WideString;
     procedure SetNodeName(Name: WideString);
 
-    property Childs: IACollection2 read GetChilds;
+    property Childs: IACollection read GetChilds;
     property NodeName: WideString read GetNodeName write SetNodeName;
   end;
 
@@ -77,7 +77,7 @@ type
     FChilds: TArrayList;
     FNodeName: WideString;
   protected
-    function GetChilds(): IACollection2;
+    function GetChilds(): IACollection;
     function GetNodeName(): WideString;
     procedure SetNodeName(Name: WideString);
   public
@@ -133,7 +133,7 @@ begin
   FChilds := TArrayList.Create();
 end;
 
-function TNodeItem.GetChilds(): IACollection2;
+function TNodeItem.GetChilds(): IACollection;
 begin
   Result := FChilds;
 end;

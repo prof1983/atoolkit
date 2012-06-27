@@ -19,10 +19,10 @@ type //** Документ работы с Log
     FAddToLog: TProcAddToLog;
     FConfig: IProfNode;
     FLogType: TLogType;
-    FOnCommand: TProcMessage;
+    FOnCommand: TProcMessageStr;
   protected
     function GetNodeByID(ID: Integer): IProfLogNode; virtual;
-    procedure SetOnCommand(Value: TProcMessage); virtual;
+    procedure SetOnCommand(Value: TProcMessageStr); virtual;
   public // IProfDocument2
     {**
       Открыт ли документ?
@@ -68,7 +68,7 @@ type //** Документ работы с Log
     property Config: IProfNode read FConfig write FConfig;
     property LogType: TLogType read FLogType;
     property OnAddToLog: TProcAddToLog read FAddToLog write FAddToLog;
-    property OnCommand: TProcMessage read FOnCommand write SetOnCommand;
+    property OnCommand: TProcMessageStr read FOnCommand write SetOnCommand;
   end;
 
   TALogDocument2 = class(TALogNode2, ILogDocument2)
@@ -130,12 +130,12 @@ type //** Документ работы с Log
   TProfLogDocument3 = class(TProfDocument3, IProfLogDocument)
   private
     FConfig: IProfNode;
-    FOnCommand: TProcMessage;
+    FOnCommand: TProcMessageStr;
   protected
     FLogType: TLogType;
   protected
     function GetDocumentElement(): IProfLogNode; safecall;
-    procedure SetOnCommand(Value: TProcMessage); virtual;
+    procedure SetOnCommand(Value: TProcMessageStr); virtual;
   public
     {**
       Добавить лог-сообщение
@@ -152,7 +152,7 @@ type //** Документ работы с Log
     property Config: IProfNode read FConfig write FConfig;
       //** Тип лог-документа
     property LogType: TLogType read FLogType;
-    property OnCommand: TProcMessage read FOnCommand write SetOnCommand;
+    property OnCommand: TProcMessageStr read FOnCommand write SetOnCommand;
   end;
 
 implementation
@@ -206,7 +206,7 @@ begin
   Result := 0;
 end;
 
-procedure TLogDocument.SetOnCommand(Value: TProcMessage);
+procedure TLogDocument.SetOnCommand(Value: TProcMessageStr);
 begin
   FOnCommand := Value;
 end;
@@ -384,7 +384,7 @@ begin
   Result := 0;
 end;
 
-procedure TProfLogDocument3.SetOnCommand(Value: TProcMessage);
+procedure TProfLogDocument3.SetOnCommand(Value: TProcMessageStr);
 begin
   FOnCommand := Value;
 end;

@@ -389,7 +389,7 @@ type
     Тип callback функции для посылки сообщения или команды
     Подробнее: http://prof-ar.narod.ru/development/acl/
   }
-  TProcMessage = function(Msg: AMessage): Integer of object;
+  //TProcMessage = function(Msg: AMessage): Integer of object;
   {**
     Тип callback функции для посылки сообщения или команды
     Подробнее: http://prof-ar.narod.ru/development/acl/
@@ -401,7 +401,7 @@ type
       Вариант 1: 'comand param1="value1" param2="value2"'
       Вариант 2: '<comand param1="value1" param2="value2">data</comand>'
   }
-  TProcMessageStr = function(const AMsg: WideString): WordBool of object;
+  TProcMessageStr = function(const AMsg: WideString): AInt of object;
   {**
     @abstract(Тип callback функции для посылки сообщения или команды)
     Формат команды: Вариант 1: 'comand param1="value1" param2="value2"' @br
@@ -411,7 +411,7 @@ type
   TProcMessageStrSafe = function(const AMsg: WideString): Integer of object; safecall;
   TProcMessageA = TProcMessageSafe;
 
-  TProfMessage = TProcMessageStr;
+  //TProfMessage = function(const AMsg: WideString): WordBool of object;
 
 type //** @abstract(Тип callback функции для изменения ProgressBar)
   TProgressSafeProc = function(AID, AProgress: Integer; const AMsg: WideString): Integer of object; safecall;

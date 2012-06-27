@@ -2,7 +2,7 @@
 @Abstract(Класс, объединяющий вывод логов сразу в несколько мест)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(26.01.2006)
-@LastMod(26.04.2012)
+@LastMod(27.06.2012)
 @Version(0.5)
 }
 unit ALogDocuments;
@@ -18,7 +18,7 @@ type //** Класс для записи Log сразу в несколько м
   private
     FDocuments: array of ILogDocument;
   protected
-    procedure SetOnCommand(Value: TProcMessage); override;
+    procedure SetOnCommand(Value: TProcMessageStr); override;
   public
     function AddLogDocument(ADocument: ILogDocument): Integer; safecall;
     function AddMsg(const AMsg: WideString): Integer; override; safecall;
@@ -37,7 +37,7 @@ type //** Класс для записи Log сразу в несколько м
     function GetDocumentByID(ID: Int64): IProfLogDocument; safecall;
     function GetDocumentByIndex(Index: Integer): IProfLogDocument; safecall;
     function GetDocumentCount(): Integer; safecall;
-    procedure SetOnCommand(Value: TProcMessage); override;
+    procedure SetOnCommand(Value: TProcMessageStr); override;
   public
     function Add(Document: IProfLogDocument): Integer; safecall;
     function Delete(Index: Integer): Integer; safecall;
@@ -108,7 +108,7 @@ begin
     TLogDocument(FDocuments[I]).NewNode(AType, AMsg, AParent, Result.Id);
 end;
 
-procedure TLogDocuments.SetOnCommand(Value: TProcMessage);
+procedure TLogDocuments.SetOnCommand(Value: TProcMessageStr);
 var
   I: Integer;
 begin
@@ -173,7 +173,7 @@ begin
 
 end;
 
-procedure TProfLogDocuments3.SetOnCommand(Value: TProcMessage);
+procedure TProfLogDocuments3.SetOnCommand(Value: TProcMessageStr);
 {var
   I: Integer;}
 begin

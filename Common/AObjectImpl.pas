@@ -13,44 +13,6 @@ uses
   SysUtils, XmlIntf,
   AEntityImpl, ALogGlobals, ALogNodeIntf, ANodeIntf, AObjectIntf, ATypes;
 
-type //** @abstract(Базовый класс для объект с логированием и конфигурациями)
-  TProfBaseObject3 = class(TANamedEntity, IProfObject)
-  private
-    FConfig: IProfNode;
-    FLog: IProfLogNode;
-  private
-    function GetConfigNode(): IProfNode; safecall;
-    function GetLogNode(): IProfLogNode; safecall;
-    procedure SetConfigNode(Value: IProfNode); safecall;
-    procedure SetLogNode(Value: IProfLogNode); safecall;
-  protected
-      //** Префикс лог-сообщений
-    FLogPrefix: WideString;
-  protected
-      //** Срабатывает при добавлении лог-сообщения
-    //function DoAddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AMsg: WideString): Integer; virtual; safecall;
-  public
-      //** Добавить (выполнить) сообщение
-    function AddMessage(const Msg: Widestring): Integer; safecall;
-      //** Загрузить конфигурации
-    function ConfigureLoad(AConfig: IProfNode): TProfError; safecall;
-      //** Сохранить конфигурации
-    function ConfigureSave(AConfig: IProfNode): TProfError; safecall;
-      //** Финализировать
-    function Finalize(): TProfError;
-      //** Инициализировать
-    function Initialize(): TProfError;
-      //** Передать сообщение
-    function SendMessage(const Msg: WideString): Integer; safecall;
-  public
-    property ConfigNode: IProfNode read GetConfigNode write SetConfigNode;
-    property LogNode: IProfLogNode read GetLogNode write SetLogNode;
-      //** Префикс лог-сообщений
-    property LogPrefix: WideString read FLogPrefix write FLogPrefix;
-      //** CallBack функция функция. Срабатывает при поступлении лог-сообщения.
-    property OnAddToLog: TProcAddToLog read FOnAddToLog write FOnAddToLog;
-  end;
-
 type //** Объект с логированием и конфигурациями
   TProfObject = class(TANamedEntity, IProfObject)
   protected
@@ -60,8 +22,10 @@ type //** Объект с логированием и конфигурациям
     FInitialized: WordBool;
       //** Ветка логирования
     FLog: IProfLogNode;
+      //** Префикс лог-сообщений
+    //FLogPrefix: WideString;
       //** CallBack функция. Срабатывает при поступлении сообщения.
-    FOnSendMessage: TProcMessageStrSafe;
+    FOnSendMessage: TProcMessageStr;
     //FOnSendMessageX: TProcMessageX;
   protected
     function GetConfigNode(): IProfNode; safecall;
@@ -85,18 +49,18 @@ type //** Объект с логированием и конфигурациям
       //** Срабатывает после успешнрй инициализации
     function DoInitialized(): TProfError; virtual; safecall;
   public // IProfObject
-      //** Передать сообщение
-    function SendMessage(const AMsg: WideString): Integer; virtual; safecall;
       //** Выполнить или передать дочерним объектам
     function AddMessage(const AMsg: WideString): Integer; virtual; safecall;
       //** Загрузить конфигурации
     function ConfigureLoad(AConfig: IProfNode): TProfError; safecall;
       //** Сохранить конфигурации
     function ConfigureSave(AConfig: IProfNode): TProfError; safecall;
-    //** Финализировать
+      //** Финализирует
     function Finalize(): TProfError; virtual;
-    //** Инициализировать
+      //** Инициализирует
     function Initialize(): TProfError; virtual;
+      //** Передает сообщение
+    function SendMessage(const AMsg: WideString): Integer; virtual; safecall;
   public // Переопределение функций TInterfacedObject
       //** Срабатывает после создания
     procedure AfterConstruction(); override;
@@ -105,23 +69,32 @@ type //** Объект с логированием и конфигурациям
   public
       //** Выполнить или передать дочерним объектам
     function AddMessageStr(const AMsg: WideString): Integer; virtual;
+      //** Выполнить или передать дочерним объектам
     function AddMessageX(AMsg: IProfNode): Integer; virtual; safecall;
     function AssignedConfig(): Boolean;
     function CheckInitialized(): Boolean; virtual;
-    procedure Free(); virtual;
     function SendMessageX(const AMsg: IProfNode): Integer; virtual; safecall;
   public
     constructor Create(); virtual;
     destructor Destroy(); override;
+    procedure Free(); virtual;
   public
       //** Конфигурации объекта
     property Config: IProfNode read GetConfigNode write SetConfigNode;
+      //** Конфигурации объекта
+    //property ConfigNode: IProfNode read GetConfigNode write SetConfigNode;
       //** Инициализорован
     property Initialized: WordBool read FInitialized write SetInitialized;
-      //** Ветка догирования
+      //** Ветка логирования
     property Log: IProfLogNode read GetLogNode write SetLogNode;
+      //** Ветка логирования
+    //property LogNode: IProfLogNode read GetLogNode write SetLogNode;
+      //** Префикс лог-сообщений
+    //property LogPrefix: WideString read FLogPrefix write FLogPrefix;
+      //** CallBack функция функция. Срабатывает при поступлении лог-сообщения.
+    property OnAddToLog: TProcAddToLog read FOnAddToLog write FOnAddToLog;
       //** CallBack функция передачи сообщения
-    property OnSendMessage: TProcMessageStrSafe read FOnSendMessage write FOnSendMessage;
+    property OnSendMessage: TProcMessageStr read FOnSendMessage write FOnSendMessage;
     //property OnSendMessageX: TProcMessageX read FOnSendMessageX write FOnSendMessageX;
   end;
 
@@ -219,64 +192,6 @@ const // Сообщения
   stNotInitialized    = 'Не инициализировано';
 
 implementation
-
-{ TProfBaseObject3 }
-
-function TProfBaseObject3.AddMessage(const Msg: Widestring): Integer;
-begin
-  Result := 0;
-  // ...
-end;
-
-function TProfBaseObject3.ConfigureLoad(AConfig: IProfNode): TProfError;
-begin
-  Result := 0;
-  // ...
-end;
-
-function TProfBaseObject3.ConfigureSave(AConfig: IProfNode): TProfError;
-begin
-  Result := 0;
-  // ...
-end;
-
-function TProfBaseObject3.Finalize(): TProfError;
-begin
-  Result := 0;
-  // ...
-end;
-
-function TProfBaseObject3.GetConfigNode(): IProfNode;
-begin
-  Result := FConfig;
-end;
-
-function TProfBaseObject3.GetLogNode(): IProfLogNode;
-begin
-  Result := FLog;
-end;
-
-function TProfBaseObject3.Initialize(): TProfError;
-begin
-  Result := 0;
-  // ...
-end;
-
-function TProfBaseObject3.SendMessage(const Msg: WideString): Integer;
-begin
-  Result := 0;
-  // ...
-end;
-
-procedure TProfBaseObject3.SetConfigNode(Value: IProfNode);
-begin
-  FConfig := Value;
-end;
-
-procedure TProfBaseObject3.SetLogNode(Value: IProfLogNode);
-begin
-  FLog := Value;
-end;
 
 { TProfObject }
 
@@ -378,10 +293,10 @@ end;
 
 function TProfObject.Finalize(): TProfError;
 begin
-  Result := 1;
   if not(FInitialized) then
   begin
     AddToLog(lgGeneral, ltInformation, stAlreadyFinalize);
+    Result := 1;
     Exit;
   end;
 
@@ -423,15 +338,6 @@ begin
   FInitialized := True;
 end;
 
-procedure TProfObject.SetInitialized(Value: WordBool);
-begin
-  if FInitialized = Value then Exit;
-  if Value then
-    Initialize()
-  else
-    Finalize();
-end;
-
 function TProfObject.SendMessage(const AMsg: WideString): Integer;
 begin
   Result := 0;
@@ -457,6 +363,15 @@ end;
 procedure TProfObject.SetConfigNode(Value: IProfNode);
 begin
   FConfig := Value;
+end;
+
+procedure TProfObject.SetInitialized(Value: WordBool);
+begin
+  if FInitialized = Value then Exit;
+  if Value then
+    Initialize()
+  else
+    Finalize();
 end;
 
 procedure TProfObject.SetLogNode(Value: IProfLogNode);

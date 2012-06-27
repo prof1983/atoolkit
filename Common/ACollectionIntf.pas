@@ -2,7 +2,7 @@
 @Abstract(Коллекция объектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(03.06.2007)
-@LastMod(25.06.2012)
+@LastMod(27.06.2012)
 @Version(0.5)
 
 Prototype: java.lang.Collection.java 1.49 06/28/04
@@ -110,16 +110,16 @@ type
       Returns the number of elements in this collection.
       Analog GetSize()
     }
-
     function GetCount(): AInt;
+
     {**
       Returns the number of elements in this collection.
       If this collection contains more than <tt>Integer.MAX_VALUE</tt> elements, returns
       <tt>Integer.MAX_VALUE</tt>.
       @return the number of elements in this collection
     }
-
     function GetSize(): AInt;
+
     {**
       Returns <tt>true</tt> if this collection contains no elements.
       @return <tt>true</tt> if this collection contains no elements
@@ -407,10 +407,6 @@ type
     {** Returns <tt>true</tt> if this collection contains no elements }
     property IsEmpty: Boolean read GetIsEmpty;
   end;
-
-  //IACollection2 = IACollection;
-  //IACollection3 = IACollection;
-  //IJavaCollection = IACollection;
 
 implementation
 

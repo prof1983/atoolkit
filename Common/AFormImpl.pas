@@ -28,7 +28,7 @@ type //** Класс-потомок для форм с логированием 
       {** CallBack функция. Срабатывает при добавлении лог-сообщения. }
     FOnAddToLog: TProcAddToLog;
       {** CallBack функция. Срабатывает при добавлении сообщения. }
-    FOnMessage: TProcMessage;
+    FOnMessage: TProcMessageStr;
       {** CallBack функция. Срабатывает при добавлении сообщения. }
     //FOnMessageX: TProcMessageX;
     function GetConfig(): IProfNode; safecall;
@@ -82,7 +82,7 @@ type //** Класс-потомок для форм с логированием 
       //** CallBack функция. Срабатывает при добавлении лог-сообщения.
     property OnAddToLog: TProcAddToLog read FOnAddToLog write FOnAddToLog;
       //** CallBack функция. Срабатывает при добавлении сообщения.
-    property OnMessage: TProcMessage read FOnMessage write FOnMessage;
+    property OnMessage: TProcMessageStr read FOnMessage write FOnMessage;
   end;
 
 resourcestring // Сообщения ----------------------------------------------------

@@ -2,7 +2,7 @@
 @Abstract(Список)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(17.09.2007)
-@LastMod(27.04.2012)
+@LastMod(27.06.2012)
 @Version(0.5)
 
 Prototype: java.lang.List
@@ -15,19 +15,18 @@ unit AListIntf;
 interface
 
 uses
-  ACollection;
+  ABase, ACollectionIntf;
 
 type
   IAList = interface(IACollection)
-    function GetElementByIndex(Index: Integer): TObject;
+    function GetElementByIndex(Index: Integer): AId;
 
     procedure Insert(Index: Integer; Element: TObject);
-    procedure Remove(Element: TObject);
     procedure RemoveByIndex(Index: Integer);
 
-    property ElementByIndex[Index: Integer]: TObject read GetElementByIndex;
+    property ElementByIndex[Index: Integer]: AId read GetElementByIndex;
   end;
-  IList = IAList;
+  //IList = IAList;
 
 implementation
 

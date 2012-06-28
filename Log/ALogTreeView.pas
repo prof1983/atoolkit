@@ -2,7 +2,7 @@
 @Abstract(Работа с Log. Классы для отображения собщений программы окне в виде дерева)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(19.10.2006)
-@LastMod(21.05.2012)
+@LastMod(28.06.2012)
 @Version(0.5)
 
 Работа с Log. Классы для записи собщений программы в БД или файл или
@@ -19,19 +19,19 @@ uses
   ALogDocumentImpl, ATypes;
 
 type
-  TLogTreeView = class(TLogDocument1)
+  TLogTreeView = class(TALogDocument2)
   private
     FTreeView: TTreeView;
   public
-    procedure AddMsg(const Msg: WideString); override; safecall;
-    procedure AddStr(const Str: WideString); override; safecall;
+    procedure AddMsg(const Msg: WideString); override;
+    procedure AddStr(const Str: WideString); override;
     function AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
         const AStrMsg: string; AParams: array of const): Boolean; override;
     constructor Create(ATreeView: TTreeView; const AName: WideString = '');
     function ToLogA(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer; override; safecall;
+        const AStrMsg: WideString): Integer; override;
     function ToLogE(LogGroup: EnumGroupMessage; LogType: EnumTypeMessage;
-        const StrMsg: WideString): Integer; override; safecall;
+        const StrMsg: WideString): Integer; override;
   end;
 
 implementation

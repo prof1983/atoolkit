@@ -1,8 +1,8 @@
 {**
-@Abstract(Реализация интерфейсов ILogNode и IProfLogNode)
+@Abstract(Implementation of interfaces ILogNode and IProfLogNode)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.08.2005)
-@LastMod(13.06.2012)
+@LastMod(28.06.2012)
 @Version(0.5)
 }
 unit ALogNodeImpl;
@@ -11,7 +11,7 @@ interface
 
 uses
   SysUtils,
-  ALogDocumentIntf, ALogGlobals, ALogNodeIntf, ANodeImpl, AMessageConst, AObjectImpl, ATypes;
+  ALogDocumentIntf, ALogGlobals, ALogNodeIntf, ANodeImpl, AMessageConst, ATypes;
 
 type //** Нод логирования - элемент дерева логирования
   TALogNode = class(TProfNode, IProfLogNode)
@@ -67,7 +67,7 @@ type //** Нод логирования - элемент дерева логирования
     property Typ: TLogTypeMessage read FType write FType;
   end;
 
-  TALogNode2 = class(TInterfacedObject{TProfObject2}, ILogNode2)
+  TALogNode2 = class(TInterfacedObject, ILogNode2)
   protected
       {** Дата создания }
     FDTCreate: TDateTime;
@@ -108,8 +108,8 @@ type //** Нод логирования - элемент дерева логирования
     procedure Set_StatusEnum(Value: StatusNodeEnum);
     procedure Set_StrMsg(const Value: WideString);
   public
-    procedure AddStr(const AStr: WideString); virtual;
     procedure AddMsg(const AMsg: WideString); virtual;
+    procedure AddStr(const AStr: WideString); virtual;
     function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
         const StrMsg: WideString): Integer; virtual;
     function AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
@@ -134,17 +134,14 @@ type //** Нод логирования - элемент дерева логирования
     property Typ: TLogTypeMessage read FType write FType;
   end;
 
-  //TALogNode2006 = TALogNode2;
-  //TALogNode3 = TALogNode;
   //TLogNode = TALogNode;
-  //TProfLogNode3 = TALogNode3;
 
 implementation
 
 uses
   ALogDocumentImpl;
 
-{ TLogNode }
+{ TALogNode }
 
 function TALogNode.AddMsg(const AMsg: WideString): Integer;
 begin

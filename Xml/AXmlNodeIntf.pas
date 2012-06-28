@@ -2,7 +2,7 @@
 @Abstract(Класс работы с XML нодами)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(07.03.2007)
-@LastMod(19.06.2012)
+@LastMod(28.06.2012)
 @Version(0.5)
 }
 unit AXmlNodeIntf;
@@ -12,11 +12,6 @@ interface
 uses
   XmlIntf,
   ABase, ANodeIntf, ATypes;
-
-type
-  AXmlCollection = type AInt; // TProfXmlCollection (or IProfXmlCollection)
-  AXmlCollection2006 = AXmlCollection;
-  AProfXmlNode1 = type AInt; // TProfXmlNode1 (or IProfXmlNodeNew)
 
 type //** @abstract(Интерфейс работы с нодами XML)
   IProfXmlNode = ANodeIntf.IProfNode;

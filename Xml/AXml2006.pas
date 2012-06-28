@@ -2,16 +2,16 @@
 @Abstract(Работа с XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(09.10.2005)
-@LastMod(19.06.2012)
+@LastMod(28.06.2012)
 @Version(0.5)
 }
 unit AXml2006;
 
 // TODO: Use AXml2007.pas
 
-{$IFDEF VER150}
+{IFDEF VER150}
   {$DEFINE XML2}
-{$ENDIF}
+{ENDIF}
 
 interface
 
@@ -20,28 +20,23 @@ uses
   {$IFDEF XML2}
   MSXmlDom, Variants, XmlDoc, XmlDom, XmlIntf,
   {$ENDIF}
-  AConsts2, ATypes, AXml2007, AXmlCollectionIntf, AXmlDocumentIntf, AXmlNodeIntf;
-
-{type
-  //TProfXmlCollection = AXml2007.TProfXmlCollection;
-  //TProfXmlDocument1 = AXml2007.TProfXmlDocument1;
-  //TProfXmlNode1 = AXml2007.TProfXmlNode1;}
+  ABase, AConsts2, ATypes, AXml2007, AXmlCollectionIntf, AXmlDocumentIntf, AXmlNodeIntf, AXmlNodeUtils;
 
 {$IFDEF XML2}
 type // ------------------------------------------------------------------------
-  TProfXmlNode2 = class;
+  //TProfXmlNode2 = class;
 
   TProfXmlDocument2 = class(TInterfacedObject, IProfXmlDocument2006, IXmlDocument)
   private
     FAddToLog: TAddToLog;
     FDocument: TXmlDocument;
-    FDocumentElement: TProfXmlNode2;
-    function GetDocumentElement: TProfXmlNode2;
+    FDocumentElement: AProfXmlNode2;
+    function GetDocumentElement(): AProfXmlNode2;
   public
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: String; AParams: array of const): Boolean;
     constructor Create(const AFileName: WideString = ''; AAddToLog: TAddToLog = nil);
     property Document: TXmlDocument read FDocument implements IXMLDocument;
-    property DocumentElement: TProfXmlNode2 read GetDocumentElement;
+    property DocumentElement: AProfXmlNode2 read GetDocumentElement;
     procedure Free;
     function LoadFromString(const Value: WideString): WordBool;
     property OnAddToLog: TAddToLog read FAddToLog write FAddToLog;
@@ -125,8 +120,6 @@ procedure GetNameAndAttributes(Value: WideString; var FAttributes: TAttributes; 
 // синтаксическую проверку документа, но и семантическую корректность в соответствии с заданным DTD.
 // http://www.codenet.ru/progr/delphi/stat/delphi_xml.php
 procedure LoadOnixDoc(TV: TTreeView; const FileName: string);
-
-function ProfXmlDocument_SaveToFile1(Document: TProfXmlDocument1; const AFileName: WideString): WordBool;
 
 // -----------------------------------------------------------------------------
 // Установить значение атрибута. Если атрибута нет - создает.
@@ -241,25 +234,6 @@ begin
       TreeNode := TreeNode.GetNextSibling;
     end;
     if Assigned(TV.Items[0]) then TV.Items[0].Expand(false);
-  end;
-end;
-
-function ProfXmlDocument_SaveToFile1(Document: TProfXmlDocument1; const AFileName: WideString): WordBool;
-begin
-  {try
-    FDocument.SaveToFile(AFileName);
-    Result := True;
-  except
-    on E: Exception do begin
-      AddToLog(lgGeneral, ltError, err_SaveToFile, [AFileName, E.Message]);
-      Result := False;
-    end;
-  end;}
-  Result := False;
-  try
-    Document.SaveToFile(AFileName);
-    Result := True;
-  except
   end;
 end;
 
@@ -437,10 +411,7 @@ begin
   end;
 
   // DocumentElement
-  try
-    FDocumentElement := TProfXmlNode2.Create(FDocument.DocumentElement);
-  except
-  end;
+  FDocumentElement := AXmlNode2_New(FDocument.DocumentElement);
 end;
 
 procedure TProfXmlDocument2.Free;
@@ -452,7 +423,7 @@ begin
   inherited Free;
 end;
 
-function TProfXmlDocument2.GetDocumentElement: TProfXmlNode2;
+function TProfXmlDocument2.GetDocumentElement(): AProfXmlNode2;
 begin
   Result := FDocumentElement;
 end;

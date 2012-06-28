@@ -2,7 +2,7 @@
 @Abstract(Работа с XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(09.10.2005)
-@LastMod(19.06.2012)
+@LastMod(28.06.2012)
 @Version(0.5)
 }
 unit AXml2007;
@@ -16,7 +16,7 @@ interface
 uses
   {$ifdef Delphi_XE_UP}XmlDom,{$endif}
   Classes, ComCtrls, ComObj, SysUtils, Variants, XmlIntf,
-  ABase, AConsts2, ATypes, AXmlCollectionIntf, AXmlDocumentIntf, AXmlIntf1, AXmlNodeIntf;
+  ABase, AConsts2, ATypes, AXmlCollectionImpl, AXmlCollectionIntf, AXmlDocumentImpl, AXmlNodeIntf;
 
 type
   Int32 = AInt32;
@@ -45,69 +45,7 @@ type // Атрибуты (Name1="Value1" Name2="Value2") -----------------------
 type
   IXmlDomNode = IXmlNode;
 
-{type // Интерфейсы -------------------------------------------------------------
-  //IProfXmlCollection = AXmlCollectionIntf.IProfXmlCollection2006;
-  //IProfXmlNode = AXmlNodeIntf.IProfXmlNode2006;}
-
 type
-  // Коллекция нодов
-  TProfXmlCollection = class(TInterfacedObject, IProfXmlCollection)
-  protected
-    FNodes: array of AProfXmlNode1;
-    FOwner: AProfXmlNode1;
-  public // IProfXmlCollection2006
-    function DeleteNode(Node: IProfXmlNode2006): WordBool;
-    function GetCount(): Integer;
-    function GetNode(Index: Integer): AProfXmlNode1;
-    function Get_Node(Index: Integer): IProfXmlNode2006;
-  public
-    function AddChild(const AName: WideString): AProfXmlNode1;
-    procedure AddNode(ANode: AProfXmlNode1);
-    procedure Clear();
-    function FindNode(Name: WideString): AProfXmlNode1;
-    procedure Free();
-    function GetNodeByAttribute(AName, AValue: WideString): AProfXmlNode1;
-    function GetNodeByName(Name: WideString): AProfXmlNode1;
-    function NewNode(const AName: WideString): AProfXmlNode1;
-  public
-    constructor Create(AOwner: AProfXmlNode1);
-  public
-    //property Count: Integer read GetCount;
-    property Nodes[Index: Integer]: AProfXmlNode1 read GetNode;
-    property NodesByName[Name: WideString]: AProfXmlNode1 read GetNodeByName;
-  end;
-
-  TProfXmlCollection2006 = TProfXmlCollection;
-
-  // TODO: Use unXml3.TProfXmlDocument
-  // XML документ
-  TProfXmlDocument1 = class(TInterfacedObject, IProfXmlDocument2006)
-  protected
-    FDocumentElement: AProfXmlNode1;
-    FEncoding: WideString;   // Набор символов = 'Windows-1251'
-    FFileName: WideString;   // Имя файла
-    FOnAddToLog: TAddToLog;
-    FStandAlone: WideString; // Указывает на внешнее описание = ''
-    FVersion: WideString;    // Версия XML = '1.0'
-  protected
-    function DoDocumentTag(Node: AProfXmlNode1): Boolean; virtual;
-  public
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: String; AParams: array of const): Boolean;
-    procedure Free(); virtual;
-    function LoadFromFile(const AFileName: WideString = ''): WordBool;
-    function LoadFromString(Value: WideString): Boolean;
-    function SaveToFile(const AFileName: WideString = ''): WordBool;
-    function SaveToString(var S: WideString): WordBool;
-  public
-    constructor Create(const AFileName: WideString = ''; AAddToLog: TAddToLog = nil);
-  public
-    property DocumentElement: AProfXmlNode1 read FDocumentElement write FDocumentElement;
-    property Encoding: WideString read FEncoding write FEncoding;
-    property OnAddToLog: TAddToLog read FOnAddToLog write FOnAddToLog;
-    property StandAlone: WideString read FStandAlone write FStandAlone;
-    property Version: WideString read FVersion write FVersion;
-  end;
-
   // Use unXml3.TProfXmlNode
   // XML элемент
   TProfXmlNode1 = class(TInterfacedObject, IProfXmlNodeNew, IProfXmlNode2006)
@@ -148,6 +86,7 @@ type
     function GetName(): WideString;
     function GetNode(Index: Integer): TProfXmlNode1;
     function GetNodeByName(Name: WideString): TProfXmlNode1;
+    procedure SetDocument_Priv(Document: AXmlDocument);
     procedure SetName(Value: WideString);
   public
     function GetValueAsBool(var Value: WordBool): WordBool; safecall;
@@ -201,7 +140,7 @@ type
     function NewNode(const AName: WideString): TProfXmlNode1;
     function NodeExist(AName: WideString): Boolean;
   public
-    constructor Create(ADocument: TProfXmlDocument1 = nil);
+    constructor Create(Document: AXmlDocument = 0);
     procedure Free(); virtual;
   public
     property Attributes[const Name: WideString]: WideString read Get_Attribute write Set_Attribute;
@@ -643,318 +582,6 @@ begin
   until (Igt = 0) and (Ilt = 0);
 end;
 
-{ TProfXmlCollection }
-
-function TProfXmlCollection.AddChild(const AName: WideString): AProfXmlNode1;
-begin
-  Result := NewNode(AName);
-end;
-
-procedure TProfXmlCollection.AddNode(ANode: AProfXmlNode1);
-var
-  I: Int32;
-begin
-  I := Length(FNodes);
-  SetLength(FNodes, I + 1);
-  FNodes[I] := ANode;
-  TProfXmlNode1(FNodes[I]).FDocument := TProfXmlNode1(FOwner).Document;
-end;
-
-procedure TProfXmlCollection.Clear();
-var
-  I: Integer;
-begin
-  for I := 0 to High(FNodes) do
-    TProfXmlNode1(FNodes[I]).Free();
-  SetLength(FNodes, 0);
-end;
-
-constructor TProfXmlCollection.Create(AOwner: AProfXmlNode1);
-begin
-  inherited Create;
-  FOwner := AOwner;
-end;
-
-function TProfXmlCollection.DeleteNode(Node: IProfXmlNode2006): WordBool;
-var
-  I: Integer;
-  I2: Integer;
-begin
-  Result := False;
-  for I := 0 to High(FNodes) do
-    if (IProfXmlNode2006(FNodes[I]) = Node) then
-    begin
-      for I2 := I to High(FNodes) - 1 do
-        FNodes[I2] := FNodes[I2 + 1];
-      Result := True;
-      Exit;
-    end;
-end;
-
-function TProfXmlCollection.FindNode(Name: WideString): AProfXmlNode1;
-var
-  I: Int32;
-begin
-  if (Name = '') then
-  begin
-    Result := 0;
-    Exit;
-  end;
-  for I := 0 to High(FNodes) do
-  begin
-    if (TProfXmlNode1(FNodes[I]).GetName() = Name) then
-    begin
-      Result := FNodes[I];
-      Exit;
-    end;
-  end;
-  Result := 0;
-end;
-
-procedure TProfXmlCollection.Free();
-begin
-  Clear();
-  inherited Free();
-end;
-
-function TProfXmlCollection.GetCount(): Integer;
-begin
-  Result := Length(FNodes)
-end;
-
-function TProfXmlCollection.GetNode(Index: Integer): AProfXmlNode1;
-begin
-  Result := 0;
-  if (Index < 0) or (Index > Length(FNodes)) then Exit;
-  Result := FNodes[Index];
-end;
-
-function TProfXmlCollection.GetNodeByAttribute(AName, AValue: WideString): AProfXmlNode1;
-var
-  i: Integer;
-begin
-  for i := 0 to High(FNodes) do
-  begin
-    if (TProfXmlNode1(FNodes[i]).Attributes[AName] = AValue) then
-    begin
-      Result := FNodes[i];
-      Exit;
-    end;
-  end;
-  Result := 0;
-end;
-
-function TProfXmlCollection.GetNodeByName(Name: WideString): AProfXmlNode1;
-var
-  Res: TProfXmlNode1;
-begin
-  if (Name = '') then
-  begin
-    Result := 0;
-    Exit;
-  end;
-  Result := FindNode(Name);
-  if (Result <> 0) then Exit;
-  Res := TProfXmlNode1.Create(TProfXmlNode1(FOwner).Document);
-  Res.SetName(Name);
-  AddNode(AProfXmlNode1(Res));
-  Result := AProfXmlNode1(Res);
-end;
-
-function TProfXmlCollection.Get_Node(Index: Integer): IProfXmlNode2006;
-var
-  Node: TProfXmlNode1;
-begin
-  Node := TProfXmlNode1(GetNode(Index));
-  if not(Assigned(Node)) then
-  begin
-    Result := nil;
-    Exit;
-  end;
-  Result := Node;
-end;
-
-function TProfXmlCollection.NewNode(const AName: WideString): AProfXmlNode1;
-var
-  Res: TProfXmlNode1;
-begin
-  Res := TProfXmlNode1.Create(TProfXmlNode1(FOwner).Document);
-  Res.FName := AName;
-  AddNode(AProfXmlNode1(Res));
-  Result := AProfXmlNode1(Res);
-end;
-
-{ TProfXmlDocument1 }
-
-function TProfXmlDocument1.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: String; AParams: array of const): Boolean;
-begin
-  if Assigned(FOnAddToLog) then
-    Result := FOnAddToLog(AGroup, AType, AStrMsg, AParams)
-  else
-    Result := False;
-end;
-
-constructor TProfXmlDocument1.Create(const AFileName: WideString = ''; AAddToLog: TAddToLog = nil);
-var
-  DocumentElement: TProfXmlNode1;
-begin
-  inherited Create;
-  FOnAddToLog := AAddToLog;
-  FEncoding := 'Windows-1251';
-  FStandAlone := '';
-  FVersion := '1.0';
-  FFileName := AFileName;
-
-  DocumentElement := TProfXmlNode1.Create(Self);
-  DocumentElement.SetName('Config');
-
-  FDocumentElement := AProfXmlNode1(DocumentElement);
-
-  // Если указано имя файла - загружаем
-  if (FFileName <> '') then
-    LoadFromFile(FFileName);
-end;
-
-function TProfXmlDocument1.DoDocumentTag(Node: AProfXmlNode1): Boolean;
-// Чтение тега <?...?>
-begin
-  Result := False;
-end;
-
-procedure TProfXmlDocument1.Free();
-begin
-  TProfXmlNode1(FDocumentElement).Free();
-  FDocumentElement := 0;
-  inherited Free;
-end;
-
-function TProfXmlDocument1.LoadFromFile(const AFileName: WideString = ''): WordBool;
-var
-  F: TextFile;
-  S: string;
-  Str: string;
-  FileName: WideString;
-begin
-  //Result := False;
-
-  if AFileName = '' then
-    FileName := FFileName
-  else
-    FileName := AFileName;
-
-  if FFileName = '' then
-    FFileName := FileName;
-
-  AddToLog(lgGeneral, ltInformation, 'Загрузка XML файла "%s"', [FileName]);
-  // if not(FileExists(FileName)) then Exit;
-  AssignFile(F, FileName);
-  {$I-}Reset(F);{$I+}
-  Result := (IOResult = 0);
-  if not(Result) then
-  begin
-    {$I-}CloseFile(F);{$I+}
-    Exit;
-  end;
-  // Перевод файла в одну строку
-  Str := '';
-  while not(Eof(F)) do
-  begin
-    ReadLn(F, S);
-    S := StrDeleteSpace(S, [dsFirst, dsLast, dsRep]);
-    Str := Str + S;
-  end;
-  {$I-}CloseFile(F);{$I+}
-  Result := LoadFromString(Str);
-end;
-
-function TProfXmlDocument1.LoadFromString(Value: WideString): Boolean;
-var
-  I: Integer;
-  IEnd: Integer;
-  S: string;
-  Line: Integer;
-  Node: TProfXmlNode1;
-begin
-  Result := False;
-  Line := 0;
-  // Чтение <?...?> тегов
-  repeat
-    Inc(Line);
-    I := Pos(WideString('<?'), Value);
-    if I > 0 then
-    begin
-      IEnd := Pos(WideString('?>'), Value);
-      if IEnd = 0 then
-      begin
-        AddToLog(lgGeneral, ltError, err_Xml_Load1, [Line]);
-        Exit;
-      end;
-      S := Copy(Value, 3, IEnd - 3);
-      Delete(Value, 1, IEnd+1);
-      //
-      I := Pos('<', Value);
-      if I = 0 then
-      begin
-        AddToLog(lgGeneral, ltError, err_Xml_Load2, [Line]);
-      end;
-      // #13#10
-      IEnd := Pos(WideString(#13#10), Value);
-      if IEnd < I then Inc(Line);
-      Value := Copy(Value, I, Length(Value));
-      //S := strDeleteSpace(S);
-
-      Node := TProfXmlNode1.Create;
-      Node.SetXml('<' + S + '/>');
-      if AnsiUpperCase(Node.NodeName) = 'XML' then
-      begin
-        FEncoding := Node.GetAttribute('encoding', False);
-        FVersion := Node.GetAttribute('version', False)
-      end
-      else
-        DoDocumentTag(AProfXmlNode1(Node));
-      Node.Free;
-      //Node := nil;
-    end;
-  until I = 0;
-  // Чтение DocumentElement
-  Result := TProfXmlNode1(FDocumentElement).SetXml(Value);
-end;
-
-function TProfXmlDocument1.SaveToFile(const AFileName: WideString = ''): WordBool;
-var
-  F: TextFile;
-  FileName: WideString;
-  S: WideString;
-begin
-  SaveToString(S);
-
-  if AFileName = '' then
-    FileName := FFileName
-  else
-    FileName := AFileName;
-
-  AssignFile(F, FileName);
-  {$I-}
-  Rewrite(F);
-  WriteLn(F, String(S));
-  CloseFile(F);
-  {$I+}
-  Result := (IOResult = 0);
-end;
-
-function TProfXmlDocument1.SaveToString(var S: WideString): WordBool;
-begin
-  // Сохранение тегов <?...?>
-  if FVersion <> '' then begin
-    if FEncoding = '' then
-      S := '<? xml version="' + FVersion + '" ?>'+#13#10
-    else
-      S := '<? xml version="' + FVersion + '" encoding="' + FEncoding + '" ?>'+#13#10;
-  end else S := '';
-  S := S + TProfXmlNode1(FDocumentElement).GetXmlA('');
-  Result := True;
-end;
-
 { TProfXmlNode1 }
 
 function TProfXmlNode1.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: String; AParams: array of const): Boolean;
@@ -977,12 +604,12 @@ begin
   Result := 0;
 end;
 
-constructor TProfXmlNode1.Create(ADocument: TProfXmlDocument1 = nil);
+constructor TProfXmlNode1.Create(Document: AXmlDocument);
 begin
   inherited Create;
   Self._AddRef();
   FCollection := TProfXmlCollection.Create(AProfXmlNode1(Self));
-  FDocument := ADocument;
+  FDocument := TProfXmlDocument1(Document);
   FName := '';
   FValue := '';
 end;
@@ -1174,9 +801,9 @@ begin
     Result := '';
 end;
 
-function TProfXmlNode1.Get_Collection(): AXmlCollection2006;
+function TProfXmlNode1.Get_Collection(): AXmlCollection;
 begin
-  Result := AXmlCollection2006(FCollection);
+  Result := AXmlCollection(FCollection);
 end;
 
 function TProfXmlNode1.Get_NodeName: WideString;
@@ -1376,6 +1003,11 @@ begin
   Node := FindNode(AName);
   if not(Assigned(Node)) then Exit;
   Result := Node.GetValueAsString(Value);
+end;
+
+procedure TProfXmlNode1.SetDocument_Priv(Document: AXmlDocument);
+begin
+  FDocument := TProfXmlDocument1(Document);
 end;
 
 procedure TProfXmlNode1.SetName(Value: WideString);

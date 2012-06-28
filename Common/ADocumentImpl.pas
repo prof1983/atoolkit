@@ -2,7 +2,7 @@
 @Abstract(Документ. Реализация интерфейса IProfDocument)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(11.04.2007)
-@LastMod(26.06.2012)
+@LastMod(28.06.2012)
 @Version(0.5)
 }
 unit ADocumentImpl;
@@ -48,9 +48,6 @@ type //** Документ. Реализация интерфейса IProfDocum
     }
     property IsOpened: WordBool read GetIsOpened;
   end;
-
-type //** Реализация интерфейса IProfDocument
-  TProfDocument3 = TProfDocument;
 
 implementation
 

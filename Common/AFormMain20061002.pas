@@ -2,7 +2,7 @@
 @Abstract(Класс главной форма - оболочка для TForm)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.11.2005)
-@LastMod(13.06.2012)
+@LastMod(28.06.2012)
 @Version(0.5)
 }
 unit AFormMain20061002;
@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, Forms, SysUtils,
-  AConfig2007, AForm2006, ALogDocumentsAll, ATypes, AXml2006;
+  AConfig2007, AForm2006, ALogDocumentsAll, ATypes, AXml2006, AXmlDocumentUtils;
 
 type
   TProfFormMain = class(TProfForm)
@@ -95,7 +95,7 @@ begin
     end;
     {$ENDIF}
 
-    ProfXmlDocument_SaveToFile1(FConfigDocument, FConfigFileName);
+    AXmlDocument_SaveToFile1(FConfigDocument, FConfigFileName);
     FreeAndNil(FConfigDocument);
   except
   end;

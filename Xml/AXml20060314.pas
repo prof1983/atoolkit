@@ -2,13 +2,12 @@
 @Abstract(Работа с XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(09.10.2005)
-@LastMod(19.05.2012)
+@LastMod(28.06.2012)
 @Version(0.5)
 }
 unit AXml20060314;
 
-{$DEFINE XML1}
-{$DEFINE XML2}
+{DEFINE XML2}
 
 interface
 
@@ -19,28 +18,38 @@ uses
   {$IFDEF XML2}
   MSXmlDom, Variants, XmlDoc, XmlDom, XmlIntf,
   {$ENDIF}
-  ATypes, AXml2007, AXmlIntf1;
+  ATypes, AXml2007, AXmlDocumentIntf;
 
 {$IFDEF XML2}
 type // ------------------------------------------------------------------------
-  TProfXmlNode2 = class;
+  //TProfXmlNode2 = class;
 
-  TProfXmlDocument2 = class(TInterfacedObject, IProfXmlDocument, IXMLDocument)
+  TProfXmlDocument2 = class(TInterfacedObject, IProfXmlDocument2006, IXmlDocument)
   private
     FAddToLog: TAddToLog;
     FDocument: TXmlDocument;
-    FDocumentElement: TProfXmlNode2;
-    function GetDocumentElement: TProfXmlNode2;
+    FDocumentElement: AProfXmlNode2;
+  public // IProfDocument
+    procedure CloseDocument(); safecall;
+    function GetIsOpened(): WordBool; safecall;
+    function OpenDocument(): TProfError; safecall;
+  public // IProfXmlDocument
+    function GetDocumentElement(): AProfXmlNode2;
+    function GetFileName(): WideString;
+    function LoadFromFile(const FileName: WideString): WordBool;
+    function SaveToFile(const AFileName: WideString): WordBool;
+    procedure SetFileName(const Value: WideString);
   public
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: String; AParams: array of const): Boolean;
-    constructor Create(const AFileName: WideString = ''; AAddToLog: TAddToLog = nil);
-    property Document: TXmlDocument read FDocument implements IXMLDocument;
-    property DocumentElement: TProfXmlNode2 read GetDocumentElement;
-    procedure Free;
     function LoadFromString(const Value: WideString): WordBool;
     property OnAddToLog: TAddToLog read FAddToLog write FAddToLog;
-    function SaveToFile(const AFileName: WideString): WordBool;
     function SaveToString(var Value: WideString): Boolean;
+  public
+    constructor Create(const AFileName: WideString = ''; AAddToLog: TAddToLog = nil);
+    procedure Free();
+  public
+    property Document: TXmlDocument read FDocument implements IXMLDocument;
+    property DocumentElement: AProfXmlNode2 read GetDocumentElement;
   end;
 
   TProfXmlNode2 = class(TInterfacedObject, IXmlNode)
@@ -91,9 +100,9 @@ type // ------------------------------------------------------------------------
   end;
 {$ENDIF}
 
-type // Используемые классы для работы с XML -----------------------------------
-  TProfXmlDocument = AXml2007.TProfXmlDocument1;
-  TProfXmlNode = AXml2007.TProfXmlNode1_2006;
+//type // Используемые классы для работы с XML -----------------------------------
+  //TProfXmlDocument = AXml2007.TProfXmlDocument1;
+  //TProfXmlNode = AXml2007.TProfXmlNode1_2006;
 
 const // Сообщения -------------------------------------------------------------
   err_SaveToFile = 'Ошибка при сохранении файла "%s" "%s"';
@@ -213,6 +222,10 @@ begin
     Result := False;
 end;
 
+procedure TProfXmlDocument2.CloseDocument();
+begin
+end;
+
 constructor TProfXmlDocument2.Create(const AFileName: WideString = ''; AAddToLog: TAddToLog = nil);
 begin
   inherited Create;
@@ -271,15 +284,35 @@ begin
   inherited Free;
 end;
 
-function TProfXmlDocument2.GetDocumentElement: TProfXmlNode2;
+function TProfXmlDocument2.GetDocumentElement(): AProfXmlNode2;
 begin
-  Result := FDocumentElement;
+  Result := AProfXmlNode2(FDocumentElement);
+end;
+
+function TProfXmlDocument2.GetFileName(): WideString;
+begin
+  Result := '';
+end;
+
+function TProfXmlDocument2.GetIsOpened(): WordBool;
+begin
+  Result := False;
+end;
+
+function TProfXmlDocument2.LoadFromFile(const FileName: WideString): WordBool;
+begin
+  Result := False;
 end;
 
 function TProfXmlDocument2.LoadFromString(const Value: WideString): WordBool;
 begin
   FDocument.LoadFromXml(Value);
   Result := True;
+end;
+
+function TProfXmlDocument2.OpenDocument(): TProfError;
+begin
+  Result := -1;
 end;
 
 function TProfXmlDocument2.SaveToFile(const AFileName: WideString): WordBool;
@@ -303,6 +336,10 @@ begin
   except
     Result := False;
   end;
+end;
+
+procedure TProfXmlDocument2.SetFileName(const Value: WideString);
+begin
 end;
 
 { TProfXmlNode2 }

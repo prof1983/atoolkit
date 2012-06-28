@@ -2,7 +2,7 @@
 @Abstract(Работа с Log. Классы для записи собщений программы в БД или файл или отображения в окне Log)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.08.2005)
-@LastMod(27.06.2012)
+@LastMod(28.06.2012)
 @Version(0.5)
 }
 unit ALogDocumentImpl;
@@ -127,7 +127,7 @@ type // Документ записи/отображения Log
   end;
 
 type //** Документ работы с Log
-  TProfLogDocument3 = class(TProfDocument3, IProfLogDocument)
+  TProfLogDocument3 = class(TProfDocument, IProfLogDocument)
   private
     FConfig: IProfNode;
     FOnCommand: TProcMessageStr;

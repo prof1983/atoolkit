@@ -2,7 +2,7 @@
 @Abstract(Base types and consts (Базовые типы и константы))
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.03.2008)
-@LastMod(27.06.2012)
+@LastMod(28.06.2012)
 @Version(0.5)
 
 0.3.2
@@ -175,6 +175,12 @@ type
     }
     MsgData: Pointer;
   end;
+
+  AXmlCollection = type AInt; // TProfXmlCollection
+  AXmlDocument = type AInt; // TProfXmlDocument1
+  AXmlNode = type AInt; // TProfXmlNode1
+  AProfXmlNode1 = AXmlNode; // TProfXmlNode1
+  AProfXmlNode2 = AXmlNode; // AXml2006.TProfXmlNode2 (or IProfNode)
 
 implementation
 

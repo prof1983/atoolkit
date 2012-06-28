@@ -2,7 +2,7 @@
 @Abstract(Interface XmlDocument)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(26.03.2012)
-@LastMod(02.05.2012)
+@LastMod(28.06.2012)
 @Version(0.5)
 }
 unit AXmlDocumentIntf;
@@ -10,19 +10,19 @@ unit AXmlDocumentIntf;
 interface
 
 uses
-  ADocumentIntf, ANodeIntf;
+  ABase, ADocumentIntf;
 
 type //** Интерфейс работы с XML документом
   IProfXmlDocument = interface(IProfDocument)
-    function GetDocumentElement(): IProfNode; safecall;
+    function GetDocumentElement(): AProfXmlNode2;
     //** Возвращает имя файла документа
-    function GetFileName(): WideString; safecall;
-    procedure SetFileName(const Value: WideString); safecall;
+    function GetFileName(): WideString;
+    procedure SetFileName(const Value: WideString);
 
-    function LoadFromFile(const FileName: WideString): WordBool; safecall;
-    function SaveToFile(const FileName: WideString): WordBool; safecall;
+    function LoadFromFile(const FileName: WideString): WordBool;
+    function SaveToFile(const FileName: WideString): WordBool;
 
-    property DocumentElement: IProfNode read GetDocumentElement;
+    property DocumentElement: AProfXmlNode2 read GetDocumentElement;
     property FileName: WideString read GetFileName write SetFileName;
   end;
 

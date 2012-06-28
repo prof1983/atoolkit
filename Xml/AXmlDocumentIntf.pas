@@ -14,7 +14,7 @@ uses
 
 type //** Интерфейс работы с XML документом
   IProfXmlDocument = interface(IProfDocument)
-    function GetDocumentElement(): AProfXmlNode2;
+    function GetDocumentElement(): AProfXmlNode;
     //** Возвращает имя файла документа
     function GetFileName(): WideString;
     procedure SetFileName(const Value: WideString);
@@ -22,7 +22,7 @@ type //** Интерфейс работы с XML документом
     function LoadFromFile(const FileName: WideString): WordBool;
     function SaveToFile(const FileName: WideString): WordBool;
 
-    property DocumentElement: AProfXmlNode2 read GetDocumentElement;
+    property DocumentElement: AProfXmlNode read GetDocumentElement;
     property FileName: WideString read GetFileName write SetFileName;
   end;
 

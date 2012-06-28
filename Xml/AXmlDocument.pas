@@ -2,7 +2,7 @@
 @Abstract(Класс работы с XML документом)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(07.03.2007)
-@LastMod(21.05.2012)
+@LastMod(28.06.2012)
 @Version(0.5)
 }
 unit AXmlDocument;
@@ -25,13 +25,13 @@ type // XML документ. Класс реализует интерфейс I
   protected
     procedure CreateDocument();
   protected
-    function GetDocumentElement(): IProfNode; safecall;
+    function GetDocumentElement(): AProfXmlNode;
       // Возвращает имя файла документа
-    function GetFileName(): WideString; safecall;
+    function GetFileName(): WideString;
     { Открыт ли документ?
       Реализация метода IsDocumentOpened должна проверить соответствующие свойства Объекта для определения состояния документа. }
     function GetIsDocumentOpened(): WordBool; safecall;
-    procedure SetFileName(const Value: WideString); safecall;
+    procedure SetFileName(const Value: WideString);
   public // IProfDocument
     { Открыт ли документ?
       Реализация метода IsOpened должна проверить соответствующие свойства
@@ -41,11 +41,11 @@ type // XML документ. Класс реализует интерфейс I
       // Закрыть документ
     procedure CloseDocument(); safecall;
       // Загрузить из файла
-    function LoadFromFile(const FileName: WideString): WordBool; safecall;
+    function LoadFromFile(const FileName: WideString): WordBool;
       // Загрузить из строки (Не рекомендуется использовать)
     function LoadFromString(const Value: WideString): WordBool;
       // Сохранить в файл
-    function SaveToFile(const FileName: WideString): WordBool; safecall;
+    function SaveToFile(const FileName: WideString): WordBool;
       // Открыть документ
     function OpenDocument(): AError; safecall;
       // (не рекомендуется использовать)
@@ -57,7 +57,7 @@ type // XML документ. Класс реализует интерфейс I
       // XML документ (не рекомендуется использовать)
     property Document: IXmlDocument read FDocument;
       // ProfNode
-    property DocumentElement: IProfNode read GetDocumentElement;
+    property DocumentElement: AProfXmlNode read GetDocumentElement;
       // Название главного элемента документа (используется при создании XML документа)
     property DocumentElementName: WideString read FDocumentElementName write FDocumentElementName;
       // Имя файла XML документа
@@ -112,9 +112,9 @@ begin
   end;
 end;
 
-function TProfXmlDocument.GetDocumentElement(): IProfNode;
+function TProfXmlDocument.GetDocumentElement(): AProfXmlNode;
 begin
-  Result := Self;
+  Result := AProfXmlNode(Self);
 end;
 
 function TProfXmlDocument.GetFileName(): WideString;

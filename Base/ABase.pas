@@ -178,9 +178,10 @@ type
 
   AXmlCollection = type AInt; // TProfXmlCollection
   AXmlDocument = type AInt; // TProfXmlDocument1
-  AXmlNode = type AInt; // TProfXmlNode1
-  AProfXmlNode1 = AXmlNode; // TProfXmlNode1
-  AProfXmlNode2 = AXmlNode; // AXml2006.TProfXmlNode2 (or IProfNode)
+  AXmlNode = type AInt; // TProfXmlNode1 or AXml2006.TProfXmlNode2 or AXmlNodeImpl.TProfXmlNode
+  AProfXmlNode1 = type AXmlNode; // TProfXmlNode1
+  AProfXmlNode = type AXmlNode; // AXml2006.TProfXmlNode2 or AXmlNodeImpl.TProfXmlNode
+  AProfXmlNode2 = type AXmlNode; // AXml2006.TProfXmlNode2 (or IProfNode)
 
 implementation
 

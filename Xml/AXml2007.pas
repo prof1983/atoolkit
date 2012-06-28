@@ -63,7 +63,7 @@ type
     function _GetValueAsString(): WideString;
     procedure _SetValueAsBool(Value: WordBool);
     procedure _SetValueAsString(Value: WideString);
-  private // IProfXmlNodeNew
+  public // IProfXmlNodeNew
     function Attributes_Count(): Integer;
     function Get_Attribute(const Name: WideString): WideString;
     function Get_Attribute_Name(Index: Integer): WideString;

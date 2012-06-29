@@ -2,7 +2,7 @@
 @Abstract(Интерфейс для любых документов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(11.04.2007)
-@LastMod(21.06.2012)
+@LastMod(29.06.2012)
 @Version(0.5)
 }
 unit ADocumentIntf;
@@ -46,7 +46,6 @@ type //** Интерфейс для любых документов
     }
     property IsOpened: WordBool read GetIsOpened;
   end;
-  IProfDocument2 = IProfDocument;
 
 implementation
 

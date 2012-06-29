@@ -2,7 +2,7 @@
 @Abstract(Interface XmlDocument)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(26.03.2012)
-@LastMod(28.06.2012)
+@LastMod(29.06.2012)
 @Version(0.5)
 }
 unit AXmlDocumentIntf;
@@ -13,7 +13,7 @@ uses
   ABase, ADocumentIntf;
 
 type //** Интерфейс работы с XML документом
-  IProfXmlDocument = interface(IProfDocument)
+  IProfXmlDocument = interface //(IProfDocument)
     function GetDocumentElement(): AProfXmlNode;
     //** Возвращает имя файла документа
     function GetFileName(): WideString;

@@ -2,7 +2,7 @@
 @Abstract(XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(09.10.2005)
-@LastMod(28.06.2012)
+@LastMod(29.06.2012)
 @Version(0.5)
 }
 unit AXmlCollectionImpl;
@@ -16,40 +16,40 @@ type
   // Коллекция нодов
   TProfXmlCollection = class(TInterfacedObject, IProfXmlCollection)
   protected
-    FNodes: array of AProfXmlNode1;
-    FOwner: AProfXmlNode1;
+    FNodes: array of AProfXmlNode;
+    FOwner: AProfXmlNode;
   public // IProfXmlCollection
     function DeleteNode(Node: IProfXmlNode2006): WordBool;
     function GetCount(): Integer;
-    function GetNode(Index: Integer): AProfXmlNode1;
+    function GetNode(Index: Integer): AProfXmlNode;
     //function Get_Node(Index: Integer): IProfXmlNode2006;
   public
-    function AddChild(const AName: WideString): AProfXmlNode1;
-    procedure AddNode(ANode: AProfXmlNode1);
+    function AddChild(const AName: WideString): AProfXmlNode;
+    procedure AddNode(ANode: AProfXmlNode);
     procedure Clear();
-    function FindNode(Name: WideString): AProfXmlNode1;
+    function FindNode(Name: WideString): AProfXmlNode;
     procedure Free();
-    function GetNodeByAttribute(AName, AValue: WideString): AProfXmlNode1;
-    function GetNodeByName(Name: WideString): AProfXmlNode1;
-    function NewNode(const Name: WideString): AProfXmlNode1;
+    function GetNodeByAttribute(AName, AValue: WideString): AProfXmlNode;
+    function GetNodeByName(Name: WideString): AProfXmlNode;
+    function NewNode(const Name: WideString): AProfXmlNode;
   public
-    constructor Create(AOwner: AProfXmlNode1);
+    constructor Create(AOwner: AProfXmlNode);
   public
     //property Count: Integer read GetCount;
-    property Nodes[Index: Integer]: AProfXmlNode1 read GetNode;
-    property NodesByName[Name: WideString]: AProfXmlNode1 read GetNodeByName;
+    property Nodes[Index: Integer]: AProfXmlNode read GetNode;
+    property NodesByName[Name: WideString]: AProfXmlNode read GetNodeByName;
   end;
 
 implementation
 
 { TProfXmlCollection }
 
-function TProfXmlCollection.AddChild(const AName: WideString): AProfXmlNode1;
+function TProfXmlCollection.AddChild(const AName: WideString): AProfXmlNode;
 begin
   Result := NewNode(AName);
 end;
 
-procedure TProfXmlCollection.AddNode(ANode: AProfXmlNode1);
+procedure TProfXmlCollection.AddNode(ANode: AProfXmlNode);
 var
   I: Int32;
   Document: AXmlDocument;
@@ -70,7 +70,7 @@ begin
   SetLength(FNodes, 0);
 end;
 
-constructor TProfXmlCollection.Create(AOwner: AProfXmlNode1);
+constructor TProfXmlCollection.Create(AOwner: AProfXmlNode);
 begin
   inherited Create;
   FOwner := AOwner;
@@ -92,7 +92,7 @@ begin
     end;
 end;
 
-function TProfXmlCollection.FindNode(Name: WideString): AProfXmlNode1;
+function TProfXmlCollection.FindNode(Name: WideString): AProfXmlNode;
 var
   I: Int32;
 begin
@@ -123,14 +123,14 @@ begin
   Result := Length(FNodes)
 end;
 
-function TProfXmlCollection.GetNode(Index: Integer): AProfXmlNode1;
+function TProfXmlCollection.GetNode(Index: Integer): AProfXmlNode;
 begin
   Result := 0;
   if (Index < 0) or (Index > Length(FNodes)) then Exit;
   Result := FNodes[Index];
 end;
 
-function TProfXmlCollection.GetNodeByAttribute(AName, AValue: WideString): AProfXmlNode1;
+function TProfXmlCollection.GetNodeByAttribute(AName, AValue: WideString): AProfXmlNode;
 var
   i: Integer;
 begin
@@ -145,7 +145,7 @@ begin
   Result := 0;
 end;
 
-function TProfXmlCollection.GetNodeByName(Name: WideString): AProfXmlNode1;
+function TProfXmlCollection.GetNodeByName(Name: WideString): AProfXmlNode;
 var
   Res: AProfXmlNode1;
   Document: AXmlDocument;
@@ -177,7 +177,7 @@ begin
   Result := Node;
 end;}
 
-function TProfXmlCollection.NewNode(const Name: WideString): AProfXmlNode1;
+function TProfXmlCollection.NewNode(const Name: WideString): AProfXmlNode;
 var
   Res: AProfXmlNode1;
   Document: AXmlDocument;

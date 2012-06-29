@@ -2,7 +2,7 @@
 @Abstract(AXmlNode functions)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(28.06.2012)
-@LastMod(28.06.2012)
+@LastMod(29.06.2012)
 @Version(0.5)
 }
 unit AXmlNodeUtils;
@@ -14,6 +14,8 @@ uses
   ABase;
 
 // --- AXmlNode ---
+
+function AXmlNode_AsString(Node: AXmlNode): APascalString;
 
 function AXmlNode_GetAttributeCount(Node: AXmlNode): AInteger;
 
@@ -51,9 +53,17 @@ function AXmlNode2_New(Node: IXmlNode): AProfXmlNode2;
 implementation
 
 uses
-  AXml2006, AXml2007;
+  AXml2007;
 
 // --- AXmlNode ---
+
+function AXmlNode_AsString(Node: AXmlNode): APascalString;
+begin
+  if (TObject(Node) is TProfXmlNode1) then
+    Result := TProfXmlNode1(Node).AsString
+  else
+    Result := '';
+end;
 
 function AXmlNode_GetAttributeCount(Node: AXmlNode): AInteger;
 begin
@@ -91,6 +101,11 @@ begin
     Result := TProfXmlNode1(Node).Attribute_Value[Index]
   else
     Result := '';
+end;
+
+function AXmlNode_GetChildNodes(Node: AXmlNode): AXmlCollection;
+begin
+  Result := TProfXmlNode2(Node).ChildNodes.NodeByName['object'];
 end;
 
 function AXmlNode_GetCollection(Node: AXmlNode): AXmlCollection;

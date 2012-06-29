@@ -2,7 +2,7 @@
 @Abstract(Работа с XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(09.10.2005)
-@LastMod(28.06.2012)
+@LastMod(29.06.2012)
 @Version(0.5)
 }
 unit AXml2007;
@@ -299,42 +299,76 @@ type                   // TInterfacedObject
 
 type // Используемые классы для работы с XML -----------------------------------
   TProfXmlDocument = TProfXmlDocument1;
-  TProfXmlNode     = TProfXmlNode1;
+  TProfXmlNode = TProfXmlNode1;
+
+//type // Используемые классы для работы с XML
+  //TProfXmlDocument = TProfXmlDocument1;
+  //TProfXmlNode = TProfXmlNode1;
+
+const // Сообщения -------------------------------------------------------------
+  err_SaveToFile = 'Ошибка при сохранении файла "%s" "%s"';
+  err_Load1      = 'Не найден закрывающий тег "?>" Line=%d';
+  err_Load2      = 'Не задан элемент Line=%d';
+  err_ReadNodes_1 = 'Не найдена закрывающая символ ">"';
 
 // -----------------------------------------------------------------------------
-// Возвращает значение атрибута
-// AUpperCase - различать большие и маленькие символы?
+
+{**
+  Возвращает значение атрибута
+  AUpperCase - различать большие и маленькие символы?
+}
 function GetAttribute(var FAttributes: TAttributes; const AName: WideString; AUpperCase: Boolean = False): WideString;
 
-// -----------------------------------------------------------------------------
-// Выделить имя и атрибуты их строки "tag attr1="value1" attr2="value2""
+{**
+  Выделить имя и атрибуты их строки "tag attr1="value1" attr2="value2""
+}
 procedure GetNameAndAttributes(Value: WideString; var FAttributes: TAttributes; var FName: WideString);
 
-// -----------------------------------------------------------------------------
-// Формировать документы в формате XML достаточно просто. Следует лишь познакомится с
-// конкретным DTD и образцами корректных документов. А вот загрузка может быть достаточно
-// трудна, если не прибегать к помощи готовых решений в виде XML парсеров. Их довольно
-// много для разных платформ и при желании можно найти их описания в WWW. Одним из
-// наиболее распространенным на платформе Windows является Microsoft XML Parser. Дело в том,
-// что он входит в состав Microsoft Explorer 5.0 и более позние версии. Он доступен в виде
-// объекта ActiveX. Данный парсер является верифицирующим, то есть проверяет не только
-// синтаксическую проверку документа, но и семантическую корректность в соответствии с заданным DTD.
-// http://www.codenet.ru/progr/delphi/stat/delphi_xml.php
+{**
+  Формировать документы в формате XML достаточно просто. Следует лишь познакомится с
+  конкретным DTD и образцами корректных документов. А вот загрузка может быть достаточно
+  трудна, если не прибегать к помощи готовых решений в виде XML парсеров. Их довольно
+  много для разных платформ и при желании можно найти их описания в WWW. Одним из
+  наиболее распространенным на платформе Windows является Microsoft XML Parser. Дело в том,
+  что он входит в состав Microsoft Explorer 5.0 и более позние версии. Он доступен в виде
+  объекта ActiveX. Данный парсер является верифицирующим, то есть проверяет не только
+  синтаксическую проверку документа, но и семантическую корректность в соответствии с заданным DTD.
+  http://www.codenet.ru/progr/delphi/stat/delphi_xml.php
+}
 procedure LoadOnixDoc(TV: TTreeView; const FileName: string);
 
-// -----------------------------------------------------------------------------
-// Установить значение атрибута. Если атрибута нет - создает.
+{**
+  Установить значение атрибута. Если атрибута нет - создает.
+}
 procedure SetAttribute(var FAttributes: TAttributes; const Name, Value: WideString);
+
+// Functions Forward -----------------------------------------------------------
+
+{**
+  Удаление префиксных, постфиксных, повторяющихся пробелов и префиксных и поствиксных #13#10
+}
+function StrDeleteSpace(const SIn: WideString; Options: TDeleteSpaceOptionsSet): WideString; forward;
+
+{**
+  Переводит строку со спец символими в строку Html формата со спецсимволами
+}
+function StrHtmlFromStr(const Value: WideString): WideString;
+
+{**
+  Переводит строку Html формата с тегами в простую строку с символами
+  Обратная процедура StrHtmlFromStr
+}
+function StrHtmlToStr(Value: WideString): WideString;
+
+{**
+  Удаление префиксных, постфиксных, повторяющихся пробелов и префиксных и поствиксных #13#10
+}
+function _StrDeleteSpace(var S: WideString; Options: TDeleteSpaceOptionsSet): Boolean; forward;
 
 implementation
 
-// Functions Forward -----------------------------------------------------------
-// -----------------------------------------------------------------------------
-function strDeleteSpace(const SIn: WideString; Options: TDeleteSpaceOptionsSet): WideString; forward;
-function _strDeleteSpace(var S: WideString; Options: TDeleteSpaceOptionsSet): Boolean; forward;
-
 // Functions -------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
 function GetAttribute(var FAttributes: TAttributes; const AName: WideString; AUpperCase: Boolean = False): WideString;
 var
   I: Integer;
@@ -358,9 +392,7 @@ begin
   end;
 end;
 
-// -----------------------------------------------------------------------------
 procedure GetNameAndAttributes(Value: WideString; var FAttributes: TAttributes; var FName: WideString);
-// Выделить имя и атрибуты их строки "tag attr1="value1" attr2="value2""
 var
   I: Integer;
   AName: WideString;
@@ -411,11 +443,9 @@ begin
   until Length(Value) = 0;
 end;
 
-// -----------------------------------------------------------------------------
 procedure LoadOnixDoc(TV: TTreeView; const FileName: string);
 var
   XML: variant;
-  //Node,
   mainNode, childNodes: variant;
   TreeNode: TTreeNode;
 
@@ -457,7 +487,6 @@ begin
   end;
 end;
 
-// -----------------------------------------------------------------------------
 procedure SetAttribute(var FAttributes: TAttributes; const Name, Value: WideString);
 var
   I: Integer;
@@ -476,68 +505,63 @@ begin
   FAttributes[I].Value := Value;
 end;
 
-// -----------------------------------------------------------------------------
-function strDeleteSpace(const SIn: WideString; Options: TDeleteSpaceOptionsSet): WideString;
+function StrDeleteSpace(const SIn: WideString; Options: TDeleteSpaceOptionsSet): WideString;
 begin
   Result := ''; if (Length(SIn) = 0) then Exit;
   Result := SIn;
   _strDeleteSpace(Result, Options);
 end;
 
-// -----------------------------------------------------------------------------
-function _strDeleteSpace(var S: WideString; Options: TDeleteSpaceOptionsSet): Boolean;
-// Удаление префиксных, постфиксных, повторяющихся пробелов и префиксных и поствиксных #13#10
+function _StrDeleteSpace(var S: WideString; Options: TDeleteSpaceOptionsSet): Boolean;
 var
   B: Boolean;
   I: LongWord;
 begin
   repeat
-  B := False;
+    B := False;
 
-  Result := True;
-  if (Length(S) = 0) then Exit;
-  // Удаление префиксных пробелов
-  if (dsFirst in Options) then while (S[1] = ' ') do
-  begin
-    Delete(S, 1, 1);
-    if Length(S) = 0 then Exit;
-    B := True;
-  end;
-  // Удаление постфиксных пробелов
-  if (dsLast in Options) then while (S[Length(S)] = ' ') do
-  begin
-    Delete(S, Length(S), 1);
-    if Length(S) = 0 then Exit;
-    B := True
-  end;
-  // Удаление повторяющихся промежуточных пробелов
-  if (dsRep in Options) then
-  repeat
-    I := Pos(S, WideString('  '));
-    if I = 0 then Break;
-    Delete(S, I, 1);
-  until False;
+    Result := True;
+    if (Length(S) = 0) then Exit;
+    // Удаление префиксных пробелов
+    if (dsFirst in Options) then while (S[1] = ' ') do
+    begin
+      Delete(S, 1, 1);
+      if Length(S) = 0 then Exit;
+      B := True;
+    end;
+    // Удаление постфиксных пробелов
+    if (dsLast in Options) then while (S[Length(S)] = ' ') do
+    begin
+      Delete(S, Length(S), 1);
+      if Length(S) = 0 then Exit;
+      B := True
+    end;
+    // Удаление повторяющихся промежуточных пробелов
+    if (dsRep in Options) then
+    repeat
+      I := Pos(S, WideString('  '));
+      if I = 0 then Break;
+      Delete(S, I, 1);
+    until False;
 
-  // Удаление префиксных #13#10
-  if (Length(S) >= 2) and (S[1]=#13) and (S[2]=#10) then
-  begin
-    Delete(S, 1, 2);
-    B := True;
-  end;
-  // Удаление постфиксных #13#10
-  if (Length(S) >= 2) and (S[Length(S)-1]=#13) and (S[Length(S)]=#10) then
-  begin
-    Delete(S, Length(S)-1, 2);
-    B := True;
-  end;
+    // Удаление префиксных #13#10
+    if (Length(S) >= 2) and (S[1]=#13) and (S[2]=#10) then
+    begin
+      Delete(S, 1, 2);
+      B := True;
+    end;
+    // Удаление постфиксных #13#10
+    if (Length(S) >= 2) and (S[Length(S)-1]=#13) and (S[Length(S)]=#10) then
+    begin
+      Delete(S, Length(S)-1, 2);
+      B := True;
+    end;
 
   // Повтор удаления
   until (B = False);
 end;
 
-// -----------------------------------------------------------------------------
 function StrHtmlFromStr(const Value: WideString): WideString;
-// Переводит строку со спец символими в строку Html формата со спецсимволами
 var
   I: Int32;
 begin
@@ -550,10 +574,7 @@ begin
   end;
 end;
 
-// -----------------------------------------------------------------------------
 function StrHtmlToStr(Value: WideString): WideString;
-// Переводит строку Html формата с тегами в простую строку с символами
-// Обратная процедура StrHtmlFromStr
 var
   Igt: Int32;
   Ilt: Int32;

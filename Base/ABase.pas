@@ -2,7 +2,7 @@
 @Abstract(Base types and consts (Базовые типы и константы))
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.03.2008)
-@LastMod(28.06.2012)
+@LastMod(29.06.2012)
 @Version(0.5)
 
 0.3.2
@@ -177,11 +177,13 @@ type
   end;
 
   AXmlCollection = type AInt; // TProfXmlCollection
-  AXmlDocument = type AInt; // TProfXmlDocument1
-  AXmlNode = type AInt; // TProfXmlNode1 or AXml2006.TProfXmlNode2 or AXmlNodeImpl.TProfXmlNode
-  AProfXmlNode1 = type AXmlNode; // TProfXmlNode1
-  AProfXmlNode = type AXmlNode; // AXml2006.TProfXmlNode2 or AXmlNodeImpl.TProfXmlNode
-  AProfXmlNode2 = type AXmlNode; // AXml2006.TProfXmlNode2 (or IProfNode)
+  AXmlDocument = type AInt; // AXmlDocumentImpl.TProfXmlDocument or TProfXmlDocument1
+  AProfXmlDocument = type AXmlDocument; // AXmlDocumentImpl.TProfXmlDocument
+  AProfXmlDocument1 = type Integer; // TProfXmlDocument1
+  AXmlNode = type AInt; // TProfXmlNode1 or AXmlNodeIntf.TProfXmlNode2 or AXmlNodeImpl.TProfXmlNode
+  AProfXmlNode = type AXmlNode; // AXmlNodeIntf.TProfXmlNode2 or AXmlNodeImpl.TProfXmlNode
+  AProfXmlNode1 = type AProfXmlNode; // TProfXmlNode1
+  AProfXmlNode2 = type AProfXmlNode; // TProfXmlNode2
 
 implementation
 

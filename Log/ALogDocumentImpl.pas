@@ -23,7 +23,7 @@ type //** Документ работы с Log
   protected
     function GetNodeByID(ID: Integer): IProfLogNode; virtual;
     procedure SetOnCommand(Value: TProcMessageStr); virtual;
-  public // IProfDocument2
+  public // IProfDocument
     {**
       Открыт ли документ?
       Реализация метода IsOpened должна проверить соответствующие свойства

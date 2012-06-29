@@ -180,10 +180,11 @@ type
   AXmlDocument = type AInt; // AXmlDocumentImpl.TProfXmlDocument or TProfXmlDocument1
   AProfXmlDocument = type AXmlDocument; // AXmlDocumentImpl.TProfXmlDocument
   AProfXmlDocument1 = type Integer; // TProfXmlDocument1
-  AXmlNode = type AInt; // TProfXmlNode1 or AXmlNodeIntf.TProfXmlNode2 or AXmlNodeImpl.TProfXmlNode
-  AProfXmlNode = type AXmlNode; // AXmlNodeIntf.TProfXmlNode2 or AXmlNodeImpl.TProfXmlNode
+  AXmlNode = type AInt; // AXmlNodeImpl.TProfXmlNode TProfXmlNode1 or TProfXmlNode2
+  AProfXmlNode = type AXmlNode; // AXmlNodeImpl.TProfXmlNode or TProfXmlNode2
   AProfXmlNode1 = type AProfXmlNode; // TProfXmlNode1
   AProfXmlNode2 = type AProfXmlNode; // TProfXmlNode2
+  AXmlNodeList = type AInt; // =AXmlNodeList_Type.Id (TProfXmlNodeList)
 
 implementation
 

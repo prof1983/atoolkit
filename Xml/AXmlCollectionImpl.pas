@@ -158,7 +158,7 @@ begin
   Result := FindNode(Name);
   if (Result <> 0) then Exit;
   Document := AXmlNode_GetDocument(FOwner);
-  Res := AXmlNode_New(Document);
+  Res := AXmlNode1_New(Document);
   AXmlNode_SetName(Res, Name);
   AddNode(AProfXmlNode1(Res));
   Result := AProfXmlNode1(Res);
@@ -183,7 +183,7 @@ var
   Document: AXmlDocument;
 begin
   Document := AXmlNode_GetDocument(FOwner);
-  Res := AXmlNode_New(Document);
+  Res := AXmlNode1_New(Document);
   AXmlNode_SetName(Res, Name);
   AddNode(AProfXmlNode1(Res));
   Result := AProfXmlNode1(Res);

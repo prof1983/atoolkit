@@ -13,13 +13,12 @@ interface
 
 uses
   Classes, SysUtils, Variants, XmlDom, XmlIntf,
-  //ComCtrls, ComObj, MSXmlDom, XmlDoc,
-  AAttributesIntf, ABase, ABaseUtils2, AEntityImpl, ANodeIntf, ATypes,
-  AXmlAttributesImpl, AXmlAttributesUtils, AXmlCollectionImpl, AXmlDocumentImpl, AXmlNodeIntf;
-  // --- for TProfXmlNode2 ---
-  //AConsts2, AXmlCollectionIntf, AXmlDocumentIntf, AXmlNodeUtils,
-  // --- for TProfXmlNode1 ---
-  //AXml2007,
+  AAttributesIntf, ABase, ABaseUtils2, AConsts2, AEntityImpl, ANodeIntf, ATypes,
+  AXmlAttributesImpl, AXmlAttributesUtils, AXmlCollectionImpl, AXmlDocumentImpl,
+  AXmlNodeIntf, AXmlNodeUtils, AXmlNodeListUtils, AXmlUtils;
+  // --- for TProfXmlNode4 ---
+  //ComObj, XmlDoc,
+
 
 type //** Класс работы с XML нодами
   TProfXmlNode = class(TANamedEntity, IProfNode)
@@ -29,7 +28,7 @@ type //** Класс работы с XML нодами
     FNode: IXmlNode;
     FNodes: array of TProfXmlNode;
     procedure SetNode(Value: IXmlNode);
-  protected
+  public
     function GetAsBool(): WordBool; safecall;
     function GetAsDateTime(): TDateTime; safecall;
     function GetAsFloat32(): Float32; safecall;
@@ -37,13 +36,13 @@ type //** Класс работы с XML нодами
     function GetAsInt32(): Integer; safecall;
     function GetAsInt64(): Int64; safecall;
     function GetAsString(): WideString; safecall;
-  protected
+  public
     //** Возвращает объект работы с атрибутами
 //    function GetAttributes(): IProfXmlAttributes; safecall;
     //** Получить вложеный нод по индесу
     function GetNodeByIndex(AIndex: Integer): IProfNode; safecall;
-    //** Получить вложеный нод по имени
-    function GetNodeByName(const AName: WideString): IProfNode; safecall;
+    //** Получить вложеный нод по имени (AXmlNode_GetChildNodeByName)
+    function GetNodeByName(const AName: WideString): AProfXmlNode;
     //** Возвращает колличество вложенных нодов
     function GetNodeCount(): Integer; safecall;
     //** Получить имя нода
@@ -124,7 +123,7 @@ type //** Класс работы с XML нодами
     //** Вложеные ноды по индексу
     property NodeByIndex[Index: Integer]: IProfNode read GetNodeByIndex;
     //** Вложеные ноды по имени
-    property NodeByName[const Name: WideString]: IProfNode read GetNodeByName;
+    property NodeByName[const Name: WideString]: AProfXmlNode read GetNodeByName;
     //** Колличество вложеных нодов
     property NodeCount: Integer read GetNodeCount;
     //** Имя нода
@@ -133,6 +132,7 @@ type //** Класс работы с XML нодами
 
   TProfXmlNode2 = class(TInterfacedObject{TXmlNode}, IProfXmlNode2{, IXmlNode})
   protected
+    FChildNodes: AXmlNodeList;
     FNode: IXmlNode{TXmlNode};
   protected
     function Get_Attribute(Name: WideString): WideString;
@@ -142,6 +142,7 @@ type //** Класс работы с XML нодами
     procedure Set_Xml(const Value: WideString);
   public
     function GetAsString(): WideString;
+    function GetChildNodes(): AXmlNodeList;
     function GetCollection(): IXmlNodeCollection;
     function GetCountNodes(): Integer;
     function GetNode(Index: Integer): TProfXmlNode2;
@@ -339,6 +340,163 @@ type //** Класс работы с XML нодами
     property Xml: WideString read Get_Xml write Set_Xml;
   end;
 
+  TProfXmlNode4 = class(TProfXmlNode2, IXmlNode)
+  private
+    FController: IXmlNode;
+    //procedure SetNodeName(const Value: WideString);
+    //procedure SetXml(const Value: WideString);
+  protected
+    // Возвращает коллекцию вложеных нодов
+    function Get_Collection(): IXmlNodeCollection; safecall;
+  protected
+    function GetAsString(): WideString;
+    function GetXmlB(): WideString;
+    procedure SetAsString(const Value: WideString);
+    procedure SetXmlB(const Value: WideString); safecall;
+  public // IXmlNode
+    function GetAttribute(const AttrName: DOMString): OleVariant;
+    function GetAttributeNodes: IXMLNodeList;
+    function GetChildNodes: IXMLNodeList;
+    function GetChildValue(const IndexOrName: OleVariant): OleVariant;
+    function GetCollection: IXMLNodeCollection;
+    function GetDOMNode: IDOMNode;
+    function GetHasChildNodes: Boolean;
+    function GetIsTextElement: Boolean;
+    function GetLocalName: DOMString;
+    function GetNamespaceURI: DOMString;
+    function GetNodeName: DOMString;
+    function GetNodeType: TNodeType;
+    function GetNodeValue: OleVariant;
+    function GetOwnerDocument: IXMLDocument;
+    function GetParentNode: IXMLNode;
+    function GetPrefix: DOMString;
+    function GetReadOnly: Boolean;
+    function GetText: DOMString;
+    function GetXML: DOMString;
+    procedure SetAttribute(const AttrName: DOMString; const Value: OleVariant);
+    procedure SetChildValue(const IndexOrName: OleVariant; const Value: OleVariant);
+    procedure SetNodeValue(const Value: OleVariant);
+    procedure SetReadOnly(const Value: Boolean);
+    procedure SetText(const Value: DOMString);
+    { Methods }
+    function AddChild(const TagName: DOMString; Index: Integer = -1): IXMLNode; overload;
+    function AddChild(const TagName, NamespaceURI: DOMString;
+      GenPrefix: Boolean = False; Index: Integer = -1): IXMLNode; overload;
+    function CloneNode(Deep: Boolean): IXMLNode;
+    procedure DeclareNamespace(const Prefix, URI: DOMString);
+    function FindNamespaceURI(const TagOrPrefix: DOMString): DOMString;
+    function FindNamespaceDecl(const NamespaceURI: DOMString): IXMLNode;
+    function GetAttributeNS(const AttrName, NamespaceURI: DOMString): OleVariant;
+    function HasAttribute(const Name: DOMString): Boolean; overload;
+    function HasAttribute(const Name, NamespaceURI: DOMString): Boolean; overload;
+    function NextSibling: IXMLNode;
+    procedure Normalize;
+    function PreviousSibling: IXMLNode;
+    procedure Resync;
+    procedure SetAttributeNS(const AttrName, NamespaceURI: DOMString; const Value: OleVariant);
+    procedure TransformNode(const stylesheet: IXMLNode; var output: WideString); overload;
+    procedure TransformNode(const stylesheet: IXMLNode; const output: IXMLDocument); overload;
+  public
+    constructor Create(Controller: IXmlNode);
+    function GetNodeByName(const AName: WideString): IXmlNode; safecall;
+    function GetNodeByName2(const AName: WideString): IProfXmlNode2; safecall;
+    function LoadFromXml(Xml: AProfXmlNode{TProfXmlNode4}): WordBool;
+    function NewNode(const ANodeName: WideString): IXmlNode;
+  public
+    class function GetAsBoolA(ANode: IXmlNode): WordBool; safecall;
+    class function GetAsDateTimeA(ANode: IXmlNode): TDateTime; safecall;
+    class function GetAsFloat32A(ANode: IXmlNode): Float32; safecall;
+    class function GetAsFloat64A(ANode: IXmlNode): Float64; safecall;
+    class function GetAsInt32A(ANode: IXmlNode): Int32; safecall;
+    class function GetAsInt64A(ANode: IXmlNode): Int64; safecall;
+    class function GetAsStringA(ANode: IXmlNode): WideString; safecall;
+  public
+    function GetValueAsBool(var Value: WordBool): WordBool; safecall;
+    function GetValueAsDateTime(var Value: TDateTime): WordBool; safecall;
+    function GetValueAsFloat32(var Value: Float32): WordBool; safecall;
+    function GetValueAsFloat64(var Value: Float64): WordBool; safecall;
+    function GetValueAsInt32(var Value: Int32): WordBool; safecall;
+    function GetValueAsInt64(var AValue: Int64): WordBool; safecall;
+    function GetValueAsInteger(var AValue: Integer): WordBool; safecall;
+    function GetValueAsString(var Value: WideString): WordBool; safecall;
+    function GetValueAsUInt08(var Value: UInt08): WordBool; safecall;
+    function GetValueAsUInt64(var Value: UInt64): WordBool; safecall;
+  public
+    class function GetValueAsBoolA(ANode: IXmlNode; var Value: WordBool): WordBool; safecall;
+    class function GetValueAsDateTimeA(ANode: IXmlNode; var Value: TDateTime): WordBool; safecall;
+    class function GetValueAsFloat32A(ANode: IXmlNode; var Value: Float32): WordBool; safecall;
+    class function GetValueAsFloat64A(ANode: IXmlNode; var Value: Float64): WordBool; safecall;
+    class function GetValueAsInt32A(ANode: IXmlNode; var Value: Int32): WordBool; safecall;
+    class function GetValueAsInt64A(ANode: IXmlNode; var Value: Int64): WordBool; safecall;
+    class function GetValueAsStringA(ANode: IXmlNode; var Value: WideString): WordBool; safecall;
+  public
+    function SetValueAsBool(Value: WordBool): WordBool; safecall;
+    function SetValueAsFloat64(Value: Float64): WordBool; safecall;
+    function SetValueAsInt32(AValue: Int32): WordBool; safecall;
+    function SetValueAsString(const AValue: WideString): WordBool; safecall;
+    function SetValueAsUInt08(AValue: UInt08): WordBool; safecall;
+    function SetValueAsUInt64(AValue: UInt64): WordBool; safecall;
+  public
+    function ReadBool(const AName: WideString; var Value: WordBool): WordBool; virtual; safecall;
+    function ReadDateTime(const AName: WideString; var Value: TDateTime): WordBool; virtual; safecall;
+    function ReadFloat32(const AName: WideString; var Value: Float32): WordBool; virtual; safecall;
+    function ReadFloat64(const AName: WideString; var Value: Float64): WordBool; virtual; safecall;
+    function ReadInt08(const AName: WideString; var Value: Int08): WordBool; virtual; safecall;
+    function ReadInt16(const AName: WideString; var Value: Int16): WordBool; virtual; safecall;
+    function ReadInt32(const AName: WideString; var Value: Int32): WordBool; virtual; safecall;
+    function ReadInt64(const AName: WideString; var Value: Int64): WordBool; virtual; safecall;
+    function ReadInteger(const AName: WideString; var Value: Integer): WordBool; virtual; safecall;
+    function ReadString(const AName: WideString; var Value: WideString): WordBool; virtual; safecall;
+    function ReadUInt08(const AName: WideString; var Value: UInt08): WordBool; virtual; safecall;
+    function ReadUInt16(const AName: WideString; var Value: UInt16): WordBool; virtual; safecall;
+    function ReadUInt32(const AName: WideString; var Value: UInt32): WordBool; virtual; safecall;
+    function ReadUInt64(const AName: WideString; var Value: UInt64): WordBool; virtual; safecall;
+  public
+    class function GetNodeByNameA(ANode: IXmlNode; const AName: WideString): IXmlNode; safecall;
+    class function ReadBoolA(ANode: IXmlNode; const AName: WideString; var Value: WordBool): WordBool; safecall;
+    class function ReadDateTimeA(ANode: IXmlNode; const AName: WideString; var Value: TDateTime): WordBool; safecall;
+    class function ReadFloat32A(ANode: IXmlNode; const AName: WideString; var Value: Float32): WordBool; safecall;
+    class function ReadFloat64A(ANode: IXmlNode; const AName: WideString; var Value: Float64): WordBool; safecall;
+    class function ReadInt64A(ANode: IXmlNode; const AName: WideString; var Value: Int64): WordBool; safecall;
+    class function ReadIntegerA(ANode: IXmlNode; const AName: WideString; var Value: Integer): WordBool; safecall;
+    class function ReadStringA(ANode: IXmlNode; const AName: WideString; var Value: WideString): WordBool; safecall;
+  public
+    class function ReadBoolDef(ANode: IXmlNode; const AName: WideString; ADef: WordBool = False): WordBool; safecall;
+    class function ReadDateTimeDef(ANode: IXmlNode; const AName: WideString; ADef: TDateTime = 0): TDateTime; safecall;
+    class function ReadFloatDef(ANode: IXmlNode; const AName: WideString; ADef: Float64 = 0): Float64; safecall;
+    class function ReadInt32Def(ANode: IXmlNode; const AName: WideString; ADef: Int32 = 0): Int32; safecall;
+    class function ReadInt64Def(ANode: IXmlNode; const AName: WideString; ADef: Int64 = 0): Int64; safecall;
+    class function ReadStringDef(ANode: IXmlNode; const AName: WideString; const ADef: WideString = ''): WideString; safecall;
+  public
+    class function WriteBoolA(ANode: IXmlNode; const AName: WideString; Value: WordBool): WordBool; safecall;
+    class function WriteDateTimeA(ANode: IXmlNode; const AName: WideString; Value: TDateTime): WordBool; safecall;
+    class function WriteFloat32A(ANode: IXmlNode; const AName: WideString; Value: Float32): WordBool; safecall;
+    class function WriteFloat64A(ANode: IXmlNode; const AName: WideString; Value: Float64): WordBool; safecall;
+    class function WriteIntegerA(ANode: IXmlNode; const AName: WideString; Value: Integer): WordBool; safecall;
+    class function WriteStringA(ANode: IXmlNode; const AName, Value: WideString): WordBool; safecall;
+  public
+    function SaveToString(var Value: WideString): Boolean;
+    //function SetXmlA(const Value: WideString): WordBool; virtual; safecall;
+  public
+    function WriteBool(const AName: WideString; Value: WordBool): WordBool; virtual; safecall;
+    function WriteDateTime(const AName: WideString; Value: TDateTime): WordBool; virtual; safecall;
+    function WriteFloat32(const AName: WideString; Value: Float32): WordBool; virtual; safecall;
+    function WriteFloat64(const AName: WideString; Value: Float64): WordBool; virtual; safecall;
+    function WriteInt32(const AName: WideString; Value: Int32): WordBool; virtual; safecall;
+    function WriteInt64(const AName: WideString; Value: Int64): WordBool; virtual; safecall;
+    function WriteInteger(const AName: WideString; Value: Integer): WordBool; virtual; safecall;
+    function WriteString(const AName, Value: WideString): WordBool; virtual; safecall;
+    function WriteUInt08(const AName: WideString; Value: UInt08): WordBool; virtual; safecall;
+    function WriteUInt64(const AName: WideString; Value: UInt64): WordBool; virtual; safecall;
+    function WriteXml(const AName, AValue: WideString): WordBool; virtual; safecall;
+  public
+    // Коллекция вложеных нодов
+    property Collection: IXmlNodeCollection read Get_Collection;
+    property AsString: WideString read GetAsString write SetAsString;
+    property Controller: IXmlNode read FController write FController {implements IXmlNode};
+    property XmlB: WideString read GetXmlB write SetXmlB;
+  end;
+
 implementation
 
 // --- Private ---
@@ -495,12 +653,15 @@ begin
   end;
 end;
 
-function TProfXmlNode.GetNodeByName(const AName: WideString): IProfNode;
+function TProfXmlNode.GetNodeByName(const AName: WideString): AProfXmlNode;
 var
   i: Integer;
 begin
-  Result := nil;
-  if Assigned(FNode) then
+  if not(Assigned(FNode)) then
+  begin
+    Result := 0;
+    Exit;
+  end;
   try
     if (Length(FNodes) = 0) and (FNode.ChildNodes.Count > 0) then
     try
@@ -516,22 +677,29 @@ begin
       Exit;
     end;
     for i := 0 to High(FNodes) do
-      if FNodes[i].NodeName = AName then
+    begin
+      if (FNodes[i].NodeName = AName) then
       begin
-        Result := FNodes[i];
+        Result := AProfXmlNode(FNodes[i]);
         Exit;
       end;
+    end;
   except
+    Result := 0;
   end;
 end;
 
 function TProfXmlNode.GetNodeCount(): Integer;
 begin
-  Result := -1;
-  if Assigned(FNode) then
+  if not(Assigned(FNode)) then
+  begin
+    Result := -1;
+    Exit;
+  end;
   try
     Result := FNode.ChildNodes.Count;
   except
+    Result := -1;
   end;
 end;
 
@@ -1134,7 +1302,7 @@ end;
 
 procedure TProfXmlNode1.GetNameAndAttributes(Value: WideString);
 begin
-  AXml2007.GetNameAndAttributes(Value, FAttributes, FName);
+  _GetNameAndAttributes(Value, FAttributes, FName);
 end;
 
 function TProfXmlNode1.GetNode(Index: Int32): TProfXmlNode1;
@@ -1597,7 +1765,7 @@ end;
 
 procedure TProfXmlNode1.Set_Attribute(const Name, Value: WideString);
 begin
-  AXml2007.SetAttribute(FAttributes, Name, Value);
+  AXmlAttributes_SetAttribute(FAttributes, Name, Value);
 end;
 
 procedure TProfXmlNode1.Set_NodeName(const Value: WideString);
@@ -1748,6 +1916,13 @@ begin
     Result := FNode.NodeValue
   else
     Result := '';}
+end;
+
+function TProfXmlNode2.GetChildNodes(): AXmlNodeList;
+begin
+  if (FChildNodes = 0) then
+    FChildNodes := AXmlNodeList_New(FNode.ChildNodes);
+  Result := FChildNodes;
 end;
 
 function TProfXmlNode2.GetCollection(): IXmlNodeCollection;
@@ -2361,6 +2536,901 @@ begin
     Node.NodeValue := AValue
   else
     FNode.AddChild(AName).NodeValue := AValue;
+  Result := True;
+end;
+
+{ TProfXmlNode4 }
+
+function TProfXmlNode4.GetAttribute(const AttrName: DOMString): OleVariant;
+begin
+  Result := FController.Attributes[AttrName];
+end;
+
+function TProfXmlNode4.GetAttributeNodes: IXMLNodeList;
+begin
+  Result := FController.AttributeNodes;
+end;
+
+function TProfXmlNode4.GetChildNodes: IXMLNodeList;
+begin
+  Result := FController.ChildNodes;
+end;
+
+function TProfXmlNode4.GetChildValue(const IndexOrName: OleVariant): OleVariant;
+begin
+  Result := FController.ChildValues[IndexOrName];
+end;
+
+function TProfXmlNode4.GetCollection: IXMLNodeCollection;
+begin
+  Result := FController.Collection;
+end;
+
+function TProfXmlNode4.GetDOMNode: IDOMNode;
+begin
+  Result := FController.DOMNode;
+end;
+
+function TProfXmlNode4.GetHasChildNodes: Boolean;
+begin
+  Result := FController.HasChildNodes;
+end;
+
+function TProfXmlNode4.GetIsTextElement: Boolean;
+begin
+  Result := FController.IsTextElement;
+end;
+
+function TProfXmlNode4.GetLocalName: DOMString;
+begin
+  Result := FController.LocalName;
+end;
+
+function TProfXmlNode4.GetNamespaceURI: DOMString;
+begin
+  Result := FController.NamespaceURI;
+end;
+
+function TProfXmlNode4.GetNodeName: DOMString;
+begin
+  Result := FController.NodeName;
+end;
+
+function TProfXmlNode4.GetNodeType: TNodeType;
+begin
+  Result := FController.NodeType;
+end;
+
+function TProfXmlNode4.GetNodeValue: OleVariant;
+begin
+  Result := FController.NodeValue;
+end;
+
+function TProfXmlNode4.GetOwnerDocument: IXMLDocument;
+begin
+  Result := FController.OwnerDocument;
+end;
+
+function TProfXmlNode4.GetParentNode: IXMLNode;
+begin
+  Result := FController.ParentNode;
+end;
+
+function TProfXmlNode4.GetPrefix: DOMString;
+begin
+  Result := FController.Prefix;
+end;
+
+function TProfXmlNode4.GetReadOnly: Boolean;
+begin
+  Result := FController.ReadOnly;
+end;
+
+function TProfXmlNode4.GetText: DOMString;
+begin
+  Result := FController.Text;
+end;
+
+function TProfXmlNode4.GetXML: DOMString;
+begin
+  Result := FController.XML;
+end;
+
+procedure TProfXmlNode4.SetAttribute(const AttrName: DOMString; const Value: OleVariant);
+begin
+  FController.Attributes[AttrName] := Value;
+end;
+
+procedure TProfXmlNode4.SetChildValue(const IndexOrName: OleVariant; const Value: OleVariant);
+begin
+  FController.ChildValues[IndexOrName] := Value;
+end;
+
+procedure TProfXmlNode4.SetNodeValue(const Value: OleVariant);
+begin
+  FController.NodeValue := Value;
+end;
+
+procedure TProfXmlNode4.SetReadOnly(const Value: Boolean);
+begin
+  FController.ReadOnly := Value;
+end;
+
+procedure TProfXmlNode4.SetText(const Value: DOMString);
+begin
+  FController.Text := Value;
+end;
+
+function TProfXmlNode4.AddChild(const TagName: DOMString; Index: Integer = -1): IXMLNode;
+begin
+  Result := FController.AddChild(TagName, Index);
+end;
+
+function TProfXmlNode4.AddChild(const TagName, NamespaceURI: DOMString;
+  GenPrefix: Boolean = False; Index: Integer = -1): IXMLNode;
+begin
+  Result := FController.AddChild(TagName, NamespaceURI, GenPrefix, Index);
+end;
+
+function TProfXmlNode4.CloneNode(Deep: Boolean): IXMLNode;
+begin
+  Result := FController.CloneNode(Deep);
+end;
+
+procedure TProfXmlNode4.DeclareNamespace(const Prefix, URI: DOMString);
+begin
+  FController.DeclareNamespace(Prefix, URI);
+end;
+
+function TProfXmlNode4.FindNamespaceURI(const TagOrPrefix: DOMString): DOMString;
+begin
+  Result := FController.FindNamespaceURI(TagOrPrefix);
+end;
+
+function TProfXmlNode4.FindNamespaceDecl(const NamespaceURI: DOMString): IXMLNode;
+begin
+  Result := FController.FindNamespaceDecl(NamespaceURI);
+end;
+
+function TProfXmlNode4.GetAttributeNS(const AttrName, NamespaceURI: DOMString): OleVariant;
+begin
+  Result := FController.GetAttributeNS(AttrName, NamespaceURI);
+end;
+
+function TProfXmlNode4.HasAttribute(const Name: DOMString): Boolean;
+begin
+  Result := FController.HasAttribute(Name);
+end;
+
+function TProfXmlNode4.HasAttribute(const Name, NamespaceURI: DOMString): Boolean;
+begin
+  Result := FController.HasAttribute(Name, NamespaceURI);
+end;
+
+function TProfXmlNode4.NextSibling: IXMLNode;
+begin
+  Result := FController.NextSibling();
+end;
+
+procedure TProfXmlNode4.Normalize;
+begin
+  FController.Normalize();
+end;
+
+function TProfXmlNode4.PreviousSibling: IXMLNode;
+begin
+  Result := FController.PreviousSibling();
+end;
+
+procedure TProfXmlNode4.Resync;
+begin
+  FController.Resync();
+end;
+
+procedure TProfXmlNode4.SetAttributeNS(const AttrName, NamespaceURI: DOMString; const Value: OleVariant);
+begin
+  FController.SetAttributeNS(AttrName, NamespaceURI, Value);
+end;
+
+procedure TProfXmlNode4.TransformNode(const stylesheet: IXMLNode; var output: WideString);
+begin
+  FController.TransformNode(Stylesheet, Output);
+end;
+
+procedure TProfXmlNode4.TransformNode(const stylesheet: IXMLNode; const output: IXMLDocument);
+begin
+  FController.TransformNode(Stylesheet, Output);
+end;
+
+function TProfXmlNode4.Get_Collection(): IXmlNodeCollection;
+begin
+  Result := FController.Collection;
+end;
+
+constructor TProfXmlNode4.Create(Controller: IXmlNode);
+begin
+  inherited Create(Controller);
+  FController := Controller;
+end;
+
+class function TProfXmlNode4.GetAsBoolA(ANode: IXMLNode): WordBool;
+var
+  Res: WordBool;
+begin
+  if ProfXmlNode_GetValueAsBool(ANode, Res) then
+    Result := Res
+  else
+    Result := False;
+  {Result := False;
+  GetValueAsBoolA(ANode, Result);}
+end;
+
+class function TProfXmlNode4.GetAsDateTimeA(ANode: IXMLNode): TDateTime;
+var
+  Res: TDateTime;
+begin
+  if ProfXmlNode_GetValueAsDateTime(ANode, Res) then
+    Result := Res
+  else
+    Result := 0;
+  {Result := 0;
+  GetValueAsDateTimeA(ANode, Result);}
+end;
+
+class function TProfXmlNode4.GetAsFloat32A(ANode: IXMLNode): Float32;
+var
+  Res: Float32;
+begin
+  if ProfXmlNode_GetValueAsFloat32(ANode, Res) then
+    Result := Res
+  else
+    Result := 0;
+  {Result := 0;
+  GetValueAsFloat32A(ANode, Result);}
+end;
+
+class function TProfXmlNode4.GetAsFloat64A(ANode: IXMLNode): Float64;
+var
+  Res: Float64;
+begin
+  if ProfXmlNode_GetValueAsFloat64(ANode, Res) then
+    Result := Res
+  else
+    Result := 0;
+  {Result := 0;
+  GetValueAsFloat64A(ANode, Result);}
+end;
+
+class function TProfXmlNode4.GetAsInt32A(ANode: IXMLNode): Int32;
+var
+  Res: Int32;
+begin
+  if ProfXmlNode_GetValueAsInt32(ANode, Res) then
+    Result := Res
+  else
+    Result := 0;
+  {Result := 0;
+  GetValueAsInt32A(ANode, Result);}
+end;
+
+class function TProfXmlNode4.GetAsInt64A(ANode: IXMLNode): Int64;
+var
+  Res: Int64;
+begin
+  if ProfXmlNode_GetValueAsInt64(ANode, Res) then
+    Result := Res
+  else
+    Result := 0;
+  {Result := 0;
+  GetValueAsInt64A(ANode, Result);}
+end;
+
+function TProfXmlNode4.GetAsString(): WideString;
+begin
+  {if Assigned(FNode) and ((VarType(FNode.NodeValue) = varOleStr) or (VarType(FNode.NodeValue) = varStrArg) or (VarType(FNode.NodeValue) = varString)) then
+    Result := FNode.NodeValue
+  else
+    Result := '';}
+  if ((VarType(Controller.NodeValue) = varOleStr) or (VarType(Controller.NodeValue) = varStrArg) or (VarType(Controller.NodeValue) = varString)) then
+    Result := Controller.NodeValue
+  else
+    Result := '';
+end;
+
+class function TProfXmlNode4.GetAsStringA(ANode: IXMLNode): WideString;
+begin
+  Result := '';
+  GetValueAsStringA(ANode, Result);
+end;
+
+function TProfXmlNode4.GetNodeByName(const AName: WideString): IXmlNode;
+var
+  Node: IXmlNode;
+begin
+  // Поиск XML нода
+  Node := FController.ChildNodes.FindNode(AName);
+  // Если нету - создание XML нода
+  if not(Assigned(Node)) then
+    Node := FController.AddChild(AName);
+  Result := Node; //as IXmlNode;
+end;
+
+function TProfXmlNode4.GetNodeByName2(const AName: WideString): IProfXmlNode2;
+var
+  Node: IXmlNode;
+begin
+  {
+  // Поиск XML нода
+  Node := FController.ChildNodes.FindNode(AName);
+  // Если нету - создание XML нода
+  if not(Assigned(Node)) then
+    Node := AddChild(AName);
+  Result := Node as IProfXmlNode2;
+  }
+end;
+
+class function TProfXmlNode4.GetNodeByNameA(ANode: IXmlNode; const AName: WideString): IXmlNode;
+{var
+  Node: IXmlNode;}
+begin
+  Result := ProfXmlNode_GetNodeByName(ANode, AName);
+  {Result := nil;
+  if not(Assigned(ANode)) then Exit;
+  // Поиск XML нода
+  Node := ANode.ChildNodes.FindNode(AName);
+  // Если нету - создание XML нода
+  if not(Assigned(Node)) then
+    Node := ANode.AddChild(AName);
+  Result := Node as IXmlNode;}
+end;
+
+function TProfXmlNode4.GetValueAsBool(var Value: WordBool): WordBool;
+begin
+  Result := ProfXmlNode_GetValueAsBool(FController, Value);
+  //Result := GetValueAsBoolA(FController, Value);
+end;
+
+class function TProfXmlNode4.GetValueAsBoolA(ANode: IXmlNode; var Value: WordBool): WordBool;
+begin
+  Result := ProfXmlNode_GetValueAsBool(ANode, Value);
+  {Result := Assigned(ANode);
+  if not(Result) then Exit;
+  Result := False;
+  try
+    case VarType(ANode.NodeValue) of
+      varBoolean:
+        Value := ANode.NodeValue;
+    else
+      Value := StrToBool(ANode.NodeValue);
+    end;
+  except
+    Result := False;
+  end;}
+end;
+
+function TProfXmlNode4.GetValueAsDateTime(var Value: TDateTime): WordBool;
+begin
+  Result := ProfXmlNode_GetValueAsDateTime(FController, Value);
+  //Result := GetValueAsDateTimeA(FController, Value);
+end;
+
+class function TProfXmlNode4.GetValueAsDateTimeA(ANode: IXmlNode; var Value: TDateTime): WordBool;
+begin
+  Result := ProfXmlNode_GetValueAsDateTime(ANode, Value);
+  {try
+    Value := ANode.NodeValue;
+  except
+  end;}
+end;
+
+function TProfXmlNode4.GetValueAsFloat32(var Value: Float32): WordBool;
+begin
+  Result := ProfXmlNode_GetValueAsFloat32(FController, Value);
+  //Result := GetValueAsFloat32A(FController, Value);
+end;
+
+class function TProfXmlNode4.GetValueAsFloat32A(ANode: IXmlNode; var Value: Float32): WordBool;
+{var
+  Code: Integer;}
+begin
+  Result := ProfXmlNode_GetValueAsFloat32(ANode, Value);
+  {Result := Assigned(ANode);
+  if not(Result) then Exit;
+  try
+    if (VarType(ANode.NodeValue) = varSingle) then
+    begin
+      Value := ANode.NodeValue;
+    end
+    else if (VarType(ANode.NodeValue) = varString) or (VarType(ANode.NodeValue) = varOleStr) then
+    begin
+      Val(ANode.NodeValue, Value, Code);
+      Result := (Code = 0);
+    end
+    else
+      Result := False;
+  except
+    Result := False;
+  end;}
+end;
+
+function TProfXmlNode4.GetValueAsFloat64(var Value: Float64): WordBool;
+begin
+  Result := ProfXmlNode_GetValueAsFloat64(FController, Value);
+  //Result := GetValueAsFloat64A(FController, Value);
+end;
+
+class function TProfXmlNode4.GetValueAsFloat64A(ANode: IXmlNode; var Value: Float64): WordBool;
+{var
+  Code: Integer;}
+begin
+  Result := ProfXmlNode_GetValueAsFloat64(ANode, Value)
+  {Result := Assigned(ANode);
+  if not(Result) then Exit;
+  try
+    if (VarType(ANode.NodeValue) = varDouble) then
+    begin
+      Value := ANode.NodeValue;
+    end
+    else if (VarType(ANode.NodeValue) = varString) or (VarType(ANode.NodeValue) = varOleStr) then
+    begin
+      Val(ANode.NodeValue, Value, Code);
+      Result := (Code = 0);
+    end
+    else
+      Result := False;
+  except
+    Result := False;
+  end;}
+end;
+
+function TProfXmlNode4.GetValueAsInt32(var Value: Int32): WordBool;
+begin
+  Result := ProfXmlNode_GetValueAsInt32(FController, Value);
+  //Result := GetValueAsInt32A(FController, Value);
+end;
+
+class function TProfXmlNode4.GetValueAsInt32A(ANode: IXmlNode; var Value: Int32): WordBool;
+{var
+  Code: Integer;}
+begin
+  Result := ProfXmlNode_GetValueAsInt32(ANode, Value);
+  {Result := Assigned(ANode);
+  if not(Result) then Exit;
+  try
+    if (VarType(ANode.NodeValue) = varInteger) then
+    begin
+      Value := ANode.NodeValue;
+    end
+    else if (VarType(ANode.NodeValue) = varString) or (VarType(ANode.NodeValue) = varOleStr) then
+    begin
+      Val(ANode.NodeValue, Value, Code);
+      Result := (Code = 0);
+    end
+    else
+      Result := False;
+  except
+    Result := False;
+  end;}
+end;
+
+function TProfXmlNode4.GetValueAsInt64(var AValue: Int64): WordBool;
+begin
+  Result := ProfXmlNode_GetValueAsInt64(FController, AValue);
+  //Result := GetValueAsInt64A(FController, AValue);
+end;
+
+class function TProfXmlNode4.GetValueAsInt64A(ANode: IXmlNode; var Value: Int64): WordBool;
+begin
+  Result := ProfXmlNode_GetValueAsInt64(ANode, Value);
+  {try
+    Value := ANode.NodeValue;
+  except
+  end;}
+end;
+
+function TProfXmlNode4.GetValueAsInteger(var AValue: Integer): WordBool;
+begin
+  Result := GetValueAsInt32(AValue);
+end;
+
+function TProfXmlNode4.GetValueAsString(var Value: WideString): WordBool;
+begin
+  Result := GetValueAsStringA(FController, Value);
+end;
+
+class function TProfXmlNode4.GetValueAsStringA(ANode: IXmlNode; var Value: WideString): WordBool;
+begin
+  Result := ProfXmlNode_GetValueAsString(ANode, Value);
+  {Result := Assigned(ANode);
+  if not(Result) then Exit;
+  try
+    if (VarType(ANode.NodeValue) = varString) or (VarType(ANode.NodeValue) = varOleStr) then
+    begin
+      Value := ANode.NodeValue;
+      Result := True;
+    end
+    else
+      Result := False;
+  except
+    Result := False;
+  end;}
+end;
+
+function TProfXmlNode4.GetValueAsUInt08(var Value: UInt08): WordBool;
+begin
+  try
+    Value := FController.NodeValue;
+  except
+  end;
+end;
+
+function TProfXmlNode4.GetValueAsUInt64(var Value: UInt64): WordBool;
+begin
+  try
+    Value := FController.NodeValue;
+  except
+  end;
+end;
+
+function TProfXmlNode4.GetXmlB(): WideString;
+begin
+  Result := '';
+  // ...
+end;
+
+function TProfXmlNode4.LoadFromXml(Xml: AProfXmlNode{TProfXmlNode4}): WordBool;
+begin
+  Result := False;
+  // ...
+end;
+
+function TProfXmlNode4.NewNode(const ANodeName: WideString): IXmlNode;
+begin
+  Result := nil;
+  if Assigned(FController) then
+    Result := FController.AddChild(ANodeName);
+end;
+
+function TProfXmlNode4.ReadBool(const AName: WideString; var Value: WordBool): WordBool;
+begin
+  Result := ReadBoolA(FController, AName, Value);
+end;
+
+class function TProfXmlNode4.ReadBoolA(ANode: IXmlNode; const AName: WideString; var Value: WordBool): WordBool;
+begin
+  Result := ProfXmlNode_ReadBool(ANode, AName, Value);
+end;
+
+class function TProfXmlNode4.ReadBoolDef(ANode: IXmlNode; const AName: WideString; ADef: WordBool): WordBool;
+begin
+  Result := ProfXmlNode_ReadBoolDef(ANode, AName, ADef);
+end;
+
+function TProfXmlNode4.ReadDateTime(const AName: WideString; var Value: TDateTime): WordBool;
+begin
+  Result := ProfXmlNode_ReadDateTime(FController, AName, Value);
+end;
+
+class function TProfXmlNode4.ReadDateTimeA(ANode: IXmlNode; const AName: WideString; var Value: TDateTime): WordBool;
+begin
+  Result := ProfXmlNode_ReadDateTime(ANode, AName, Value);
+end;
+
+class function TProfXmlNode4.ReadDateTimeDef(ANode: IXmlNode; const AName: WideString; ADef: TDateTime): TDateTime;
+begin
+  Result := ProfXmlNode_ReadDateTimeDef(ANode, AName, ADef);
+end;
+
+function TProfXmlNode4.ReadFloat32(const AName: WideString; var Value: Float32): WordBool;
+begin
+  Result := ProfXmlNode_ReadFloat32(FController, AName, Value);
+end;
+
+class function TProfXmlNode4.ReadFloat32A(ANode: IXmlNode; const AName: WideString; var Value: Float32): WordBool;
+begin
+  Result := ProfXmlNode_ReadFloat32(ANode, AName, Value);
+end;
+
+function TProfXmlNode4.ReadFloat64(const AName: WideString; var Value: Float64): WordBool;
+begin
+  Result := ProfXmlNode_ReadFloat64(FController, AName, Value);
+end;
+
+class function TProfXmlNode4.ReadFloat64A(ANode: IXmlNode; const AName: WideString; var Value: Float64): WordBool;
+begin
+  Result := ProfXmlNode_ReadFloat64(ANode, AName, Value);
+end;
+
+class function TProfXmlNode4.ReadFloatDef(ANode: IXmlNode; const AName: WideString; ADef: Float64): Float64;
+begin
+  Result := ProfXmlNode_ReadFloatDef(ANode, AName, ADef);
+end;
+
+function TProfXmlNode4.ReadInt08(const AName: WideString; var Value: Int08): WordBool;
+var
+  tmpValue: Integer;
+begin
+  Result := ReadInteger(AName, tmpValue);
+  if Result then Value := tmpValue;
+end;
+
+function TProfXmlNode4.ReadInt16(const AName: WideString; var Value: Int16): WordBool;
+var
+  tmpValue: Integer;
+begin
+  Result := ReadInteger(AName, tmpValue);
+  if Result then Value := tmpValue;
+end;
+
+function TProfXmlNode4.ReadInt32(const AName: WideString; var Value: Int32): WordBool;
+begin
+  Result := ReadInteger(AName, Value);
+end;
+
+class function TProfXmlNode4.ReadInt32Def(ANode: IXmlNode; const AName: WideString; ADef: Int32): Int32;
+begin
+  Result := ADef;
+  ReadIntegerA(ANode, AName, Result);
+end;
+
+function TProfXmlNode4.ReadInt64(const AName: WideString; var Value: Int64): WordBool;
+var
+  tmpValue: Integer;
+begin
+  Result := ReadInteger(AName, tmpValue);
+  if Result then Value := tmpValue;
+end;
+
+class function TProfXmlNode4.ReadInt64A(ANode: IXmlNode; const AName: WideString; var Value: Int64): WordBool;
+var
+  tmpValue: Integer;
+begin
+  Result := ReadIntegerA(ANode, AName, tmpValue);
+  if Result then Value := tmpValue;
+end;
+
+class function TProfXmlNode4.ReadInt64Def(ANode: IXmlNode; const AName: WideString; ADef: Int64): Int64;
+begin
+  Result := ADef;
+  ReadInt64A(ANode, AName, Result);
+end;
+
+function TProfXmlNode4.ReadInteger(const AName: WideString; var Value: Integer): WordBool;
+begin
+  Result := ReadIntegerA(FController, AName, Value);
+end;
+
+class function TProfXmlNode4.ReadIntegerA(ANode: IXmlNode; const AName: WideString; var Value: Integer): WordBool;
+begin
+  Result := ProfXmlNode_ReadInt(ANode, AName, Value);
+end;
+
+function TProfXmlNode4.ReadString(const AName: WideString; var Value: WideString): WordBool;
+begin
+  Result := ReadStringA(FController, AName, Value);
+end;
+
+class function TProfXmlNode4.ReadStringA(ANode: IXmlNode; const AName: WideString; var Value: WideString): WordBool;
+begin
+  Result := ProfXmlNode_ReadString(ANode, AName, Value);
+end;
+
+class function TProfXmlNode4.ReadStringDef(ANode: IXmlNode; const AName: WideString; const ADef: WideString): WideString;
+begin
+  Result := ADef;
+  ReadStringA(ANode, AName, Result);
+end;
+
+function TProfXmlNode4.ReadUInt08(const AName: WideString; var Value: UInt08): WordBool;
+var
+  tmpValue: Integer;
+begin
+  Result := ReadInteger(AName, tmpValue);
+  if not(Result) then Exit;
+  Value := tmpValue;
+end;
+
+function TProfXmlNode4.ReadUInt16(const AName: WideString; var Value: UInt16): WordBool;
+var
+  tmpValue: Integer;
+begin
+  Result := ReadInteger(AName, tmpValue);
+  if not(Result) then Exit;
+  Value := tmpValue;
+end;
+
+function TProfXmlNode4.ReadUInt32(const AName: WideString; var Value: UInt32): WordBool;
+var
+  tmpValue: Integer;
+begin
+  Result := ReadInteger(AName, tmpValue);
+  if not(Result) then Exit;
+  Value := tmpValue;
+end;
+
+function TProfXmlNode4.ReadUInt64(const AName: WideString; var Value: UInt64): WordBool;
+var
+  tmpValue: Integer;
+begin
+  Result := ReadInteger(AName, tmpValue);
+  if not(Result) then Exit;
+  Value := tmpValue;
+end;
+
+function TProfXmlNode4.SaveToString(var Value: WideString): Boolean;
+begin
+  Result := Assigned(FController);
+  Value := FController.Xml;
+end;
+
+procedure TProfXmlNode4.SetAsString(const Value: WideString);
+begin
+  if Assigned(FController) then
+    Controller.NodeValue := Value; // Не правильно
+end;
+
+function TProfXmlNode4.SetValueAsBool(Value: WordBool): WordBool;
+begin
+  if Assigned(FController) then
+    Controller.NodeValue := Value;
+end;
+
+function TProfXmlNode4.SetValueAsFloat64(Value: Float64): WordBool;
+begin
+  if Assigned(FController) then
+    Controller.NodeValue := Value;
+end;
+
+function TProfXmlNode4.SetValueAsInt32(AValue: Int32): WordBool;
+begin
+  if Assigned(FController) then
+    Controller.NodeValue := AValue;
+end;
+
+function TProfXmlNode4.SetValueAsString(const AValue: WideString): WordBool;
+begin
+  if Assigned(FController) then
+    Controller.NodeValue := AValue;
+end;
+
+function TProfXmlNode4.SetValueAsUInt08(AValue: UInt08): WordBool;
+begin
+  if Assigned(FController) then
+    Controller.NodeValue := AValue;
+end;
+
+function TProfXmlNode4.SetValueAsUInt64(AValue: UInt64): WordBool;
+begin
+  if Assigned(FController) then
+    Controller.NodeValue := AValue;
+end;
+
+{procedure TProfXmlNode.SetXml(const Value: WideString);
+begin
+  if Assigned(FController) then
+    Controller.SetText(Value);
+end;}
+
+procedure TProfXmlNode4.SetXmlB(const Value: WideString);
+begin
+  // ...
+end;
+
+function TProfXmlNode4.WriteBool(const AName: WideString; Value: WordBool): WordBool;
+begin
+  Result := ProfXmlNode_WriteBool(FController, AName, Value);
+end;
+
+class function TProfXmlNode4.WriteBoolA(ANode: IXmlNode; const AName: WideString; Value: WordBool): WordBool;
+begin
+  Result := ProfXmlNode_WriteBool(ANode, AName, Value);
+end;
+
+function TProfXmlNode4.WriteDateTime(const AName: WideString; Value: TDateTime): WordBool;
+begin
+  Result := WriteDateTimeA(FController, AName, Value);
+end;
+
+class function TProfXmlNode4.WriteDateTimeA(ANode: IXmlNode; const AName: WideString; Value: TDateTime): WordBool;
+var
+  Node: IXmlNode;
+begin
+  Result := Assigned(ANode);
+  if not(Result) then Exit;
+  try
+    Node := ANode.ChildNodes.FindNode(AName);
+    if Assigned(Node) then
+      Node.NodeValue := Value
+    else
+      ANode.AddChild(AName).NodeValue := Value;
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+
+function TProfXmlNode4.WriteFloat32(const AName: WideString; Value: Float32): WordBool;
+begin
+  Result := WriteFloat32A(FController, AName, Value);
+end;
+
+class function TProfXmlNode4.WriteFloat32A(ANode: IXmlNode; const AName: WideString; Value: Float32): WordBool;
+var
+  Node: IXmlNode;
+begin
+  Result := Assigned(ANode);
+  if not(Result) then Exit;
+  try
+    Node := ANode.ChildNodes.FindNode(AName);
+    if Assigned(Node) then
+      Node.NodeValue := Value
+    else
+      ANode.AddChild(AName).NodeValue := Value;
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+
+function TProfXmlNode4.WriteFloat64(const AName: WideString; Value: Float64): WordBool;
+begin
+  Result := WriteFloat64A(FController, AName, Value);
+end;
+
+class function TProfXmlNode4.WriteFloat64A(ANode: IXmlNode; const AName: WideString; Value: Float64): WordBool;
+begin
+  Result := ProfXmlNode_WriteFloat64(ANode, AName, Value);
+end;
+
+function TProfXmlNode4.WriteInt32(const AName: WideString; Value: Int32): WordBool;
+begin
+  Result := WriteInteger(AName, Value);
+end;
+
+function TProfXmlNode4.WriteInt64(const AName: WideString; Value: Int64): WordBool;
+begin
+  Result := WriteInt32(AName, Value);
+end;
+
+function TProfXmlNode4.WriteInteger(const AName: WideString; Value: Integer): WordBool;
+begin
+  Result := WriteIntegerA(FController, AName, Value);
+end;
+
+class function TProfXmlNode4.WriteIntegerA(ANode: IXmlNode; const AName: WideString; Value: Integer): WordBool;
+begin
+  Result := ProfXmlNode_WriteInt(ANode, AName, Value);
+end;
+
+function TProfXmlNode4.WriteString(const AName, Value: WideString): WordBool;
+begin
+  Result := WriteStringA(FController, AName, Value);
+end;
+
+class function TProfXmlNode4.WriteStringA(ANode: IXmlNode; const AName, Value: WideString): WordBool;
+begin
+  Result := ProfXmlNode_WriteString(ANode, AName, Value);
+end;
+
+function TProfXmlNode4.WriteUInt08(const AName: WideString; Value: UInt08): WordBool;
+begin
+  Result := WriteInteger(AName, Value);
+end;
+
+function TProfXmlNode4.WriteUInt64(const AName: WideString; Value: UInt64): WordBool;
+begin
+  Result := WriteInteger(AName, Value);
+end;
+
+function TProfXmlNode4.WriteXml(const AName, AValue: WideString): WordBool;
+var
+  Node: IXmlNode;
+begin
+  Node := Controller.ChildNodes.FindNode(AName);
+  if Assigned(Node) then
+    Node.NodeValue := AValue
+  else
+    Controller.AddChild(AName).NodeValue := AValue;
   Result := True;
 end;
 

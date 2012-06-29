@@ -2,7 +2,7 @@
 @Abstract(Реализация основной функциональности для главного объекта)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.05.2006)
-@LastMod(25.05.2012)
+@LastMod(29.06.2012)
 @Version(0.5)
 }
 unit AProgram2007;
@@ -16,7 +16,7 @@ uses
   AConsts2, ALogDocumentIntf, ALogDocuments2007, AObjectImpl, AProgramUtils, ATypes, AXml3;
 
 type // Основной объект программы
-  TProgram2007 = class(TProfObject2{TProfObject2})
+  TProgram2007 = class(TProfObject2)
   private
       // Критическая секция для добавления в лог
     FCSAddToLog: TRTLCriticalSection;
@@ -277,7 +277,7 @@ begin
   try
     if Self.ConfigFileName = '' then
       Self.ConfigFileName := Self.ExePath + Self.ProgramName + '.' + FILE_EXT_CONFIG;
-    doc := TProfXmlDocument3.Create(Self.ConfigFileName, 'Config', AddToLog);
+    doc := TProfXmlDocument3.Create1(Self.ConfigFileName, 'Config', AddToLog);
     doc.Initialize();
     //doc.DocumentElement.Attributes['app'] := Self.ProgramName;
     FConfigDocument := doc.Controller;

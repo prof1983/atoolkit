@@ -28,6 +28,13 @@ function AXmlNode_GetAttributeValue2(Node: AXmlNode; const Name: APascalString;
 
 function AXmlNode_GetAttributeValueByIndex(Node: AXmlNode; Index: AInt): APascalString;
 
+{** Return TProfXmlNode }
+function AXmlNode_GetChildNodeByName(Node: AXmlNode; const Name: APascalString): AProfXmlNode;
+
+function AXmlNode_GetChildNodeCount(Node: AXmlNode): AInt;
+
+function AXmlNode_GetChildNodes(Node: AXmlNode): AXmlNodeList;
+
 function AXmlNode_GetCollection(Node: AXmlNode): AXmlCollection;
 
 function AXmlNode_GetDocument(Node: AXmlNode): AXmlDocument;
@@ -38,13 +45,19 @@ function AXmlNode_GetXmlA(Node: AXmlNode; const Prefix: APascalString): APascalS
 
 function AXmlNode_Free(Node: AXmlNode): AError;
 
-function AXmlNode_New(Document: AXmlDocument): AXmlNode;
-
 function AXmlNode_SetDocument(Node: AXmlNode; Document: AXmlDocument): AError;
 
 function AXmlNode_SetName(Node: AXmlNode; const Name: APascalString): AError;
 
 function AXmlNode_SetXml(Node: AXmlNode; const S: APascalString): AError;
+
+// --- AXmlNode0 ---
+
+function AXmlNode0_New(): AXmlNode;
+
+// --- AXmlNode1 ---
+
+function AXmlNode1_New(Document: AXmlDocument): AXmlNode;
 
 // --- AXmlNode2 ---
 
@@ -59,8 +72,12 @@ uses
 
 function AXmlNode_AsString(Node: AXmlNode): APascalString;
 begin
-  if (TObject(Node) is TProfXmlNode1) then
+  if (TObject(Node) is TProfXmlNode) then
+    Result := TProfXmlNode(Node).AsString
+  else if (TObject(Node) is TProfXmlNode1) then
     Result := TProfXmlNode1(Node).AsString
+  else if (TObject(Node) is TProfXmlNode2) then
+    Result := TProfXmlNode2(Node).AsString
   else
     Result := '';
 end;
@@ -103,10 +120,26 @@ begin
     Result := '';
 end;
 
-function AXmlNode_GetChildNodes(Node: AXmlNode): AXmlCollection;
+function AXmlNode_GetChildNodeByName(Node: AXmlNode; const Name: APascalString): AProfXmlNode;
+begin
+  if (TObject(Node) is TProfXmlNode) then
+    Result := TProfXmlNode(Node).GetNodeByName(Name)
+  else
+    Result := 0;
+end;
+
+function AXmlNode_GetChildNodeCount(Node: AXmlNode): AInt;
+begin
+  if (TObject(Node) is TProfXmlNode) then
+    Result := TProfXmlNode(Node).GetNodeCount()
+  else
+    Result := -1;
+end;
+
+function AXmlNode_GetChildNodes(Node: AXmlNode): AXmlNodeList;
 begin
   if (TObject(Node) is TProfXmlNode2) then
-    Result := TProfXmlNode2(Node).ChildNodes.NodeByName['object']
+    Result := TProfXmlNode2(Node).GetChildNodes()
   else
     Result := 0;
 end;
@@ -154,11 +187,6 @@ begin
     Result := -1;
 end;
 
-function AXmlNode_New(Document: AXmlDocument): AXmlNode;
-begin
-  Result := AXmlNode(TProfXmlNode1.Create(Document));
-end;
-
 function AXmlNode_SetDocument(Node: AXmlNode; Document: AXmlDocument): AError;
 begin
   if (TObject(Node) is TProfXmlNode1) then
@@ -187,6 +215,21 @@ begin
     Result := 0
   else
     Result := -1;
+end;
+
+// --- AXmlNode0 ---
+
+function AXmlNode0_New(): AXmlNode;
+begin
+  Result := AXmlNode(AXmlNodeImpl.TProfXmlNode.Create());
+end;
+
+// --- AXmlNode1 ---
+
+function AXmlNode1_New(Document: AXmlDocument): AXmlNode;
+//function AXmlNode_New(Document: AXmlDocument): AXmlNode;
+begin
+  Result := AXmlNode(TProfXmlNode1.Create(Document));
 end;
 
 // --- AXmlNode2 ---

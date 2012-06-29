@@ -7,8 +7,6 @@
 }
 unit AXml2007;
 
-// TODO: Build TProfXmlNodeList
-
 {$I A.inc}
 
 interface

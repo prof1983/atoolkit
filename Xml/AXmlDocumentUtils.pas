@@ -12,6 +12,10 @@ interface
 uses
   ABase;
 
+function AXmlDocument_CloseDocument(XmlDocument: AXmlDocument): AError;
+
+function AXmlDocument_Free(XmlDocument: AXmlDocument): AError;
+
 function AXmlDocument_GetDocumentElement(XmlDocument: AXmlDocument): AProfXmlNode;
 
 function AXmlDocument_Initialize(XmlDocument: AXmlDocument): AError;
@@ -49,6 +53,28 @@ begin
 end;
 
 // --- AXmlDocument ---
+
+function AXmlDocument_CloseDocument(XmlDocument: AXmlDocument): AError;
+begin
+  if (TObject(XmlDocument) is TProfXmlDocument) then
+  begin
+    TProfXmlDocument(XmlDocument).CloseDocument();
+    Result := 0;
+  end
+  else
+    Result := -2;
+end;
+
+function AXmlDocument_Free(XmlDocument: AXmlDocument): AError;
+begin
+  if (TObject(XmlDocument) is TProfXmlDocument) then
+  begin
+    TProfXmlDocument(XmlDocument).Free();
+    Result := 0;
+  end
+  else
+    Result := -2;
+end;
 
 function AXmlDocument_GetDocumentElement(XmlDocument: AXmlDocument): AProfXmlNode;
 begin

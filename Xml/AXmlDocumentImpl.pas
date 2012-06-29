@@ -14,24 +14,33 @@ interface
 
 uses
   SysUtils, XmlDoc, XmlIntf,
-  ABase, ABaseUtils2, AConsts2, ADocumentImpl, AXmlDocumentIntf, ANodeIntf, AXmlNodeUtils, ATypes;
+  ABase, ABaseUtils2, AConsts2, ADocumentImpl, {ANodeIntf,} ATypes, AXmlDocumentIntf, AXmlNodeUtils;
 
   //Classes, ComCtrls, ComObj,
   //MSXmlDom, Variants, XmlDom,
   //AXml2007, AXmlCollectionIntf, AXmlNodeIntf,
 
+  // --- for TProfXmlDocument4 ---
+  //ComObj, Variants, XmlDom,
+  //AConsts2, AXmlNodeIntf, AXmlUtils;
+
+
 type //** @abstract(XML документ. Класс реализует интерфейс IProfXmlDocument)
-  TProfXmlDocument = class(TProfDocument, IProfXmlDocument)
+  TProfXmlDocument = class(TInterfacedObject{TProfDocument}, IProfXmlDocument)
   protected
       //** XML документ
-    FDocument: IXmlDocument;
+    FDocument: IXmlDocument; // FController: IXmlDocument;
     FDocumentElement: AProfXmlNode;
       //** Название главного элемента документа (используется при создании XML документа)
     FDocumentElementName: WideString;
       //** Имя файла XML документа
     FFileName: WideString;
-  public
-    procedure CreateDocument();
+  protected
+    FDefFileName: WideString;
+    FDefElementName: WideString;
+    FToLog: TProcToLog;
+  protected
+    function Get_DocumentElement(): IXmlNode;
   public
     function GetDocumentElement(): AProfXmlNode;
       //** Возвращает имя файла документа
@@ -51,27 +60,41 @@ type //** @abstract(XML документ. Класс реализует инте
     function LoadFromString(const Value: WideString): WordBool;
       //** Сохранить в файл
     function SaveToFile(const FileName: WideString): WordBool;
+    function SaveToString(var Value: WideString): Boolean;
       //** Открыть документ
     function OpenDocument(): AError; safecall;
       //** (не рекомендуется использовать)
 //    procedure OpenA();
   public
-    constructor Create();
-    procedure Initialize();
+    function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: String; Params: array of const): ABoolean;
+    procedure CreateDocument();
+    function Initialize(): WordBool; virtual;
   public
+    constructor Create();
+    constructor Create1(const AFileName: WideString = '';
+        const AElementName: WideString = 'Config'; AToLog: TProcToLog = nil);
+    procedure Free();
+  public
+      //** XML документ (не рекомендуется использовать)
+    property Controller: IXmlDocument read FDocument write FDocument;
+    property DefElementName: WideString read FDefElementName write FDefElementName;
+    property DefFileName: WideString read FDefFileName write FDefFileName;
       //** XML документ (не рекомендуется использовать)
     property Document: IXmlDocument read FDocument;
       //** ProfNode
     property DocumentElement: AProfXmlNode read GetDocumentElement;
+    //property DocumentElement: IXmlNode read Get_DocumentElement;
       //** Название главного элемента документа (используется при создании XML документа)
     property DocumentElementName: WideString read FDocumentElementName write FDocumentElementName;
       //** Имя файла XML документа
     property FileName: WideString read GetFileName write SetFileName;
+    property OnToLog: TProcToLog read FToLog write FToLog;
   end;
 
   // TODO: Use unXml3.TProfXmlDocument
   // XML документ
-  TProfXmlDocument1 = class(TInterfacedObject, IProfXmlDocument2006)
+  TProfXmlDocument1 = class(TProfXmlDocument, IProfXmlDocument2006)
   protected
     FDocumentElement: AProfXmlNode1;
     FEncoding: WideString;   // Набор символов = 'Windows-1251'
@@ -128,13 +151,23 @@ type //** @abstract(XML документ. Класс реализует инте
     property OnAddToLog: TAddToLog read FAddToLog write FAddToLog;
   end;
 
-  TProfXmlDocument20060314 = TProfXmlDocument2;
-
   TProfXmlDocument3 = TProfXmlDocument;
 
 implementation
 
 { TProfXmlDocument }
+
+function TProfXmlDocument.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+    const StrMsg: String; Params: array of const): ABoolean;
+begin
+  Result := False;
+  if Assigned(FToLog) then
+  try
+    //Result := (FToLog(OLE_GROUP_MESSAGE[AGroup], OLE_TYPE_MESSAGE[AType], Format(AStrMsg, AParams)) > 0);
+    Result := (FToLog(LogGroup, LogType, Format(StrMsg, Params)) > 0);
+  except
+  end;
+end;
 
 procedure TProfXmlDocument.CloseDocument();
 begin
@@ -149,6 +182,15 @@ constructor TProfXmlDocument.Create();
 begin
   inherited Create();
   FDocumentElementName := 'Config';
+end;
+
+constructor TProfXmlDocument.Create1(const AFileName: WideString = '';
+    const AElementName: WideString = 'Config'; AToLog: TProcToLog = nil);
+begin
+  inherited Create();
+  FToLog := AToLog;
+  FDefFileName := AFileName;
+  FDefElementName := AElementName;
 end;
 
 procedure TProfXmlDocument.CreateDocument();
@@ -180,6 +222,22 @@ begin
   end;
 end;
 
+{function TProfXmlDocument.CreateNode(const NameOrData: DOMString; NodeType: TNodeType = ntElement;
+    const AddlData: DOMString = ''): IXmlNode;
+begin
+  Result := TProfXmlNode.Create(CreateDOMNode(DOMDocument, NameOrData,
+    NodeType, AddlData), nil, Self);
+end;}
+
+procedure TProfXmlDocument.Free();
+begin
+  {try
+  if FDocument.FileName <> '' then FDocument.SaveToFile('');
+  except
+  end;}
+  inherited Free;
+end;
+
 function TProfXmlDocument.GetDocumentElement(): AProfXmlNode;
 begin
   if (Self.DocumentElement = 0) then
@@ -209,10 +267,74 @@ begin
   end;
 end;
 
-procedure TProfXmlDocument.Initialize();
+function TProfXmlDocument.Get_DocumentElement(): IXmlNode{TProfXmlNode};
 begin
+  Result := FDocument.DocumentElement
+  //Result := TProfXmlNode(DocumentElement);
+end;
+
+function TProfXmlDocument.Initialize(): WordBool;
+
+  procedure CreateA();
+  begin
+    // Создаем документ
+    AddToLog(lgGeneral, ltInformation, 'Создаем документ', []);
+    Controller.FileName := '';
+    // Активируем документ
+    AddToLog(lgGeneral, ltInformation, 'Активируем документ', []);
+    Controller.Active := True;
+    // Задаем кодировку
+    AddToLog(lgGeneral, ltInformation, 'Задаем кодировку "Windows-1251"', []);
+    Controller.Encoding := 'Windows-1251';
+    // Задаем версию
+    AddToLog(lgGeneral, ltInformation, 'Задаем версию "1.0"', []);
+    Controller.Version := '1.0';
+    // Задаем отступы
+    AddToLog(lgGeneral, ltInformation, 'Задаем отступы <2 пробела>', []);
+    Controller.NodeIndentStr := '  ';
+    // Создаем главный элемент документа
+    AddToLog(lgGeneral, ltInformation, 'Создаем главный элемент документа "Config"', []);
+    //if FDefElementName = '' then FDefElementName := 'Config';
+    if FDefElementName <> '' then
+    begin
+      Controller.AddChild(FDefElementName);
+      // Создаем дочерние элементы
+      AddToLog(lgGeneral, ltInformation, 'Создаем дочерние элементы', []);
+      // ...
+    end;
+  end;
+
+begin
+  Result := True;
+
+  // Проверка сущестрования директории
+  if FDefFileName <> '' then
+    ForceDirectories(ExtractFilePath(FDefFileName));
+
   if not(Assigned(FDocument)) then
     FDocument := TXmlDocument.Create(nil);
+
+  FDocument.ParseOptions := [poPreserveWhiteSpace];
+
+  if FDefFileName = '' then
+    CreateA()
+  else
+  try
+    Controller.LoadFromFile(FDefFileName);
+  except
+    on E: Exception do
+    begin
+      // Произошла ошибка при открытиии файла
+      AddToLog(lgGeneral, ltError, 'Произошла ошибка при открытиии файла конфигураций "%s"', [FDefFileName]);
+
+      CreateA();
+
+      // Сохраняем документ
+      AddToLog(lgGeneral, ltInformation, 'Сохраняем документ', []);
+      Controller.FileName := FDefFileName;
+      Controller.SaveToFile('');
+    end;
+  end;
 end;
 
 function TProfXmlDocument.LoadFromFile(const FileName: WideString): WordBool;
@@ -238,7 +360,17 @@ begin
     Result := True;
   except
   end;
+
+  {//FDocument.LoadFromXml(Value);
+  Controller.XML.Text := Value;
+  Result := True;}
 end;
+
+{function TProfXmlDocument.NewNode(const ADomNode: IDOMNode; const AParentNode: TXMLNode;
+    const OwnerDoc: TXMLDocument): TXmlNode;
+begin
+  Result := TProfXmlNode.Create(ADomNode, AParentNode, OwnerDoc);
+end;}
 
 function TProfXmlDocument.OpenDocument(): AError;
 var
@@ -296,12 +428,23 @@ begin
   end;
 end;
 
+// Use XmlDocument_SaveToFile()
 function TProfXmlDocument.SaveToFile(const FileName: WideString): WordBool;
 begin
   Result := False;
   if Assigned(FDocument) and FDocument.Active then
   try
     FDocument.SaveToFile(FileName);
+    Result := True;
+  except
+  end;
+end;
+
+function TProfXmlDocument.SaveToString(var Value: WideString): Boolean;
+begin
+  Result := False;
+  try
+    Value := Controller.XML.Text;
     Result := True;
   except
   end;
@@ -331,7 +474,7 @@ begin
   FVersion := '1.0';
   FFileName := AFileName;
 
-  FDocumentElement := AXmlNode_New(Self.GetSelf());
+  FDocumentElement := AXmlNode1_New(Self.GetSelf());
   AXmlNode_SetName(FDocumentElement, 'Config');
 
   // Если указано имя файла - загружаем
@@ -432,7 +575,7 @@ begin
       Value := Copy(Value, I, Length(Value));
       //S := strDeleteSpace(S);
 
-      Node := AXmlNode_New(0);
+      Node := AXmlNode1_New(0);
       AXmlNode_SetXml(Node, '<' + S + '/>');
       if (AnsiUpperCase(AXmlNode_GetName(Node)) = 'XML') then
       begin

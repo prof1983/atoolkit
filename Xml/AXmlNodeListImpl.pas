@@ -9,20 +9,21 @@ unit AXmlNodeListImpl;
 
 interface
 
-//uses
+uses
   //{$ifdef Delphi_XE_UP}XmlDom,{$endif}
-  //Classes, ComCtrls, ComObj, SysUtils, Variants, XmlIntf,
+  //Classes, ComCtrls, ComObj, SysUtils, Variants,
+  XmlIntf,
   //ABase, AConsts2, ATypes, AXmlCollectionImpl, AXmlCollectionIntf, AXmlDocumentImpl, AXmlNodeIntf,
   //AXml2007;
+  AXmlNodeListUtils;
 
 type
-  TProfXmlNodeList = class(TInterfacedObject{TAutoIntfObject}, IXmlNodeList)
+  AXmlString = {$ifdef Delphi_XE_Up}DOMString{$else}WideString{$endif};
+  IXmlNode = {$ifdef Delphi_XE_Up}XmlIntf.IXmlNode{$else}XmlIntf.IXmlDomNode{$endif};
+
+  TProfXmlNodeList = class //(TInterfacedObject{TAutoIntfObject}, IXmlNodeList)
   private
-    FList: IInterfaceList;
-    //FNotificationProc: TNodeListNotification;
-    //FOwner: TXMLNode;
-    FUpdateCount: Integer;
-    //FDefaultNamespaceURI: DOMString;
+    FList: AXmlNodeList_Type;
   protected // IXmlDomNodeList
     function Get_item(index: Integer): IXmlNode{IXmlDomNode}; safecall;
     function Get_length(): Integer; safecall;
@@ -35,38 +36,21 @@ type
     procedure BeginUpdate();
     procedure Clear();
     function Delete(const Index: Integer): Integer; overload;
-    {$ifdef Delphi_XE_Up}
-    function Delete(const Name: DOMString): Integer; overload;
-    function Delete(const Name, NamespaceURI: DOMString): Integer; overload;
-    {$else}
-    function Delete(const Name: WideString): Integer; overload;
-    function Delete(const Name, NamespaceURI: WideString): Integer; overload;
-    {$endif Delphi_XE_Up}
+    function Delete(const Name: AXmlString): Integer; overload;
+    function Delete(const Name, NamespaceUri: AXmlString): Integer; overload;
     procedure EndUpdate();
     function First: IXmlDomNode;
-    {$ifdef Delphi_XE_Up}
-    function FindNode(NodeName: DOMString): IXMLNode; overload;
-    function FindNode(NodeName, NamespaceURI: DOMString): IXMLNode; overload;
-    function FindNode(ChildNodeType: TGuid): IXMLNode; overload;
-    {$else}
-    function FindNode(NodeName: WideString): IXmlDomNode; overload;
-    function FindNode(NodeName, NamespaceURI: WideString): IXmlDomNode; overload;
-    function FindNode(ChildNodeType: TGuid): IXmlDomNode; overload;
-    {$endif Delphi_XE_Up}
+    function FindNode(NodeName: AXmlString): IXmlNode; overload;
+    function FindNode(NodeName, NamespaceUri: AXmlString): IXmlNode; overload;
+    function FindNode(ChildNodeType: TGuid): IXmlNode; overload;
     function FindSibling(const Node: IXmlDomNode; Delta: Integer): IXmlDomNode;
     function Get(Index: Integer): IXmlDomNode;
     function GetCount(): Integer;
     function GetNode(const IndexOrName: OleVariant): IXmlDomNode;
     function GetUpdateCount(): Integer;
-    {$ifdef Delphi_XE_Up}
-    function IndexOf(const Node: IXMLNode): Integer; overload;
-    function IndexOf(const Name: DOMString): Integer; overload;
-    function IndexOf(const Name, NamespaceURI: DOMString): Integer; overload;
-    {$else}
-    function IndexOf(const Node: IXmlDomNode): Integer; overload;
-    function IndexOf(const Name: WideString): Integer; overload;
-    function IndexOf(const Name, NamespaceURI: WideString): Integer; overload;
-    {$endif Delphi_XE_Up}
+    function IndexOf(const Node: IXmlNode): Integer; overload;
+    function IndexOf(const Name: AXmlString): Integer; overload;
+    function IndexOf(const Name, NamespaceUri: AXmlString): Integer; overload;
     procedure Insert(Index: Integer; const Node: IXmlDomNode);
     function Last(): IXmlDomNode;
     function Remove(const Node: IXmlDomNode): Integer;
@@ -76,24 +60,40 @@ type
       const IndexOrName: OleVariant; BeforeOperation: Boolean): IXmlDomNode;}
     //property DefaultNamespaceURI: DOMString read FDefaultNamespaceURI;
     function InternalInsert(Index: Integer; const Node: IXmlDomNode): Integer;
-    property List: IInterfaceList read FList;
     //property NotificationProc: TNodeListNotification read FNotificationProc;
     //property Owner: TXMLNode read FOwner;
   public
+    constructor Create(XmlNodeList: IXmlNodeList);
     {constructor Create(Owner: TXMLNode; const DefaultNamespaceURI: DOMString;
       NotificationProc: TNodeListNotification);}
   public
     property Count: Integer read GetCount;
+    property Item[index: Integer]: IXmlDomNode read Get_item; default;
+    property Length: Integer read Get_length;
+    //property List: IInterfaceList read FList;
+    //property _NewEnum: IUnknown read Get__newEnum;
     property UpdateCount: Integer read GetUpdateCount;
-  public
-    property item[index: Integer]: IXmlDomNode read Get_item; default;
-    property length: Integer read Get_length;
-    property _newEnum: IUnknown read Get__newEnum;
   end;
 
 implementation
 
 { TProfXmlNodeList }
+
+procedure TProfXmlNodeList.Clear();
+begin
+  List.Lock();
+  try
+    while (Count > 0) do
+      Remove(Get(0));
+  finally
+    List.Unlock();
+  end;
+end;
+
+procedure TProfXmlNodeList.BeginUpdate();
+begin
+  Inc(FUpdateCount);
+end;
 
 {constructor TProfXmlNodeList.Create(Owner: TXMLNode;
   const DefaultNamespaceURI: DOMString; NotificationProc: TNodeListNotification);
@@ -105,14 +105,10 @@ begin
   inherited Create;
 end;}
 
-procedure TProfXmlNodeList.BeginUpdate;
+constructor TProfXmlNodeList.Create(XmlNodeList: IXmlNodeList);
 begin
-  Inc(FUpdateCount);
-end;
-
-procedure TProfXmlNodeList.EndUpdate;
-begin
-  Dec(FUpdateCount);
+  inherited Create();
+  FList := XmlNodeList;
 end;
 
 {function TProfXmlNodeList.DoNotify(Operation: TNodeListOperation; const Node: IXMLNode;
@@ -122,6 +118,11 @@ begin
   if Assigned(NotificationProc) then
     NotificationProc(Operation, Result, IndexOrName, BeforeOperation);
 end;}
+
+procedure TProfXmlNodeList.EndUpdate();
+begin
+  Dec(FUpdateCount);
+end;
 
 function TProfXmlNodeList.GetCount: Integer;
 begin
@@ -249,17 +250,10 @@ end;
 
 function TProfXmlNodeList.GetNode(const IndexOrName: OleVariant): IXMLNode;
 begin
-  {if VarIsOrdinal(IndexOrName) then
-    Result := List.Get(IndexOrName) as IXMLNode
+  if VarIsOrdinal(IndexOrName) then
+    Result := AXmlNodeList_GetNodeByIndex(IndexOrName)
   else
-  begin
-    Result := FindNode(WideString(IndexOrName));
-    if not Assigned(Result) and
-      (doNodeAutoCreate in Owner.OwnerDocument.Options) then
-      Result := DoNotify(nlCreateNode, nil, IndexOrName, True);
-    if not Assigned(Result) then
-      XMLDocError(SNodeNotFound, [IndexOrName]);
-  end;}
+    Result := AXmlNodeList_GetNodeByName(IndexOrName);
 end;
 
 function TProfXmlNodeList.Add(const Node: IXMLNode): Integer;
@@ -389,17 +383,6 @@ end;
 
 procedure TProfXmlNodeList.Reset();
 begin
-end;
-
-procedure TProfXmlNodeList.Clear;
-begin
-  List.Lock;
-  try
-    while Count > 0 do
-      Remove(Get(0));
-  finally
-    List.Unlock;
-  end;
 end;
 
 function TProfXmlNodeList.GetUpdateCount: Integer;

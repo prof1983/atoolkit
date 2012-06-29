@@ -11,7 +11,7 @@ interface
 
 uses
   SysUtils, Dialogs, ExtCtrls, Forms, Windows, StrUtils, Math,
-  ABase2, ATypes;
+  ABase2, ABaseUtils2, ATypes;
 
 type // Простые типы -----------------------------------------------------------
   TArrayChar08 = array of Char08;

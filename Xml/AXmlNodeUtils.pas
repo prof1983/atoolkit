@@ -53,7 +53,7 @@ function AXmlNode2_New(Node: IXmlNode): AProfXmlNode2;
 implementation
 
 uses
-  AXml2007;
+  AXml2007, AXmlNodeImpl;
 
 // --- AXmlNode ---
 
@@ -105,7 +105,10 @@ end;
 
 function AXmlNode_GetChildNodes(Node: AXmlNode): AXmlCollection;
 begin
-  Result := TProfXmlNode2(Node).ChildNodes.NodeByName['object'];
+  if (TObject(Node) is TProfXmlNode2) then
+    Result := TProfXmlNode2(Node).ChildNodes.NodeByName['object']
+  else
+    Result := 0;
 end;
 
 function AXmlNode_GetCollection(Node: AXmlNode): AXmlCollection;

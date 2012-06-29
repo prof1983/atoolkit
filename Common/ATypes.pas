@@ -2,7 +2,7 @@
 @Abstract(Глобальные типы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(20.02.2007)
-@LastMod(27.06.2012)
+@LastMod(29.06.2012)
 @Version(0.5)
 
 0.0.5.8 - 30.12.2011
@@ -563,6 +563,26 @@ type
       //** Имя
     Name: WideString;
   end;
+
+  {** Опции удаления пробелов в функции StrDeleteStace }
+  TDeleteSpaceOptions = (
+    dsFirst,  //**< Первые
+    dsLast,   //**< Последние
+    dsRep     //**< Повторяющиеся
+    );
+  TDeleteSpaceOptionsSet = set of TDeleteSpaceOptions;
+
+  TDeleteSpaceOption = TDeleteSpaceOptions;
+  TDeleteSpaceOptionSet = TDeleteSpaceOptionsSet;
+
+  {** Атрибут (Name="Value") }
+  TAttribute = record
+    Name: WideString;
+    Value: WideString;
+  end;
+
+  {** Атрибуты (Name1="Value1" Name2="Value2") }
+  TAttributes = array of TAttribute;
 
 implementation
 

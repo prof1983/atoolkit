@@ -2,7 +2,7 @@
 @Abstract(Класс работы с XML нодами)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(07.03.2007)
-@LastMod(28.06.2012)
+@LastMod(29.06.2012)
 @Version(0.5)
 }
 unit AXmlNodeIntf;
@@ -31,7 +31,7 @@ type // IProfXml
     //function Get_NodeValue(): WideString; safecall;
     // Вернуть в виде строки со всеми нодами
     //function Get_Xml(): WideString; safecall;
-    function GetXmlB(): WideString; safecall;
+    function GetXmlB(): WideString;
     // Установить/Создать атрибут
     //procedure Set_Attribute(const Name, Value: WideString); safecall;
     //procedure Set_NodeName(const Value: WideString); safecall;

@@ -2,7 +2,7 @@
 @Abstract(Базовый модуль основных типов и их преобразования. Базовые функции for Delphi 5,7,9)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.06.2004)
-@LastMod(21.06.2012)
+@LastMod(29.06.2012)
 @Version(0.5)
 }
 unit ABaseUtils3;
@@ -58,15 +58,6 @@ const // Глобальные константы -------------------------------
   timeHour: TDateTime64 = 1 / 24; //Величина 1 часа в типе TDateTime064
   timeMin: TDateTime64 = 1 / (24 * 60);
   timeSec: TDateTime64 = 1 / (24 * 60 * 60);
-
-// -----------------------------------------------------------------------------
-type // Опции удаления пробелов в функции strDeleteStace -----------------------
-  TDeleteSpaceOptions = (
-    dsFirst,  // Первые
-    dsLast,   // Последние
-    dsRep     // Повторяющиеся
-    );
-  TSetDeleteSpaceOptions = set of TDeleteSpaceOptions;
 
 type // ------------------------------------------------------------------------
   TVariantType = type UInt032;
@@ -244,7 +235,6 @@ function _StrToUInt08(const S: String; var Value: UInt08): UInt32;
 function _StrToUInt16(const S: String; var Value: UInt16): UInt32;
 function _StrToUInt32(const S: String; var Value: UInt32): UInt32;
 function _StrToUInt64(const S: String; var Value: UInt64): UInt32;
-function _strDeleteSpace(var S: String; Options: TSetDeleteSpaceOptions): TError;
 
 function cBoolToStr(Value: Boolean): String;
 function cFloat64ToStr(Value: Float64): String;
@@ -254,7 +244,6 @@ function cUInt16ToStr(I: UInt16): String;
 procedure strAdd(var Str: String; S2: String);
 function strCopy(SIn: String; Index, Count: Int32): String;
 function strDelete(var St: String; Index, Count: UInt32): TError;
-function strDeleteSpace(SIn: String; Options: TSetDeleteSpaceOptions = [dsFirst, dsLast, dsRep]): String;
 function Tag(Name, Value: String): String;
 function TagUInt32(Name: String; Value: UInt32): String;
 function TagUInt64(Name: String; Value: UInt64): String;
@@ -1478,51 +1467,6 @@ begin
   Val(S, Value, Result);
 end;
 
-function _strDeleteSpace(var S: String; Options: TSetDeleteSpaceOptions): TError;
-// Удаление префиксных, постфиксных, повторяющихся пробелов и префиксных и поствиксных #13#10
-var
-  B: Boolean;
-  I: UInt32;
-begin
-  repeat
-  B := False;
-
-  Result := 0;
-  if (strLength(S) = 0) then Exit;
-  // Удаление префиксных пробелов
-  if (dsFirst in Options) then while (S[1] = ' ') do begin
-    strDelete(S, 1, 1);
-    if strLength(S) = 0 then Exit;
-    B := True;
-  end;
-  // Удаление постфиксных пробелов
-  if (dsLast in Options) then while (S[strLength(S)] = ' ') do begin
-    strDelete(S, strLength(S), 1);
-    if strLength(S) = 0 then Exit;
-    B := True
-  end;
-  // Удаление повторяющихся промежуточных пробелов
-  if (dsRep in Options) then repeat
-    I := strPos(S, '  ');
-    if I = 0 then Break;
-    Delete(S, I, 1);
-  until False;
-
-  // Удаление префиксных #13#10
-  if (Length(S) >= 2) and (S[1]=#13) and (S[2]=#10) then begin
-    Delete(S, 1, 2);
-    B := True;
-  end;
-  // Удаление постфиксных #13#10
-  if (Length(S) >= 2) and (S[Length(S)-1]=#13) and (S[Length(S)]=#10) then begin
-    Delete(S, Length(S)-1, 2);
-    B := True;
-  end;
-
-  // Повтор удаления
-  until (B = False);
-end;
-
 function cUInt08ToChar(I: UInt08): Char;
 begin
   Result := Chr(I);
@@ -1552,13 +1496,6 @@ function strDelete(var St: String; Index, Count: UInt32): TError;
 begin
   Delete(St, Index, Count);
   Result := 0;
-end;
-
-function strDeleteSpace(SIn: String; Options: TSetDeleteSpaceOptions): String;
-begin
-  Result := ''; if (strLength(SIn) = 0) then Exit;
-  Result := SIn;
-  _strDeleteSpace(Result, Options);
 end;
 
 function Tag(Name, Value: String): String;

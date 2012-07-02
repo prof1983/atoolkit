@@ -21,6 +21,7 @@ type // Простые типы
   AFloat64 = Double;
   AInt32 = LongInt;
   AInt64 = Int64;
+  AUInt08 = Byte;
   AUInt16 = Word;
   AUInt32 = LongWord;
   AUInt64 = Int64;

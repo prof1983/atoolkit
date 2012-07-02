@@ -2,7 +2,7 @@
 @Abstract(Глобальные типы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(20.02.2007)
-@LastMod(29.06.2012)
+@LastMod(02.07.2012)
 @Version(0.5)
 
 0.0.5.8 - 30.12.2011
@@ -33,7 +33,7 @@ type
   Int16 = SmallInt;
   Int32 = AInt32;
   //Int64 = Int64;
-  UInt08 = Byte;
+  UInt08 = AUInt08;
   UInt16 = AUInt16;
   UInt32 = AUInt32;
   IntPtr = Int32;

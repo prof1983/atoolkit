@@ -2,7 +2,7 @@
 @Abstract(AXmlNode functions)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(28.06.2012)
-@LastMod(29.06.2012)
+@LastMod(02.07.2012)
 @Version(0.5)
 }
 unit AXmlNodeUtils;
@@ -40,6 +40,22 @@ function AXmlNode_GetCollection(Node: AXmlNode): AXmlCollection;
 function AXmlNode_GetDocument(Node: AXmlNode): AXmlDocument;
 
 function AXmlNode_GetName(Node: AXmlNode): APascalString;
+
+function AXmlNode_GetValueAsBool(Node: AXmlNode; out Value: ABoolean): AError;
+
+function AXmlNode_GetValueAsDateTime(Node: AXmlNode; out Value: TDateTime): AError;
+
+function AXmlNode_GetValueAsInt(Node: AXmlNode; out Value: AInt): AError;
+
+function AXmlNode_GetValueAsInt32(Node: AXmlNode; out Value: AInt32): AError;
+
+function AXmlNode_GetValueAsInt64(Node: AXmlNode; out Value: AInt64): AError;
+
+function AXmlNode_GetValueAsString(Node: AXmlNode; out Value: WideString): AError;
+
+function AXmlNode_GetValueAsUInt08(Node: AXmlNode; out Value: AUInt08): AError;
+
+function AXmlNode_GetValueAsUInt64(Node: AXmlNode; out Value: AUInt64): AError;
 
 function AXmlNode_GetXmlA(Node: AXmlNode; const Prefix: APascalString): APascalString;
 
@@ -98,7 +114,9 @@ end;
 function AXmlNode_GetAttributeValue(Node: AXmlNode; const Name: APascalString): APascalString;
 begin
   if (TObject(Node) is TProfXmlNode1) then
-    Result := TProfXmlNode1(Node).Attributes[Name]
+    Result := TProfXmlNode1(Node).GetAttribute(Name)
+  else if (TObject(Node) is TProfXmlNode2) then
+    Result := TProfXmlNode2(Node).GetAttribute(Name)
   else
     Result := '';
 end;
@@ -164,8 +182,154 @@ function AXmlNode_GetName(Node: AXmlNode): APascalString;
 begin
   if (TObject(Node) is TProfXmlNode1) then
     Result := TProfXmlNode1(Node).GetName()
+  else if (TObject(Node) is TProfXmlNode2) then
+    Result := TProfXmlNode2(Node).GetName()
   else
     Result := '';
+end;
+
+function AXmlNode_GetValueAsBool(Node: AXmlNode; out Value: ABoolean): AError;
+begin
+  if (Node = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if (TObject(Node) is TProfXmlNode1) then
+  begin
+    if TProfXmlNode1(Node).GetValueAsBool(Value) then
+      Result := 0
+    else
+      Result := -4;
+  end
+  else
+    Result := -3;
+end;
+
+function AXmlNode_GetValueAsDateTime(Node: AXmlNode; out Value: TDateTime): AError;
+begin
+  if (Node = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if (TObject(Node) is TProfXmlNode1) then
+  begin
+    if TProfXmlNode1(Node).GetValueAsDateTime(Value) then
+      Result := 0
+    else
+      Result := -4;
+  end
+  else
+    Result := -3;
+end;
+
+function AXmlNode_GetValueAsInt(Node: AXmlNode; out Value: AInt): AError;
+begin
+  if (Node = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if (TObject(Node) is TProfXmlNode1) then
+  begin
+    if TProfXmlNode1(Node).GetValueAsInteger(Value) then
+      Result := 0
+    else
+      Result := -4;
+  end
+  else
+    Result := -3;
+end;
+
+function AXmlNode_GetValueAsInt32(Node: AXmlNode; out Value: AInt32): AError;
+begin
+  if (Node = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if (TObject(Node) is TProfXmlNode1) then
+  begin
+    if TProfXmlNode1(Node).GetValueAsInt32(Value) then
+      Result := 0
+    else
+      Result := -4;
+  end
+  else
+    Result := -3;
+end;
+
+function AXmlNode_GetValueAsInt64(Node: AXmlNode; out Value: AInt64): AError;
+begin
+  if (Node = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if (TObject(Node) is TProfXmlNode1) then
+  begin
+    if TProfXmlNode1(Node).GetValueAsInt64(Value) then
+      Result := 0
+    else
+      Result := -4;
+  end
+  else
+    Result := -3;
+end;
+
+function AXmlNode_GetValueAsString(Node: AXmlNode; out Value: WideString): AError;
+begin
+  if (Node = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if (TObject(Node) is TProfXmlNode1) then
+  begin
+    if TProfXmlNode1(Node).GetValueAsString(Value) then
+      Result := 0
+    else
+      Result := -4;
+  end
+  else
+    Result := -3;
+end;
+
+function AXmlNode_GetValueAsUInt08(Node: AXmlNode; out Value: AUInt08): AError;
+begin
+  if (Node = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if (TObject(Node) is TProfXmlNode1) then
+  begin
+    if TProfXmlNode1(Node).GetValueAsUInt08(Value) then
+      Result := 0
+    else
+      Result := -4;
+  end
+  else
+    Result := -3;
+end;
+
+function AXmlNode_GetValueAsUInt64(Node: AXmlNode; out Value: AUInt64): AError;
+begin
+  if (Node = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if (TObject(Node) is TProfXmlNode1) then
+  begin
+    if TProfXmlNode1(Node).GetValueAsUInt64(Value) then
+      Result := 0
+    else
+      Result := -4;
+  end
+  else
+    Result := -3;
 end;
 
 function AXmlNode_GetXmlA(Node: AXmlNode; const Prefix: APascalString): APascalString;

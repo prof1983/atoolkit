@@ -10,22 +10,23 @@ unit AXmlCollectionImpl;
 interface
 
 uses
+  XmlIntf,
   ABase, AXmlCollectionIntf, AXmlNodeIntf, AXmlNodeUtils;
 
 type
   // Коллекция нодов
   TProfXmlCollection = class(TInterfacedObject, IProfXmlCollection)
   protected
+    FCollection: IXmlNodeCollection;
     FNodes: array of AProfXmlNode;
     FOwner: AProfXmlNode;
   public // IProfXmlCollection
-    function DeleteNode(Node: AProfXmlNode2{IProfXmlNode2006}): WordBool;
+    function DeleteNode(Node: AProfXmlNode): WordBool;
     function GetCount(): Integer;
     function GetNode(Index: Integer): AProfXmlNode;
-    //function Get_Node(Index: Integer): AProfXmlNode2;
   public
     function AddChild(const AName: WideString): AProfXmlNode;
-    procedure AddNode(ANode: AProfXmlNode);
+    procedure AddNode(Node: AProfXmlNode); deprecated; // Use NewNode()
     procedure Clear();
     function FindNode(Name: WideString): AProfXmlNode;
     procedure Free();
@@ -34,6 +35,7 @@ type
     function NewNode(const Name: WideString): AProfXmlNode;
   public
     constructor Create(AOwner: AProfXmlNode);
+    constructor Create2(Collection: IXmlNodeCollection);
   public
     //property Count: Integer read GetCount;
     property Nodes[Index: Integer]: AProfXmlNode read GetNode;
@@ -49,14 +51,16 @@ begin
   Result := NewNode(AName);
 end;
 
-procedure TProfXmlCollection.AddNode(ANode: AProfXmlNode);
+procedure TProfXmlCollection.AddNode(Node: AProfXmlNode);
 var
   I: Int32;
   Document: AXmlDocument;
 begin
   I := Length(FNodes);
   SetLength(FNodes, I + 1);
-  FNodes[I] := ANode;
+  FNodes[I] := Node;
+
+  // Only if (TObject(Node) is TProfXmlNode1) then
   Document := AXmlNode_GetDocument(FOwner);
   AXmlNode_SetDocument(FNodes[I], Document);
 end;
@@ -76,20 +80,28 @@ begin
   FOwner := AOwner;
 end;
 
-function TProfXmlCollection.DeleteNode(Node: AProfXmlNode2{IProfXmlNode2006}): WordBool;
+constructor TProfXmlCollection.Create2(Collection: IXmlNodeCollection);
+begin
+  inherited Create();
+  FCollection := Collection;
+end;
+
+function TProfXmlCollection.DeleteNode(Node: AProfXmlNode): WordBool;
 var
   I: Integer;
   I2: Integer;
 begin
   Result := False;
   for I := 0 to High(FNodes) do
-    if (AProfXmlNode2{IProfXmlNode2006}(FNodes[I]) = Node) then
+  begin
+    if (FNodes[I] = Node) then
     begin
       for I2 := I to High(FNodes) - 1 do
         FNodes[I2] := FNodes[I2 + 1];
       Result := True;
       Exit;
     end;
+  end;
 end;
 
 function TProfXmlCollection.FindNode(Name: WideString): AProfXmlNode;

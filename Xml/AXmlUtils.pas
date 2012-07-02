@@ -2,7 +2,7 @@
 @abstract(ProfXml)
 @author(Prof1983 prof1983@ya.ru)
 @created(15.02.2012)
-@lastmod(25.04.2012)
+@lastmod(02.07.2012)
 @version(0.5)
 }
 unit AXmlUtils;
@@ -48,7 +48,11 @@ implementation
 
 function ProfXmlNode_GetAttribute(Node: IXmlNode; const AttrName: DOMString): OleVariant;
 begin
-  if not(Assigned(Node)) then Exit;
+  if not(Assigned(Node)) then
+  begin
+    Result := NULL;
+    Exit;
+  end;
   Result := Node.Attributes[AttrName];
 end;
 

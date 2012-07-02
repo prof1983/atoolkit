@@ -14,10 +14,9 @@ uses
 
 type
   IProfXmlCollection = interface
-    function DeleteNode(Node: AProfXmlNode2{IProfXmlNode2006}): WordBool;
+    function DeleteNode(Node: AProfXmlNode): WordBool;
     function GetCount(): Integer;
     function GetNode(Index: Integer): AProfXmlNode;
-    //function Get_Node(Index: Integer): AProfXmlNode2; deprecated; - Use GetNode()
 
     property Count: Integer read GetCount;
     property Nodes[Index: Integer]: AProfXmlNode read GetNode;

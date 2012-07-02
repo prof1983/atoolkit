@@ -177,7 +177,7 @@ type
     MsgData: Pointer;
   end;
 
-  AXmlCollection = type AInt; // TProfXmlCollection
+  AXmlNodeCollection = type AInt; // TProfXmlCollection
   AXmlDocument = type AInt; // AXmlDocumentImpl.TProfXmlDocument or TProfXmlDocument1
   AProfXmlDocument = type AXmlDocument; // AXmlDocumentImpl.TProfXmlDocument
   AProfXmlDocument1 = type Integer; // TProfXmlDocument1

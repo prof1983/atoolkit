@@ -23,7 +23,7 @@ type //** @abstract(Интерфейс работы с нодами XML)
     function Get_Attribute_Name(Index: Integer): WideString;
     function Get_Attribute_Value(Index: Integer): WideString;
     // Возвращает коллекцию вложеных нодов
-    function Get_Collection(): AXmlCollection;
+    function Get_Collection(): AXmlNodeCollection;
     function Get_NodeName(): WideString;
     function Get_NodeValue(): WideString;
     // Вернуть в виде строки со всеми нодами
@@ -40,7 +40,7 @@ type //** @abstract(Интерфейс работы с нодами XML)
     property Attribute_Name[Index: Integer]: WideString read Get_Attribute_Name;
     property Attribute_Value[Index: Integer]: WideString read Get_Attribute_Value;
     // Коллекция вложеных нодов
-    property Collection: AXmlCollection read Get_Collection;
+    property Collection: AXmlNodeCollection read Get_Collection;
     property NodeName: WideString read Get_NodeName write Set_NodeName;
     property NodeValue: WideString read Get_NodeValue write Set_NodeValue;
     // В виде строки со всеми нодами
@@ -84,7 +84,7 @@ type //** @abstract(Интерфейс работы с нодами XML)
     function ReadUInt08(const AName: WideString; var Value: UInt08): WordBool; safecall;
     function ReadUInt16(const AName: WideString; var Value: UInt16): WordBool; safecall;
     function ReadUInt32(const AName: WideString; var Value: UInt32): WordBool; safecall;
-    function ReadUInt64(const AName: WideString; var Value: UInt64): WordBool; safecall;
+    function ReadUInt64(const AName: WideString; var Value: AUInt64): WordBool; safecall;
     //function ReadWideString(const AName: WideString; var Value: WideString): WordBool; safecall; - Use ReadString()
 
     function WriteBool(const AName: WideString; Value: WordBool): WordBool; safecall;

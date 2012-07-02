@@ -14,11 +14,8 @@ interface
 uses
   Classes, SysUtils, Variants, XmlDom, XmlIntf,
   AAttributesIntf, ABase, ABaseUtils2, AConsts2, AEntityImpl, ANodeIntf, ATypes,
-  AXmlAttributesImpl, AXmlAttributesUtils, AXmlCollectionImpl, AXmlDocumentImpl,
+  AXmlAttributesImpl, AXmlAttributesUtils, AXmlCollectionImpl, AXmlCollectionUtils, AXmlDocumentImpl,
   AXmlNodeIntf, AXmlNodeListUtils, AXmlNodeUtils, AXmlUtils;
-  // --- for TProfXmlNode4 ---
-  //ComObj, XmlDoc,
-
 
 type //** Класс работы с XML нодами
   TProfXmlNode = class(TANamedEntity, IProfNode)
@@ -136,7 +133,7 @@ type //** Класс работы с XML нодами
     FNode: IXmlNode{TXmlNode}; //FController: IXmlNode;
   protected // --- from FProfXmlNode1 ---
     FAttributes: TAttributes;
-    FCollection: AXmlCollection{TProfXmlCollection};
+    FCollection: AXmlNodeCollection;
     FDocument: TProfXmlDocument1;
     FName: WideString;
     FValue: WideString;
@@ -151,7 +148,7 @@ type //** Класс работы с XML нодами
     function Get_Attribute_Name(Index: Integer): WideString;
     function Get_Attribute_Value(Index: Integer): WideString;
       {** Возвращает коллекцию вложеных нодов }
-    function Get_Collection(): AXmlCollection{IXmlNodeCollection};
+    function Get_Collection(): AXmlNodeCollection;
     function Get_NodeName(): WideString;
     function Get_NodeValue(): WideString;
     function Get_Xml(): WideString;
@@ -197,7 +194,7 @@ type //** Класс работы с XML нодами
     function ReadUInt08(const AName: WideString; var Value: UInt08): WordBool; virtual; safecall;
     function ReadUInt16(const AName: WideString; var Value: UInt16): WordBool; virtual; safecall;
     function ReadUInt32(const AName: WideString; var Value: UInt32): WordBool; virtual; safecall;
-    function ReadUInt64(const AName: WideString; var Value: UInt64): WordBool; virtual; safecall;
+    function ReadUInt64(const AName: WideString; var Value: AUInt64): WordBool; virtual; safecall;
     //function ReadWideString(const AName: WideString; var Value: WideString): WordBool; virtual; safecall;
   public // IProfXmlNode2
     function WriteBool(const AName: WideString; Value: WordBool): WordBool; virtual; safecall;
@@ -222,7 +219,7 @@ type //** Класс работы с XML нодами
   public
     function GetAttribute(const Name: WideString; UpperCase: Boolean = False): WideString;
     function GetChildNodes(): AXmlNodeList;
-    function GetCollection(): AXmlCollection{IXmlNodeCollection};
+    function GetCollection(): AXmlNodeCollection;
     function GetCountNodes(): Integer;
     function GetName(): WideString;
       {** @return TProfXmlNode1 or TProfXmlNode2 }
@@ -247,7 +244,7 @@ type //** Класс работы с XML нодами
         const AStrMsg: string; AParams: array of const): Boolean;
     function Clear(): AError;
       {** @return TProfXmlNode1 }
-    function FindNode(const Name: WideString): AProfXmlNode;
+    function FindNode(const Name: WideString): AProfXmlNode; deprecated;
     function Load(): Boolean; virtual;
       {** @param Xml - TProfXmlNode4 or TProfXmlNode2 }
     function LoadFromXml(Xml: AProfXmlNode{TProfXmlNode1}): Boolean;
@@ -297,7 +294,7 @@ type //** Класс работы с XML нодами
     property AsString: WideString read _GetValueAsString write _SetValueAsString;
     //property AsString: WideString read GetAsString write SetAsString;
       {** Коллекция вложеных нодов }
-    property Collection: AXmlCollection{TProfXmlCollection} read FCollection; //property Collection: IXmlNodeCollection read GetCollection;
+    property Collection: AXmlNodeCollection read GetCollection;
     property Document: TProfXmlDocument1 read FDocument;
     property Node: IXmlNode read FNode; //implements IXmlNode;
     property NodeName: WideString read GetNodeName write SetNodeName;
@@ -605,16 +602,7 @@ end;
 
 function TProfXmlNode.GetNodeCount(): Integer;
 begin
-  if not(Assigned(FNode)) then
-  begin
-    Result := -1;
-    Exit;
-  end;
-  try
-    Result := FNode.ChildNodes.Count;
-  except
-    Result := -1;
-  end;
+  Result := AXmlNode_GetChildNodeCount(AXmlNode(Self));
 end;
 
 function TProfXmlNode.GetNodeName(): WideString;
@@ -1180,16 +1168,16 @@ end;
 function TProfXmlNode2.Clear(): AError;
 begin
   SetLength(FAttributes, 0);
-  AXmlCollection_Clear();
-  xxx
-  FCollection.Clear();
+  AXmlNodeCollection_Clear(FCollection);
   Result := 0;
 end;
 
 constructor TProfXmlNode2.Create(Node: IXmlNode);
 begin
   inherited Create;
-  FNode := Node; //TXmlNode.Create(CreateDOMNode(
+  FNode := Node;
+  if Assigned(FNode) then
+    FCollection := AXmlNodeCollection_New2(FNode.Collection);
 end;
 {constructor TProfXmlNode2.Create(const ADomNode: IDOMNode; const AParentNode: TXMLNode; const OwnerDoc: TXMLDocument);
 begin
@@ -1206,7 +1194,7 @@ begin
   inherited Create();
   FNode := nil;
   Self._AddRef();
-  FCollection := TProfXmlCollection.Create(AProfXmlNode1(Self));
+  FCollection := AXmlNodeCollection_New1(AProfXmlNode1(Self));
   FDocument := TProfXmlDocument1(Document);
   FName := '';
   FValue := '';
@@ -1214,14 +1202,14 @@ end;
 
 function TProfXmlNode2.FindNode(const Name: WideString): AProfXmlNode;
 begin
-  Result := FCollection.FindNode(Name);
+  Result := AProfXmlNode(Self.GetNodeByName1(Name));
 end;
 
 procedure TProfXmlNode2.Free();
 begin
   Clear();
-  FCollection.Free();
-  FCollection := nil;
+  AXmlNodeCollection_Free(FCollection);
+  FCollection := 0;
   Self._Release();
   inherited Free;
 end;
@@ -1319,30 +1307,30 @@ end;
 function TProfXmlNode2.GetChildNodes(): AXmlNodeList;
 begin
   if (FChildNodes = 0) then
-    FChildNodes := AXmlNodeList_New(FNode.ChildNodes);
+  begin
+    if Assigned(FNode) then
+      FChildNodes := AXmlNodeList_New(FNode.ChildNodes)
+    else
+      FChildNodes := AXmlNodeList_New(nil);
+  end;
   Result := FChildNodes;
 end;
 
-function TProfXmlNode2.GetCollection(): AXmlCollection{IXmlNodeCollection};
+function TProfXmlNode2.GetCollection(): AXmlNodeCollection;
 begin
-  if not(Assigned(FCollection)) then
+  if (FCollection = 0) then
   begin
     if Assigned(FNode) then
-      FCollection := TProfXmlCollection.Create2(FNode.Collection)
+      FCollection := AXmlNodeCollection_New2(FNode.Collection)
     else
-      FCollection := TProfXmlCollection.Create(AProfXmlNode(Self));
+      FCollection := AXmlNodeCollection_New1(AProfXmlNode(Self));
   end;
   Result := FCollection;
 end;
 
 function TProfXmlNode2.GetCountNodes(): Integer;
 begin
-  if Assigned(FNode) then
-    Result := FNode.Collection.Count
-  else if Assigned(FCollection) then
-    Result := FCollection.GetCount()
-  else
-    Result := 0;
+  Result := AXmlNode_GetChildNodeCount(AXmlNode(Self));
 end;
 
 function TProfXmlNode2.GetName(): WideString;
@@ -1370,8 +1358,8 @@ begin
     else
       Result := nil;
   end
-  else if Assigned(FCollection) then
-    Result := TProfXmlNode1(FCollection.Nodes[Index])
+  else if (FCollection <> 0) then
+    Result := TProfXmlNode2(AXmlNodeCollection_GetNode(FCollection, Index))
   else
     Result := nil;
 end;
@@ -1396,6 +1384,7 @@ end;
 function TProfXmlNode2.GetNodeByName1(const Name: WideString): TProfXmlNode2;
 var
   Node: IXmlNode;
+  Nodes: AXmlNodeList;
 begin
   if Assigned(FNode) then
   begin
@@ -1412,10 +1401,11 @@ begin
     // Создание оболочки нода
     Result := TProfXmlNode2.Create(Node);
   end
-  else if Assigned(FCollection) then
-    Result := TProfXmlNode1(FCollection.NodesByName[Name])
   else
-    Result := nil;
+  begin
+    Nodes := Self.GetChildNodes();
+    Result := TProfXmlNode2(AXmlNodeList_GetNodeByName1(Nodes, Name));
+  end;
 end;
 
 (*function TProfXmlNode2.GetNodeByName2(const Name: WideString): IProfXmlNode;
@@ -1623,6 +1613,7 @@ function TProfXmlNode2.GetXmlA(Prefix: WideString): WideString;
 var
   I: Int32;
   Attr: WideString;
+  Child: AXmlNode;
 begin
   // Атрибуты
   Attr := '';
@@ -1632,9 +1623,10 @@ begin
   if (GetCountNodes > 0) then
   begin
     Result := Prefix + '<'+FName+Attr+'>' + #13#10;
-    for I := 0 to FCollection.GetCount() - 1 do
+    for I := 0 to AXmlNodeCollection_GetCount(FCollection) - 1 do
     begin
-      Result := Result + TProfXmlNode1(FCollection.Nodes[I]).GetXmlA(Prefix + '  ');
+      Child := AXmlNodeCollection_GetNode(FCollection, I);
+      Result := Result + AXmlNode_GetXmlA(Child, Prefix + '  ');
     end;
     Result := Result + Prefix + '</'+FName+'>'+#13#10;
   end else begin
@@ -1645,17 +1637,21 @@ end;
 function TProfXmlNode2.GetXmlB(): WideString;
 var
   I: Int32;
+  Nodes: AXmlNodeList;
+  Child: AXmlNode;
 begin
-  if not(Assigned(FCollection)) then
+  Nodes := GetChildNodes();
+  if (Nodes = 0) then
   begin
     Result := '';
     Exit;
   end;
 
   Result := '';
-  for I := 0 to FCollection.GetCount() - 1 do
+  for I := 0 to AXmlNodeList_GetCount(Nodes) - 1 do
   begin
-    Result := Result + TProfXmlNode1(FCollection.Nodes[I]).GetXml;
+    Child := AXmlNodeList_GetNodeByIndex(Nodes, I);
+    Result := Result + AXmlNode_GetXml(Child);
   end;
 end;
 
@@ -1680,9 +1676,9 @@ begin
     Result := '';
 end;
 
-function TProfXmlNode2.Get_Collection(): AXmlCollection{IXmlNodeCollection};
+function TProfXmlNode2.Get_Collection(): AXmlNodeCollection;
 begin
-  Result := Self.GetCollection(); //Result := AXmlCollection(FCollection);
+  Result := Self.GetCollection();
 end;
 
 function TProfXmlNode2.Get_NodeName(): WideString;
@@ -1709,34 +1705,43 @@ function TProfXmlNode2.LoadFromXml(Xml: AProfXmlNode{TProfXmlNode1}): Boolean;
 var
   ANode: TProfXmlNode1;
   I: Int32;
+  Xml1: TProfXmlNode2;
 begin
+  Xml1 := TProfXmlNode2(Xml);
   Result := False;
-  if not(Assigned(Xml)) then Exit;
-  FValue := Xml.FValue;
-  for I := 0 to Xml.GetCountNodes do
+  if not(Assigned(Xml1)) then Exit;
+  FValue := Xml1.FValue;
+  for I := 0 to Xml1.GetCountNodes do
   begin
-    ANode := Xml.GetNode(I);
-    GetNodeByName(ANode.GetName).LoadFromXml(ANode);
+    ANode := Xml1.GetNode(I);
+    TProfXmlNode2(GetNodeByName(ANode.GetName)).LoadFromXml(AProfXmlNode(ANode));
   end;
   Result := True;
 end;
 
 function TProfXmlNode2.NewNode(const ANodeName: WideString): AProfXmlNode;
+var
+  Node: AXmlNode;
+  Nodes: AXmlNodeList;
 begin
   if Assigned(FNode) then
-    Result := TProfXmlNode2.Create(FNode.AddChild(ANodeName))
-  else if Assigned(FCollection) then
-    Result := TProfXmlNode1(FCollection.NewNode(ANodeName))
+    Result := AProfXmlNode(TProfXmlNode2.Create(FNode.AddChild(ANodeName)))
+  else if Assigned(Self.FDocument) then
+  begin
+    Node := AXmlNode1_New(AXmlDocument(Self.FDocument));
+    Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
+    Result := AXmlNodeList_Add(Nodes, Node);
+  end
   else
   begin
-    Result := nil;
+    Result := 0;
     Exit;
   end;
 end;
 
 function TProfXmlNode2.NodeExist(AName: WideString): Boolean;
 begin
-  Result := Assigned(FindNode(AName));
+  Result := (FindNode(AName) <> 0);
 end;
 
 function TProfXmlNode2.ReadBool(const AName: WideString; var Value: WordBool): WordBool;
@@ -1745,6 +1750,7 @@ var
   Node1: AProfXmlNode;
   V: ABoolean;
   Res: AError;
+  Nodes: AXmlNodeList;
 begin
   if Assigned(FNode) then
   begin
@@ -1762,18 +1768,24 @@ begin
     Value := Node.NodeValue;
     Result := True;
   end
-  else if Assigned(FCollection) then
+  else
   begin
-    Node1 := FCollection.FindNode(AName); //Node := FindNode(AName);
+    Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
+    if (Nodes = 0) then
+    begin
+      Result := False;
+      Exit;
+    end;
+    Node1 := AXmlNodeList_FindNode(Nodes, AName);
+    if (Node1 = 0) then
+    begin
+      Result := False;
+      Exit;
+    end;
     V := Value;
     Res := AXmlNode_GetValueAsBool(Node1, V);
     Value := V;
     Result := (Res >= 0);
-  end
-  else
-  begin
-    Exit;
-    Result := False;
   end;
 end;
 
@@ -1781,18 +1793,18 @@ function TProfXmlNode2.ReadDateTime(const AName: WideString; var Value: TDateTim
 var
   S: WideString;
   Node: AProfXmlNode;
+  Nodes: AXmlNodeList;
 begin
-  if Assigned(FCollection) then
+  Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
+  if (Nodes <> 0) then
   begin
-    Node := FCollection.FindNode(AName);
+    Node := AXmlNodeList_FindNode(Nodes, AName);
     if (Node = 0) then
     begin
       Result := False;
       Exit;
     end;
     Result := (AXmlNode_GetValueAsDateTime(Node, Value) >= 0);
-    xxx
-    Result := Node.GetValueAsDateTime(Value);
   end
   else
   begin
@@ -1899,10 +1911,12 @@ function TProfXmlNode2.ReadInt64(const AName: WideString; var Value: Int64): Wor
 var
   tmpValue: Integer;
   Node: AProfXmlNode;
+  Nodes: AXmlNodeList;
 begin
-  if Assigned(FCollection) then
+  Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
+  if (Nodes <> 0) then
   begin
-    Node := FCollection.FindNode(AName);
+    Node := AXmlNodeList_FindNode(Nodes, AName);
     Result := (AXmlNode_GetValueAsInt64(Node, Value) >= 0);
   end
   else
@@ -1917,6 +1931,7 @@ var
   Code: Integer;
   Node: IXmlNode;
   Node1: AProfXmlNode;
+  Nodes: AXmlNodeList;
 begin
   if Assigned(FNode) then
   try
@@ -1932,20 +1947,16 @@ begin
   except
     Result := False;
   end
-  else if Assigned(FCollection) then
+  else
   begin
-    Node1 := FCollection.FindNode(AName);
+    Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
+    Node1 := AXmlNodeList_FindNode(Nodes, AName);
     if (Node1 = 0) then
     begin
       Result := False;
       Exit;
     end;
     Result := (AXmlNode_GetValueAsInt(Node1, Value) >= 0);
-  end
-  else
-  begin
-    Exit;
-    Result := False;
   end;
 end;
 
@@ -1953,8 +1964,9 @@ function TProfXmlNode2.ReadNodes(var Value: WideString; CloseTag: WideString): B
 var
   I: Integer;
   I2: Integer;
-  N: TProfXmlNode1;
+  N: AProfXmlNode1;
   Tag: WideString;
+  V: APascalString;
 begin
   Result := False;
   //FValue := '';
@@ -1987,7 +1999,7 @@ begin
       Tag := Copy(Value, 1, I - 1);
       Delete(Value, 1, I + 1);
       N := NewNode('');
-      N.GetNameAndAttributes(Tag);
+      AXmlNode_GetNameAndAttributes(N, Tag);
     end
     else
     begin                      // "< > ... </ >"
@@ -2001,8 +2013,10 @@ begin
       end;
 
       N := NewNode('');
-      N.GetNameAndAttributes(Tag);
-      N.SetXmlA(Value, N.NodeName);
+      AXmlNode_GetNameAndAttributes(N, Tag);
+      V := Value;
+      AXmlNode_SetXmlA(N, V, AXmlNode_GetName(N));
+      Value := V;
     end;
   until False;
 end;
@@ -2011,6 +2025,8 @@ function TProfXmlNode2.ReadString(const AName: WideString; var Value: WideString
 var
   Node: IXmlNode;
   Node1: AProfXmlNode;
+  Nodes: AXmlNodeList;
+  V: APascalString;
 begin
   if Assigned(FNode) then
   begin
@@ -2028,15 +2044,13 @@ begin
     else
       Result := False;
   end
-  else if Assigned(FCollection) then
-  begin
-    Node1 := FCollection.FindNode(AName);
-    Result := AXmlNode_GetValueAsString(Node1, Value);
-  end
   else
   begin
-    Result := False;
-    Exit;
+    Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
+    Node1 := AXmlNodeList_FindNode(Nodes, AName);
+    V := Value;
+    Result := (AXmlNode_GetValueAsString(Node1, V) >= 0);
+    Value := V;
   end;
 end;
 
@@ -2044,18 +2058,18 @@ function TProfXmlNode2.ReadUInt08(const AName: WideString; var Value: UInt08): W
 var
   tmpValue: Integer;
   Node: AProfXmlNode;
+  Nodes: AXmlNodeList;
 begin
-  if Assigned(FCollection) then
+  Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
+  if (Nodes <> 0) then
   begin
-    Node := FCollection.FindNode(AName);
+    Node := AXmlNodeList_FindNode(Nodes, AName);
     if (Node = 0) then
     begin
       Result := False;
       Exit;
     end;
     Result := (AXmlNode_GetValueAsUInt08(Node, Value) >= 0);
-    xxx
-    Result := Node.GetValueAsUInt08(Value);
   end
   else
   begin
@@ -2083,15 +2097,17 @@ begin
   Value := tmpValue;
 end;
 
-function TProfXmlNode2.ReadUInt64(const AName: WideString; var Value: UInt64): WordBool;
+function TProfXmlNode2.ReadUInt64(const AName: WideString; var Value: AUInt64): WordBool;
 var
   tmpValue: Integer;
-  Node: TProfXmlNode1;
+  Node: AProfXmlNode;
+  Nodes: AXmlNodeList;
 begin
-  if Assigned(FCollection) then
+  Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
+  if (Nodes <> 0) then
   begin
-    Node := FCollection.FindNode(AName);
-    Result := (AXmlNode_GetValueAsUInt64(Node, Value);
+    Node := AXmlNodeList_FindNode(Nodes, AName);
+    Result := (AXmlNode_GetValueAsUInt64(Node, Value) >= 0);
   end
   else
   begin
@@ -2242,7 +2258,7 @@ begin
   begin
     Result := False;
     FValue := '';
-    Value := AValue;
+    Value := Value1;
     I := Pos('<', Value);
     // Запись значения
     if (I = 0) then
@@ -2318,15 +2334,17 @@ end;
 function TProfXmlNode2.ToStrings(AStrings: TStrings; Prefix: WideString = ''): Boolean;
 var
   I: Int32;
+  Node: AXmlNode;
 begin
   Result := False;
   if not(Assigned(AStrings)) then Exit;
   if GetCountNodes > 0 then
   begin
     AStrings.Add(Prefix + '<'+FName+'>');
-    for I := 0 to FCollection.GetCount() - 1 do
+    for I := 0 to AXmlNodeCollection_GetCount(FCollection) - 1 do
     begin
-      TProfXmlNode1(FCollection.Nodes[I]).ToStrings(AStrings, Prefix + '  ');
+      Node := AXmlNodeCollection_GetNode(FCollection, I);
+      TProfXmlNode1(Node).ToStrings(AStrings, Prefix + '  ');
     end;
     AStrings.Add(Prefix + '</'+FName+'>');
   end
@@ -2343,6 +2361,8 @@ end;
 function TProfXmlNode2.WriteBool(const AName: WideString; Value: WordBool): WordBool;
 var
   Node: IXmlNode;
+  Nodes: AXmlNodeList;
+  N: AXmlNode;
 begin
   if Assigned(FNode) then
   begin
@@ -2354,12 +2374,18 @@ begin
     Result := True;
   end
   else
-    Result := GetNodeByName(AName).SetValueAsBool(Value);
+  begin
+    Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
+    N := AXmlNodeList_GetNodeByName1(Nodes, AName);
+    Result := (AXmlNode_SetValueAsBool(N, Value) >= 0);
+  end;
 end;
 
 function TProfXmlNode2.WriteDateTime(const AName: WideString; Value: TDateTime): WordBool;
 var
   Node: IXmlNode;
+  Nodes: AXmlNodeList;
+  N: AXmlNode;
 begin
   if Assigned(FNode) then
   try
@@ -2373,7 +2399,11 @@ begin
     Result := False;
   end
   else
-    Result := GetNodeByName(AName).SetValueAsFloat64(Value);
+  begin
+    Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
+    N := AXmlNodeList_GetNodeByName1(Nodes, AName);
+    Result := (AXmlNode_SetValueAsFloat64(N, Value) >= 0);
+  end;
 end;
 
 function TProfXmlNode2.WriteFloat32(const AName: WideString; Value: Float32): WordBool;
@@ -2400,6 +2430,8 @@ end;
 function TProfXmlNode2.WriteFloat64(const AName: WideString; Value: Float64): WordBool;
 var
   Node: IXmlNode;
+  Nodes: AXmlNodeList;
+  N: AXmlNode;
 begin
   if Assigned(FNode) then
   try
@@ -2413,15 +2445,26 @@ begin
     Result := False;
   end
   else
-    Result := GetNodeByName(AName).SetValueAsFloat64(Value);
+  begin
+    Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
+    N := AXmlNodeList_GetNodeByName1(Nodes, AName);
+    Result := (AXmlNode_SetValueAsFloat64(N, Value) >= 0);
+  end;
 end;
 
 function TProfXmlNode2.WriteInt32(const AName: WideString; Value: Int32): WordBool;
+var
+  Nodes: AXmlNodeList;
+  N: AXmlNode;
 begin
   if Assigned(FNode) then
     Result := WriteInteger(AName, Value)
   else
-    Result := GetNodeByName(AName).SetValueAsInt32(Value);
+  begin
+    Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
+    N := AXmlNodeList_GetNodeByName1(Nodes, AName);
+    Result := (AXmlNode_SetValueAsInt32(N, Value) >= 0);
+  end;
 end;
 
 function TProfXmlNode2.WriteInt64(const AName: WideString; Value: Int64): WordBool;
@@ -2445,7 +2488,7 @@ begin
     Result := False;
   end
   else
-    Result := GetNodeByName(AName).SetValueAsInt(Value);
+    Result := GetNodeByName1(AName).SetValueAsInt32(Value);
 end;
 
 function TProfXmlNode2.WriteString(const AName, Value: WideString): WordBool;

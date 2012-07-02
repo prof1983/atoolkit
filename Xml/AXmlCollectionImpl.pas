@@ -11,14 +11,14 @@ interface
 
 uses
   XmlIntf,
-  ABase, AXmlCollectionIntf, AXmlNodeIntf, AXmlNodeUtils;
+  ABase, AXmlCollectionIntf, AXmlNodeIntf, AXmlNodeListUtils, AXmlNodeUtils;
 
 type
   // Коллекция нодов
   TProfXmlCollection = class(TInterfacedObject, IProfXmlCollection)
   protected
     FCollection: IXmlNodeCollection;
-    FNodes: array of AProfXmlNode;
+    FNodes: AXmlNodeList; //array of AProfXmlNode;
     FOwner: AProfXmlNode;
   public // IProfXmlCollection
     function DeleteNode(Node: AProfXmlNode): WordBool;
@@ -26,11 +26,11 @@ type
     function GetNode(Index: Integer): AProfXmlNode;
   public
     function AddChild(const AName: WideString): AProfXmlNode;
-    procedure AddNode(Node: AProfXmlNode); deprecated; // Use NewNode()
+    function AddNode(Node: AProfXmlNode): AInt; deprecated; // Use NewNode() or AXmlNodeList_Add()
     procedure Clear();
-    function FindNode(Name: WideString): AProfXmlNode;
+    function FindNode(const Name: WideString): AProfXmlNode; deprecated; // Use AXmlNodeList_FindNode()
     procedure Free();
-    function GetNodeByAttribute(AName, AValue: WideString): AProfXmlNode;
+    function GetNodeByAttribute(AttrName, AttrValue: WideString): AProfXmlNode; deprecated; // Use AXmlNode_GetChildNodeByAttribute()
     function GetNodeByName(Name: WideString): AProfXmlNode;
     function NewNode(const Name: WideString): AProfXmlNode;
   public
@@ -51,33 +51,32 @@ begin
   Result := NewNode(AName);
 end;
 
-procedure TProfXmlCollection.AddNode(Node: AProfXmlNode);
-var
+function TProfXmlCollection.AddNode(Node: AProfXmlNode): AInt;
+{var
   I: Int32;
-  Document: AXmlDocument;
+  Document: AXmlDocument;}
 begin
-  I := Length(FNodes);
+  Result := AXmlNodeList_Add(FNodes, Node);
+  {I := Length(FNodes);
   SetLength(FNodes, I + 1);
   FNodes[I] := Node;
 
   // Only if (TObject(Node) is TProfXmlNode1) then
   Document := AXmlNode_GetDocument(FOwner);
-  AXmlNode_SetDocument(FNodes[I], Document);
+  AXmlNode_SetDocument(FNodes[I], Document);}
 end;
 
 procedure TProfXmlCollection.Clear();
-var
-  I: Integer;
 begin
-  for I := 0 to High(FNodes) do
-    AXmlNode_Free(FNodes[I]);
-  SetLength(FNodes, 0);
+  AXmlNodeList_Clear(FNodes);
 end;
 
 constructor TProfXmlCollection.Create(AOwner: AProfXmlNode);
 begin
   inherited Create;
+  FCollection := nil;
   FOwner := AOwner;
+  FNodes := AXmlNode_GetChildNodes(FOwner);
 end;
 
 constructor TProfXmlCollection.Create2(Collection: IXmlNodeCollection);
@@ -87,41 +86,13 @@ begin
 end;
 
 function TProfXmlCollection.DeleteNode(Node: AProfXmlNode): WordBool;
-var
-  I: Integer;
-  I2: Integer;
 begin
-  Result := False;
-  for I := 0 to High(FNodes) do
-  begin
-    if (FNodes[I] = Node) then
-    begin
-      for I2 := I to High(FNodes) - 1 do
-        FNodes[I2] := FNodes[I2 + 1];
-      Result := True;
-      Exit;
-    end;
-  end;
+  Result := (AXmlNodeList_Remove(FNodes, Node) >= 0);
 end;
 
-function TProfXmlCollection.FindNode(Name: WideString): AProfXmlNode;
-var
-  I: Int32;
+function TProfXmlCollection.FindNode(const Name: WideString): AProfXmlNode;
 begin
-  if (Name = '') then
-  begin
-    Result := 0;
-    Exit;
-  end;
-  for I := 0 to High(FNodes) do
-  begin
-    if (AXmlNode_GetName(FNodes[I]) = Name) then
-    begin
-      Result := FNodes[I];
-      Exit;
-    end;
-  end;
-  Result := 0;
+  Result := AXmlNodeList_FindNode(FNodes, Name);
 end;
 
 procedure TProfXmlCollection.Free();
@@ -132,29 +103,17 @@ end;
 
 function TProfXmlCollection.GetCount(): Integer;
 begin
-  Result := Length(FNodes)
+  Result := AXmlNodeList_GetCount(FNodes);
 end;
 
 function TProfXmlCollection.GetNode(Index: Integer): AProfXmlNode;
 begin
-  Result := 0;
-  if (Index < 0) or (Index > Length(FNodes)) then Exit;
-  Result := FNodes[Index];
+  Result := AXmlNodeList_GetNodeByIndex(FNodes, Index);
 end;
 
-function TProfXmlCollection.GetNodeByAttribute(AName, AValue: WideString): AProfXmlNode;
-var
-  i: Integer;
+function TProfXmlCollection.GetNodeByAttribute(AttrName, AttrValue: WideString): AProfXmlNode;
 begin
-  for i := 0 to High(FNodes) do
-  begin
-    if (AXmlNode_GetAttributeValue(FNodes[i], AName) = AValue) then
-    begin
-      Result := FNodes[i];
-      Exit;
-    end;
-  end;
-  Result := 0;
+  Result := AXmlNode_GetChildNodeByAttribute(Self.FOwner, AttrName, AttrValue);
 end;
 
 function TProfXmlCollection.GetNodeByName(Name: WideString): AProfXmlNode;

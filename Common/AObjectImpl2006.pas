@@ -2,7 +2,7 @@
 @Abstract(Объект с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.12.2005)
-@LastMod(04.05.2012)
+@LastMod(02.07.2012)
 @Version(0.5)
 }
 unit AObjectImpl2006;
@@ -11,19 +11,19 @@ interface
 
 uses
   SysUtils,
-  ALogGlobals2006, ALogNodeIntf, AObjectIntf2006, ATypes, AXmlNodeIntf; {ProfXmlIntf;}
+  ALogGlobals2006, ALogNodeIntf, AObjectIntf2006, ATypes, AXmlNodeIntf;
 
 type //** Объект с логированием и конфигурациями
   TProfObject = class(TInterfacedObject, IProfObject)
   protected
-    FConfig: IProfXmlNode2006;
+    FConfig: AProfXmlNode2{IProfXmlNode2006};
     FInitialized: Boolean;
     FLog: ILogNode2;
     procedure SetInitialized(Value: Boolean);
   protected
-    function Get_Config: IProfXmlNode2006; safecall;
+    function Get_Config(): AProfXmlNode2{IProfXmlNode2006}; safecall;
     function Get_Log: ILogNode2; safecall;
-    procedure Set_Config(const Value: IProfXmlNode2006); safecall;
+    procedure Set_Config(const Value: AProfXmlNode2{IProfXmlNode2006}); safecall;
     procedure Set_Log(const Value: ILogNode2); virtual; safecall;
     //function GetConfig: TConfigNode;
     //function GetLog: TLogNode;
@@ -40,7 +40,7 @@ type //** Объект с логированием и конфигурациям
     function Finalize: WordBool; virtual; safecall;
     function Initialize: WordBool; virtual; safecall;
   public
-    constructor Create(AConfig: IProfXmlNode2006{TConfigNode} = nil; ALog: TLogNode = nil);
+    constructor Create(AConfig: AProfXmlNode2{IProfXmlNode2006}{TConfigNode} = nil; ALog: TLogNode = nil);
     procedure Free; virtual;
   public
     //property Config: TConfigNode read GetConfig write SetConfig;
@@ -112,7 +112,7 @@ begin
   Result := AssignedConfig;
 end;
 
-constructor TProfObject.Create(AConfig: IProfXmlNode2006{TConfigNode} = nil; ALog: TLogNode = nil);
+constructor TProfObject.Create(AConfig: AProfXmlNode2{IProfXmlNode2006}{TConfigNode} = nil; ALog: TLogNode = nil);
 begin
   inherited Create;
   FConfig := AConfig;
@@ -143,7 +143,7 @@ begin
   inherited Free;
 end;
 
-function TProfObject.Get_Config(): IProfXmlNode2006;
+function TProfObject.Get_Config(): AProfXmlNode2{IProfXmlNode2006};
 begin
   Result := FConfig;
 end;
@@ -182,7 +182,7 @@ begin
     Finalize;
 end;
 
-procedure TProfObject.Set_Config(const Value: IProfXmlNode2006);
+procedure TProfObject.Set_Config(const Value: AProfXmlNode2{IProfXmlNode2006});
 begin
   FConfig := Value;
 end;

@@ -2,7 +2,7 @@
 @Abstract(XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(09.10.2005)
-@LastMod(29.06.2012)
+@LastMod(02.07.2012)
 @Version(0.5)
 }
 unit AXmlCollectionImpl;
@@ -19,10 +19,10 @@ type
     FNodes: array of AProfXmlNode;
     FOwner: AProfXmlNode;
   public // IProfXmlCollection
-    function DeleteNode(Node: IProfXmlNode2006): WordBool;
+    function DeleteNode(Node: AProfXmlNode2{IProfXmlNode2006}): WordBool;
     function GetCount(): Integer;
     function GetNode(Index: Integer): AProfXmlNode;
-    //function Get_Node(Index: Integer): IProfXmlNode2006;
+    //function Get_Node(Index: Integer): AProfXmlNode2;
   public
     function AddChild(const AName: WideString): AProfXmlNode;
     procedure AddNode(ANode: AProfXmlNode);
@@ -76,14 +76,14 @@ begin
   FOwner := AOwner;
 end;
 
-function TProfXmlCollection.DeleteNode(Node: IProfXmlNode2006): WordBool;
+function TProfXmlCollection.DeleteNode(Node: AProfXmlNode2{IProfXmlNode2006}): WordBool;
 var
   I: Integer;
   I2: Integer;
 begin
   Result := False;
   for I := 0 to High(FNodes) do
-    if (IProfXmlNode2006(FNodes[I]) = Node) then
+    if (AProfXmlNode2{IProfXmlNode2006}(FNodes[I]) = Node) then
     begin
       for I2 := I to High(FNodes) - 1 do
         FNodes[I2] := FNodes[I2 + 1];
@@ -164,7 +164,7 @@ begin
   Result := AProfXmlNode1(Res);
 end;
 
-{function TProfXmlCollection.Get_Node(Index: Integer): IProfXmlNode2006;
+{function TProfXmlCollection.Get_Node(Index: Integer): AProfXmlNode2;
 var
   Node: TProfXmlNode1;
 begin

@@ -2,7 +2,7 @@
 @Abstract(Общие интерфейсы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(27.06.2012)
+@LastMod(02.07.2012)
 @Version(0.5)
 }
 unit AObjectIntf;
@@ -82,12 +82,12 @@ type //** Интерфейс для любого объекта
     function ConfigureSave(): WordBool; safecall;
     function Finalize(): WordBool; safecall;
     function Initialize(): WordBool; safecall;
-    function Get_Config(): IProfXmlNode2006; safecall;
+    function Get_Config(): AProfXmlNode2{IProfXmlNode2006}; safecall;
     function Get_Log(): ILogNode2; safecall;
-    procedure Set_Config(const Value: IProfXmlNode2006); safecall;
+    procedure Set_Config(const Value: AProfXmlNode2{IProfXmlNode2006}); safecall;
     procedure Set_Log(const Value: ILogNode2); safecall;
 
-    property Config: IProfXmlNode2006 read Get_Config write Set_Config;
+    property Config: AProfXmlNode2{IProfXmlNode2006} read Get_Config write Set_Config;
     property Log: ILogNode2 read Get_Log write Set_Log;
   end;
 

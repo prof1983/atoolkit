@@ -2,7 +2,7 @@
 @Abstract(Interface XmlDocument)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(26.03.2012)
-@LastMod(29.06.2012)
+@LastMod(02.07.2012)
 @Version(0.5)
 }
 unit AXmlDocumentIntf;
@@ -26,9 +26,12 @@ type //** Интерфейс работы с XML документом
     property FileName: WideString read GetFileName write SetFileName;
   end;
 
-{type //** @abstract(Интерфейс работы с XML документом. Не рекомендуется использовать.)
+  {**
+    Интерфейс работы с XML документом
+    Не рекомендуется использовать.
+  }
   IProfXmlDocumentA = interface
-    function GetDocumentElement(): IProfXmlNodeA; safecall;
+    function GetDocumentElement(): AProfXmlNodeA{IProfXmlNodeA}; safecall;
     function GetFileName(): WideString; safecall;
     procedure SetFileName(const Value: WideString); safecall;
 
@@ -37,22 +40,9 @@ type //** Интерфейс работы с XML документом
     function SaveToFile(const FileName: WideString): WordBool; safecall;
     function Open(): Integer; safecall;
 
-    property DocumentElement: IProfXmlNodeA read GetDocumentElement;
+    property DocumentElement: AProfXmlNodeA{IProfXmlNodeA} read GetDocumentElement;
     property FileName: WideString read GetFileName write SetFileName;
-  end;}
-
-{type //** @abstract(Интерфейс работы с XML документом. Не рекомендуется использовать.)
-  IProfXmlDocumentB = interface
-    function GetDocumentElement(): IProfXmlNodeB; safecall;
-    function GetFileName(): WideString; safecall;
-    procedure SetFileName(const Value: WideString); safecall;
-
-    procedure Close(); safecall;
-    function Open(): WordBool; safecall;
-
-    property DocumentElement: IProfXmlNodeB read GetDocumentElement;
-    property FileName: WideString read GetFileName write SetFileName;
-  end;}
+  end;
 
 // --- from ProfXmlIntf.pas ---
 

@@ -2,7 +2,7 @@
 @Abstract(Base types and consts (Базовые типы и константы))
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.03.2008)
-@LastMod(29.06.2012)
+@LastMod(02.07.2012)
 @Version(0.5)
 
 0.3.2
@@ -184,6 +184,7 @@ type
   AProfXmlNode = type AXmlNode; // AXmlNodeImpl.TProfXmlNode or TProfXmlNode2
   AProfXmlNode1 = type AProfXmlNode; // TProfXmlNode1
   AProfXmlNode2 = type AProfXmlNode; // TProfXmlNode2
+  AProfXmlNodeA = type AInt; // IProfXmlNodeA
   AXmlNodeList = type AInt; // =AXmlNodeList_Type.Id (TProfXmlNodeList)
 
 implementation

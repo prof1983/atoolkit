@@ -2,7 +2,7 @@
 @Abstract(Класс работы с XML документом)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(07.03.2007)
-@LastMod(29.06.2012)
+@LastMod(02.07.2012)
 @Version(0.5)
 
 История версий:
@@ -14,18 +14,14 @@ interface
 
 uses
   SysUtils, XmlDoc, XmlIntf,
-  ABase, ABaseUtils2, AConsts2, ADocumentImpl, {ANodeIntf,} ATypes, AXmlDocumentIntf, AXmlNodeUtils;
-
-  //Classes, ComCtrls, ComObj,
-  //MSXmlDom, Variants, XmlDom,
-  //AXml2007, AXmlCollectionIntf, AXmlNodeIntf,
-
-  // --- for TProfXmlDocument4 ---
-  //ComObj, Variants, XmlDom,
-  //AConsts2, AXmlNodeIntf, AXmlUtils;
+  ABase, ABaseUtils2, AConsts2, ADocumentImpl, ATypes, AXmlDocumentIntf, AXmlNodeUtils;
 
 
-type //** @abstract(XML документ. Класс реализует интерфейс IProfXmlDocument)
+type
+  {**
+    XML документ.
+    Класс реализует интерфейс IProfXmlDocument)
+  }
   TProfXmlDocument = class(TInterfacedObject{TProfDocument}, IProfXmlDocument)
   protected
       //** XML документ
@@ -92,7 +88,6 @@ type //** @abstract(XML документ. Класс реализует инте
     property OnToLog: TProcToLog read FToLog write FToLog;
   end;
 
-  // TODO: Use unXml3.TProfXmlDocument
   // XML документ
   TProfXmlDocument1 = class(TProfXmlDocument, IProfXmlDocument2006)
   protected
@@ -151,7 +146,7 @@ type //** @abstract(XML документ. Класс реализует инте
     property OnAddToLog: TAddToLog read FAddToLog write FAddToLog;
   end;
 
-  TProfXmlDocument3 = TProfXmlDocument;
+  TProfXmlDocument3 = TProfXmlDocument2;
 
 implementation
 

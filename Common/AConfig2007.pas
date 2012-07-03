@@ -2,7 +2,7 @@
 @Abstract(Конфигурации в виде XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(04.01.2006)
-@LastMod(02.07.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 
 [+] 30.09.2006 Prof - CLR
@@ -384,7 +384,7 @@ function ProcessLoadObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
     try
       //FStorage.CloseKey();
       if Assigned(GetObjectProp(AObj, APropInfo.Name, TObject)) then
-        ProcessLoadObject2006(AConfig.GetNodeByName(APropInfo.Name), GetObjectProp(AObj, APropInfo.Name, TObject));
+        ProcessLoadObject2006(AConfig.GetNodeByName1(APropInfo.Name), GetObjectProp(AObj, APropInfo.Name, TObject));
         //ProcessLoadObject(GetPrmDesc(APrefix, AObj, APropInfo.Name), GetObjectProp(AObj, APropInfo.Name, TObject), AReestrKey + '\' + APropInfo.Name)
     finally
       //FStorage.CloseKey();
@@ -974,7 +974,7 @@ function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
     try
       //FStorage.CloseKey();
       if Assigned(GetObjectProp(AObj, APropInfo.Name, TObject)) then
-        Result := ProcessSaveObject2006(AConfig.GetNodeByName(APropInfo.Name), GetObjectProp(AObj, APropInfo.Name, TObject)) or Result;
+        Result := ProcessSaveObject2006(AConfig.GetNodeByName1(APropInfo.Name), GetObjectProp(AObj, APropInfo.Name, TObject)) or Result;
         //Result := ProcessSaveObject(GetPrmDesc(APrefix, AObj, APropInfo.Name), GetObjectProp(AObj, APropInfo.Name, TObject), AReestrKey + '\' + APropInfo.Name) or Result;
     finally
       //FStorage.CloseKey();

@@ -2,16 +2,16 @@
 @Abstract(XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(09.10.2005)
-@LastMod(02.07.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
-unit AXmlCollectionImpl;
+unit AXmlNodeCollectionImpl;
 
 interface
 
 uses
   XmlIntf,
-  ABase, AXmlCollectionIntf, AXmlNodeIntf, AXmlNodeListUtils, AXmlNodeUtils;
+  ABase, AXmlNodeCollectionIntf, AXmlNodeIntf, AXmlNodeListUtils, AXmlNodeUtils;
 
 type
   // Коллекция нодов

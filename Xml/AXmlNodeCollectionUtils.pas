@@ -2,10 +2,10 @@
 @Abstract(AXmlCollection functions)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(29.06.2012)
-@LastMod(02.07.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
-unit AXmlCollectionUtils;
+unit AXmlNodeCollectionUtils;
 
 interface
 
@@ -28,7 +28,7 @@ function AXmlNodeCollection_New2(Collection: IXmlNodeCollection): AXmlNodeCollec
 implementation
 
 uses
-  AXmlCollectionImpl;
+  AXmlNodeCollectionImpl;
 
 function AXmlNodeCollection_Clear(Collection: AXmlNodeCollection): AError;
 begin

@@ -2,7 +2,7 @@
 @Abstract(Конфигурации в виде XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(04.01.2006)
-@LastMod(28.04.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit AConfig2006;
@@ -13,14 +13,6 @@ interface
 
 uses
   AConfig2007, ATypes;
-
-{
-type
-  TConfigDocument = AConfig2007.TConfigDocument1;
-  TConfigDocument1 = AConfig2007.TConfigDocument1;
-  TConfigNode = AConfig2007.TConfigNode1;
-  TConfigNode1 = AConfig2007.TConfigNode1;
-}
 
 function LoadObjectFromConfig(AConfig: TConfigNode1; AObject: TObject; AAddToLog: TAddToLog): WordBool;
 function SaveObjectToConfig(AConfig: TConfigNode1; AObject: TObject; AAddToLog: TAddToLog): WordBool;

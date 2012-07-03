@@ -2,7 +2,7 @@
 @Abstract(Interface XmlDocument)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(26.03.2012)
-@LastMod(02.07.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit AXmlDocumentIntf;
@@ -42,12 +42,6 @@ type //** Интерфейс работы с XML документом
 
     property DocumentElement: AProfXmlNodeA{IProfXmlNodeA} read GetDocumentElement;
     property FileName: WideString read GetFileName write SetFileName;
-  end;
-
-// --- from ProfXmlIntf.pas ---
-
-type
-  IProfXmlDocument2006 = interface
   end;
 
 implementation

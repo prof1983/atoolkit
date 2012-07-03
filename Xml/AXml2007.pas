@@ -2,7 +2,7 @@
 @Abstract(Работа с XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(09.10.2005)
-@LastMod(29.06.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit AXml2007;
@@ -12,15 +12,8 @@ unit AXml2007;
 interface
 
 uses
-  {$ifdef Delphi_XE_UP}XmlDom,{$endif}
-  Classes, ComCtrls, ComObj, SysUtils, Variants, XmlIntf,
-  ABase, AConsts2, ATypes, AXmlCollectionImpl, AXmlCollectionIntf, AXmlDocumentImpl, AXmlNodeImpl, AXmlNodeIntf;
-
-{type
-  Int32 = AInt32;
-  Float32 = AFloat32;
-  Float64 = AFloat64;
-  UInt08 = Byte;}
+  ComCtrls, ComObj,
+  ABase, AXmlDocumentImpl, AXmlNodeImpl;
 
 //type
   //IXmlDomNode = IXmlNode;
@@ -28,10 +21,6 @@ uses
 type // Используемые классы для работы с XML -----------------------------------
   TProfXmlDocument = TProfXmlDocument1;
   TProfXmlNode = TProfXmlNode1;
-
-//type // Используемые классы для работы с XML
-  //TProfXmlDocument = TProfXmlDocument1;
-  //TProfXmlNode = TProfXmlNode1;
 
 const // Сообщения -------------------------------------------------------------
   err_SaveToFile = 'Ошибка при сохранении файла "%s" "%s"';

@@ -2,7 +2,7 @@
 @Abstract(Base types and consts (Базовые типы и константы))
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.03.2008)
-@LastMod(02.07.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 
 0.3.2
@@ -122,6 +122,7 @@ type
   {$ENDIF}
 
 type
+  // = TAbstractSettings or TProfXmlNode1 or TProfXmlNode4
   AConfig = type AInteger;
   AEvent = type AInteger;       // = AEvent_Type^ - Указатель на структуру AEvent_Type
   AColor = type AInteger;

@@ -2,7 +2,7 @@
 @Abstract(Общие интерфейсы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(02.07.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit AObjectIntf;
@@ -11,7 +11,7 @@ interface
 
 uses
   XmlIntf,
-  AEntityIntf, ALogNodeIntf, ANodeIntf, ATypes, AXmlNodeIntf;
+  ABase, AEntityIntf, ALogNodeIntf, ANodeIntf, ATypes; {AXmlNodeIntf;}
 
 type //** Интерфейс для любого объекта
   IProfObject = interface(IANamedEntity)

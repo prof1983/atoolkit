@@ -2,10 +2,10 @@
 @Abstract(AXmlCollection)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(26.04.2012)
-@LastMod(02.07.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
-unit AXmlCollectionIntf;
+unit AXmlNodeCollectionIntf;
 
 interface
 

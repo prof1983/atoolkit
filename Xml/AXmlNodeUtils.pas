@@ -2,7 +2,7 @@
 @Abstract(AXmlNode functions)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(28.06.2012)
-@LastMod(02.07.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit AXmlNodeUtils;
@@ -96,7 +96,7 @@ function AXmlNode2_New(Node: IXmlNode): AProfXmlNode2;
 implementation
 
 uses
-  AXml2007, AXmlNodeImpl;
+  AXml2007, AXmlNodeCollectionUtils, AXmlNodeImpl, AXmlNodeListUtils, AXmlUtils;
 
 // --- AXmlNode ---
 
@@ -116,10 +116,8 @@ function AXmlNode_CreateCollection(Node: AXmlNode): AXmlNodeCollection;
 begin
   if (TObject(Node) is TProfXmlNode1) then
     Result := AXmlNodeCollection_New1(Node)
-    xxx
-    Result := TProfXmlNode1(Node).Get_Collection()
   else if (TObject(Node) is TProfXmlNode2) then
-    Result := AXmlNodeCollection_New2(Node)
+    Result := AXmlNodeCollection_New2(TProfXmlNode2(Node).Node.Collection)
   else
     Result := 0;
 end;
@@ -166,12 +164,13 @@ end;
 
 function AXmlNode_GetChildNodeByAttribute(Node: AXmlNode; const AttrName, AttrValue: APascalString): AXmlNode;
 var
+  I: Integer;
   Nodes: AXmlNodeList;
   Count: AInt;
   ChildNode: AXmlNode;
 begin
   Nodes := AXmlNode_GetChildNodes(Node);
-  Count := AXmlNodeList_GetCount();
+  Count := AXmlNodeList_GetCount(Nodes);
   for I := 0 to Count - 1 do
   begin
     ChildNode := AXmlNodeList_GetNodeByIndex(Nodes, I);
@@ -185,9 +184,37 @@ begin
 end;
 
 function AXmlNode_GetChildNodeByName(Node: AXmlNode; const Name: APascalString): AProfXmlNode;
+var
+  N: IXmlNode;
+  Child: IXmlNode;
+  Nodes: AXmlNodeList;
 begin
   if (TObject(Node) is TProfXmlNode) then
     Result := TProfXmlNode(Node).GetNodeByName(Name)
+  else if (TObject(Node) is TProfXmlNode2) then
+  begin
+    N := TProfXmlNode2(Node).Node;
+    if Assigned(N) then
+    begin
+      // Поиск XML нода
+      Child := N.ChildNodes.FindNode(Name);
+      // Если нету - создание XML нода
+      if not(Assigned(Child)) then
+        Child := N.AddChild(Name);
+      if not(Assigned(Child)) then
+      begin
+        Result := 0;
+        Exit;
+      end;
+      // Создание оболочки нода
+      Result := AXmlNode2_New(Child);
+    end
+    else
+    begin
+      Nodes := AXmlNode_GetChildNodes(Node);
+      Result := AXmlNodeList_GetNodeByName1(Nodes, Name);
+    end;
+  end
   else
     Result := 0;
 end;
@@ -204,7 +231,7 @@ begin
       Exit;
     end;
     try
-      Result := TProfXmlNode(Node).ChildNodes.Count;
+      Result := TProfXmlNode(Node).Node.ChildNodes.Count;
     except
       Result := -1;
     end;
@@ -274,6 +301,8 @@ begin
 end;
 
 function AXmlNode_GetValueAsBool(Node: AXmlNode; out Value: ABoolean): AError;
+var
+  V: WordBool;
 begin
   if (Node = 0) then
   begin
@@ -282,10 +311,22 @@ begin
   end;
   if (TObject(Node) is TProfXmlNode1) then
   begin
-    if TProfXmlNode1(Node).GetValueAsBool(Value) then
-      Result := 0
+    if Assigned(TProfXmlNode1(Node).Node) then
+    begin
+      V := Value;
+      if ProfXmlNode_GetValueAsBool(TProfXmlNode1(Node).Node, V) then
+      begin
+        Value := V;
+        Result := 0;
+      end
+      else
+        Result := -4;
+    end
     else
-      Result := -4;
+    begin
+      Value := (TProfXmlNode1(Node).ValueStr = 'True');
+      Result := 0;
+    end;
   end
   else
     Result := -3;
@@ -364,6 +405,8 @@ begin
 end;
 
 function AXmlNode_GetValueAsString(Node: AXmlNode; out Value: APascalString): AError;
+var
+  V: WideString;
 begin
   if (Node = 0) then
   begin
@@ -372,10 +415,22 @@ begin
   end;
   if (TObject(Node) is TProfXmlNode1) then
   begin
-    if TProfXmlNode1(Node).GetValueAsString(Value) then
-      Result := 0
+    if Assigned(TProfXmlNode1(Node).Node) then
+    begin
+      V := Value;
+      if ProfXmlNode_GetValueAsString(TProfXmlNode1(Node).Node, V) then
+      begin
+        Value := V;
+        Result := 0;
+      end
+      else
+        Result := -4;
+    end
     else
-      Result := -4;
+    begin
+      Value := TProfXmlNode1(Node).ValueStr;
+      Result := 0;
+    end;
   end
   else
     Result := -3;
@@ -400,6 +455,8 @@ begin
 end;
 
 function AXmlNode_GetValueAsUInt64(Node: AXmlNode; out Value: AUInt64): AError;
+var
+  Code: Integer;
 begin
   if (Node = 0) then
   begin
@@ -408,10 +465,21 @@ begin
   end;
   if (TObject(Node) is TProfXmlNode1) then
   begin
-    if TProfXmlNode1(Node).GetValueAsUInt64(Value) then
-      Result := 0
-    else
+    if Assigned(TProfXmlNode1(Node).Node) then
+    try
+      Value := TProfXmlNode1(Node).Node.NodeValue;
+      Result := 0;
+    except
       Result := -4;
+    end
+    else
+    begin
+      Val(TProfXmlNode1(Node).ValueStr, Value, Code);
+      if (Code = 0) then
+        Result := 0
+      else
+        Result := -4;
+    end;
   end
   else
     Result := -3;
@@ -514,8 +582,14 @@ begin
 end;
 
 function AXmlNode_SetXmlA(Node: AXmlNode; var Value: APascalString; const CloseTag: APascalString): AError;
+var
+  V: WideString;
+  Res: WordBool;
 begin
-  if TProfXmlNode2(Node).ReadNodes(Value, CloseTag) then
+  V := Value;
+  Res := TProfXmlNode2(Node).ReadNodes(V, CloseTag);
+  Value := V;
+  if Res then
     Result := 0
   else
     Result := -1;
@@ -533,7 +607,7 @@ end;
 function AXmlNode1_New(Document: AXmlDocument): AXmlNode;
 //function AXmlNode_New(Document: AXmlDocument): AXmlNode;
 begin
-  Result := AXmlNode(TProfXmlNode1.Create(Document));
+  Result := AXmlNode(TProfXmlNode1.Create1(Document));
 end;
 
 // --- AXmlNode2 ---

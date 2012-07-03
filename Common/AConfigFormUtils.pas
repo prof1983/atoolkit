@@ -11,10 +11,10 @@ interface
 
 uses
   Forms, XmlIntf,
-  AConfig2007, ANodeIntf, AObjectImpl, AXmlUtils;
+  ABase, AConfig2007, ANodeIntf, {AObjectImpl,} ATypes, AXmlNodeUtils, AXmlUtils;
 
 type
-  TConfigForm = class(TProfObject)
+  TConfigForm = class //(TProfObject)
   private
     FConfigNode: IProfNode;
     FForm: TForm;
@@ -31,16 +31,42 @@ type
     property Form: TForm read FForm write FForm;
   end;
 
+  TConfigForm2006 = class(TConfigForm) //(TLoggerObject)
+  private
+    FConfig: AConfig;
+    //FConfigNode: TConfigNode1;
+    //FConfigNodeXml: IXmlNode;
+    FForm: TForm;
+  public
+      //** Загрузить конфигурации формы
+    function ConfigureLoad(): WordBool;
+      //** Сохранить конфигурации формы
+    function ConfigureSave(): WordBool;
+    constructor Create(AConfigDocument: TConfigDocument = nil; ANodeName: WideString = ''; AForm: TForm = nil; AAddToLog: TAddToLog = nil); overload;
+    constructor Create(AConfigNode: TConfigNode1 = nil; AForm: TForm = nil; AAddToLog: TAddToLog = nil); overload;
+  public
+      //** Элемент конфигураций из которого загружать и сохранять
+    //property ConfigNode: TConfigNode1 read FConfigNode write FConfigNode;
+      //** Элемент конфигураций из которого загружать и сохранять
+    //property ConfigNodeXml: IXmlNode read FConfigNodeXml write FConfigNodeXml;
+      //** Форма
+    property Form: TForm read FForm write FForm;
+  end;
+
 resourcestring // Сообщения ----------------------------------------------------
   stLoadOk = 'Конфигурации загружены';
   stSaveOk = 'Конфигурации созранены';
 
+{** Load from form }
+function AConfig_PullFromForm(Config: AConfig; Form: TForm): AError;
 {** Load from form }
 function AConfig_PullFromForm1(AConfig: TConfigNode1; AForm: TForm): WordBool;
 {** Load from form }
 function AConfig_PullFromForm2(AConfig: IProfNode; AForm: TForm): WordBool;
 {** Load from form }
 function AConfig_PullFromForm3(AConfig: IXmlNode; AForm: TForm): WordBool;
+{** Save to form }
+function AConfig_PushToForm(Config: AConfig; Form: TForm): AError;
 {** Save to form }
 function AConfig_PushToForm1(AConfig: TConfigNode1; AForm: TForm): WordBool;
 {** Save to form }
@@ -56,6 +82,19 @@ function XmlFromFormConfig(var AXml: WideString; AForm: TForm): WordBool;
 implementation
 
 // --- AConfig ---
+
+function AConfig_PullFromForm(Config: AConfig; Form: TForm): AError;
+begin
+  if (TObject(Config) is TConfigNode1) then
+  begin
+    if AConfig_PullFromForm1(TConfigNode1(Config), Form) then
+      Result := 0
+    else
+      Result := -3;
+  end
+  else
+    Result := -2;
+end;
 
 function AConfig_PullFromForm1(AConfig: TConfigNode1; AForm: TForm): WordBool;
 begin
@@ -116,6 +155,19 @@ begin
   except
     Result := False;
   end;
+end;
+
+function AConfig_PushToForm(Config: AConfig; Form: TForm): AError;
+begin
+  if (TObject(Config) is TConfigNode1) then
+  begin
+    if AConfig_PushToForm1(TConfigNode1(Config), Form) then
+      Result := 0
+    else
+      Result := -3;
+  end
+  else
+    Result := -2;
 end;
 
 function AConfig_PushToForm1(AConfig: TConfigNode1; AForm: TForm): WordBool;
@@ -196,10 +248,13 @@ var
   c: TConfigDocument1;
 begin
   C := TConfigDocument1.Create();
-  C.CreateDocument();
-  Result := AConfig_PullFromForm1(C.DocumentElement, AForm);
-  AXml := C.DocumentElement.Xml;
-  c.Free();
+  try
+    C.CreateDocument();
+    Result := (AConfig_PullFromForm(C.DocumentElement, AForm) >= 0);
+    AXml := AXmlNode_GetXml(C.DocumentElement);
+  finally
+    C.Free();
+  end;
 end;
 (*function XmlFromFormConfig(var AXml: WideString; AForm: TForm): WordBool;
 //var
@@ -217,9 +272,8 @@ var
   C: TConfigDocument;
 begin
   C := TConfigDocument.Create();
-  C.Controller.XML.Text := AXml;
-  //C.DocumentElement.Xml := AXml;
-  Result := ConfigToForm(C.DocumentElement, AForm);
+  AXmlNode_SetXml(C.DocumentElement, AXml);
+  Result := (AConfig_PushToForm(C.DocumentElement, AForm) >= 0);
   C.Free();
 end;
 (*function XmlToFormConfig(const AXml: WideString; AForm: TForm): WordBool;
@@ -258,5 +312,31 @@ begin
   FConfigNode := AConfigNode;
   FForm := AForm;
 end;}
+
+{ TConfigForm2006 }
+
+function TConfigForm2006.ConfigureLoad(): WordBool;
+begin
+  Result := (AConfig_PullFromForm(FConfig, FForm) >= 0);
+end;
+
+function TConfigForm2006.ConfigureSave(): WordBool;
+begin
+  Result := (AConfig_PushToForm(FConfig, FForm) >= 0);
+end;
+
+constructor TConfigForm2006.Create(AConfigDocument: TConfigDocument = nil; ANodeName: WideString = ''; AForm: TForm = nil; AAddToLog: TAddToLog = nil);
+begin
+  inherited Create();
+  FConfig := AXmlNode_GetChildNodeByName(AConfigDocument.DocumentElement, ANodeName);
+  FForm := AForm;
+end;
+
+constructor TConfigForm2006.Create(AConfigNode: TConfigNode1 = nil; AForm: TForm = nil; AAddToLog: TAddToLog = nil);
+begin
+  inherited Create();
+  FConfig := AConfig(AConfigNode);
+  FForm := AForm;
+end;
 
 end.

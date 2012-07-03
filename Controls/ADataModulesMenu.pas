@@ -2,7 +2,7 @@
 @Abstract(Встраиваемое меню для модулей данных)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.05.2006)
-@LastMod(02.05.2012)
+@LastMod(03.05.2012)
 @Version(0.5)
 }
 unit ADataModulesMenu;
@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, Controls, Menus, SysUtils,
-  AConfig2007, AConfigForm2006, ADbDataModule2, ADbDataModules, ADbTypes, ASetDmForm;
+  AConfig2007, AConfigFormUtils, ADbDataModule2, ADbDataModules, ADbTypes, ASetDmForm;
 
 type //** Встраиваемое меню для модулей данных
   TmiDataModules = class(TMenuItem)
@@ -224,7 +224,7 @@ begin
     fmSetExport := TfmSetExport.Create(Self);
     // Настройки положения и размеров окна
     if Assigned(FConfigSettingForm) then
-      AConfigForm2006.ConfigToForm2006(FConfigSettingForm, fmSetExport);
+      AConfig_PushToForm1(FConfigSettingForm, fmSetExport);
     try
       fmSetExport.DataModules := FDataModules;
       if fmSetExport.ShowModal() = mrOk then
@@ -235,7 +235,7 @@ begin
         // Сохранение положения и размеров окна
         //unConfigForm.XmlFromFormConfig(FConfigSettingForm, fmSetExport);
         if Assigned(FConfigSettingForm) then
-          AConfigForm2006.ConfigFromForm2006(FConfigSettingForm, fmSetExport);
+          AConfig_PullFromForm1(FConfigSettingForm, fmSetExport);
         if Assigned(FOnSave) then
           FOnSave(Self);
       end;

@@ -2,7 +2,7 @@
 @Abstract(Класс главной форма - оболочка для TForm)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.11.2005)
-@LastMod(22.05.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit AFormMain200609;
@@ -71,10 +71,13 @@ procedure TProfFormMain.Done();
 begin
   if Assigned(ALog) then
   try
-    ALog.Finalize();
-    ALog.Free();
-  finally
-    ALog := nil;
+    try
+      ALog.Finalize();
+      //ALog.Free();
+    finally
+      ALog := nil;
+    end;
+  except
   end;
 
   ConfigureSave();
@@ -119,7 +122,7 @@ begin
     ForceDirectories(Path);
     {$ENDIF}
     // Создание объекта
-    FConfigDocument := TConfigDocument.Create(FConfigFileName).Controller;
+    FConfigDocument := TConfigDocument.Create1(FConfigFileName).Controller;
     // Проверим наличие файла----
     if Assigned(FConfigDocument) then
       FConfig := AXmlUtils.ProfXmlNode_GetNodeByName(FConfigDocument.DocumentElement, 'FormMain')

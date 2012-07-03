@@ -2,7 +2,7 @@
 @Abstract(Обьект для хранения списка подключенных клиентов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.04.2006)
-@LastMod(10.05.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit AConnectedAccount;
@@ -18,7 +18,7 @@ type //** @abstract(Обьект для хранения списка подкл
   private
     FCSMain: TRTLCriticalSection;
     FList: TStringList;
-    FOnAddToLog: TProcAddToLog;
+    FOnAddToLog: TAddToLogProc;
     function GetCount(): integer;
   protected
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
@@ -34,7 +34,7 @@ type //** @abstract(Обьект для хранения списка подкл
     function IsExists(const AAccount: string): boolean;
       //** Количество клиентов подключенных к модулю
     property Count: integer read GetCount;
-    property OnAddToLog: TProcAddToLog read FOnAddToLog write FOnAddToLog;
+    property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
   end;
 
 implementation

@@ -92,7 +92,7 @@ type //** Объект с логированием и конфигурациям
       //** Префикс лог-сообщений
     //property LogPrefix: WideString read FLogPrefix write FLogPrefix;
       //** CallBack функция функция. Срабатывает при поступлении лог-сообщения.
-    property OnAddToLog: TProcAddToLog read FOnAddToLog write FOnAddToLog;
+    property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
       //** CallBack функция передачи сообщения
     property OnSendMessage: TProcMessageStr read FOnSendMessage write FOnSendMessage;
     //property OnSendMessageX: TProcMessageX read FOnSendMessageX write FOnSendMessageX;

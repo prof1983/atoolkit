@@ -22,6 +22,7 @@ type //** Нод логирования - элемент дерева логирования
     FId: Integer;
       //** Сообщение
     FMsg: WideString;
+    FOnAddToLog: TAddToLogProc;
       //** Параметры в виде XML
     FParams: WideString;
       //** Тип сообщения
@@ -80,6 +81,7 @@ type //** Нод логирования - элемент дерева логирования
   public
     property Id: Integer read FId write FId;
     property Msg: WideString read FMsg write FMsg;
+    property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
     property Params: WideString read FParams write FParams;
     property Group: TLogGroupMessage read FGroup write FGroup;
     property Status: TLogNodeStatus read FStatus write SetStatus;
@@ -129,17 +131,19 @@ function TALogNode.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage
 var
   LogDoc: TALogDocument;
 begin
-  if not(Assigned(TObject(FLogDoc))) then
-  begin
-    Result := -2;
-    Exit;
+  Result := -1;
+
+  if Assigned(FOnAddToLog) then
+  try
+    Result := FOnAddToLog(LogGroup, LogType, StrMsg);
+  except
   end;
 
+  if Assigned(TObject(FLogDoc)) then
   try
     LogDoc := TObject(FLogDoc) as TALogDocument;
     Result := LogDoc.AddToLog(LogGroup, LogType, StrMsg)
   except
-    Result := -1;
   end;
 
   if Assigned(FParent) then
@@ -333,21 +337,8 @@ end;
 
 function TALogNode.ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
     const AStrMsg: WideString): Integer;
-var
-  LogDoc: TALogDocument;
 begin
-  if not(Assigned(TObject(FLogDoc))) then
-  begin
-    Result := -2;
-    Exit;
-  end;
-
-  try
-    LogDoc := TObject(FLogDoc) as TALogDocument;
-    Result := LogDoc.AddToLog(IntToLogGroupMessage(AGroup), IntToLogTypeMessage(AType), AStrMsg);
-  except
-    Result := -1;
-  end;
+  Result := AddToLog(IntToLogGroupMessage(AGroup), IntToLogTypeMessage(AType), AStrMsg);
 end;
 
 end.

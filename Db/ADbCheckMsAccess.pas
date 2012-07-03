@@ -2,7 +2,7 @@
 @Abstract(Главный объект проверки БД)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.04.2006)
-@LastMod(27.04.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 
 Как получить последнюю версию пакета обновлений для Microsoft Jet 4.0 Database Engine
@@ -19,19 +19,19 @@ uses
 
 // Интерфейсные функции --------------------------------------------------------
 //** Проверить пользователя БД
-function CheckDBUser (const ADBDataFile: WideString; AFunc: TProcAddToLog): boolean; stdcall;
+function CheckDBUser (const ADBDataFile: WideString; AFunc: TAddToLogProc): boolean; stdcall;
 //** Проверить структуру таблиц и полей в БД
-function CheckDBData (const ADBDataFile: WideString; ADBMain: PDBMain; AFunc: TProcAddToLog): boolean; stdcall;
+function CheckDBData (const ADBDataFile: WideString; ADBMain: PDBMain; AFunc: TAddToLogProc): boolean; stdcall;
 //** Создать описание таблиц и полей БД
-function CheckDBDescr(const ADBDescrFile: WideString; ADBMain: PDBMain; AFunc: TProcAddToLog): boolean; stdcall;
+function CheckDBDescr(const ADBDescrFile: WideString; ADBMain: PDBMain; AFunc: TAddToLogProc): boolean; stdcall;
 
 // Интерфейсные функции --------------------------------------------------------
 //** Проверить пользователя БД
-function MSAccess_CheckUser (const ADBDataFile: WideString; AFunc: TProcAddToLog): boolean; stdcall;
+function MSAccess_CheckUser (const ADBDataFile: WideString; AFunc: TAddToLogProc): boolean; stdcall;
 //** Проверить структуру таблиц и полей в БД
-function MSAccess_CheckData (const ADBDataFile: WideString; ADBMain: PDBMain; AFunc: TProcAddToLog): boolean; stdcall;
+function MSAccess_CheckData (const ADBDataFile: WideString; ADBMain: PDBMain; AFunc: TAddToLogProc): boolean; stdcall;
 //** Создать описание таблиц и полей БД
-function MSAccess_CheckDescr(const ADBDescrFile: WideString; ADBMain: PDBMain; AFunc: TProcAddToLog): boolean; stdcall;
+function MSAccess_CheckDescr(const ADBDescrFile: WideString; ADBMain: PDBMain; AFunc: TAddToLogProc): boolean; stdcall;
 
 implementation
 
@@ -128,7 +128,7 @@ const // -----------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 
-function CheckDBUser(const ADBDataFile: WideString; AFunc: TProcAddToLog): Boolean;
+function CheckDBUser(const ADBDataFile: WideString; AFunc: TAddToLogProc): Boolean;
 var
   tmpCheck: TCheckAccessDB;
   Path: String;
@@ -143,7 +143,7 @@ begin
   end;
 end;
 
-function CheckDBData(const ADBDataFile: WideString; ADBMain: PDBMain; AFunc: TProcAddToLog): Boolean;
+function CheckDBData(const ADBDataFile: WideString; ADBMain: PDBMain; AFunc: TAddToLogProc): Boolean;
 var
   tmpCheck: TCheckAccessDB;
 begin
@@ -156,7 +156,7 @@ begin
   end;
 end;
 
-function CheckDBDescr(const ADBDescrFile: WideString; ADBMain: PDBMain; AFunc: TProcAddToLog): boolean;
+function CheckDBDescr(const ADBDescrFile: WideString; ADBMain: PDBMain; AFunc: TAddToLogProc): boolean;
 var
   tmpCheck: TCheckAccessDB;
 begin
@@ -171,19 +171,19 @@ end;
 
 // Интерфейсные функции MSAccess -----------------------------------------------
 // Проверить пользователя БД
-function MSAccess_CheckUser(const ADBDataFile: WideString; AFunc: TProcAddToLog): boolean;
+function MSAccess_CheckUser(const ADBDataFile: WideString; AFunc: TAddToLogProc): boolean;
 begin
   Result := CheckDBUser(ADBDataFile, AFunc);
 end;
 
 // Проверить структуру таблиц и полей в БД
-function MSAccess_CheckData (const ADBDataFile: WideString; ADBMain: PDBMain; AFunc: TProcAddToLog): boolean;
+function MSAccess_CheckData (const ADBDataFile: WideString; ADBMain: PDBMain; AFunc: TAddToLogProc): boolean;
 begin
   Result := CheckDBData(ADBDataFile, ADBMain, AFunc);
 end;
 
 // Создать описание таблиц и полей БД
-function MSAccess_CheckDescr(const ADBDescrFile: WideString; ADBMain: PDBMain; AFunc: TProcAddToLog): boolean;
+function MSAccess_CheckDescr(const ADBDescrFile: WideString; ADBMain: PDBMain; AFunc: TAddToLogProc): boolean;
 begin
   Result := CheckDBDescr(ADBDescrFile, ADBMain, AFunc);
 end;

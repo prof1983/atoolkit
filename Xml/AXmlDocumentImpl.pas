@@ -34,7 +34,7 @@ type
   protected
     FDefFileName: WideString;
     FDefElementName: WideString;
-    FToLog: TProcToLog;
+    FToLog: TAddToLogProc;
   protected
     function Get_DocumentElement(): IXmlNode;
   public
@@ -69,7 +69,7 @@ type
   public
     constructor Create();
     constructor Create1(const AFileName: WideString = '';
-        const AElementName: WideString = 'Config'; AToLog: TProcToLog = nil);
+        const AElementName: WideString = 'Config'; AToLog: TAddToLogProc = nil);
     procedure Free();
   public
       //** XML документ (не рекомендуется использовать)
@@ -85,7 +85,7 @@ type
     property DocumentElementName: WideString read FDocumentElementName write FDocumentElementName;
       //** Имя файла XML документа
     property FileName: WideString read GetFileName write SetFileName;
-    property OnToLog: TProcToLog read FToLog write FToLog;
+    property OnToLog: TAddToLogProc read FToLog write FToLog;
   end;
 
   // XML документ
@@ -165,7 +165,7 @@ begin
 end;
 
 constructor TProfXmlDocument.Create1(const AFileName: WideString = '';
-    const AElementName: WideString = 'Config'; AToLog: TProcToLog = nil);
+    const AElementName: WideString = 'Config'; AToLog: TAddToLogProc = nil);
 begin
   inherited Create();
   FToLog := AToLog;

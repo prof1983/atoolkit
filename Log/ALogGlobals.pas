@@ -27,7 +27,7 @@ const // -----------------------------------------------------------------------
       elsNone, elsOk, elsCancel, elsError, elsWarning, elsInformation
     );
   INT_LOG_TYPE: array[TLogType] of Integer = (
-      int_lDocuments, int_lFile, int_lWindow, int_lLogSystem, int_lProgram, int_lUnknown, int_lTreeView
+      int_lNone, int_lDocuments, int_lFile, int_lWindow, int_lLogSystem, int_lProgram, int_lTreeView, int_lUnknown
     );
 
 // --- Functions ---

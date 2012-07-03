@@ -16,7 +16,7 @@ uses
 type //** Документ работы с Log
   TALogDocument = class(TALogNode, IProfLogDocument, ILogDocument)
   protected
-    FAddToLog: TProcAddToLog;
+    FAddToLog: TAddToLogProc;
     FConfig: IProfNode;
     FLogType: TLogType;
     FOnCommand: TProcMessageStr;
@@ -78,7 +78,7 @@ type //** Документ работы с Log
     property Config: IProfNode read FConfig write FConfig;
       //** Тип лог-документа
     property LogType: TLogType read FLogType;
-    property OnAddToLog: TProcAddToLog read FAddToLog write FAddToLog;
+    property OnAddToLog: TAddToLogProc read FAddToLog write FAddToLog;
     property OnCommand: TProcMessageStr read FOnCommand write SetOnCommand;
   end;
 
@@ -106,6 +106,8 @@ type //** Документ работы с Log
     function Finalize(): TProfError; virtual;
       //** Инициализировать
     function Initialize(): TProfError; virtual;
+  public
+    constructor Create();
   public
     property Config: IProfNode read FConfig write FConfig;
       //** Тип лог-документа
@@ -248,6 +250,11 @@ begin
   else
     Result := 0;}
 end;*)
+
+constructor TProfLogDocument3.Create();
+begin
+  inherited Create(lNone);
+end;
 
 function TProfLogDocument3.Finalize(): TProfError;
 begin

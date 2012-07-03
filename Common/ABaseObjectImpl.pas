@@ -2,7 +2,7 @@
 @Abstract(Базовый тип для объект с логированием)
 @Author(Prof1982 prof1983@ya.ru)
 @Created(22.12.2005)
-@LastMod(27.03.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit ABaseObjectImpl;
@@ -18,7 +18,7 @@ type
       //** Префикс лог-сообщений
     FLogPrefix: WideString;
       //** CallBack функция функция. Срабатывает при поступлении лог-сообщения.
-    FOnAddToLog: TProcAddToLog;
+    FOnAddToLog: TAddToLogProc;
   protected
       //** Срабатывает при добавлении лог-сообщения
     function DoAddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AMsg: WideString): Integer; virtual; safecall;
@@ -29,7 +29,7 @@ type
       //** Префикс лог-сообщений
     property LogPrefix: WideString read FLogPrefix write FLogPrefix;
       //** CallBack функция функция. Срабатывает при поступлении лог-сообщения.
-    property OnAddToLog: TProcAddToLog read FOnAddToLog write FOnAddToLog;
+    property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
   end;
 
 implementation

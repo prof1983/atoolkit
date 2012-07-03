@@ -26,7 +26,7 @@ type //** Класс-потомок для форм с логированием 
     FLog: TALogNode;
     //FLogPrefix: WideString; // TODO: Удалить
       {** CallBack функция. Срабатывает при добавлении лог-сообщения. }
-    FOnAddToLog: TProcAddToLog;
+    FOnAddToLog: TAddToLogProc;
       {** CallBack функция. Срабатывает при добавлении сообщения. }
     FOnMessage: TProcMessageStr;
       {** CallBack функция. Срабатывает при добавлении сообщения. }
@@ -80,7 +80,7 @@ type //** Класс-потомок для форм с логированием 
       //** Объект для записи лог-сообщений
     property Log: TALogNode read FLog write FLog;
       //** CallBack функция. Срабатывает при добавлении лог-сообщения.
-    property OnAddToLog: TProcAddToLog read FOnAddToLog write FOnAddToLog;
+    property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
       //** CallBack функция. Срабатывает при добавлении сообщения.
     property OnMessage: TProcMessageStr read FOnMessage write FOnMessage;
   end;

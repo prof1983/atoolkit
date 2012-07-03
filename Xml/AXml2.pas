@@ -2,7 +2,7 @@
 @Abstract(Работа с XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(09.10.2005)
-@LastMod(29.06.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit AXml2;
@@ -29,7 +29,7 @@ type
   private
     FDefFileName: WideString;
     FDefElementName: WideString;
-    FToLog: TProcToLog;
+    FToLog: TAddToLogProc;
   protected
     function GetChildNodeClass(const Node: IDOMNode): TXMLNodeClass; override;
     function GetDocumentElement(): IProfXmlNode; safecall;
@@ -40,10 +40,10 @@ type
     function LoadFromString(const Value: WideString): WordBool;
     function SaveToString(var Value: WideString): Boolean;
   public
-    constructor Create(const AFileName: WideString = ''; const AElementName: WideString = 'Config'; AToLog: TProcToLog = nil);
+    constructor Create(const AFileName: WideString = ''; const AElementName: WideString = 'Config'; AToLog: TAddToLogProc = nil);
     procedure Free();
   public
-    property OnToLog: TProcToLog read FToLog write FToLog;
+    property OnToLog: TAddToLogProc read FToLog write FToLog;
   end;
 
 implementation
@@ -60,7 +60,7 @@ begin
   end;
 end;
 
-constructor TProfXmlDocument.Create(const AFileName: WideString = ''; const AElementName: WideString = 'Config'; AToLog: TProcToLog = nil);
+constructor TProfXmlDocument.Create(const AFileName: WideString = ''; const AElementName: WideString = 'Config'; AToLog: TAddToLogProc = nil);
 begin
   inherited Create(nil);
   FToLog := AToLog;

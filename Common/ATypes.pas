@@ -207,6 +207,8 @@ type //** Статус нода логирования
 
 type //** @abstract(Тип логирования)
   TLogType = (
+      //** Не задано или не известно
+    lNone,
       //** TLogDocuments - записывает сразу в несколько мест (unLogDocuments)
     lDocuments,
       //** Записывать в файл (unLogFile)
@@ -225,6 +227,7 @@ type //** @abstract(Тип логирования)
   TLogTypeSet = set of TLogType;
 
 const
+  int_lNone = $00;        //**< Не задано или не известно
   int_lDocuments = $01;   // TLogDocuments - записывает сразу в несколько мест
   int_lFile      = $02;   // Записывать в файл
   int_lWindow    = $04;   // Показывать в окне
@@ -380,9 +383,6 @@ type // Тип callback функции для добавления в лог ф�
 type //** Тип callback функции для добавления в лог файл
   TAddToLogProc = function(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
       const AStrMsg: WideString): Integer of object;
-  TProcAddToLog = TAddToLogProc;
-  TProcAddToLogA = TAddToLogProc;
-  TProcToLog = TAddToLogProc;
 
 type
   {**

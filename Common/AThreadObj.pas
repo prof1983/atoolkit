@@ -2,7 +2,7 @@
 @Abstract(Оболочка для процесса)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(03.10.2005)
-@LastMod(26.04.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit AThreadObj;
@@ -21,7 +21,7 @@ type //** Оболочка для процесса
     FLogResult: Integer;
     FLogType: TLogTypeMessage;
     //** CallBack функция логирования
-    FOnAddToLog: TProcAddToLog;
+    FOnAddToLog: TAddToLogProc;
     //** CallBack функция progress
     FOnProgress: TProcProgress;
     FProgressID: Integer;
@@ -56,7 +56,7 @@ type //** Оболочка для процесса
     //procedure Free; virtual;
     //function Initialize: WordBool; virtual;
     //** CallBack функция логирования
-    property OnAddToLog: TProcAddToLog read FOnAddToLog write FOnAddToLog;
+    property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
     //** CallBack функция progress
     property OnProgress: TProcProgress read FOnProgress write FOnProgress;
     property State: TThreadState read FState;

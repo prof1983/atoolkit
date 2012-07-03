@@ -2,7 +2,7 @@
 @Abstract(Класс с основными функциями работы с БД)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(12.10.2005)
-@LastMod(27.04.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit ADbDataModule1;
@@ -28,7 +28,7 @@ type //** Класс с основными функциями работы с Б
     //** ID ветки логирования
     FLogParentID: Integer;
     //** Функция логирования
-    FOnToLog: TProcAddToLog;
+    FOnToLog: TAddToLogProc;
     //** Список таблиц
     FTables: array of TAdoTable;
     //** Использовать файл .mdw
@@ -62,7 +62,7 @@ type //** Класс с основными функциями работы с Б
       @param(AUseMdw - использовать файл ar.mdw) }
     constructor Create(ADllPath, ADBPath, ADBFileName: WideString;
         ADBMain, ADBDescr: TDBMain; AUseMdw: Boolean = False; AConnection: TProfAdoConnection = nil;
-        AOpenNow: Boolean = False; AAddToLog: TProcAddToLog = nil);
+        AOpenNow: Boolean = False; AAddToLog: TAddToLogProc = nil);
     procedure Free();
     //** Возвращает True, если Connection создано
     function IsAssignedConnection(): Boolean;
@@ -103,7 +103,7 @@ type //** Класс с основными функциями работы с Б
     property Connection: TProfAdoConnection read FConnection;
     property LogParentID: Integer read FLogParentID write FLogParentID;
     //** Функция логирования
-    property OnToLog: TProcAddToLog read FOnToLog write FOnToLog;
+    property OnToLog: TAddToLogProc read FOnToLog write FOnToLog;
   end;
 
 resourcestring // Сообщения ----------------------------------------------------
@@ -186,7 +186,7 @@ end;
 
 constructor TProfDataModule.Create(ADllPath, ADBPath, ADBFileName: WideString;
     ADBMain, ADBDescr: TDBMain; AUseMdw: Boolean = False; AConnection: TProfAdoConnection = nil;
-    AOpenNow: Boolean = False; AAddToLog: TProcAddToLog = nil);
+    AOpenNow: Boolean = False; AAddToLog: TAddToLogProc = nil);
 begin
   inherited Create;
   OnToLog := AAddToLog;

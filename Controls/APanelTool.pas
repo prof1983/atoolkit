@@ -2,7 +2,7 @@
 Abstract(APanelTool)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(14.10.2006)
-@LastMod(27.06.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit APanelTool;
@@ -33,7 +33,7 @@ implementation
 constructor TPanelTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FLogNode := TALogNode2.Create(0, 0, '', 0);
+  FLogNode := TALogNode.Create2(0, 0, '', 0);
 end;
 
 destructor TPanelTool.Destroy();

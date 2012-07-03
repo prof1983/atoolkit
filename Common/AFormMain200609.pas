@@ -11,7 +11,8 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  AConfig2007, ALogDocumentsAll, AForm2007, ATypes, AXmlUtils;
+  AConfig2007, ALogDocumentsAll, AForm2007, ATypes, AXmlUtils,
+  ALogDocuments2006;
 
 type
   TProfFormMain = class(TProfForm)

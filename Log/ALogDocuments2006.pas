@@ -2,7 +2,7 @@
 @Abstract(Класс, объединяющий вывод логов сразу в несколько мест)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(26.01.2006)
-@LastMod(27.06.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit ALogDocuments2006;
@@ -10,21 +10,21 @@ unit ALogDocuments2006;
 interface
 
 uses
-  {unConfig2006,} ALogGlobals2006, ATypes;
+  {ALogGlobals2006,} ALogDocumentImpl, ALogNodeImpl, ATypes;
 
 type //** Класс для записи Log сразу в несколько мест
-  TLogDocuments = class(TLogDocumentA)
+  TLogDocuments = class(TLogDocumentA1)
   private
-    FDocuments: array of TLogDocument;
+    FDocuments: array of TALogDocument2;
   protected
     procedure SetOnCommand(Value: TProcMessageStr); override;
   public
-    function AddLogDocument(ADocument: TLogDocument): Integer;
+    function AddLogDocument(ADocument: TALogDocument2): Integer;
     function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: string; AParams: array of const): Boolean; override;
     constructor Create();
     function ConfigureLoad(): WordBool; override;
     function ConfigureSave(): WordBool; override;
-    function NewNode(AType: TLogTypeMessage; const AMsg: WideString; AParent: Integer = 0; AId: Integer = 0): TLogNode; override;
+    function NewNode(AType: TLogTypeMessage; const AMsg: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode; override;
     procedure Show(); override;
     function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer; override;
   end;
@@ -33,7 +33,7 @@ implementation
 
 { TLogDocuments }
 
-function TLogDocuments.AddLogDocument(ADocument: TLogDocument): Integer;
+function TLogDocuments.AddLogDocument(ADocument: TALogDocument2): Integer;
 begin
   Result := Length(FDocuments);
   SetLength(FDocuments, Result + 1);
@@ -66,7 +66,7 @@ begin
   inherited Create(lDocuments);
 end;
 
-function TLogDocuments.NewNode(AType: TLogTypeMessage; const AMsg: WideString; AParent: Integer = 0; AId: Integer = 0): TLogNode;
+function TLogDocuments.NewNode(AType: TLogTypeMessage; const AMsg: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode;
 var
   I: Integer;
 begin

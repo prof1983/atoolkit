@@ -2,7 +2,7 @@
 @Abstract(Показывать Log в окне)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.10.2005)
-@LastMod(13.06.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit ALogDocumentForm2007;
@@ -20,8 +20,8 @@ type //** Показывать Log в окне
     FConfigFormLog: TConfigForm;
     //procedure SetConfig(Value: TConfigForm);
   public
-    procedure AddMsg(const AMsg: WideString); override;
-    procedure AddStr(const AStr: WideString); override;
+    function AddMsg(const AMsg: WideString): Integer; override;
+    function AddStr(const AStr: WideString): Integer; override;
     function ConfigureLoad2(AConfig: IXmlNode = nil): WordBool; virtual;
     function ConfigureSave2(AConfig: IXmlNode = nil): WordBool; virtual;
     constructor Create(AConfig: IXmlNode = nil);
@@ -29,7 +29,7 @@ type //** Показывать Log в окне
     procedure Free(); virtual;
     //** Показать
     procedure Show(); override;
-    function NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode2; override;
+    function NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode; override;
     //** Скрыть
     procedure Hide(); override;
     //** Добавить сообщение
@@ -47,14 +47,16 @@ implementation
 
 { TLogForm }
 
-procedure TLogForm.AddMsg(const AMsg: WideString);
+function TLogForm.AddMsg(const AMsg: WideString): Integer;
 begin
   FFormLog.AddMsg(AMsg);
+  Result := 0;
 end;
 
-procedure TLogForm.AddStr(const AStr: WideString);
+function TLogForm.AddStr(const AStr: WideString): Integer;
 begin
   FFormLog.AddStr(AStr);
+  Result := 0;
 end;
 
 function TLogForm.ConfigureLoad2(AConfig: IXmlNode = nil): WordBool;
@@ -107,13 +109,13 @@ begin
   if Assigned(FFormLog) then FFormLog.Hide();
 end;
 
-function TLogForm.NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode2;
+function TLogForm.NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode;
 var
   Id: Integer;
 begin
   Id := GetFreeId;
   FFormLog.AddNode(AType, Id, AParent, APrefix);
-  Result := TALogNode2.Create(ALogDocument2(Self), AParent, APrefix, Id);
+  Result := TALogNode.Create2(ALogDocument2(Self), AParent, APrefix, Id);
   AddNode(Result);
 end;
 

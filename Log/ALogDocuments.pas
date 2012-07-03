@@ -2,16 +2,18 @@
 @Abstract(Класс, объединяющий вывод логов сразу в несколько мест)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(26.01.2006)
-@LastMod(27.06.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit ALogDocuments;
+
+// TODO Rename to ALogDocumentsImpl.pas
 
 interface
 
 uses
   SysUtils, XmlIntf,
-  ALogDocumentImpl, ALogDocumentIntf, ALogNodeIntf, ATypes;
+  ALogDocumentImpl, ALogDocumentIntf, ALogNodeImpl, ALogNodeIntf, ATypes;
 
 type //** Класс для записи Log сразу в несколько мест
   TLogDocuments = class(TLogDocumentA, ILogDocuments)
@@ -21,12 +23,12 @@ type //** Класс для записи Log сразу в несколько м
     procedure SetOnCommand(Value: TProcMessageStr); override;
   public
     function AddLogDocument(ADocument: ILogDocument): Integer; safecall;
-    function AddMsg(const AMsg: WideString): Integer; override; safecall;
-    function AddStr(const AStr: WideString): Integer; override; safecall;
+    function AddMsg(const AMsg: WideString): Integer; override;
+    function AddStr(const AStr: WideString): Integer; override;
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; override;
     constructor Create();
-    function NewNode(AType: TLogTypeMessage; const AMsg: WideString; AParent: Integer = 0; AId: Integer = 0): IProfLogNode; override;
-    procedure Show(); override; safecall;
+    function NewNode(AType: TLogTypeMessage; const AMsg: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode{IProfLogNode}; override;
+    procedure Show(); override;
   end;
 
 type //** Класс для записи Log сразу в несколько мест
@@ -49,6 +51,30 @@ type //** Класс для записи Log сразу в несколько м
     property DocumentByID[ID: Int64]: IProfLogDocument read GetDocumentByID;
     property DocumentByIndex[Index: Integer]: IProfLogDocument read GetDocumentByIndex;
     property DocumentCount: Integer read GetDocumentCount;
+  end;
+
+  {** Класс для записи Log сразу в несколько мест }
+  TLogDocuments2007 = class(TLogDocumentA1, ILogDocuments2)
+  private
+    FDocuments: array of ILogDocument2;
+  protected
+    procedure SetOnCommand(Value: TProcMessageStr); override;
+  public
+    function AddLogDocument(ADocument: ILogDocument2): Integer;
+    function AddMsg(const AMsg: WideString): Integer; override;
+    function AddStr(const AStr: WideString): Integer; override;
+    function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+        const AStrMsg: string; AParams: array of const): Boolean; override;
+    constructor Create();
+    function NewNode(LogType: TLogTypeMessage; const Msg: WideString;
+        Parent: Integer = 0; Id: Integer = 0): TALogNode; override;
+    procedure Show(); override;
+    function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+        const AStrMsg: WideString; AParams: array of const): Integer; override;
+    function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+        const AStrMsg: WideString): Integer; override;
+    function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
+        const AStrMsg: WideString): Integer; override;
   end;
 
 implementation
@@ -99,7 +125,7 @@ begin
   inherited Create(lDocuments);
 end;
 
-function TLogDocuments.NewNode(AType: TLogTypeMessage; const AMsg: WideString; AParent: Integer = 0; AId: Integer = 0): IProfLogNode;
+function TLogDocuments.NewNode(AType: TLogTypeMessage; const AMsg: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode{IProfLogNode};
 var
   I: Integer;
 begin
@@ -180,6 +206,122 @@ begin
   {inherited SetOnCommand(Value);
   for I := 0 to High(FDocuments) do
     TLogDocument(FDocuments[I]).OnCommand := Value;}
+end;
+
+{ TLogDocuments2007 }
+
+function TLogDocuments2007.AddLogDocument(ADocument: ILogDocument2): Integer;
+begin
+  Result := Length(FDocuments);
+  SetLength(FDocuments, Result + 1);
+  FDocuments[Result] := ADocument;
+end;
+
+function TLogDocuments2007.AddMsg(const AMsg: WideString): Integer;
+var
+  i: Integer;
+begin
+  inherited;
+  for i := 0 to High(FDocuments) do
+    FDocuments[i].AddMsg(AMsg);
+  Result := 0;
+end;
+
+function TLogDocuments2007.AddStr(const AStr: WideString): Integer;
+var
+  i: Integer;
+begin
+  inherited;
+  for i := 0 to High(FDocuments) do
+    FDocuments[i].AddStr(AStr);
+  Result := 0;
+end;
+
+function TLogDocuments2007.AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+    const AStrMsg: string; AParams: array of const): Boolean;
+begin
+  Result := (ToLog(AGroup, AType, AStrMsg, AParams) >= 0);
+end;
+
+constructor TLogDocuments2007.Create();
+begin
+  inherited Create(lDocuments);
+end;
+
+function TLogDocuments2007.NewNode(LogType: TLogTypeMessage; const Msg: WideString;
+    Parent: Integer = 0; Id: Integer = 0): TALogNode;
+var
+  I: Integer;
+begin
+  Result := inherited NewNode(LogType, Msg, Parent, Id);
+  for I := 0 to High(FDocuments) do
+    TLogDocument(FDocuments[I]).NewNode(LogType, Msg, Parent, Result.Id);
+end;
+
+procedure TLogDocuments2007.SetOnCommand(Value: TProcMessageStr);
+{var
+  I: Integer;}
+begin
+  inherited SetOnCommand(Value);
+  {for I := 0 to High(FDocuments) do
+    TLogDocument(FDocuments[I]).OnCommand := Value;}
+end;
+
+procedure TLogDocuments2007.Show();
+var
+  I: Integer;
+begin
+  for I := 0 to High(FDocuments) do FDocuments[I].Show;
+end;
+
+function TLogDocuments2007.ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer;
+var
+  I: Integer;
+  R: Integer;
+  S: WideString;
+begin
+  Result := inherited ToLog(AGroup, AType, AStrMsg, AParams);
+  try
+    S := Format(AStrMsg, AParams);
+  except
+    S := AStrMsg;
+  end;
+  for I := 0 to High(FDocuments) do
+  begin
+    R := FDocuments[I].ToLogA(AGroup, AType, S);
+    if R >= 0 then
+      Result := R;
+  end;
+end;
+
+function TLogDocuments2007.ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+    const AStrMsg: WideString): Integer;
+var
+  I: Integer;
+  R: Integer;
+begin
+  Result := inherited ToLogA(AGroup, AType, AStrMsg);
+  for I := 0 to High(FDocuments) do
+  begin
+    R := FDocuments[I].ToLogA(AGroup, AType, AStrMsg);
+    if R >= 0 then
+      Result := R;
+  end;
+end;
+
+function TLogDocuments2007.ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
+    const AStrMsg: WideString): Integer;
+var
+  I: Integer;
+  R: Integer;
+begin
+  Result := inherited ToLogE(AGroup, AType, AStrMsg);
+  for I := 0 to High(FDocuments) do
+  begin
+    R := FDocuments[I].ToLogE(AGroup, AType, AStrMsg);
+    if R >= 0 then
+      Result := R;
+  end;
 end;
 
 end.

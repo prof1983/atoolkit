@@ -2,7 +2,7 @@
 @Abstract(Класс-потомок для форм с логированием и конфигурациями)
 @Автор(Prof1983 prof1983@ya.ru)
 @Created(06.10.2005)
-@LastMod(13.06.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 
 30.09.2006 - Добавил CLR
@@ -21,7 +21,7 @@ type
     FConfig: TConfigNode1;
     FConfigDocument: TConfigDocument1;
     FInitialized: WordBool;
-    FLog: TALogNode2;
+    FLog: TALogNode;
     FLogPrefix: WideString;
     FOnAddToLog: TAddToLog;
   public
@@ -37,7 +37,7 @@ type
     property Config: {IXmlNode}TConfigNode1 read FConfig write FConfig;
     property ConfigDocument: TConfigDocument1 read FConfigDocument write FConfigDocument;
     property Initialized: WordBool read FInitialized;
-    property Log: TALogNode2 read FLog write FLog;
+    property Log: TALogNode read FLog write FLog;
     property OnAddToLog: TAddToLog read FOnAddToLog write FOnAddToLog;
   end;
 

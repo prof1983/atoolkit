@@ -2,7 +2,7 @@
 @Abstract(Интерфейс для модулей импорта, экспорта и синхронизации)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.04.2006)
-@LastMod(02.05.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 
   Команды формарования строк вставки и обновления данных (SqlInsert, SqlUpdate)
@@ -19,7 +19,7 @@ interface
 
 uses
   AdoDB, AdoInt, Dialogs, SysUtils,
-  AConfig2007, ADbDataModule2, ADbTypes, ATypes;
+  ABase, AConfig2007, ADbDataModule2, ADbTypes, ATypes, AXmlNodeListUtils, AXmlNodeUtils;
 
 type
   TDataModules = class(TObject)
@@ -53,10 +53,12 @@ type
     procedure Close(); virtual;
     // Конфигурации модулей обмена данными
     property Config: TConfigNode1 read FConfig write FConfig;
-    function ConfigureLoad(AConfigNode: TConfigNode1 = nil): WordBool; overload;
-    function ConfigureLoad(const AXml: WideString): WordBool; overload;
-    function ConfigureSave(AConfigNode: TConfigNode1 = nil): WordBool; overload;
-    function ConfigureSave(var AXml: WideString): WordBool; overload;
+    function ConfigureLoad(ConfigNode: AXmlNode): AError;
+    function ConfigureLoad1(AConfigNode: TConfigNode1 = nil): WordBool;
+    function ConfigureLoad2(const AXml: WideString): WordBool;
+    function ConfigureSave(ConfigNode: AXmlNode): AError;
+    function ConfigureSave1(AConfigNode: TConfigNode1 = nil): WordBool; overload;
+    function ConfigureSave2(var AXml: WideString): WordBool; overload;
     property DataModuleByName[Name: WideString]: TDataModule2 read GetDataModuleByName;
     property DataModulesCount: Integer read GetDataModulesCount;
     property DataModules[Index: Integer]: TDataModule2 read GetDataModule;
@@ -141,11 +143,21 @@ begin
   SetLength(FDataModules, 0);
 end;
 
-function TDataModules.ConfigureLoad(AConfigNode: TConfigNode1 = nil): WordBool;
+function TDataModules.ConfigureLoad(ConfigNode: AXmlNode): AError;
+begin
+  if (TObject(ConfigNode) is TConfigNode1) then
+    ConfigureLoad1(TConfigNode1(ConfigNode))
+  else
+    ConfigureLoad1(nil);
+  Result := 0;
+end;
+
+function TDataModules.ConfigureLoad1(AConfigNode: TConfigNode1 = nil): WordBool;
 var
   C: Integer;
   I: Integer;
   Node: TConfigNode1;
+  Nodes: AXmlNodeList;
 begin
   Result := Assigned(AConfigNode);
   if not(Result) then
@@ -157,30 +169,50 @@ begin
 
   Close();
 
-  C := AConfigNode.Collection.Count;
+  Nodes := AConfigNode.GetChildNodes();
+  C := AXmlNodeList_GetCount(Nodes);
   SetLength(FDataModules, C);
   for I := 0 to C - 1 do
   begin
-    Node := AConfigNode.Collection.Nodes[I];
+    Node := AConfigNode.GetNode(I);
     FDataModules[I] := TDataModule2.Create([], Node.NodeName, '');
     FDataModules[I].ConfigureLoad(Node);
   end;
 end;
 
-function TDataModules.ConfigureLoad(const AXml: WideString): WordBool;
+function TDataModules.ConfigureLoad2(const AXml: WideString): WordBool;
 var
-  c: TConfigDocument1;
+  C: TConfigDocument1;
+  N: AXmlNode;
 begin
-  c := TConfigDocument1.Create();
-  c.DocumentElement.NodeName := 'DataModules';
-  c.DocumentElement.Xml := AXml;
-  Result := ConfigureLoad(c.DocumentElement);
-  c.Free();
+  C := TConfigDocument1.Create();
+  try
+    N := C.GetDocumentElement();
+    AXmlNode_SetName(N, 'DataModules');
+    AXmlNode_SetXml(N, AXml);
+    Result := (ConfigureLoad(N) >= 0);
+  finally
+    C.Free();
+  end;
 end;
 
-function TDataModules.ConfigureSave(AConfigNode: TConfigNode1 = nil): WordBool;
+function TDataModules.ConfigureSave(ConfigNode: AXmlNode): AError;
+begin
+  if (TObject(ConfigNode) is TConfigNode1) then
+  begin
+    if ConfigureSave1(TConfigNode1(ConfigNode)) then
+      Result := 0
+    else
+      Result := -3;
+  end
+  else
+    Result := -2;
+end;
+
+function TDataModules.ConfigureSave1(AConfigNode: TConfigNode1 = nil): WordBool;
 var
   I: Integer;
+  N: AXmlNode;
 begin
   Result := Assigned(AConfigNode);
   if not(Result) then
@@ -194,20 +226,28 @@ begin
 
   for I := 0 to High(FDataModules) do
   begin
-    if not(FDataModules[I].ConfigureSave(AConfigNode.NewNode(FDataModules[I].Name))) then
+    N := AConfigNode.NewNode(FDataModules[I].Name);
+    if (FDataModules[I].ConfigureSave(N) < 0) then
       Result := False;
   end;
 end;
 
-function TDataModules.ConfigureSave(var AXml: WideString): WordBool;
+function TDataModules.ConfigureSave2(var AXml: WideString): WordBool;
 var
-  c: TConfigDocument1;
+  C: TConfigDocument1;
+  N: AXmlNode;
+  Res: AError;
 begin
-  c := TConfigDocument1.Create();
-  c.DocumentElement.NodeName := 'DataModules';
-  Result := ConfigureSave(c.DocumentElement);
-  AXml := c.DocumentElement.Xml;
-  c.Free();
+  C := TConfigDocument1.Create();
+  try
+    N := C.GetDocumentElement();
+    AXmlNode_SetName(N, 'DataModules');
+    Res := ConfigureSave(N);
+    AXml := AXmlNode_GetXml(N);
+  finally
+    C.Free();
+  end;
+  Result := (Res >= 0);
 end;
 
 function TDataModules.DeleteDataModule(const AModuleName: WideString): WordBool;

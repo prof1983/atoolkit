@@ -2,7 +2,7 @@
 @Abstract(Интерфейс для модулей импорта, экспорта и синхронизации)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.04.2006)
-@LastMod(02.05.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 
   Команды формарования строк вставки и обновления данных (SqlInsert, SqlUpdate)
@@ -19,7 +19,8 @@ interface
 
 uses
   AdoDB, AdoInt, SysUtils,
-  AConfig2007, AConsts2, ADbConsts, ADbTable, ADbTypes, ADbUtils, AStorageObj, ATypes, AXml2007;
+  ABase, AConfig2007, AConsts2, ADbConsts, ADbTable, ADbTypes, ADbUtils,
+  AStorageObj, ATypes, AXmlNodeListUtils;
 
 type // Общий класс для модулей импорта, экспорта и синхронизации
   TDataModule2 = class(TObject)
@@ -60,7 +61,8 @@ type // Общий класс для модулей импорта, экспор
     // Загрузить из XML
     function ConfigureLoad(AConfigNode: TConfigNode1): WordBool; virtual;
     // Сохранить в XML
-    function ConfigureSave(AConfigNode: TConfigNode1): WordBool; virtual;
+    function ConfigureSave(ConfigNode: AXmlNode): AError; virtual;
+    function ConfigureSave1(AConfigNode: TConfigNode1): WordBool; virtual;
     // Соединение с локальной БД
     property ConnectionIn: TAdoConnection read FConnectionIn write FConnectionIn;
     // Соединение с внешней БД
@@ -197,6 +199,7 @@ var
   C: Integer;
   I: Integer;
   Node: {IXmlNode}TConfigNode1;
+  Nodes: AXmlNodeList;
 begin
   Result := Assigned(AConfigNode);
   if not(Result) then Exit;
@@ -213,19 +216,33 @@ begin
   AConfigNode.ReadString(config_Name, FName);
   AConfigNode.ReadBool(config_OnlyNewRecords, FOnlyNewRecords);
 
-  Node := AConfigNode.GetNodeByName(config_Tables);
-  C := Node.Collection.Count;
+  Node := AConfigNode.GetNodeByName1(config_Tables);
+  Nodes := Node.GetChildNodes();
+  C := AXmlNodeList_GetCount(Nodes);
   SetLength(FTables, C);
   for I := 0 to C - 1 do
   begin
     FTables[I] := TTableDM.Create(Self);
     FTables[I].OnToLog := ToLog;
-    if not(FTables[I].ConfigureLoad(Node.GetNodeByName(config_Table+IntToStr(I)))) then
+    if not(FTables[I].ConfigureLoad(Node.GetNodeByName1(config_Table+IntToStr(I)))) then
       Result := False;
   end;
 end;
 
-function TDataModule2.ConfigureSave(AConfigNode: TConfigNode1): WordBool;
+function TDataModule2.ConfigureSave(ConfigNode: AXmlNode): AError;
+begin
+  if (TObject(ConfigNode) is TConfigNode1) then
+  begin
+    if ConfigureSave1(TConfigNode1(ConfigNode)) then
+      Result := 0
+    else
+      Result := -3;
+  end
+  else
+    Result := -2;
+end;
+
+function TDataModule2.ConfigureSave1(AConfigNode: TConfigNode1): WordBool;
 var
   I: Integer;
   Node: TConfigNode1;
@@ -244,9 +261,9 @@ begin
   AConfigNode.WriteString(config_Name, FName);
   AConfigNode.WriteBool(config_OnlyNewRecords, FOnlyNewRecords);
 
-  Node := AConfigNode.GetNodeByName(config_Tables);
+  Node := AConfigNode.GetNodeByName1(config_Tables);
   for I := 0 to High(FTables) do
-    if not(FTables[I].ConfigureSave(Node.GetNodeByName(config_Table+IntToStr(I)))) then
+    if not(FTables[I].ConfigureSave(Node.GetNodeByName1(config_Table+IntToStr(I)))) then
       Result := False;
 end;
 

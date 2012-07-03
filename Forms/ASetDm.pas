@@ -2,7 +2,7 @@
 @Abstract(Настройки импорта/экспотра и синхронизации справочкиков БД)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(24.04.2006)
-@LastMod(02.05.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit ASetDm;
@@ -11,8 +11,8 @@ interface
 
 uses
   AdoDB, Buttons, Classes, Controls, Dialogs, ExtCtrls, Forms, Graphics, ImgList,
-  Messages, Spin, StdCtrls, SysUtils, Windows,
-  ADbDataModule2, ADbTable, ADbTypes, AXml2007;
+  Messages, StdCtrls, SysUtils, Windows,
+  ADbDataModule2, ADbTable, ADbTypes, AUiSpin, AXmlDocumentImpl;
 
 type
   TfrSetDM = class(TFrame)
@@ -485,14 +485,17 @@ procedure TfrSetDM.btLoadClick(Sender: TObject);
   procedure Load(const AFileName: WideString);
   var
     xd: TProfXmlDocument1;
-    oldName: WideString;
+    OldName: WideString;
   begin
     xd := TProfXmlDocument1.Create(AFileName);
-    // Загрузить все, кроме имени
-    oldName := FDM.Name;
-    FDM.ConfigureLoad(xd.DocumentElement);
-    FDM.Name := oldName;
-    xd.Free();
+    try
+      // Загрузить все, кроме имени
+      OldName := FDM.Name;
+      FDM.ConfigureLoad(xd.GetDocumentElement());
+      FDM.Name := OldName;
+    finally
+      xd.Free();
+    end;
   end;
 
 var

@@ -2,7 +2,7 @@
 @Abstract(Интерфейс для модулей импорта, экспорта и синхронизации)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.04.2006)
-@LastMod(02.05.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 
   Команды формарования строк вставки и обновления данных (SqlInsert, SqlUpdate)
@@ -18,10 +18,8 @@ unit ADbUtils;
 interface
 
 uses
-  AdoInt,
-  Classes, Db, Variants,
-  ADbTypes,
-  AXml2007;
+  AdoInt, Classes, Db, Variants,
+  ABase, ADbTypes, AXmlNodeImpl, AXmlNodeListUtils;
 
 function DmTypeToInt(Value: TDmTypeSet): Integer;
 function IntToDmTypeSet(Value: Integer): TDmTypeSet;
@@ -173,14 +171,13 @@ end;
 function StringListToXml(AXml: TProfXmlNode1; AStrings: TStringList; ADescr: TStringList = nil): Boolean;
 var
   I: Integer;
-  n: TProfXmlNode1;
+  N: TProfXmlNode1;
 begin
   Result := Assigned(AStrings) and Assigned(AXml);
   if not(Result) then Exit;
   for I := 0 to AStrings.Count - 1 do
   begin
-    //n := AXml.GetNodeByName(AStrings.Strings[I]);
-    n := AXml.Collection.NewNode(AStrings.Strings[I]);
+    N := AXml.GetNodeByName1(AStrings.Strings[I]);
     if Assigned(ADescr) then
       n.AsString := ADescr.Strings[I];
   end;
@@ -190,12 +187,14 @@ function XmlToStringList(AXml: TProfXmlNode1; AStrings: TStringList; ADescr: TSt
 var
   I: Integer;
   n: TProfXmlNode1;
+  Nodes: AXmlNodeList;
 begin
   Result := Assigned(AXml) and Assigned(AStrings);
   if not(Result) then Exit;
-  for I := 0 to AXml.Collection.Count - 1 do
+  Nodes := AXml.GetChildNodes();
+  for I := 0 to AXmlNodeList_GetCount(Nodes) - 1 do
   begin
-    n := AXml.Collection.Nodes[I];
+    n := AXml.GetNode(I);
     AStrings.Add(n.NodeName);
     if Assigned(ADescr) then
       ADescr.Add(n.AsString);

@@ -2,7 +2,7 @@
 @Abstract(Интерфейс для модулей импорта, экспорта и синхронизации)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.04.2006)
-@LastMod(02.05.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 
   Команды формарования строк вставки и обновления данных (SqlInsert, SqlUpdate)
@@ -195,10 +195,10 @@ begin
   AConfigNode.ReadString('SqlInsert', FSqlInsert);
   AConfigNode.ReadString('SqlUpdate', FSqlUpdate);
 
-  if not(XmlToStringList(AConfigNode.GetNodeByName('FieldsIn'), FFieldsIn, FFieldsIn_Descr)) then Result := False;
-  if not(XmlToStringList(AConfigNode.GetNodeByName('FieldsOut'), FFieldsOut, FFieldsOut_Descr)) then Result := False;
-  if not(XmlToStringList(AConfigNode.GetNodeByName('KeyFieldsIn'), FKeyFieldsIn, FKeyFieldsIn_Descr)) then Result := False;
-  if not(XmlToStringList(AConfigNode.GetNodeByName('KeyFieldsOut'), FKeyFieldsOut, FKeyFieldsOut_Descr)) then Result := False;
+  if not(XmlToStringList(AConfigNode.GetNodeByName1('FieldsIn'), FFieldsIn, FFieldsIn_Descr)) then Result := False;
+  if not(XmlToStringList(AConfigNode.GetNodeByName1('FieldsOut'), FFieldsOut, FFieldsOut_Descr)) then Result := False;
+  if not(XmlToStringList(AConfigNode.GetNodeByName1('KeyFieldsIn'), FKeyFieldsIn, FKeyFieldsIn_Descr)) then Result := False;
+  if not(XmlToStringList(AConfigNode.GetNodeByName1('KeyFieldsOut'), FKeyFieldsOut, FKeyFieldsOut_Descr)) then Result := False;
 
   ToLog(lgGeneral, ltInformation, FFieldsIn.Text, []);
   ToLog(lgGeneral, ltInformation, FFieldsOut.Text, []);
@@ -218,10 +218,10 @@ begin
   AConfigNode.WriteString('SqlInsert', FSqlInsert);
   AConfigNode.WriteString('SqlUpdate', FSqlUpdate);
 
-  if not(StringListToXml(AConfigNode.GetNodeByName('FieldsIn'), FFieldsIn, FFieldsIn_Descr)) then Result := False;
-  if not(StringListToXml(AConfigNode.GetNodeByName('FieldsOut'), FFieldsOut, FFieldsOut_Descr)) then Result := False;
-  if not(StringListToXml(AConfigNode.GetNodeByName('KeyFieldsIn'), FKeyFieldsIn, FKeyFieldsIn_Descr)) then Result := False;
-  if not(StringListToXml(AConfigNode.GetNodeByName('KeyFieldsOut'), FKeyFieldsOut, FKeyFieldsOut_Descr)) then Result := False;
+  if not(StringListToXml(AConfigNode.GetNodeByName1('FieldsIn'), FFieldsIn, FFieldsIn_Descr)) then Result := False;
+  if not(StringListToXml(AConfigNode.GetNodeByName1('FieldsOut'), FFieldsOut, FFieldsOut_Descr)) then Result := False;
+  if not(StringListToXml(AConfigNode.GetNodeByName1('KeyFieldsIn'), FKeyFieldsIn, FKeyFieldsIn_Descr)) then Result := False;
+  if not(StringListToXml(AConfigNode.GetNodeByName1('KeyFieldsOut'), FKeyFieldsOut, FKeyFieldsOut_Descr)) then Result := False;
 end;
 
 constructor TTableDM.Create(AOwner: TObject);

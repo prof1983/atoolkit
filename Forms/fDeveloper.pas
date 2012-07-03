@@ -2,7 +2,7 @@
 @Abstract(Главная форма для проектирования)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(08.11.2006)
-@LastMod(02.05.2012)
+@LastMod(03.05.2012)
 @Version(0.5)
 }
 unit fDeveloper;
@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, ComCtrls, Controls, ExtCtrls, Forms, Menus, ValEdit,
-  ANodeIntf, fAbout1, fShablon;
+  ABase, ANodeIntf, fAbout1, fShablon;
 
 type
   //** @abstract(Тип вкладки главной области)
@@ -92,10 +92,6 @@ type
     procedure DoCreate(); override;
     //** Срабытывает при уничтожении
     procedure DoDestroy(); override;
-    //** Срабатывает при финализации
-    function DoFinalize(): WordBool; override;
-    //** Срабатывает при инициализации
-    function DoInitialize(): WordBool; override;
     //** Срабатывает при добавлении сообщения
     function DoMessage(const AMsg: WideString): Integer; override;
     //** Срабатывает при создании вкладки в главной области окна
@@ -108,9 +104,9 @@ type
     function DoTabValueListAdd(ATabType: TabValueListTypeEnum; const ACaption: WideString): TWinControl; virtual;
   public
     //** Загрузить конфигурации
-    function ConfigureLoad(AConfig: IProfNode = nil): WordBool; override; safecall;
+    function ConfigureLoad(AConfig: IProfNode = nil): AError; override;
     //** Сохранить конфигурации
-    function ConfigureSave(AConfig: IProfNode = nil): WordBool; override; safecall;
+    function ConfigureSave(AConfig: IProfNode = nil): AError; override;
   end;
 
 type
@@ -129,9 +125,9 @@ type
     function DoTabValueListAdd(ATabType: TabValueListTypeEnum; const ACaption: WideString): TWinControl; override;
   public
     //** Загрузить конфигурации
-    function ConfigureLoad(AConfig: IProfNode = nil): WordBool; override; safecall;
+    function ConfigureLoad(AConfig: IProfNode = nil): AError; override;
     //** Сохранить конфигурации
-    function ConfigureSave(AConfig: IProfNode = nil): WordBool; override; safecall;
+    function ConfigureSave(AConfig: IProfNode = nil): AError; override;
   end;
 
 type
@@ -183,13 +179,16 @@ implementation
 
 { TfmDeveloper }
 
-function TfmDeveloper.ConfigureLoad(AConfig: IProfNode): WordBool;
+function TfmDeveloper.ConfigureLoad(AConfig: IProfNode): AError;
 var
   tmpConfig: IProfNode;
   i: Integer;
 begin
-  Result := inherited ConfigureLoad(AConfig);
-  if not(Result) then Exit;
+  if (inherited ConfigureLoad(AConfig) < 0) then
+  begin
+    Result := -1;
+    Exit;
+  end;
   if Assigned(AConfig) then
     tmpConfig := AConfig
   else
@@ -217,12 +216,15 @@ begin
       pnMessages.Visible := False;}
 end;
 
-function TfmDeveloper.ConfigureSave(AConfig: IProfNode): WordBool;
+function TfmDeveloper.ConfigureSave(AConfig: IProfNode): AError;
 var
   tmpConfig: IProfNode;
 begin
-  Result := inherited ConfigureSave(AConfig);
-  if not(Result) then Exit;
+  if (inherited ConfigureSave(AConfig) < 0) then
+  begin
+    Result := -1;
+    Exit;
+  end;
   if Assigned(AConfig) then
     tmpConfig := AConfig
   else
@@ -323,18 +325,6 @@ begin
   inherited DoDestroy();
 end;
 
-function TfmDeveloper.DoFinalize(): WordBool;
-begin
-  //ConfigureSave();
-  Result := inherited DoFinalize();
-end;
-
-function TfmDeveloper.DoInitialize(): WordBool;
-begin
-  Result := inherited DoInitialize();
-  //ConfigureLoad();
-end;
-
 function TfmDeveloper.DoMessage(const AMsg: WideString): Integer;
 begin
   // TODO: Сделать
@@ -379,13 +369,16 @@ end;
 
 { TfmDeveloperA }
 
-function TfmDeveloperA.ConfigureLoad(AConfig: IProfNode): WordBool;
+function TfmDeveloperA.ConfigureLoad(AConfig: IProfNode): AError;
 var
   i: Integer;
   tmpConfig: IProfNode;
 begin
-  Result := inherited ConfigureLoad(AConfig);
-  if not(Result) then Exit;
+  if (inherited ConfigureLoad(AConfig) < 0) then
+  begin
+    Result := -1;
+    Exit;
+  end;
   if Assigned(AConfig) then
     tmpConfig := AConfig
   else
@@ -395,12 +388,15 @@ begin
   if TProfXmlNode.ReadIntegerA(tmpConfig, 'ObjectPropertyCol0Width', i) then vleObjects.ColWidths[0] := i;}
 end;
 
-function TfmDeveloperA.ConfigureSave(AConfig: IProfNode): WordBool;
+function TfmDeveloperA.ConfigureSave(AConfig: IProfNode): AError;
 var
   tmpConfig: IProfNode;
 begin
-  Result := inherited ConfigureSave(AConfig);
-  if not(Result) then Exit;
+  if (inherited ConfigureSave(AConfig) < 0) then
+  begin
+    Result := -1;
+    Exit;
+  end;
   if Assigned(AConfig) then
     tmpConfig := AConfig
   else

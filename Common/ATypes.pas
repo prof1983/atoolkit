@@ -2,7 +2,7 @@
 @Abstract(Глобальные типы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(20.02.2007)
-@LastMod(02.07.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 
 0.0.5.8 - 30.12.2011
@@ -540,7 +540,8 @@ type //** @abstract(Множество значений @link(TClientType))
   TClientTypeSet = set of TClientType;
 
 type
-  ALogDocument2 = type Integer; //TALogDocument2
+  ALogDocument = type AInt; // = TALogDocument
+  ALogDocument2 = ALogDocument;
 
 // --- Entity ---
 

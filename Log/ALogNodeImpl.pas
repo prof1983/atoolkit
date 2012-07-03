@@ -14,7 +14,7 @@ uses
   ABase, ALogDocumentIntf, ALogGlobals, ALogNodeIntf, AMessageConst, ATypes;
 
 type //** Нод логирования - элемент дерева логирования
-  TALogNode = class(TInterfacedObject, IProfLogNode, ILogNode2)
+  TALogNode = class(TInterfacedObject, IALogNode2)
   protected
       //** Дата создания
     FDTCreate: TDateTime;
@@ -32,7 +32,7 @@ type //** Нод логирования - элемент дерева логирования
       //** Документ логирования к которому принадлежит этот нод
     FLogDoc: ALogDocument2;
       //** Родительский нод логирования к которому принадлежит этот нод
-    FParent: IProfLogNode{Integer};
+    FParent: IALogNode2{Integer};
       //** Статус нода
     FStatus: TLogNodeStatus;
   protected
@@ -75,7 +75,7 @@ type //** Нод логирования - элемент дерева логирования
     function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
         const AStrMsg: WideString): Integer; virtual; deprecated; // Use AddToLog()
   public
-    constructor Create(ALogDoc: IProfLogNode; ALogPrefix: string; AID: Integer);
+    constructor Create(ALogDoc: IALogNode2; ALogPrefix: string; AID: Integer);
     constructor Create2(LogDoc: ALogDocument2; Parent: Integer; LogPrefix: string; Id: Integer);
   public
     property Id: Integer read FId write FId;
@@ -98,11 +98,11 @@ uses
 
 function TALogNode.AddMsg(const AMsg: WideString): Integer;
 var
-  LogDoc: TALogDocument2;
+  LogDoc: TALogDocument;
 begin
-  if Assigned(TObject(LogDoc)) then
+  if Assigned(TObject(FLogDoc)) then
   begin
-    LogDoc := TObject(FLogDoc) as TALogDocument2;
+    LogDoc := TObject(FLogDoc) as TALogDocument;
     LogDoc.AddMsg(AMsg);
   end;
   Result := 0;
@@ -112,11 +112,11 @@ end;
 
 function TALogNode.AddStr(const AStr: WideString): Integer;
 var
-  LogDoc: TALogDocument2;
+  LogDoc: TALogDocument;
 begin
   if Assigned(TObject(FLogDoc)) then
   begin
-    LogDoc := TALogDocument2(FLogDoc);
+    LogDoc := TObject(FLogDoc) as TALogDocument;
     LogDoc.AddStr(AStr);
   end;
   Result := 0;
@@ -126,8 +126,22 @@ end;
 
 function TALogNode.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
     const StrMsg: WideString): AInteger;
+var
+  LogDoc: TALogDocument;
 begin
-  Result := ToLogA(LogGroup, LogType, StrMsg);
+  if not(Assigned(TObject(FLogDoc))) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+
+  try
+    LogDoc := TObject(FLogDoc) as TALogDocument;
+    Result := LogDoc.AddToLog(LogGroup, LogType, StrMsg)
+  except
+    Result := -1;
+  end;
+
   if Assigned(FParent) then
   try
     Result := FParent.AddToLog(LogGroup, LogType, StrMsg);
@@ -138,10 +152,10 @@ end;
 function TALogNode.AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
     const StrMsg: string; Params: array of const): Boolean;
 begin
-  Result := (ToLog(LogGroup, LogType, StrMsg, Params) > 0);
+  Result := (AddToLog(LogGroup, LogType, Format(StrMsg, Params)) > 0);
 end;
 
-constructor TALogNode.Create(ALogDoc: IProfLogNode; ALogPrefix: string; AID: Integer);
+constructor TALogNode.Create(ALogDoc: IALogNode2; ALogPrefix: string; AID: Integer);
 begin
   inherited Create();
   FDTCreate := Now;
@@ -165,7 +179,7 @@ end;
 
 {function TALogNode.Get_Document(): ILogDocument2;
 var
-  LogDoc: TALogDocument2;
+  LogDoc: TALogDocument;
 begin
   if not(Assigned(TObject(FLogDoc))) then
   begin
@@ -173,8 +187,8 @@ begin
     Exit;
   end;
 
-  LogDoc := TALogDocument2(FLogDoc);
-  Result := ILogDocument2(LogDoc);
+  LogDoc := TObject(FLogDoc) as TALogDocument;
+  Result := TObject(LogDoc) as ILogDocument;
 end;}
 {function TALogNode.Get_Document(): IProfLogNode;
 begin
@@ -308,13 +322,19 @@ end;
 function TALogNode.ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
     const AStrMsg: WideString; AParams: array of const): Integer;
 begin
-  Result := ToLogA(AGroup, AType, Format(lcNewNode, [Self.ID, Format(AStrMsg, AParams)]));
+  Result := AddToLog(AGroup, AType, Format(lcNewNode, [Self.ID, Format(AStrMsg, AParams)]));
 end;
 
 function TALogNode.ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
     const AStrMsg: WideString): Integer;
+begin
+  Result := AddToLog(AGroup, AType, AStrMsg);
+end;
+
+function TALogNode.ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
+    const AStrMsg: WideString): Integer;
 var
-  LogDoc: TALogDocument2;
+  LogDoc: TALogDocument;
 begin
   if not(Assigned(TObject(FLogDoc))) then
   begin
@@ -323,27 +343,8 @@ begin
   end;
 
   try
-    LogDoc := TALogDocument2(FLogDoc);
-    Result := LogDoc.ToLogA(AGroup, AType, AStrMsg)
-  except
-    Result := -1;
-  end;
-end;
-
-function TALogNode.ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
-    const AStrMsg: WideString): Integer;
-var
-  LogDoc: TALogDocument2;
-begin
-  if not(Assigned(TObject(LogDoc))) then
-  begin
-    Result := -2;
-    Exit;
-  end;
-
-  try
-    LogDoc := TALogDocument2(FLogDoc);
-    Result := LogDoc.ToLogE(AGroup, AType, AStrMsg);
+    LogDoc := TObject(FLogDoc) as TALogDocument;
+    Result := LogDoc.AddToLog(IntToLogGroupMessage(AGroup), IntToLogTypeMessage(AType), AStrMsg);
   except
     Result := -1;
   end;

@@ -2,7 +2,7 @@
 @Abstract(Работа с Log. Классы для отображения собщений программы окне в виде дерева)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(19.10.2006)
-@LastMod(28.06.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 
 Работа с Log. Классы для записи собщений программы в БД или файл или
@@ -19,7 +19,7 @@ uses
   ALogDocumentImpl, ATypes;
 
 type
-  TLogTreeView = class(TALogDocument2)
+  TLogTreeView = class(TALogDocument)
   private
     FTreeView: TTreeView;
   public

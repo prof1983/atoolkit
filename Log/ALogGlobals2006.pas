@@ -4,22 +4,10 @@
 @Created(16.08.2005)
 @LastMod(03.07.2012)
 @Version(0.5)
-
-TLogNode - нод логирования - элемент дерева логирования
-Delphi 5, 7, 2005
 }
 unit ALogGlobals2006;
 
 interface
-
-uses
-  ALogDocumentImpl, ALogNodeImpl;
-
-type // Конфигурации документа логирования
-  //TConfigLogDocument = IProfNode;
-  TLogDocument = TALogDocument2;
-  //TLogNode = TALogNode;
-  TLogDocumentA = ALogDocumentImpl.TLogDocumentA1;
 
 implementation
 

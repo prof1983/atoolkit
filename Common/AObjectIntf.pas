@@ -11,14 +11,14 @@ interface
 
 uses
   XmlIntf,
-  ABase, AEntityIntf, ALogNodeIntf, ANodeIntf, ATypes; {AXmlNodeIntf;}
+  ABase, AEntityIntf, ALogNodeIntf, ANodeIntf, ATypes;
 
 type //** Интерфейс для любого объекта
   IProfObject = interface(IANamedEntity)
     function GetConfigNode(): IProfNode; safecall;
-    function GetLogNode(): IProfLogNode; safecall;
+    function GetLogNode(): IALogNode2; safecall;
     procedure SetConfigNode(Value: IProfNode); safecall;
-    procedure SetLogNode(Value: IProfLogNode); safecall;
+    procedure SetLogNode(Value: IALogNode2); safecall;
 
       //** Добавить (выполнить) сообщение
     function AddMessage(const Msg: WideString): Integer; safecall;
@@ -34,7 +34,7 @@ type //** Интерфейс для любого объекта
     function SendMessage(const Msg: WideString): Integer; safecall;
 
     property ConfigNode: IProfNode read GetConfigNode write SetConfigNode;
-    property LogNode: IProfLogNode read GetLogNode write SetLogNode;
+    property LogNode: IALogNode2 read GetLogNode write SetLogNode;
   end;
 
   IProfObject2 = interface

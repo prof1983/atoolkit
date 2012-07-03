@@ -14,14 +14,14 @@ uses
   ADocumentImpl, ALogDocumentIntf, ALogNodeImpl, ALogNodeIntf, AMessageConst, ANodeIntf, ATypes;
 
 type //** Документ работы с Log
-  TALogDocument = class(TALogNode, IProfLogDocument, IProfLogNode, ILogDocument2)
+  TALogDocument = class(TALogNode, IProfLogDocument, ILogDocument)
   protected
     FAddToLog: TProcAddToLog;
     FConfig: IProfNode;
     FLogType: TLogType;
     FOnCommand: TProcMessageStr;
+    FNodes: array of TALogNode;
   protected
-    function GetNodeById(Id: Integer): TALogNode; virtual;
     procedure SetOnCommand(Value: TProcMessageStr); virtual;
   public // IProfDocument
     {**
@@ -47,7 +47,7 @@ type //** Документ работы с Log
     }
     function OpenDocument(): TProfError; safecall;
   public // IProfLogDocument
-    function GetDocumentElement(): IProfLogNode; safecall;
+    function GetDocumentElement(): IALogNode2; safecall;
   public
     {**
       Добавить лог-сообщение
@@ -66,55 +66,33 @@ type //** Документ работы с Log
     function Finalize(): TProfError; virtual;
       //** Инициализировать
     function Initialize(): TProfError; virtual;
-      //** Тип лог-документа
-    function NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode; virtual;
-    function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer; override;
+  public
+    function AddNode(ANode: TALogNode): Boolean;
+    function GetFreeId(): Integer;
+    function GetNodeById(Id: Integer): TALogNode; virtual;
+    function NewNode(LogType: TLogTypeMessage; const Msg: WideString; Parent: Integer = 0; Id: Integer = 0): TALogNode; virtual;
   public
     constructor Create(ALogType: TLogType; AName: WideString = ''; AParent: TALogDocument = nil);
     constructor Create2(ALogType: TLogType; AName: WideString = ''; AParent: ALogDocument2 = 0);
   published
     property Config: IProfNode read FConfig write FConfig;
+      //** Тип лог-документа
     property LogType: TLogType read FLogType;
     property OnAddToLog: TProcAddToLog read FAddToLog write FAddToLog;
     property OnCommand: TProcMessageStr read FOnCommand write SetOnCommand;
   end;
 
   TLogDocument = TALogDocument;
-  TLogDocument1 = TALogDocument;
-  TALogDocument2 = TALogDocument;
-
-type //** Документ записи/обображения Log
-  TLogDocumentA = class(TLogDocument)
-  protected
-    FNodes: array of TALogNode;
-  protected
-    function GetNodeById(Id: Integer): TALogNode; override;
-  public
-    function NewNode(AType: TLogTypeMessage; const AMsg: WideString; AParent: Integer = 0; AID: Integer = 0): TALogNode; override;
-    function AddNode(ANode: TALogNode): Boolean;
-    function GetFreeID(): Integer;
-  end;
-
-  {** Документ записи/отображения Log }
-  TLogDocumentA1 = class(TALogDocument2)
-  protected
-    FNodes: array of TALogNode;
-  public
-    function AddNode(ANode: TALogNode): Boolean;
-    function GetFreeId(): Integer;
-    function GetNodeById(Id: Integer): TALogNode; override;
-    function NewNode(LogType: TLogTypeMessage; const Msg: WideString; Parent: Integer = 0; Id: Integer = 0): TALogNode; override;
-  end;
 
 type //** Документ работы с Log
-  TProfLogDocument3 = class(TProfDocument, IProfLogDocument)
+  TProfLogDocument3 = class(TALogDocument{TProfDocument}, IProfLogDocument)
   private
     FConfig: IProfNode;
     FOnCommand: TProcMessageStr;
   protected
     FLogType: TLogType;
   protected
-    function GetDocumentElement(): IProfLogNode; safecall;
+    function GetDocumentElement(): IALogNode2; safecall;
     procedure SetOnCommand(Value: TProcMessageStr); virtual;
   public
     {**
@@ -139,7 +117,17 @@ implementation
 
 { TLogDocument }
 
-function TLogDocument.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
+function TALogDocument.AddNode(ANode: TALogNode): Boolean;
+var
+  I: Integer;
+begin
+  I := Length(FNodes);
+  SetLength(FNodes, I + 1);
+  FNodes[I] := ANode;
+  Result := True;
+end;
+
+function TALogDocument.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
 begin
   if Assigned(FAddToLog) then
     Result := FAddToLog(AGroup, AType, AStrMsg)
@@ -149,9 +137,17 @@ end;
 
 function TALogDocument.AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
     const AStrMsg: string; AParams: array of const): Boolean;
+var
+  S: WideString;
 begin
+  try
+    S := Format(AStrMsg, AParams);
+  except
+    S := AStrMsg;
+  end;
+
   if Assigned(FAddToLog) then
-    Result := (FAddToLog(AGroup, AType, Format(AStrMsg, AParams)) >= 0)
+    Result := (FAddToLog(AGroup, AType, S) >= 0)
   else
     Result := False;
 end;
@@ -170,7 +166,7 @@ begin
   Result := Assigned(FConfig);
 end;
 
-constructor TLogDocument.Create(ALogType: TLogType; AName: WideString = ''; AParent: TLogDocument = nil);
+constructor TALogDocument.Create(ALogType: TLogType; AName: WideString = ''; AParent: TLogDocument = nil);
 begin
   inherited Create(AParent, AName, 0);
 end;
@@ -185,72 +181,17 @@ begin
   Result := 0;
 end;
 
-function TLogDocument.GetDocumentElement(): IProfLogNode;
+function TALogDocument.GetDocumentElement(): IALogNode2;
 begin
   Result := Self;
 end;
 
-function TALogDocument.GetNodeById(Id: Integer): TALogNode;
-begin
-  Result := nil;
-end;
-
-function TLogDocument.GetIsOpened(): WordBool;
-begin
-  Result := True;
-end;
-
-function TLogDocument.Initialize(): TProfError;
-begin
-  Result := 0;
-end;
-
-function TLogDocument.NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode;
-begin
-  Result := nil;
-end;
-
-function TLogDocument.OpenDocument(): TProfError;
-begin
-  Result := 0;
-end;
-
-procedure TLogDocument.SetOnCommand(Value: TProcMessageStr);
-begin
-  FOnCommand := Value;
-end;
-
-function TALogDocument.ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-    const AStrMsg: WideString; AParams: array of const): Integer;
-var
-  s: WideString;
-begin
-  try
-    s := Format(AStrMsg, AParams);
-  except
-    s := AStrMsg;
-  end;
-  Result := ToLogA(AGroup, AType, s);
-end;
-
-{ TLogDocumentA }
-
-function TLogDocumentA.AddNode(ANode: TALogNode): Boolean;
-var
-  I: Integer;
-begin
-  I := Length(FNodes);
-  SetLength(FNodes, I + 1);
-  FNodes[I] := ANode;
-  Result := True;
-end;
-
-function TLogDocumentA.GetFreeId(): Integer;
+function TALogDocument.GetFreeId(): Integer;
 begin
   Result := Length(FNodes) + 1;
 end;
 
-function TLogDocumentA.GetNodeById(Id: Integer): TALogNode;
+function TALogDocument.GetNodeById(Id: Integer): TALogNode;
 var
   I: Integer;
 begin
@@ -265,47 +206,18 @@ begin
   Result := nil;
 end;
 
-function TLogDocumentA.NewNode(AType: TLogTypeMessage; const AMsg: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode;
-var
-  S: string;
+function TALogDocument.GetIsOpened(): WordBool;
 begin
-  DateTimeToString(S, 'dd.mm.yyyy hh:mm:ss', Now);
-  S := S + ' ' + AMsg;
-  if AId = 0 then AId := GetFreeId;
-  Result := TALogNode.Create(Self, S, AId);
-  AddNode(Result);
-end;
-
-{ TLogDocumentA1 }
-
-function TLogDocumentA1.AddNode(ANode: TALogNode): Boolean;
-var
-  I: Integer;
-begin
-  I := Length(FNodes);
-  SetLength(FNodes, I + 1);
-  FNodes[I] := ANode;
   Result := True;
 end;
 
-function TLogDocumentA1.GetFreeId: Integer;
+function TALogDocument.Initialize(): TProfError;
 begin
-  Result := Length(FNodes) + 1;
+  Result := 0;
 end;
 
-function TLogDocumentA1.GetNodeById(Id: Integer): TALogNode;
-var
-  I: Integer;
-begin
-  for I := 0 to High(FNodes) do if FNodes[I].Id = Id then
-  begin
-    Result := FNodes[I];
-    Exit;
-  end;
-  Result := nil;
-end;
-
-function TLogDocumentA1.NewNode(LogType: TLogTypeMessage; const Msg: WideString; Parent: Integer = 0; Id: Integer = 0): TALogNode;
+function TALogDocument.NewNode(LogType: TLogTypeMessage; const Msg: WideString;
+    Parent: Integer = 0; Id: Integer = 0): TALogNode;
 var
   S: string;
 begin
@@ -315,6 +227,16 @@ begin
     Id := GetFreeId;
   Result := TALogNode.Create2(ALogDocument2(Self), Parent, S, Id);
   AddNode(Result);
+end;
+
+function TALogDocument.OpenDocument(): TProfError;
+begin
+  Result := 0;
+end;
+
+procedure TALogDocument.SetOnCommand(Value: TProcMessageStr);
+begin
+  FOnCommand := Value;
 end;
 
 { TProfLogDocument3 }
@@ -332,7 +254,7 @@ begin
   Result := 0;
 end;
 
-function TProfLogDocument3.GetDocumentElement(): IProfLogNode;
+function TProfLogDocument3.GetDocumentElement(): IALogNode2;
 begin
   Result := nil;
   // ...

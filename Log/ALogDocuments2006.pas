@@ -10,16 +10,16 @@ unit ALogDocuments2006;
 interface
 
 uses
-  {ALogGlobals2006,} ALogDocumentImpl, ALogNodeImpl, ATypes;
+  ALogDocumentImpl, ALogNodeImpl, ATypes;
 
 type //** Класс для записи Log сразу в несколько мест
-  TLogDocuments = class(TLogDocumentA1)
+  TLogDocuments = class(TALogDocument)
   private
-    FDocuments: array of TALogDocument2;
+    FDocuments: array of TALogDocument;
   protected
     procedure SetOnCommand(Value: TProcMessageStr); override;
   public
-    function AddLogDocument(ADocument: TALogDocument2): Integer;
+    function AddLogDocument(ADocument: TALogDocument): Integer;
     function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: string; AParams: array of const): Boolean; override;
     constructor Create();
     function ConfigureLoad(): WordBool; override;
@@ -33,7 +33,7 @@ implementation
 
 { TLogDocuments }
 
-function TLogDocuments.AddLogDocument(ADocument: TALogDocument2): Integer;
+function TLogDocuments.AddLogDocument(ADocument: TALogDocument): Integer;
 begin
   Result := Length(FDocuments);
   SetLength(FDocuments, Result + 1);

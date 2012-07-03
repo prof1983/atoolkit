@@ -2,7 +2,7 @@
 @Abstract(Общие интерфейсы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(21.06.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 
 История версий
@@ -104,12 +104,6 @@ type
     }
     property Xml: WideString read GetXmlString write SetXmlString;
   end;
-
-// -----------------------------------------------------------------------------
-
-//type
-  //IProfLogNode = IProfNode; -> ProfLogNodeIntf.IProfLogNode
-  //IProfLogNodes = IProfNodes; -> ProfLogNodeIntf.IProfLogNodes
 
 implementation
 

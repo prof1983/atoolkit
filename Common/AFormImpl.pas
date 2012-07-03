@@ -2,7 +2,7 @@
 @Abstract(Класс-потомок для форм с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.10.2005)
-@LastMod(27.06.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 
 13.06.2012 - TProfForm3
@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, Forms, SysUtils,
-  ABase, AFormIntf, ALogNodeIntf, ANodeUtils, ANodeIntf, ATypes, AXmlUtils,
+  ABase, AFormIntf, ALogNodeImpl, {ALogNodeIntf,} ANodeUtils, ANodeIntf, ATypes, AXmlUtils,
   AObjectIntf; {ATypesEx;}
 
 type //** Класс-потомок для форм с логированием и конфигурациями
@@ -23,7 +23,7 @@ type //** Класс-потомок для форм с логированием 
   protected
     FConfig: IProfNode;
     FIsInitialized: WordBool;
-    FLog: IProfLogNode;
+    FLog: TALogNode;
     //FLogPrefix: WideString; // TODO: Удалить
       {** CallBack функция. Срабатывает при добавлении лог-сообщения. }
     FOnAddToLog: TProcAddToLog;
@@ -78,7 +78,7 @@ type //** Класс-потомок для форм с логированием 
       //** Инициализорован
     property Initialized: WordBool read FIsInitialized;
       //** Объект для записи лог-сообщений
-    property Log: IProfLogNode read FLog write FLog;
+    property Log: TALogNode read FLog write FLog;
       //** CallBack функция. Срабатывает при добавлении лог-сообщения.
     property OnAddToLog: TProcAddToLog read FOnAddToLog write FOnAddToLog;
       //** CallBack функция. Срабатывает при добавлении сообщения.

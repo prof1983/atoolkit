@@ -2,7 +2,7 @@
 @Abstract(Работа с Log. Передает сообщения классу TProgram)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(23.05.2005)
-@LastMod(18.05.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit ALogProgram;
@@ -13,7 +13,7 @@ uses
   ALogDocumentImpl, ATypes;
 
 type //** @abstract(Работа с Log. Передает сообщения классу TProgram)
-  TLogProgram = class(TLogDocument1)
+  TLogProgram = class(TALogDocument)
   public
     function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: string; AParams: array of const): Boolean; override;

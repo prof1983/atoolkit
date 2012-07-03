@@ -2,7 +2,7 @@
 @Abstract(Общие интерфейсы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(13.06.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit ALogDocumentIntf;
@@ -12,24 +12,21 @@ interface
 uses
   ADocumentIntf, ALogNodeIntf, ANodeIntf, ATypes;
 
-type //** Интерфейс документа логирования
-  ILogDocument = IProfLogNode;
-type //** Интерфейс документа логирования
-  ILogDocument2 = ILogNode2;
+type
+    //** Интерфейс документа логирования
+  ILogDocument = IALogNode2;
 
-type //** Интерфейс документов логирования
+    //** Интерфейс документов логирования
   ILogDocuments = interface(ILogDocument)
-    function AddLogDocument(ADocument: ILogDocument): Integer; safecall;
+    function AddLogDocument(ADocument: ILogDocument): Integer;
   end;
 
-type //** Интерфейс документов логирования
-  ILogDocuments2 = interface(ILogDocument2)
-    function AddLogDocument(ADocument: ILogDocument2): Integer;
-  end;
+  ILogDocument2 = ILogDocument;
+  ILogDocuments2 = ILogDocuments;
 
 type //** Интерфейс документа логирования
   IProfLogDocument = interface //(IProfDocument)
-    function GetDocumentElement(): IProfLogNode; safecall;
+    function GetDocumentElement(): IALogNode2; safecall;
 
     {**
       Добавить лог-сообщение
@@ -37,7 +34,7 @@ type //** Интерфейс документа логирования
     }
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
 
-    property DocumentElement: IProfLogNode read GetDocumentElement;
+    property DocumentElement: IALogNode2 read GetDocumentElement;
   end;
 
 type //** Интерфейс документов логирования

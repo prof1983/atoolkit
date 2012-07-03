@@ -15,7 +15,7 @@ uses
   ALogNodeImpl, ALogNodeIntf, ATypes;
 
 type //** Показывать Log в окне
-  TLogForm = class(TLogDocumentA)
+  TLogForm = class(TALogDocument)
   private
     FFormLog: TProfLogTreeForm;
     FConfigFormLog: TConfigForm;
@@ -32,7 +32,7 @@ type //** Показывать Log в окне
     procedure Free(); {override;}
       //** Показать
     procedure Show(); override; safecall;
-    function NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): IProfLogNode; override; safecall;
+    function NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode; override; safecall;
       //** Скрыть
     procedure Hide(); override; safecall;
   public
@@ -106,7 +106,7 @@ begin
   if Assigned(FFormLog) then FFormLog.Hide();
 end;
 
-function TLogForm.NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): IProfLogNode;
+function TLogForm.NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode;
 var
   Id: Integer;
 begin

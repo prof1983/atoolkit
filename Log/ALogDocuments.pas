@@ -16,19 +16,43 @@ uses
   ALogDocumentImpl, ALogDocumentIntf, ALogNodeImpl, ALogNodeIntf, ATypes;
 
 type //** Класс для записи Log сразу в несколько мест
-  TLogDocuments = class(TLogDocumentA, ILogDocuments)
+  TLogDocuments = class(TALogDocument, ILogDocuments)
   private
     FDocuments: array of ILogDocument;
   protected
     procedure SetOnCommand(Value: TProcMessageStr); override;
   public
-    function AddLogDocument(ADocument: ILogDocument): Integer; safecall;
+    function AddLogDocument(ADocument: ILogDocument): Integer;
     function AddMsg(const AMsg: WideString): Integer; override;
     function AddStr(const AStr: WideString): Integer; override;
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; override;
     constructor Create();
     function NewNode(AType: TLogTypeMessage; const AMsg: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode{IProfLogNode}; override;
     procedure Show(); override;
+  end;
+
+  {** Класс для записи Log сразу в несколько мест }
+  TLogDocuments2007 = class(TALogDocument, ILogDocuments2)
+  private
+    FDocuments: array of ILogDocument2;
+  protected
+    procedure SetOnCommand(Value: TProcMessageStr); override;
+  public
+    function AddLogDocument(ADocument: ILogDocument2): Integer;
+    function AddMsg(const AMsg: WideString): Integer; override;
+    function AddStr(const AStr: WideString): Integer; override;
+    function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+        const AStrMsg: string; AParams: array of const): Boolean; override;
+    constructor Create();
+    function NewNode(LogType: TLogTypeMessage; const Msg: WideString;
+        Parent: Integer = 0; Id: Integer = 0): TALogNode; override;
+    procedure Show(); override;
+    function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+        const AStrMsg: WideString; AParams: array of const): Integer; override;
+    function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+        const AStrMsg: WideString): Integer; override;
+    function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
+        const AStrMsg: WideString): Integer; override;
   end;
 
 type //** Класс для записи Log сразу в несколько мест
@@ -51,30 +75,6 @@ type //** Класс для записи Log сразу в несколько м
     property DocumentByID[ID: Int64]: IProfLogDocument read GetDocumentByID;
     property DocumentByIndex[Index: Integer]: IProfLogDocument read GetDocumentByIndex;
     property DocumentCount: Integer read GetDocumentCount;
-  end;
-
-  {** Класс для записи Log сразу в несколько мест }
-  TLogDocuments2007 = class(TLogDocumentA1, ILogDocuments2)
-  private
-    FDocuments: array of ILogDocument2;
-  protected
-    procedure SetOnCommand(Value: TProcMessageStr); override;
-  public
-    function AddLogDocument(ADocument: ILogDocument2): Integer;
-    function AddMsg(const AMsg: WideString): Integer; override;
-    function AddStr(const AStr: WideString): Integer; override;
-    function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: string; AParams: array of const): Boolean; override;
-    constructor Create();
-    function NewNode(LogType: TLogTypeMessage; const Msg: WideString;
-        Parent: Integer = 0; Id: Integer = 0): TALogNode; override;
-    procedure Show(); override;
-    function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString; AParams: array of const): Integer; override;
-    function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer; override;
-    function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
-        const AStrMsg: WideString): Integer; override;
   end;
 
 implementation

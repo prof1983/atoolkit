@@ -2,7 +2,7 @@
 @Abstract(Объект с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.12.2005)
-@LastMod(27.06.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit AObjectImpl;
@@ -21,7 +21,7 @@ type //** Объект с логированием и конфигурациям
       //** Инициализирован
     FInitialized: WordBool;
       //** Ветка логирования
-    FLog: IProfLogNode;
+    FLog: IALogNode2;
       //** Префикс лог-сообщений
     //FLogPrefix: WideString;
       //** CallBack функция. Срабатывает при поступлении сообщения.
@@ -29,10 +29,10 @@ type //** Объект с логированием и конфигурациям
     //FOnSendMessageX: TProcMessageX;
   protected
     function GetConfigNode(): IProfNode; safecall;
-    function GetLogNode(): IProfLogNode; safecall;
+    function GetLogNode(): IALogNode2; safecall;
     procedure SetConfigNode(Value: IProfNode); virtual; safecall;
     procedure SetInitialized(Value: WordBool);
-    procedure SetLogNode(Value: IProfLogNode); virtual; safecall;
+    procedure SetLogNode(Value: IALogNode2); virtual; safecall;
   protected
       //** Срабатывает при создании объекта
     procedure DoCreate(); virtual; safecall;
@@ -86,9 +86,9 @@ type //** Объект с логированием и конфигурациям
       //** Инициализорован
     property Initialized: WordBool read FInitialized write SetInitialized;
       //** Ветка логирования
-    property Log: IProfLogNode read GetLogNode write SetLogNode;
+    property Log: IALogNode2 read GetLogNode write SetLogNode;
       //** Ветка логирования
-    //property LogNode: IProfLogNode read GetLogNode write SetLogNode;
+    //property LogNode: IALogNode2 read GetLogNode write SetLogNode;
       //** Префикс лог-сообщений
     //property LogPrefix: WideString read FLogPrefix write FLogPrefix;
       //** CallBack функция функция. Срабатывает при поступлении лог-сообщения.
@@ -137,9 +137,9 @@ type //** Объект с логированием и конфигурациям
     procedure SetName(const Value: WideString); safecall;
   public // IProfObject
     function GetConfigNode(): IProfNode; safecall;
-    function GetLogNode(): IProfLogNode; safecall;
+    function GetLogNode(): IALogNode2; safecall;
     procedure SetConfigNode(Value: IProfNode); safecall;
-    procedure SetLogNode(Value: IProfLogNode); safecall;
+    procedure SetLogNode(Value: IALogNode2); safecall;
   public // IProfObject
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: WideString): Integer; virtual;
@@ -316,7 +316,7 @@ begin
   Result := FConfig;
 end;
 
-function TProfObject.GetLogNode(): IProfLogNode;
+function TProfObject.GetLogNode(): IALogNode2;
 begin
   Result := FLog;
 end;
@@ -374,7 +374,7 @@ begin
     Finalize();
 end;
 
-procedure TProfObject.SetLogNode(Value: IProfLogNode);
+procedure TProfObject.SetLogNode(Value: IALogNode2);
 begin
   FLog := Value;
 end;
@@ -567,7 +567,7 @@ begin
   Result := FLog;
 end;
 
-function TProfObject2.GetLogNode(): IProfLogNode;
+function TProfObject2.GetLogNode(): IALogNode2;
 begin
   Result := nil;
 end;
@@ -630,7 +630,7 @@ begin
   FLog := Value;
 end;
 
-procedure TProfObject2.SetLogNode(Value: IProfLogNode);
+procedure TProfObject2.SetLogNode(Value: IALogNode2);
 begin
 end;
 

@@ -2,7 +2,7 @@
 @Abstract(Классы для записи собщений программы в БД или файл)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.08.2005)
-@LastMod(13.06.2012)
+@LastMod(03.07.2012)
 @Version(0.5)
 }
 unit ALogFile;
@@ -16,7 +16,7 @@ uses
   ALogDocumentImpl, ALogFileTextUtils, ALogGlobals, ATypes, AXmlNodeIntf;
 
 type //** Запись в файл
-  TLogFileText = class(TLogDocument1)
+  TLogFileText = class(TALogDocument)
   private
     FFileName: WideString;
   public

@@ -13,7 +13,7 @@ uses
   ABase, ANodeIntf, ATypes;
 
 type //** Интерфейс элемента логирования
-  IProfLogNode = interface //(IProfNode)
+  IALogNode = interface //(IProfNode)
     {**
       Добавить сообщение
       @returns(Возвращает номер добавленого сообщения или 0)
@@ -40,7 +40,7 @@ type //** Интерфейс элемента логирования
   end;
 
   //** Интерфейс элемента логирования
-  ILogNode2 = interface
+  IALogNode2 = interface(IALogNode)
     function Get_GroupEnum(): GroupMessageEnum;
     function Get_ID(): Integer;
     function Get_LogType(): EnumTypeMessage;
@@ -54,29 +54,12 @@ type //** Интерфейс элемента логирования
     procedure Set_Parent(Value: Integer);
     procedure Set_StatusEnum(Value: StatusNodeEnum);
 
-    {**
-      Добавить сообщение
-      @returns(Возвращает номер добавленого сообщения или 0)
-    }
-    function AddMsg(const AMsg: WideString): Integer;
-    //procedure AddMsg(const AMsg: WideString);
-
-    {**
-      Добавить строку
-      @returns(Возвращает номер добавленой строки или 0)
-    }
-    function AddStr(const AStr: WideString): Integer;
-    //procedure AddStr(const AStr: WideString);
-
       //** Функция логирования
     function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: WideString): Integer;
       //** Функция логирования c Enum
     function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
         const AStrMsg: WideString): Integer;
-
-    procedure Hide();
-    procedure Show();
 
     property GroupEnum: EnumGroupMessage read Get_GroupEnum write Set_GroupEnum;
     property Id: Integer read Get_Id write Set_Id;
@@ -86,7 +69,8 @@ type //** Интерфейс элемента логирования
     property StatusEnum: EnumNodeStatus read Get_StatusEnum write Set_StatusEnum;
   end;
 
-type
+  ILogNode2 = IALogNode2;
+  //IProfLogNode = IALogNode;
   IProfLogNodes = IProfNodes;
 
 implementation

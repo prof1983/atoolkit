@@ -14,7 +14,7 @@ uses
   AConfigForm2006, ALogDocumentImpl, ALogFormTree2007, ALogNodeImpl, ATypes;
 
 type //** Показывать Log в окне
-  TLogForm = class(TLogDocumentA1)
+  TLogForm = class(TALogDocument)
   private
     FFormLog: TFormLog;
     FConfigFormLog: TConfigForm;

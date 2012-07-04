@@ -2,7 +2,7 @@
 @Abstract(Класс-потомок для форм с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.10.2005)
-@LastMod(25.05.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit AForm2007;
@@ -11,43 +11,59 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ALogNodeIntf, ATypes, AXmlUtils;
+  ABase, AConfig2007, ALogNodeImpl, ATypes, AXmlUtils;
 
 type //** @abstract(Класс-потомок для форм с логированием и конфигурациями)
   TProfForm = class(TForm)
   protected
     FConfig: IXmlNode;
+    FConfig1: TConfigNode1;
     FConfigDocument: IXmlDocument;
+    FConfigDocument1: TConfigDocument1;
     FInitialized: WordBool;
-    FLog: ILogNode2;
+    FLog: TALogNode; //FLog: IALogNode2;
     FLogPrefix: WideString;
-    FOnAddToLog: TProfAddToLog;
+    FOnAddToLog: TAddToLogProc;
+    //FOnAddToLog: TProfAddToLog;
+    //FOnAddToLog: TAddToLog;
   protected
     procedure DoDestroy(); override;
     function DoFinalize(): WordBool; virtual;
     function DoInitialize(): WordBool; virtual;
-  protected
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: string; AParams: array of const): Boolean; virtual;
+  public
+    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: APascalString): AInteger; virtual;
+    function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: string; AParams: array of const): Boolean; virtual;
+    function AddToLogW(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): AInteger;
     function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer; virtual;
     function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; virtual;
     function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage; const AStrMsg: WideString): Integer; virtual;
   public
-    property Config: IXmlNode read FConfig write FConfig;
-    property ConfigDocument: IXmlDocument read FConfigDocument write FConfigDocument;
     function ConfigureLoad(): WordBool; virtual;
+    function ConfigureLoad1(): WordBool; virtual;
     function ConfigureLoad2(AConfig: IXmlNode = nil): WordBool; virtual; safecall;
     function ConfigureSave(): WordBool; virtual;
+    function ConfigureSave1(): WordBool; virtual;
     function ConfigureSave2(AConfig: IXmlNode = nil): WordBool; virtual; safecall;
     function Finalize(): WordBool; virtual;
-    procedure Free(); virtual;
     function Initialize(): WordBool; virtual;
+  public
+    procedure Free(); virtual;
+  public
+    property Config: IXmlNode read FConfig write FConfig;
+    property Config1: TConfigNode1 read FConfig1 write FConfig1;
+    property ConfigDocument: IXmlDocument read FConfigDocument write FConfigDocument;
+    property ConfigDocument1: TConfigDocument1 read FConfigDocument1 write FConfigDocument1;
     property Initialized: WordBool read FInitialized;
-    property Log: ILogNode2 read FLog write FLog;
-    property OnAddToLog: TProfAddToLog read FOnAddToLog write FOnAddToLog;
+    property Log: TALogNode read FLog write FLog; //property Log: ILogNode2 read FLog write FLog;
+    property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
+    //property OnAddToLog: TProfAddToLog read FOnAddToLog write FOnAddToLog;
+    //property OnAddToLog: TAddToLog read FOnAddToLog write FOnAddToLog;
   end;
 
+  TProfForm2006 = TProfForm;
+
 resourcestring // Сообщения ----------------------------------------------------
-  stCreateOk           = 'Объект создан';
+  stCreateOk = 'Объект создан';
 
 const // Состояние окна --------------------------------------------------------
   WINDOW_STATE: array[TWindowState] of string = ('Normal', 'Minimized', 'Maximized');
@@ -56,14 +72,56 @@ implementation
 
 { TProfForm }
 
-function TProfForm.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: string; AParams: array of const): Boolean;
+function TProfForm.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: APascalString): AInteger;
 begin
-  Result := (ToLog(AGroup, AType, AStrMsg, AParams) > 0);
+  Result := 0;
+  if Assigned(FLog) then
+  try
+    Result := FLog.AddToLog(AGroup, AType, AStrMsg);
+  except
+  end;
+  if Assigned(FOnAddToLog) then
+  try
+    Result := FOnAddToLog(AGroup, AType, AStrMsg);
+  except
+  end;
+end;
+
+function TProfForm.AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: string; AParams: array of const): Boolean;
+var
+  S: WideString;
+begin
+  try
+    S := Format(AStrMsg, AParams);
+  except
+    S := AStrMsg;
+  end;
+  Result := (AddToLog(AGroup, AType, S) >= 0);
+end;
+
+function TProfForm.AddToLogW(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): AInteger;
+begin
+  Result := AddToLog(AGroup, AType, AStrMsg);
 end;
 
 function TProfForm.ConfigureLoad(): WordBool;
 begin
   Result := Assigned(FConfig);
+end;
+
+function TProfForm.ConfigureLoad1(): WordBool;
+var
+  I: Integer;
+  S: WideString;
+begin
+  Result := Assigned(FConfig);
+  if not(Result) then Exit;
+  if FConfig1.ReadInt32('Left', I) then Left := I;
+  if FConfig1.ReadInt32('Top', I) then Top := I;
+  if FConfig1.ReadInt32('Width', I) then Width := I;
+  if FConfig1.ReadInt32('Height', I) then Height := I;
+  if FConfig1.ReadInt32('WindowState', I) then WindowState := TWindowState(I);
+  if FConfig1.ReadString('Caption', S) then Caption := S; // Заголовок окна
 end;
 
 function TProfForm.ConfigureLoad2(AConfig: IXmlNode): WordBool;
@@ -109,6 +167,21 @@ end;
 function TProfForm.ConfigureSave(): WordBool;
 begin
   Result := Assigned(FConfig);
+end;
+
+function TProfForm.ConfigureSave1(): WordBool;
+begin
+  Result := Assigned(FConfig);
+  if not(Result) then Exit;
+  if (WindowState <> wsMaximized) then
+  begin
+    FConfig1.WriteInt32('Left', Left);
+    FConfig1.WriteInt32('Top', Top);
+    FConfig1.WriteInt32('Width', Width);
+    FConfig1.WriteInt32('Height', Height);
+  end;
+  FConfig1.WriteInt32('WindowState', Integer(WindowState));
+  FConfig1.WriteString('Caption', Caption); // Заголовок окна
 end;
 
 function TProfForm.ConfigureSave2(AConfig: IXmlNode): WordBool;
@@ -170,24 +243,12 @@ begin
   except
     S := AStrMsg;
   end;
-
-  Result := ToLogA(AGroup, AType, S);
-
-  if Assigned(FOnAddToLog) then
-  try
-    FOnAddToLog(AGroup, AType, AStrMsg, AParams);
-  except
-  end;
+  Result := AddToLog(AGroup, AType, S);
 end;
 
 function TProfForm.ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
 begin
-  Result := -1;
-  if Assigned(FLog) then
-  try
-    Result := FLog.ToLogA(AGroup, AType, AStrMsg);
-  except
-  end;
+  Result := AddToLog(AGroup, AType, AStrMsg);
 end;
 
 function TProfForm.ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage; const AStrMsg: WideString): Integer;

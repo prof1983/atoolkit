@@ -2,7 +2,7 @@
 @Abstract(Показывать Log в окне)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.10.2005)
-@LastMod(03.05.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit ALogDocumentForm;
@@ -21,20 +21,21 @@ type //** Показывать Log в окне
     FConfigFormLog: TConfigForm;
     //procedure SetConfig(Value: TConfigForm);
   public
-    function AddMsg(const AMsg: WideString): Integer; override; safecall;
-    function AddStr(const AStr: WideString): Integer; override; safecall;
+    function AddMsg(const AMsg: WideString): Integer; override;
+    function AddStr(const AStr: WideString): Integer; override;
       //** Добавить сообщение
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; override; {safecall;}
-    function ConfigureLoad(AConfig: IXmlNode{IXmlDomNode} = nil): WordBool; {override;} safecall;
-    function ConfigureSave(AConfig: IXmlNode{IXmlDomNode} = nil): WordBool; {override;} safecall;
+    function ConfigureLoad(AConfig: IXmlNode = nil): WordBool; deprecated; // Delete
+    function ConfigureSave(AConfig: IXmlNode = nil): WordBool; deprecated; // Delete
     constructor Create();
     function Finalize(): TProfError; {override;}
     procedure Free(); {override;}
-      //** Показать
-    procedure Show(); override; safecall;
-    function NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode; override; safecall;
       //** Скрыть
-    procedure Hide(); override; safecall;
+    procedure Hide(); override;
+    function NewNode(LogType: TLogTypeMessage; const Prefix: WideString;
+        Parent: Integer = 0; Id: Integer = 0): TALogNode; override;
+      //** Показать
+    procedure Show(); override;
   public
     property FormLog: TProfLogTreeForm read FFormLog write FFormLog;
   end;
@@ -106,13 +107,13 @@ begin
   if Assigned(FFormLog) then FFormLog.Hide();
 end;
 
-function TLogForm.NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode;
-var
-  Id: Integer;
+function TLogForm.NewNode(LogType: TLogTypeMessage; const Prefix: WideString;
+    Parent, Id: Integer): TALogNode;
 begin
-  Id := GetFreeId;
-  FFormLog.AddNode(AType, Id, AParent, APrefix);
-  Result := TLogNode.Create(Self, APrefix, Id);
+  if (Id = 0) then
+    Id := GetFreeId();
+  FFormLog.AddNode(LogType, Id, Parent, Prefix);
+  Result := TALogNode.Create(Self, Prefix, Id);
   AddNode(Result);
 end;
 

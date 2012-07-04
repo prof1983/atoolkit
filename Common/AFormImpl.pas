@@ -2,7 +2,7 @@
 @Abstract(Класс-потомок для форм с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.10.2005)
-@LastMod(03.07.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 
 13.06.2012 - TProfForm3
@@ -15,8 +15,8 @@ interface
 
 uses
   Classes, Forms, SysUtils,
-  ABase, AFormIntf, ALogNodeImpl, {ALogNodeIntf,} ANodeUtils, ANodeIntf, ATypes, AXmlUtils,
-  AObjectIntf; {ATypesEx;}
+  ABase, AFormIntf, ALogNodeImpl, ANodeUtils, ANodeIntf, ATypes, AXmlUtils,
+  AObjectIntf;
 
 type //** Класс-потомок для форм с логированием и конфигурациями
   TProfForm = class(TForm, IProfForm)

@@ -2,7 +2,7 @@
 @Abstract(Сообщения для передачи команд между модулями и внутри программы)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(04.11.2005)
-@LastMod(26.04.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit AMessagesObj;
@@ -13,7 +13,7 @@ uses
   AMessageObj, ATypes;
 
 type //** Конвеер сообщений
-  TProfMessages3 = class
+  TAMessages = class
   private
     FMessages: array of TProfMessage3;
       //** Счетчик номеров команд
@@ -27,7 +27,7 @@ type //** Конвеер сообщений
   public
       //** Добавить команду в список. Поставить команду в очередь выполнения.
     function AddComand(AConnectionId: UInt64; AIdent: Int32; AOwner: UInt64;
-        AComId: UInt64; const AComName, AParams: WideString{IProfXmlNode}): Boolean;
+        AComId: UInt64; const AComName, AParams: WideString): Boolean;
       //** Добавить сообщение. Поставить сообщение в очередь сообщений.
     function AddMsg(AConnectionID: UInt64; AMsg: WideString): Boolean;
     constructor Create(StekSize: Integer = 512);
@@ -56,10 +56,10 @@ type //** Конвеер сообщений
 
 implementation
 
-{ TProfMessages3 }
+{ TAMessages }
 
-function TProfMessages3.AddComand(AConnectionId: UInt64; AIdent: Int32; AOwner: UInt64;
-    AComId: UInt64; const AComName, AParams: WideString{IProfXmlNode}): Boolean;
+function TAMessages.AddComand(AConnectionId: UInt64; AIdent: Int32; AOwner: UInt64;
+    AComId: UInt64; const AComName, AParams: WideString): Boolean;
 begin
   Result := False;
   //FCritical.Leave;
@@ -89,7 +89,7 @@ begin
   //FCritical.Release;
 end;
 
-function TProfMessages3.AddMsg(AConnectionID: UInt64; AMsg: WideString): Boolean;
+function TAMessages.AddMsg(AConnectionID: UInt64; AMsg: WideString): Boolean;
 begin
   Result := False;
   // Если буфер полный, то выход
@@ -100,7 +100,7 @@ begin
   Result := True;
 end;
 
-constructor TProfMessages3.Create(StekSize: Integer);
+constructor TAMessages.Create(StekSize: Integer);
 begin
   inherited Create;
   SetLength(FMessages, StekSize);
@@ -108,7 +108,7 @@ begin
   FNextMsg := 0;
 end;
 
-function TProfMessages3.FindMsgAnswer(AConnectionId: UInt64; AIdent: Integer; AComId: UInt64; AComName: WideString; var AMsg: TProfMessage3): Boolean;
+function TAMessages.FindMsgAnswer(AConnectionId: UInt64; AIdent: Integer; AComId: UInt64; AComName: WideString; var AMsg: TProfMessage3): Boolean;
 // Найти ответ
 
   function Check(Index: Integer): Boolean;
@@ -148,12 +148,12 @@ begin
   end;
 end;
 
-function TProfMessages3.GetCount(): Integer;
+function TAMessages.GetCount(): Integer;
 begin
   Result := Length(FMessages);
 end;
 
-function TProfMessages3.GetMessage(Index: Integer): TProfMessage3;
+function TAMessages.GetMessage(Index: Integer): TProfMessage3;
 begin
   if (Index < 0) or (Index >= Length(FMessages)) then
   begin
@@ -163,7 +163,7 @@ begin
   Result := FMessages[Index];
 end;
 
-function TProfMessages3.GetMessageRec(Index: Integer; var AMsg: TProfMessageRec): Boolean;
+function TAMessages.GetMessageRec(Index: Integer; var AMsg: TProfMessageRec): Boolean;
 // Получить сообщение
 {var
   Msg: TProfXmlNode;}
@@ -201,13 +201,13 @@ begin
   *)
 end;
 
-function TProfMessages3.GetNextIdent(): Int32;
+function TAMessages.GetNextIdent(): Int32;
 begin
   Result := FNextIdent;
   if FNextIdent >= High(Int32) then FNextIdent := 1 else Inc(FNextIdent);
 end;
 
-{function TProfMessages3.GetNextMessage: TProfMessage3;
+{function TAMessages.GetNextMessage(): TProfMessage3;
 begin
   Result := False;
   Result := FMessages[FNextRun];
@@ -222,7 +222,7 @@ begin
   Result := True;
 end;}
 
-function TProfMessages3.GetNextMessageRec(var AMsg: TProfMessageRec): Boolean;
+function TAMessages.GetNextMessageRec(var AMsg: TProfMessageRec): Boolean;
 var
   tmpMsg: TProfMessage3;
 begin

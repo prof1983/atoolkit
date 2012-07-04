@@ -2,7 +2,7 @@
 @Abstract(Оболочка для процесса)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(03.10.2005)
-@LastMod(26.04.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit AThread2007;
@@ -56,7 +56,7 @@ type //** @abstract(Оболочка для процесса)
     //property Config: TConfigNode read FConfig write FConfig;
     //function ConfigureLoad: WordBool; virtual;
     //function ConfigureSave: WordBool; virtual;
-    constructor Create(); //(AConfig: TConfigNode = nil; ALog: TLogNode = nil);
+    constructor Create();
     //function Finalize: WordBool; virtual;
     //procedure Free; virtual;
     //function Initialize: WordBool; virtual;
@@ -75,7 +75,7 @@ const // Сообщения ----------------------------------------------------
 implementation
 
 // TProfThread -----------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
 {function TProfThread.ConfigureLoad: WordBool;
 var
   I: Int32;
@@ -95,7 +95,6 @@ begin
   //AddToLog(lgGeneral, ltInformation, stConfigureLoadOk, [ThreadPriority_String[Priority]]);
 end;}
 
-// -----------------------------------------------------------------------------
 {function TProfThread.ConfigureSave: WordBool;
 begin
   Result := Assigned(FConfig);
@@ -103,8 +102,7 @@ begin
   Config.WriteInt32('Priority', INT_THREAD_PRIORITY[Priority]);
 end;}
 
-// -----------------------------------------------------------------------------
-constructor TProfThread.Create(); //(AConfig: TConfigNode = nil; ALog: TLogNode = nil);
+constructor TProfThread.Create();
 begin
   inherited Create(True);
   DoCreate();
@@ -113,41 +111,34 @@ begin
   AddToLog(lgGeneral, ltInformation, stCreateOk, []);}
 end;
 
-// -----------------------------------------------------------------------------
 procedure TProfThread.DoCreate();
 begin
 end;
 
-// -----------------------------------------------------------------------------
 procedure TProfThread.DoDestroy();
 begin
 end;
 
-// -----------------------------------------------------------------------------
 procedure TProfThread.Execute();
 begin
   //if Assigned(FOnExecute) then FOnExecute;
 end;
 
-// -----------------------------------------------------------------------------
 procedure TProfThread.Pause();
 begin
   Self.Suspend();
 end;
 
-// -----------------------------------------------------------------------------
 procedure TProfThread.Start();
 begin
   Self.Resume();
 end;
 
-// -----------------------------------------------------------------------------
 procedure TProfThread.Stop();
 begin
   Self.Terminate();
 end;
 
-// -----------------------------------------------------------------------------
 function TProfThread.ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer;
 begin
   Result := 0;

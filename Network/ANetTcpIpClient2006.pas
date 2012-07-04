@@ -2,7 +2,7 @@
 @Abstract(Надстройка над модулем ATcpIpClient)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.12.2005)
-@LastMod(04.05.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit ANetTcpIpClient2006;
@@ -29,7 +29,7 @@ type
     property Config: TConfigNode1 read FConfig write FConfig;
     function ConfigureLoad: Boolean;
     function ConfigureSave: Boolean;
-    constructor Create(AConfig: TConfigNode1 = nil; ALog: TLogNode = nil);
+    constructor Create(AConfig: TConfigNode1 = nil; ALog: TALogNode = nil);
     function Finalize: Boolean;
     procedure Free;
     function Initialize: Boolean;
@@ -82,7 +82,7 @@ begin
   Config.WriteInt32('ServerPort', ServerPort);
 end;
 
-constructor TProfTcpIpClient.Create(AConfig: TConfigNode1 = nil; ALog: TLogNode = nil);
+constructor TProfTcpIpClient.Create(AConfig: TConfigNode1 = nil; ALog: TALogNode = nil);
 begin
   inherited Create;
   OnAddToLog := AddToLog;

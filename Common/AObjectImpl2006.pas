@@ -2,7 +2,7 @@
 @Abstract(Объект с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.12.2005)
-@LastMod(02.07.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit AObjectImpl2006;
@@ -40,7 +40,7 @@ type //** Объект с логированием и конфигурациям
     function Finalize: WordBool; virtual; safecall;
     function Initialize: WordBool; virtual; safecall;
   public
-    constructor Create(AConfig: AProfXmlNode2{IProfXmlNode2006}{TConfigNode} = nil; ALog: TLogNode = nil);
+    constructor Create(AConfig: AProfXmlNode2 = nil; ALog: TALogNode = nil);
     procedure Free; virtual;
   public
     //property Config: TConfigNode read GetConfig write SetConfig;
@@ -112,7 +112,7 @@ begin
   Result := AssignedConfig;
 end;
 
-constructor TProfObject.Create(AConfig: AProfXmlNode2{IProfXmlNode2006}{TConfigNode} = nil; ALog: TLogNode = nil);
+constructor TProfObject.Create(AConfig: AProfXmlNode2 = nil; ALog: TALogNode = nil);
 begin
   inherited Create;
   FConfig := AConfig;

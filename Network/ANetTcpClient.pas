@@ -2,7 +2,7 @@
 @Abstract(Оболочка для TCP/IP соединения (Client))
 @Author(Prof1983 prof1983@ya.ru)
 @Created(23.10.2005)
-@LastMod(26.04.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit ANetTcpClient;
@@ -33,7 +33,7 @@ type
     property Config: IXmlNode read FConfig write FConfig;
     function ConfigureLoad: Boolean; virtual;
     function ConfigureSave: Boolean; virtual;
-    constructor Create(AConfig: IXmlNode = nil; ALog: TLogNode = nil; AOwner: TComponent = nil);
+    constructor Create(AConfig: IXmlNode = nil; ALog: TALogNode = nil; AOwner: TComponent = nil);
     function Finalize: Boolean; virtual;
     procedure Free; virtual;
     function Initialize: Boolean; virtual;
@@ -77,7 +77,7 @@ begin
   Result := Assigned(FConfig);
 end;
 
-constructor TProfTcpClient.Create(AConfig: IXmlNode = nil; ALog: TLogNode = nil; AOwner: TComponent = nil);
+constructor TProfTcpClient.Create(AConfig: IXmlNode = nil; ALog: TALogNode = nil; AOwner: TComponent = nil);
 begin
   inherited Create(AOwner);
   FConfig := AConfig;

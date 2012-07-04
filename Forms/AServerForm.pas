@@ -2,7 +2,7 @@
 @Abstract(Server form)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(31.10.2005)
-@LastMod(04.05.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit AServerForm;
@@ -42,7 +42,7 @@ type
   public
     A: array of TClient;
     {Reg: TRegistry;}
-    constructor Create(AConfig: TConfigNode1 = nil; ALog: TLogNode = nil; AOwner: TComponent = nil);
+    constructor Create(AConfig: TConfigNode1 = nil; ALog: TALogNode = nil; AOwner: TComponent = nil);
     procedure Free; override;
     procedure RefreshA;
     procedure Refresh(Socket: TCustomWinSocket);
@@ -56,7 +56,7 @@ implementation
 
 {TProfFormServer}
 
-constructor TProfFormServer.Create(AConfig: TConfigNode1 = nil; ALog: TLogNode = nil; AOwner: TComponent = nil);
+constructor TProfFormServer.Create(AConfig: TConfigNode1 = nil; ALog: TALogNode = nil; AOwner: TComponent = nil);
 begin
   inherited Create(AOwner);
   //Self.Config := AConfig;

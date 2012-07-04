@@ -1,9 +1,9 @@
 object ProfFormServer: TProfFormServer
   Left = 310
   Top = 193
-  Width = 178
-  Height = 184
   Caption = 'Net-Server'
+  ClientHeight = 157
+  ClientWidth = 170
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

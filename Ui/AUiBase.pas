@@ -2,7 +2,7 @@
 @Abstract(User Interface Base types and consts)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.10.2008)
-@LastMod(25.10.2011)
+@LastMod(04.07.2012)
 @Version(0.5)
 
 [+] 10.08.2011 - Добавил тип AFont.
@@ -140,7 +140,11 @@ const
 {$IFDEF LangEN}
   {$I 'AUi.en.inc'}
 {$ELSE}
-  {$I 'AUi.ru.inc'}
+  {$IFDEF DELPHI_XE_UP}
+    {$I 'AUi.ru.utf8.inc'}
+  {$ELSE}
+    {$I 'AUi.ru.win1251.inc'}
+  {$ENDIF}
 {$ENDIF}
 
 implementation

@@ -2,7 +2,7 @@
 @Abstract(Модуль данных сущностей)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(19.03.2008)
-@LastMod(23.04.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 
 Элементарной (атомарной) единицей данных является сущность (Entity).
@@ -12,17 +12,17 @@ unit AEntityDataModule;
 interface
 
 uses
-  ABase, AEntitiesBase, AEntity, AEntityIterator;
+  ABase, AEntityObj, AIteratorIntf;
 
 type
   //** @abstract(Модуль данных сущностей)
   TAEntityDataModule = class
   private
-    FEntities: array of TAEntity;
+    FEntities: array of TAEntityObject;
   public
-    function GetEntityByID(ID: TAID): TAEntity;
-    function GetEntityByIndex(Index: Integer): TAEntity;
-    function GetEntityType(ID: TAID): TAID;
+    function GetEntityByID(Id: AId): TAEntityObject;
+    function GetEntityByIndex(Index: AInt): TAEntityObject;
+    function GetEntityType(Id: AId): AId;
     // TODO: Реализовать
     //function GetEntityDataSize(ID: TADI): Integer;
     //function GetEntityData(ID: TAID; Size: Integer; P: Pointer): Integer;
@@ -31,32 +31,37 @@ type
     //** Добавляет сущьность в базу, присваевае уникальный идентификатор.
     //function AddEntity(Entity: TAEntity): TAID;
     //** Возвращяет True, если идентификатор не занят.
-    function IsFree(ID: TAID): Boolean;
+    function IsFree(Id: AId): ABoolean;
     //** Создает новую сущность
-    function NewEntity(EntityType: TAID): TAID;
+    function NewEntity(EntityType: AId): AId;
     //** Возвращяет итератор сущностей с помощью которого можно сделать выборку сущностей определенного типа.
-    function Select(EntityType: TAID): IAEntityIterator;
+    function Select(EntityType: AId): IAIterator;
   end;
 
 implementation
 
 type
-  TAEntityIterator = class(TInterfacedObject, IAEntityIterator)
+  TAEntityIterator = class(TInterfacedObject, IAIterator)
   private
     FDataModule: TAEntityDataModule;
-    FEntityType: TAID;
-    FNextID: TAID;
+    FEntityType: AId;
+    FNextId: AId;
+  public // IAIterator
+    function HasNext(): ABoolean;
+    function Insert(Element: AId): ABoolean;
+    function IsEmpty(): ABoolean;
+    function Next(): AId;
+    function Remove(): ABoolean;
   public
     constructor Create();
-    function Next(): TAID;
   public
-    property EntityType: TAID read FEntityType write FEntityType;
+    property EntityType: AId read FEntityType write FEntityType;
     property DataModule: TAEntityDataModule read FDataModule write FDataModule;
   end;
 
 { TARDataModule }
 
-{function TADataModule.AddEntity(Entity: TAEntity): TAID;
+{function TADataModule.AddEntity(Entity: TAEntity): AId;
 begin
   Result := Length(FEntities);
   SetLength(FEntities, Result + 1);
@@ -65,12 +70,12 @@ begin
   Entity.EntityID := Result;
 end;}
 
-function TAEntityDataModule.GetEntityByID(ID: TAID): TAEntity;
+function TAEntityDataModule.GetEntityByID(Id: AId): TAEntityObject;
 begin
   Result := GetEntityByIndex(ID - 65536);
 end;
 
-function TAEntityDataModule.GetEntityByIndex(Index: Integer): TAEntity;
+function TAEntityDataModule.GetEntityByIndex(Index: Integer): TAEntityObject;
 begin
   if (Index >= 0) and (Index < Length(FEntities)) then
     Result := FEntities[Index]
@@ -78,18 +83,18 @@ begin
     Result := nil;
 end;
 
-function TAEntityDataModule.GetEntityType(ID: TAID): TAID;
+function TAEntityDataModule.GetEntityType(Id: AId): AId;
 var
-  e: TAEntity;
+  e: TAEntityObject;
 begin
-  e := GetEntityByID(ID);
+  e := GetEntityById(Id);
   if Assigned(e) then
     Result := e.EntityType
   else
     Result := 0;
 end;
 
-function TAEntityDataModule.IsFree(ID: TAID): Boolean;
+function TAEntityDataModule.IsFree(Id: AId): Boolean;
 begin
   // Идентификаторы 0..65535 зарезервированы под системные
   if (ID < 65536) then
@@ -97,20 +102,20 @@ begin
     Result := False;
     Exit;
   end;
-  Result := not(Assigned(GetEntityByID(ID)));
+  Result := not(Assigned(GetEntityByID(Id)));
 end;
 
-function TAEntityDataModule.NewEntity(EntityType: TAID): TAID;
+function TAEntityDataModule.NewEntity(EntityType: AId): AId;
 var
   index: Integer;
 begin
   index := Length(FEntities);
   SetLength(FEntities, index + 1);
   Result := index + 65536;
-  FEntities[index] := TAEntity.Create(Result, EntityType);
+  FEntities[index] := TAEntityObject.Create(Result, EntityType);
 end;
 
-function TAEntityDataModule.Select(EntityType: TAID): IAEntityIterator;
+function TAEntityDataModule.Select(EntityType: AId): IAIterator;
 var
   iterator: TAEntityIterator;
 begin
@@ -125,10 +130,25 @@ end;
 constructor TAEntityIterator.Create();
 begin
   inherited;
-  FNextID := 1;
+  FNextId := 1;
 end;
 
-function TAEntityIterator.Next(): TAID;
+function TAEntityIterator.HasNext(): ABoolean;
+begin
+  Result := False;
+end;
+
+function TAEntityIterator.Insert(Element: AId): ABoolean;
+begin
+  Result := False;
+end;
+
+function TAEntityIterator.IsEmpty(): ABoolean;
+begin
+  Result := True;
+end;
+
+function TAEntityIterator.Next(): AId;
 begin
   while True do
   begin
@@ -145,6 +165,11 @@ begin
     end;
     Inc(FNextID);
   end;
+end;
+
+function TAEntityIterator.Remove(): ABoolean;
+begin
+  Result := False;
 end;
 
 end.

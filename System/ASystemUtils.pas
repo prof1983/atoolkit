@@ -32,6 +32,8 @@ function IsEqualGUID(const guid1, guid2: TGUID): Boolean;
 {$ENDIF}
 function NormalizePath(const Path: AnsiString): AnsiString;
 
+function NormalizePath2(const Path: APascalString): APascalString;
+
 procedure ExtractFileNameAndPathW(const FExeFileName: APascalString; var FExeName, FExePath: APascalString);
 
 implementation
@@ -171,6 +173,28 @@ begin
     else
       Result := Path;
   end;
+end;
+
+function NormalizePath2(const Path: APascalString): APascalString;
+begin
+  if (Length(Path) = 0) then
+    Result := FExePath
+  else
+  begin
+    // Prof1983: 07.08.2011a
+    if (Path[1] = '.') then
+    begin
+      {$IFDEF MSWINDOWS}
+      Result := ExpandFileName(FExePath+Path);
+      {$ELSE}
+      Result := Copy(FExePath, 1, Length(FExePath)-1) + Copy(Result, 2, Length(Result)-1);
+      {$ENDIF MSWINDOWS}
+    end
+    else
+      Result := Path;
+  end;
+  if (Length(Result) > 0) and (Result[Length(Result)] <> '/') and (Result[Length(Result)] <> '\') then
+    Result := Result + '\';
 end;
 
 end.

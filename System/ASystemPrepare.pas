@@ -1,8 +1,8 @@
-{**
+﻿{**
 @Abstract()
 @Author(Prof1983 prof1983@ya.ru)
 @Created(01.08.2011)
-@LastMod(24.10.2011)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit ASystemPrepare;
@@ -76,8 +76,8 @@ begin
   FExeFileName := System.ParamStr(0);
   ExtractFileNameAndPathW(FExeFileName, FExeName, FExePath);
 
-  FDataPath := NormalizePath(DataPath);
-  FConfigPath := NormalizePath(ConfigPath);
+  FDataPath := NormalizePath2(DataPath);
+  FConfigPath := NormalizePath2(ConfigPath);
 
   if (FProgramName = '') then
   begin

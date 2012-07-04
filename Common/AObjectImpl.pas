@@ -2,7 +2,7 @@
 @Abstract(Объект с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.12.2005)
-@LastMod(03.07.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit AObjectImpl;
@@ -11,13 +11,13 @@ interface
 
 uses
   SysUtils, XmlIntf,
-  AEntityImpl, ALogGlobals, ALogNodeIntf, ANodeIntf, AObjectIntf, ATypes;
+  ABase, AEntityImpl, ALogGlobals, ALogNodeIntf, ANodeIntf, AObjectIntf, ATypes;
 
 type //** Объект с логированием и конфигурациями
   TProfObject = class(TANamedEntity, IProfObject)
   protected
       //** Конфигурации
-    FConfig: IProfNode;
+    FConfig: AXmlNode{IProfNode};
       //** Инициализирован
     FInitialized: WordBool;
       //** Ветка логирования
@@ -28,9 +28,9 @@ type //** Объект с логированием и конфигурациям
     FOnSendMessage: TProcMessageStr;
     //FOnSendMessageX: TProcMessageX;
   protected
-    function GetConfigNode(): IProfNode; safecall;
+    function GetConfigNode(): AXmlNode{IProfNode}; safecall;
     function GetLogNode(): IALogNode2; safecall;
-    procedure SetConfigNode(Value: IProfNode); virtual; safecall;
+    procedure SetConfigNode(Value: AXmlNode{IProfNode}); virtual; safecall;
     procedure SetInitialized(Value: WordBool);
     procedure SetLogNode(Value: IALogNode2); virtual; safecall;
   protected
@@ -80,7 +80,7 @@ type //** Объект с логированием и конфигурациям
     procedure Free(); virtual;
   public
       //** Конфигурации объекта
-    property Config: IProfNode read GetConfigNode write SetConfigNode;
+    property Config: AXmlNode{IProfNode} read GetConfigNode write SetConfigNode;
       //** Конфигурации объекта
     //property ConfigNode: IProfNode read GetConfigNode write SetConfigNode;
       //** Инициализорован
@@ -218,9 +218,13 @@ end;
 
 function TProfObject.AssignedConfig(): Boolean;
 begin
-  Result := Assigned(FConfig);
-  if not(Result) then
+  if (FConfig = 0) then
+  begin
     AddToLog(lgGeneral, ltError, stNotAssignedConfig);
+    Result := False;
+    Exit;
+  end;
+  Result := True;
 end;
 
 procedure TProfObject.BeforeDestruction();
@@ -249,7 +253,7 @@ end;
 constructor TProfObject.Create();
 begin
   inherited Create();
-  FConfig := nil;
+  FConfig := 0;
   DoCreate();
 end;
 
@@ -311,7 +315,7 @@ procedure TProfObject.Free();
 begin
 end;
 
-function TProfObject.GetConfigNode(): IProfNode;
+function TProfObject.GetConfigNode(): AXmlNode{IProfNode};
 begin
   Result := FConfig;
 end;
@@ -360,7 +364,7 @@ begin
   }
 end;
 
-procedure TProfObject.SetConfigNode(Value: IProfNode);
+procedure TProfObject.SetConfigNode(Value: AXmlNode{IProfNode});
 begin
   FConfig := Value;
 end;

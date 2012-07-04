@@ -79,9 +79,23 @@ end;
 function AXmlDocument_GetDocumentElement(XmlDocument: AXmlDocument): AProfXmlNode;
 var
   D: TProfXmlDocument;
-  D1: TProfXmlDocument1;
+  DA: TProfXmlDocumentA;
 begin
-  if (TObject(XmlDocument) is TProfXmlDocument) then
+  if (TObject(XmlDocument) is TProfXmlDocumentA) then
+  begin
+    DA := TProfXmlDocumentA(XmlDocument);
+    if (DA.FDocumentElement = 0) then
+    begin
+      if not(Assigned(DA.FDocument)) then
+      begin
+        Result := 0;
+        Exit;
+      end;
+      DA.FDocumentElement := AXmlNode2_New(DA.FDocument.DocumentElement)
+    end;
+    Result := DA.FDocumentElement;
+  end
+  else if (TObject(XmlDocument) is TProfXmlDocument) then
   begin
     D := TProfXmlDocument(XmlDocument);
     if (D.FDocumentElement = 0) then

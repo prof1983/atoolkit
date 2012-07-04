@@ -2,7 +2,7 @@
 @Abstract(Общие интерфейсы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(03.07.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit AObjectIntf;
@@ -15,9 +15,9 @@ uses
 
 type //** Интерфейс для любого объекта
   IProfObject = interface(IANamedEntity)
-    function GetConfigNode(): IProfNode; safecall;
+    function GetConfigNode(): AXmlNode{IProfNode}; safecall;
     function GetLogNode(): IALogNode2; safecall;
-    procedure SetConfigNode(Value: IProfNode); safecall;
+    procedure SetConfigNode(Value: AXmlNode{IProfNode}); safecall;
     procedure SetLogNode(Value: IALogNode2); safecall;
 
       //** Добавить (выполнить) сообщение
@@ -33,7 +33,7 @@ type //** Интерфейс для любого объекта
       //** Передать сообщение
     function SendMessage(const Msg: WideString): Integer; safecall;
 
-    property ConfigNode: IProfNode read GetConfigNode write SetConfigNode;
+    property ConfigNode: AXmlNode{IProfNode} read GetConfigNode write SetConfigNode;
     property LogNode: IALogNode2 read GetLogNode write SetLogNode;
   end;
 

@@ -2,7 +2,7 @@
 @Abstract(Интерфейс для модулей импорта, экспорта и синхронизации)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.04.2006)
-@LastMod(03.07.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 
   Команды формарования строк вставки и обновления данных (SqlInsert, SqlUpdate)
@@ -59,7 +59,8 @@ type // Общий класс для модулей импорта, экспор
     // Закрыть соединение с внешней БД
     procedure Close();
     // Загрузить из XML
-    function ConfigureLoad(AConfigNode: TConfigNode1): WordBool; virtual;
+    function ConfigureLoad(ConfigNode: AXmlNode): AError; virtual;
+    function ConfigureLoad1(AConfigNode: TConfigNode1): WordBool; virtual;
     // Сохранить в XML
     function ConfigureSave(ConfigNode: AXmlNode): AError; virtual;
     function ConfigureSave1(AConfigNode: TConfigNode1): WordBool; virtual;
@@ -116,8 +117,6 @@ type // Общий класс для модулей импорта, экспор
     // Только добавлять новые записи (старые не обновлять)
     property OnlyNewRecords: WordBool read FOnlyNewRecords write FOnlyNewRecords;
   end;
-
-//type Tdm = TDataModule2;
 
 implementation
 
@@ -194,7 +193,20 @@ begin
   end;
 end;
 
-function TDataModule2.ConfigureLoad(AConfigNode: TConfigNode1): WordBool;
+function TDataModule2.ConfigureLoad(ConfigNode: AXmlNode): AError;
+begin
+  if (TObject(ConfigNode) is TConfigNode1) then
+  begin
+    if ConfigureLoad1(TConfigNode1(ConfigNode)) then
+      Result := 0
+    else
+      Result := -3;
+  end
+  else
+    Result := -2;
+end;
+
+function TDataModule2.ConfigureLoad1(AConfigNode: TConfigNode1): WordBool;
 var
   C: Integer;
   I: Integer;

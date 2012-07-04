@@ -2,7 +2,7 @@
 @Abstract(AXmlNodeList functions)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(29.06.2012)
-@LastMod(02.07.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit AXmlNodeListUtils;
@@ -66,7 +66,7 @@ begin
       Exit;
     end;
   end;
-  Result := 0;
+  Result := -1;
 end;
 
 function _FindNodeByName2(XmlNodeList: AXmlNodeList_P; const Name: WideString): AInt;
@@ -81,6 +81,7 @@ begin
       Exit;
     end;
   end;
+  Result := -1;
 end;
 
 // --- AXmlNodeList ---
@@ -108,10 +109,16 @@ var
   NL: AXmlNodeList_P;
   I: Integer;
 begin
+  if (XmlNodeList = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
   NL := AXmlNodeList_P(XmlNodeList);
   for I := 0 to High(NL^.Nodes2) do
     AXmlNode_Free(NL^.Nodes2[I]);
   SetLength(NL^.Nodes2, 0);
+  Result := 0;
 end;
 
 function AXmlNodeList_FindNode(XmlNodeList: AXmlNodeList; const Name: APascalString): AXmlNode;

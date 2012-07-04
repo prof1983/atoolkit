@@ -2,7 +2,7 @@
 @Abstract(Интерфейс для модулей импорта, экспорта и синхронизации)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.04.2006)
-@LastMod(03.07.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 
   Команды формарования строк вставки и обновления данных (SqlInsert, SqlUpdate)
@@ -176,7 +176,7 @@ begin
   begin
     Node := AConfigNode.GetNode(I);
     FDataModules[I] := TDataModule2.Create([], Node.NodeName, '');
-    FDataModules[I].ConfigureLoad(Node);
+    FDataModules[I].ConfigureLoad1(Node);
   end;
 end;
 

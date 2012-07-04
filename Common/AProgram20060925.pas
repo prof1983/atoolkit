@@ -2,7 +2,7 @@
 @Abstract(Реализация основной функциональности для главного объекта)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.05.2006)
-@LastMod(02.05.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit AProgram20060925;
@@ -11,12 +11,14 @@ interface
 
 uses
   ActiveX, Classes, ComObj, ComServ, Messages, SysUtils, Windows, WinSock, WinSvc,
-  AConfig2007, AConsts2, ALogDocuments2006, ALogObj, ATypes;
+  ABase, AConfig2007, AConsts2, ALogDocuments2006, ALogObj, ATypes, AXmlNodeImpl;
 
 type //** Основной объект сервиса
   TProgram = class(TLoggerObject)
   private
     FCSAddToLog: TRTLCriticalSection; // Критическая секция для добавления в лог
+    FConfigPath: APascalString;
+    FDataPath: APascalString;
     FDependencies: WideString;
     FExeFullName: WideString;
     FExeName: WideString;
@@ -33,6 +35,7 @@ type //** Основной объект сервиса
     FTimerInterval: LongWord;
     function GetTimeWork(): Integer;
   private
+    FIsComServer: ABoolean;
     FIsConsole: Boolean;
     FIsDebug: Boolean;
     //FIsDemo: Boolean;
@@ -41,6 +44,7 @@ type //** Основной объект сервиса
     FIsTeach: Boolean;
     FIsTest: Boolean;
   protected
+    FConfig: AConfig{TConfigNode1}{TConfigDocument1};
     FConfigDocument: TConfigDocument1;
     FDateStart: TDateTime;
     FLogDocuments: TLogDocuments;
@@ -48,9 +52,11 @@ type //** Основной объект сервиса
     FGlbTypeLib: ITypeLib;
     FSrvTypeLib: ITypeLib;
     FStdTypeLib: ITypeLib;
-
+  public
     function GetIsDemo(): Boolean; virtual;
+    procedure SetIsComServer(Value: ABoolean);
     procedure SetIsDemo(Value: Boolean); virtual;
+    procedure SetProgramName(const Value: APascalString);
   protected
     // Срабатывает при добавлении записи в лог
     function DoAddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer; virtual;
@@ -81,7 +87,7 @@ type //** Основной объект сервиса
     // Финализировать программу
     function Finalize(): WordBool;
     // Инициализировать программу
-    function Initialize(): WordBool; 
+    function Initialize(): WordBool;
   public
     // Конфигурации программы
     property ConfigDocument: TConfigDocument1 read FConfigDocument;
@@ -147,21 +153,126 @@ var
   Prog: TProgram;
 
 // TProgram --------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
 function TProgram.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: string; AParams: array of const): Boolean;
 begin
   Result := (ToLog(AGroup, AType, AStrMsg, AParams) >= 0);
 end;
 
-// -----------------------------------------------------------------------------
 constructor TProgram.Create();
 begin
   inherited Create();
+  FIsComServer := True;
   FConfigDocument := nil;
   FLogDocuments := nil;
   FGlbTypeLib := nil;
   FSrvTypeLib := nil;
   FStdTypeLib := nil;
+
+  FTimerInterval := 1000;
+
+  FDateStart := Now;
+
+  Prog := Self;
+
+  InitializeCriticalSection(FCSAddToLog);
+  DoCreate();
+end;
+
+function TProgram.DoAddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer;
+begin
+  if Assigned(FLogDocuments) then
+    Result := FLogDocuments.ToLog(AGroup, AType, AStrMsg, AParams)
+  else
+    Result := -1;
+end;
+
+function TProgram.DoCommand(const AMsg: WideString): WordBool;
+begin
+  Result := False;
+end;
+
+procedure TProgram.DoCreate();
+begin
+end;
+
+procedure TProgram.DoDestroy();
+begin
+  DeleteCriticalSection(FCSAddToLog);
+end;
+
+function TProgram.DoStart(): WordBool;
+begin
+  if not(Assigned(FLogDocuments)) then
+  try
+    FLogDocuments := TLogDocuments.Create();
+  except
+  end;
+
+  Result := True;
+end;
+
+function TProgram.DoStarted(): WordBool;
+begin
+  Result := True;
+end;
+
+function TProgram.DoStop(AIsShutDown: WordBool): WordBool;
+begin
+  Result := True;
+end;
+
+function TProgram.DoStoped(AIsShutDown: WordBool): WordBool;
+begin
+  if Assigned(FLogDocuments) then
+  try
+    FLogDocuments.Finalize();
+    FLogDocuments.Free();
+  finally
+    FLogDocuments := nil;
+  end;
+
+  Result := True;
+end;
+
+function TProgram.DoTimer(): WordBool;
+begin
+  Result := True;
+end;
+
+function TProgram.Finalize(): WordBool;
+begin
+  Result := True;
+  if not(DoStop(False)) then Result := False;
+  if not(DoStoped(False)) then Result := False;
+end;
+
+procedure TProgram.Free();
+begin
+  DoDestroy();
+
+  Prog := nil;
+  inherited Free();
+end;
+
+class function TProgram.GetInstance(): TProgram;
+begin
+  Result := Prog;
+end;
+
+function TProgram.GetIsDemo(): Boolean;
+begin
+  Result := True;
+end;
+
+function TProgram.GetTimeWork(): Integer;
+begin
+  Result := Round((Now - FDateStart) * 24 * 60);
+end;
+
+function TProgram.Initialize(): WordBool;
+begin
+  AddToLog(lgGeneral, ltInformation, 'Инициализация программы', []);
 
   // В виде консоли
   FIsConsole := FindCmdLineSwitch(STR_SWITCH[sConsole], ['-','/'], True);
@@ -178,148 +289,45 @@ begin
   FExeName := ExtractFileName(FExeFullName);
   FExePath := ExtractFilePath(FExeFullName);
 
-  FProgramName := ChangeFileExt(FExeName, '');
+  FConfigPath := ExpandFileName(FExePath + '..\Configs\');
+  FDataPath := ExpandFileName(FExePath + '..\Data\');
+
+  if (FProgramName = '') then
+    FProgramName := ChangeFileExt(FExeName, '');
   FProgramNameDisplay := FProgramName;
-  FTimerInterval := 1000;
 
-  FDateStart := Now;
-
-  Prog := Self;
-
-  InitializeCriticalSection(FCSAddToLog);
-  DoCreate();
-end;
-
-// -----------------------------------------------------------------------------
-function TProgram.DoAddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer;
-begin
-  if Assigned(FLogDocuments) then
-    Result := FLogDocuments.ToLog(AGroup, AType, AStrMsg, AParams)
-  else
-    Result := -1;
-end;
-
-// -----------------------------------------------------------------------------
-function TProgram.DoCommand(const AMsg: WideString): WordBool;
-begin
-  Result := False;
-end;
-
-// -----------------------------------------------------------------------------
-procedure TProgram.DoCreate();
-begin
   // Создать конфигурации программы
   if not(Assigned(FConfigDocument)) then
-    FConfigDocument := TConfigDocument1.Create(Self.ExePath + '\' + Self.ProgramName + '.' + FILE_EXT_CONFIG, AddToLog);
+    FConfigDocument := TConfigDocument1.Create2(FConfigPath + Self.ProgramName + '.' +
+        FILE_EXT_CONFIG, AddToLog);
+  FConfig := FConfigDocument.GetDocumentElement();
 
-  if Assigned(ComServer) then
+  if FIsComServer and Assigned(ComServer) then
   try // Здесь возникнет Exception, если программа не является COM объектом. Создайте и присоедините TLB.
     FSrvTypeLib := ComServer.TypeLib;
   except
   end;
-end;
 
-// -----------------------------------------------------------------------------
-procedure TProgram.DoDestroy();
-begin
-  DeleteCriticalSection(FCSAddToLog);
-end;
-
-// -----------------------------------------------------------------------------
-function TProgram.DoStart(): WordBool;
-begin
-  if not(Assigned(FLogDocuments)) then
-  try
-    FLogDocuments := TLogDocuments.Create();
-  except
-  end;
-
-  Result := True;
-end;
-
-// -----------------------------------------------------------------------------
-function TProgram.DoStarted(): WordBool;
-begin
-  Result := True;
-end;
-
-// -----------------------------------------------------------------------------
-function TProgram.DoStop(AIsShutDown: WordBool): WordBool;
-begin
-  Result := True;
-end;
-
-// -----------------------------------------------------------------------------
-function TProgram.DoStoped(AIsShutDown: WordBool): WordBool;
-begin
-  if Assigned(FLogDocuments) then
-  try
-    FLogDocuments.Finalize();
-    FLogDocuments.Free();
-  finally
-    FLogDocuments := nil;
-  end;
-
-  Result := True;
-end;
-
-// -----------------------------------------------------------------------------
-function TProgram.DoTimer(): WordBool;
-begin
-  Result := True;
-end;
-
-// -----------------------------------------------------------------------------
-function TProgram.Finalize(): WordBool;
-begin
-  Result := True;
-  if not(DoStop(False)) then Result := False;
-  if not(DoStoped(False)) then Result := False;
-end;
-
-// -----------------------------------------------------------------------------
-procedure TProgram.Free();
-begin
-  DoDestroy();
-
-  Prog := nil;
-  inherited Free();
-end;
-
-// -----------------------------------------------------------------------------
-class function TProgram.GetInstance(): TProgram;
-begin
-  Result := Prog;
-end;
-
-// -----------------------------------------------------------------------------
-function TProgram.GetIsDemo(): Boolean;
-begin
-  Result := True;
-end;
-
-// -----------------------------------------------------------------------------
-function TProgram.GetTimeWork(): Integer;
-begin
-  Result := Round((Now - FDateStart) * 24 * 60);
-end;
-
-// -----------------------------------------------------------------------------
-function TProgram.Initialize(): WordBool;
-begin
-  AddToLog(lgGeneral, ltInformation, 'Инициализация программы', []);
   Result := True;
   if not(DoStart()) then Result := False;
   if not(DoStarted()) then Result := False;
   AddToLog(lgGeneral, ltInformation, 'Программа инициализирована', []);
 end;
 
-// -----------------------------------------------------------------------------
+procedure TProgram.SetIsComServer(Value: ABoolean);
+begin
+  FIsComServer := Value;
+end;
+
 procedure TProgram.SetIsDemo(Value: Boolean);
 begin
 end;
 
-// -----------------------------------------------------------------------------
+procedure TProgram.SetProgramName(const Value: APascalString);
+begin
+  Self.FProgramName := Value;
+end;
+
 function TProgram.ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer;
 begin
   EnterCriticalSection(FCSAddToLog);

@@ -2,7 +2,7 @@
 @Abstract(Дополнительные процедуры и функции)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(19.06.2006)
-@LastMod(02.05.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit AUiXmlUtils;
@@ -11,9 +11,11 @@ interface
 
 uses
   Menus,
-  AXml2007;
+  ABase, AXmlNodeImpl, AXmlNodeUtils;
 
-procedure ConfigureLoadMenuItem(Items: TMenuItem; c: TProfXmlNode1);
+procedure ConfigureLoadMenuItem(Items: TMenuItem; c: TProfXmlNode1); deprecated; // Use MenuItem_LoadConfigure()
+
+function MenuItem_LoadConfigure(Item: TMenuItem; C: AXmlNode): AError;
 
 implementation
 
@@ -32,8 +34,40 @@ begin
       Items.Items[i].Caption := t
     else // Запись значения по умолчанию
       c.WriteString(n, Items.Items[i].Caption);
-    ConfigureLoadMenuItem(Items.Items[i], c.GetNodeByName(n));
+    ConfigureLoadMenuItem(Items.Items[i], c.GetNodeByName1(n));
   end;
+end;
+
+// --- MenuItem ---
+
+function MenuItem_LoadConfigure(Item: TMenuItem; C: AXmlNode): AError;
+var
+  I: Integer;
+  Name: WideString;
+  Text: APascalString;
+begin
+  if not(Assigned(Item)) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if (C = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+
+  for I := 0 to Item.Count - 1 do
+  begin
+    Name := Item.Items[i].Name;
+    AXmlNode_ReadString(C, Name, Text);
+    if (Text <> '') then
+      Item.Items[I].Caption := Text
+    else // Запись значения по умолчанию
+      AXmlNode_WriteString(C, Name, Item.Items[I].Caption);
+    MenuItem_LoadConfigure(Item.Items[I], AXmlNode_GetChildNodeByName(C, Name));
+  end;
+  Result := 0;
 end;
 
 end.

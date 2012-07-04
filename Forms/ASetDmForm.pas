@@ -2,7 +2,7 @@
 @Abstract(Настройка импорта и экспорта данных)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(05.04.2006)
-@LastMod(02.05.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit ASetDmForm;
@@ -115,7 +115,7 @@ function TfmSetExport.DoSave(): WordBool;
 begin
   inherited DoSave();
   fr.SaveParams();
-  Result := FDataModules.ConfigureSave();
+  Result := (FDataModules.ConfigureSave(0) >= 0);
 end;
 
 function TfmSetExport.DoSelect(const ANodeText: WideString): WordBool;

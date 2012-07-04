@@ -2,7 +2,7 @@
 @Abstract(Класс работы с XML нодами)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(07.03.2007)
-@LastMod(03.07.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit AXmlNodeImpl;
@@ -1176,6 +1176,7 @@ end;
 constructor TProfXmlNode2.Create(Node: IXmlNode);
 begin
   inherited Create;
+  FChildNodes := 0;
   FNode := Node;
   if Assigned(FNode) then
     FCollection := AXmlNodeCollection_New2(FNode.Collection);
@@ -1193,6 +1194,7 @@ end;}
 constructor TProfXmlNode2.Create1(Document: AXmlDocument);
 begin
   inherited Create();
+  FChildNodes := 0;
   FNode := nil;
   Self._AddRef();
   FCollection := AXmlNodeCollection_New1(AProfXmlNode1(Self));
@@ -2008,18 +2010,25 @@ var
   Node1: AProfXmlNode;
   Nodes: AXmlNodeList;
   V: APascalString;
+  NodeValue: OleVariant;
 begin
   if Assigned(FNode) then
   begin
     Node := FNode.ChildNodes.FindNode(AName);
     if not(Assigned(Node)) then
     begin
-      Exit;
       Result := False;
+      Exit;
     end;
-    if (VarType(Node.NodeValue) = varString) or (VarType(Node.NodeValue) = varOleStr) then
+    if not(Node.IsTextElement) then
     begin
-      Value := Node.NodeValue;
+      Result := False;
+      Exit;
+    end;
+    NodeValue := Node.NodeValue;
+    if (VarType(NodeValue) = varString) or (VarType(NodeValue) = varOleStr) then
+    begin
+      Value := NodeValue;
       Result := True;
     end
     else
@@ -2480,7 +2489,14 @@ begin
   begin
     Node := FNode.ChildNodes.FindNode(AName);
     if Assigned(Node) then
+    begin
+      if not(Node.IsTextElement) then
+      begin
+        Result := False;
+        Exit;
+      end;
       Node.NodeValue := Value
+    end
     else
       FNode.AddChild(AName).NodeValue := Value;
     Result := True;

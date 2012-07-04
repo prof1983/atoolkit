@@ -2,7 +2,7 @@
 @Abstract(AXmlDucument functions)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(28.06.2012)
-@LastMod(29.06.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit AXmlDocumentUtils;
@@ -10,7 +10,7 @@ unit AXmlDocumentUtils;
 interface
 
 uses
-  ABase;
+  ABase, AXmlNodeUtils;
 
 function AXmlDocument_CloseDocument(XmlDocument: AXmlDocument): AError;
 
@@ -77,9 +77,24 @@ begin
 end;
 
 function AXmlDocument_GetDocumentElement(XmlDocument: AXmlDocument): AProfXmlNode;
+var
+  D: TProfXmlDocument;
+  D1: TProfXmlDocument1;
 begin
   if (TObject(XmlDocument) is TProfXmlDocument) then
-    Result := TProfXmlDocument(XmlDocument).DocumentElement
+  begin
+    D := TProfXmlDocument(XmlDocument);
+    if (D.FDocumentElement = 0) then
+    begin
+      if not(Assigned(D.FDocument)) then
+      begin
+        Result := 0;
+        Exit;
+      end;
+      D.FDocumentElement := AXmlNode2_New(D.FDocument.DocumentElement)
+    end;
+    Result := D.FDocumentElement;
+  end
   else
     Result := 0;
 end;

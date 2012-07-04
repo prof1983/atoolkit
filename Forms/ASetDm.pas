@@ -2,7 +2,7 @@
 @Abstract(Настройки импорта/экспотра и синхронизации справочкиков БД)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(24.04.2006)
-@LastMod(03.07.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit ASetDm;

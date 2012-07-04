@@ -2,7 +2,7 @@
 @Abstract(Класс работы с XML документом)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(07.03.2007)
-@LastMod(03.07.2012)
+@LastMod(04.07.2012)
 @Version(0.5)
 
 История версий:
@@ -14,8 +14,8 @@ interface
 
 uses
   SysUtils, XmlDoc, XmlIntf,
-  ABase, ABaseUtils2, AConsts2, ADocumentImpl, ATypes, AXmlDocumentIntf, AXmlNodeUtils;
-
+  ABase, ABaseUtils2, AConsts2, ADocumentImpl, ATypes,
+  AXmlDocumentIntf, AXmlDocumentUtils, AXmlNodeUtils;
 
 type
   {**
@@ -23,9 +23,9 @@ type
     Класс реализует интерфейс IProfXmlDocument)
   }
   TProfXmlDocument = class(TInterfacedObject{TProfDocument}, IProfXmlDocument)
-  protected
+  public
       //** XML документ
-    FDocument: IXmlDocument; // FController: IXmlDocument;
+    FDocument: IXmlDocument; //FDocument: TXmlDocument;
     FDocumentElement: AProfXmlNode;
       //** Название главного элемента документа (используется при создании XML документа)
     FDocumentElementName: WideString;
@@ -35,6 +35,11 @@ type
     FDefFileName: WideString;
     FDefElementName: WideString;
     FToLog: TAddToLogProc;
+  protected
+    FEncoding: WideString;   // Набор символов = 'Windows-1251'
+    FOnAddToLog: TAddToLog;
+    FStandAlone: WideString; // Указывает на внешнее описание = ''
+    FVersion: WideString;    // Версия XML = '1.0'
   protected
     function Get_DocumentElement(): IXmlNode;
   public
@@ -46,6 +51,7 @@ type
       Реализация метода IsDocumentOpened должна проверить соответствующие свойства Объекта для определения состояния документа.
     }
     function GetIsDocumentOpened(): WordBool; safecall;
+    function GetSelf(): AXmlDocument;
     procedure SetFileName(const Value: WideString);
   public
       //** Закрыть документ
@@ -77,7 +83,7 @@ type
     property DefElementName: WideString read FDefElementName write FDefElementName;
     property DefFileName: WideString read FDefFileName write FDefFileName;
       //** XML документ (не рекомендуется использовать)
-    property Document: IXmlDocument read FDocument;
+    property Document: IXmlDocument read FDocument; //property Document: TXmlDocument read FDocument; //implements IXMLDocument;
       //** ProfNode
     property DocumentElement: AProfXmlNode read GetDocumentElement;
     //property DocumentElement: IXmlNode read Get_DocumentElement;
@@ -90,14 +96,6 @@ type
 
   // XML документ
   TProfXmlDocument1 = class(TProfXmlDocument) //(TProfXmlDocument, IXmlDocument)
-  protected
-    FDocument: TXmlDocument;
-    FDocumentElement: AProfXmlNode1;
-    FEncoding: WideString;   // Набор символов = 'Windows-1251'
-    FFileName: WideString;   // Имя файла
-    FOnAddToLog: TAddToLog;
-    FStandAlone: WideString; // Указывает на внешнее описание = ''
-    FVersion: WideString;    // Версия XML = '1.0'
   protected
     function DoDocumentTag(Node: AProfXmlNode1): Boolean; virtual;
   public // IProfDocument
@@ -121,7 +119,6 @@ type
     constructor Create2(const AFileName: WideString = ''; AAddToLog: TAddToLog = nil);
     procedure Free(); virtual;
   public
-    property Document: TXmlDocument read FDocument; //implements IXMLDocument;
     property DocumentElement: AProfXmlNode2 read GetDocumentElement;
     //property DocumentElement: AProfXmlNode1 read FDocumentElement write FDocumentElement;
     property Encoding: WideString read FEncoding write FEncoding;
@@ -220,16 +217,7 @@ end;
 
 function TProfXmlDocument.GetDocumentElement(): AProfXmlNode;
 begin
-  if (Self.DocumentElement = 0) then
-  begin
-    if not(Assigned(Self.FDocument)) then
-    begin
-      Result := 0;
-      Exit;
-    end;
-    Self.FDocumentElement := AXmlNode2_New(Self.FDocument.DocumentElement)
-  end;
-  Result := Self.FDocumentElement
+  Result := AXmlDocument_GetDocumentElement(Self.GetSelf());
 end;
 
 function TProfXmlDocument.GetFileName(): WideString;
@@ -245,6 +233,11 @@ begin
     Result := FDocument.Active;
   except
   end;
+end;
+
+function TProfXmlDocument.GetSelf(): AXmlDocument;
+begin
+  Result := AXmlDocument(Self);
 end;
 
 function TProfXmlDocument.Get_DocumentElement(): IXmlNode{TProfXmlNode};
@@ -452,7 +445,8 @@ end;
 
 constructor TProfXmlDocument1.Create(const AFileName: WideString = ''; AAddToLog: TAddToLog = nil);
 begin
-  inherited Create;
+  Create2(AFileName, AAddToLog);
+  {inherited Create;
   FOnAddToLog := AAddToLog;
   FEncoding := 'Windows-1251';
   FStandAlone := '';
@@ -464,7 +458,7 @@ begin
 
   // Если указано имя файла - загружаем
   if (FFileName <> '') then
-    LoadFromFile(FFileName);
+    LoadFromFile(FFileName);}
 end;
 
 constructor TProfXmlDocument1.Create2(const AFileName: WideString = ''; AAddToLog: TAddToLog = nil);
@@ -526,7 +520,7 @@ begin
     if (FDocument.FileName <> '') then
       FDocument.SaveToFile('');
     try
-      FDocument.Free();
+      //FDocument.Free();
     finally
       FDocument := nil;
     end;
@@ -540,7 +534,7 @@ end;
 
 function TProfXmlDocument1.GetDocumentElement(): AProfXmlNode2;
 begin
-  Result := FDocumentElement;
+  Result := AXmlDocument_GetDocumentElement(Self.GetSelf());
 end;
 
 function TProfXmlDocument1.GetFileName(): WideString;

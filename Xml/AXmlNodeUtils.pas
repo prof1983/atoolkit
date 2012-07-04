@@ -67,6 +67,9 @@ function AXmlNode_GetXmlA(Node: AXmlNode; const Prefix: APascalString): APascalS
 
 function AXmlNode_Free(Node: AXmlNode): AError;
 
+function AXmlNode_ReadString(Node: AXmlNode; const Name: APascalString;
+    out Value: APascalString): AError;
+
 function AXmlNode_SetDocument(Node: AXmlNode; Document: AXmlDocument): AError;
 
 function AXmlNode_SetName(Node: AXmlNode; const Name: APascalString): AError;
@@ -80,6 +83,8 @@ function AXmlNode_SetValueAsInt32(Node: AXmlNode; Value: AInt32): AError;
 function AXmlNode_SetXml(Node: AXmlNode; const S: APascalString): AError;
 
 function AXmlNode_SetXmlA(Node: AXmlNode; var Value: APascalString; const CloseTag: APascalString): AError;
+
+function AXmlNode_WriteString(Node: AXmlNode; const Name, Value: APascalString): AError;
 
 // --- AXmlNode0 ---
 
@@ -512,6 +517,26 @@ begin
     Result := -1;
 end;
 
+function AXmlNode_ReadString(Node: AXmlNode; const Name: APascalString;
+    out Value: APascalString): AError;
+var
+  V: WideString;
+  Res: WordBool;
+begin
+  if (TObject(Node) is TProfXmlNode1) then
+  begin
+    V := Value;
+    Res := TProfXmlNode1(Node).ReadString(Name, V);
+    Value := V;
+    if Res then
+      Result := 0
+    else
+      Result := -3;
+  end
+  else
+    Result := -2;
+end;
+
 function AXmlNode_SetDocument(Node: AXmlNode; Document: AXmlDocument): AError;
 begin
   if (TObject(Node) is TProfXmlNode1) then
@@ -593,6 +618,19 @@ begin
     Result := 0
   else
     Result := -1;
+end;
+
+function AXmlNode_WriteString(Node: AXmlNode; const Name, Value: APascalString): AError;
+begin
+  if (TObject(Node) is TProfXmlNode1) then
+  begin
+    if TProfXmlNode1(Node).WriteString(Name, Value) then
+      Result := 0
+    else
+      Result := -3;
+  end
+  else
+    Result := -2;
 end;
 
 // --- AXmlNode0 ---

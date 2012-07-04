@@ -2,7 +2,7 @@
 @Abstract()
 @Author(Prof1983 prof1983@ya.ru)
 @Created(29.05.2011)
-@LastMod(07.09.2011)
+@LastMod(04.07.2012)
 @Version(0.5)
 }
 unit ASystemUtils;
@@ -30,7 +30,7 @@ function AGuidToString(const ID: TGuid): string;
 {$IFNDEF USE_SYSUTILS}
 function IsEqualGUID(const guid1, guid2: TGUID): Boolean;
 {$ENDIF}
-function NormalizePath(const Path: string): string;
+function NormalizePath(const Path: AnsiString): AnsiString;
 
 procedure ExtractFileNameAndPathW(const FExeFileName: APascalString; var FExeName, FExePath: APascalString);
 
@@ -56,19 +56,19 @@ type
   DWORD = LongWord;
 
 const
-  Kernel32  = 'kernel32.dll';
+  Kernel32 = 'kernel32.dll';
 
-function GetFullPathName(lpFileName: PChar; nBufferLength: DWORD;
-  lpBuffer: PChar; var lpFilePart: PChar): DWORD; stdcall; external Kernel32 name 'GetFullPathNameA';
+function GetFullPathName(lpFileName: PAnsiChar; nBufferLength: DWORD;
+  lpBuffer: PAnsiChar; var lpFilePart: PAnsiChar): DWORD; stdcall; external Kernel32 name 'GetFullPathNameA';
 
-function ExpandFileName(const FileName: string): string;
+function ExpandFileName(const FileName: AnsiString): AnsiString;
 const
   MAX_PATH = 260;
 var
-  FName: PChar;
-  Buffer: array[0..MAX_PATH - 1] of Char;
+  FName: PAnsiChar;
+  Buffer: array[0..MAX_PATH - 1] of AnsiChar;
 begin
-  SetString(Result, Buffer, GetFullPathName(PChar(FileName), SizeOf(Buffer), Buffer, FName));
+  SetString(Result, Buffer, GetFullPathName(PAnsiChar(FileName), SizeOf(Buffer), Buffer, FName));
 end;
 {$ENDIF MSWINDOWS}
 
@@ -153,7 +153,7 @@ end;
   {$ENDIF}
 {$ENDIF}
 
-function NormalizePath(const Path: string): string;
+function NormalizePath(const Path: AnsiString): AnsiString;
 begin
   if (Length(Path) = 0) then
     Result := FExePath

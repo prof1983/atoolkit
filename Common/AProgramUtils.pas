@@ -2,7 +2,7 @@
 @Abstract(Некоторые часто используемые функции)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(13.03.2007)
-@LastMod(26.04.2012)
+@LastMod(05.07.2012)
 @Version(0.5)
 }
 unit AProgramUtils;
@@ -14,25 +14,27 @@ uses
   ATypes;
 
 //** @abstract(Возвращает информацию о файле)
-function GetProgramVersionInfo(const AFileName: string): TFileVersionInfo;
+function GetProgramVersionInfo(const AFileName: AnsiString): TFileVersionInfo;
 
 implementation
 
-function GetProgramVersionInfo(const AFileName: string): TFileVersionInfo;
+function GetProgramVersionInfo(const AFileName: AnsiString): TFileVersionInfo;
 type
-  arrc = array[0..$ffff] of char;
+  arrc = array[0..$ffff] of AnsiChar;
 var
   Wnd, InfoSize, Size: DWORD;
   VersionInfo: Pointer;
   p: ^arrc; // absolute VersionInfo
 
-  function Read(AName: string): ShortString;
+  function Read(AName: AnsiString): ShortString;
   begin
-    if (VerQueryValue(VersionInfo, PChar(AName), Pointer(p), Size)) and (Size > 1) then
+    if (VerQueryValueA(VersionInfo, PAnsiChar(AName), Pointer(p), Size)) and (Size > 1) then
     begin
       SetLength(Result, Size);
       Result := copy(p^, 1, Size);
-    end;
+    end
+    else
+      Result := '';
   end;
 
 begin
@@ -45,12 +47,12 @@ begin
   Result.CompanyName := '';
   Result.FileDescription := '';
 
-  InfoSize := GetFileVersionInfoSize(PChar(Paramstr(0)), Wnd);
+  InfoSize := GetFileVersionInfoSizeA(PAnsiChar(AFileName{Paramstr(0)}), Wnd);
   if (InfoSize <> 0) then
   begin
     GetMem(VersionInfo, InfoSize);
     try
-      if GetFileVersionInfo(PChar(AFileName), Wnd, InfoSize, VersionInfo) then
+      if GetFileVersionInfoA(PAnsiChar(AFileName), Wnd, InfoSize, VersionInfo) then
       begin
         Result.ProductName := Read('\StringFileInfo\041904E3\ProductName');
         Result.ProductVersion := Read('\StringFileInfo\041904E3\ProductVersion');

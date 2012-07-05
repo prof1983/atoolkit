@@ -2,7 +2,7 @@
 @Abstract(Работа с Log. Классы для записи собщений программы в БД или файл или отображения в окне Log)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.08.2005)
-@LastMod(03.07.2012)
+@LastMod(05.07.2012)
 @Version(0.5)
 }
 unit ALogDocumentImpl;
@@ -84,37 +84,6 @@ type //** Документ работы с Log
 
   TLogDocument = TALogDocument;
 
-type //** Документ работы с Log
-  TProfLogDocument3 = class(TALogDocument{TProfDocument}, IProfLogDocument)
-  private
-    FConfig: IProfNode;
-    FOnCommand: TProcMessageStr;
-  protected
-    FLogType: TLogType;
-  protected
-    function GetDocumentElement(): IALogNode2; safecall;
-    procedure SetOnCommand(Value: TProcMessageStr); virtual;
-  public
-    {**
-      Добавить лог-сообщение
-        @returns(Возвращает номер добавленого лог-сообщения или 0)
-    }
-    {function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer; override;}
-  public
-      //** Финализировать
-    function Finalize(): TProfError; virtual;
-      //** Инициализировать
-    function Initialize(): TProfError; virtual;
-  public
-    constructor Create();
-  public
-    property Config: IProfNode read FConfig write FConfig;
-      //** Тип лог-документа
-    property LogType: TLogType read FLogType;
-    property OnCommand: TProcMessageStr read FOnCommand write SetOnCommand;
-  end;
-
 implementation
 
 { TLogDocument }
@@ -171,6 +140,7 @@ end;
 constructor TALogDocument.Create(ALogType: TLogType; AName: WideString = ''; AParent: TLogDocument = nil);
 begin
   inherited Create(AParent, AName, 0);
+  //inherited Create(lNone);
 end;
 
 constructor TALogDocument.Create2(ALogType: TLogType; AName: WideString = ''; AParent: ALogDocument2 = 0);
@@ -237,42 +207,6 @@ begin
 end;
 
 procedure TALogDocument.SetOnCommand(Value: TProcMessageStr);
-begin
-  FOnCommand := Value;
-end;
-
-{ TProfLogDocument3 }
-
-(*function TProfLogDocument3.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
-begin
-  {if Assigned(FAddToLog) then
-    Result := FAddToLog(AGroup, AType, AStrMsg)
-  else
-    Result := 0;}
-end;*)
-
-constructor TProfLogDocument3.Create();
-begin
-  inherited Create(lNone);
-end;
-
-function TProfLogDocument3.Finalize(): TProfError;
-begin
-  Result := 0;
-end;
-
-function TProfLogDocument3.GetDocumentElement(): IALogNode2;
-begin
-  Result := nil;
-  // ...
-end;
-
-function TProfLogDocument3.Initialize(): TProfError;
-begin
-  Result := 0;
-end;
-
-procedure TProfLogDocument3.SetOnCommand(Value: TProcMessageStr);
 begin
   FOnCommand := Value;
 end;

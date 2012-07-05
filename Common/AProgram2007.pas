@@ -2,18 +2,18 @@
 @Abstract(Реализация основной функциональности для главного объекта)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.05.2006)
-@LastMod(29.06.2012)
+@LastMod(05.07.2012)
 @Version(0.5)
 }
 unit AProgram2007;
 
-// TODO: Use AProgramImpl
+TODO: Mode to AProgramImpl.pas
 
 interface
 
 uses
   ActiveX, Classes, ComObj, ComServ, Messages, SysUtils, Windows, WinSock, WinSvc, XmlIntf,
-  AConsts2, ALogDocumentIntf, ALogDocuments2007, AObjectImpl, AProgramUtils, ATypes, AXml3;
+  AConsts2, ALogDocumentIntf, ALogDocuments, AObjectImpl, AProgramUtils, ATypes, AXmlDocumentImpl{AXml3};
 
 type // Основной объект программы
   TProgram2007 = class(TProfObject2)
@@ -328,7 +328,7 @@ begin
   Result := inherited DoInitialize();
   if not(Assigned(FLogDocuments)) then
   try
-    FLogDocuments := TLogDocuments.Create();
+    FLogDocuments := TLogDocuments2007.Create();
   except
   end;
 end;

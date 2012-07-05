@@ -2,7 +2,7 @@
 @Abstract(Классы для записи собщений программы в БД или файл)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.08.2005)
-@LastMod(27.04.2012)
+@LastMod(05.07.2012)
 @Version(0.5)
 }
 unit ALogFileText;
@@ -14,7 +14,7 @@ uses
   ALogDocumentImpl, ALogFileTextUtils, ATypes;
 
 type //** Запись в файл
-  TProfLogFileText3 = class(TProfLogDocument3)
+  TProfLogFileText3 = class(TALogDocument)
   private
     //** Имя файла
     FFileName: WideString;

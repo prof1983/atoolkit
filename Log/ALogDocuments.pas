@@ -2,7 +2,7 @@
 @Abstract(Класс, объединяющий вывод логов сразу в несколько мест)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(26.01.2006)
-@LastMod(03.07.2012)
+@LastMod(05.07.2012)
 @Version(0.5)
 }
 unit ALogDocuments;
@@ -32,7 +32,7 @@ type //** Класс для записи Log сразу в несколько м
   end;
 
   {** Класс для записи Log сразу в несколько мест }
-  TLogDocuments2007 = class(TALogDocument, ILogDocuments2)
+  TLogDocuments2007 = class(TLogDocuments, ILogDocuments2)
   private
     FDocuments: array of ILogDocument2;
   protected
@@ -56,7 +56,7 @@ type //** Класс для записи Log сразу в несколько м
   end;
 
 type //** Класс для записи Log сразу в несколько мест
-  TProfLogDocuments3 = class(TProfLogDocument3, IProfLogDocuments)
+  TProfLogDocuments3 = class(TALogDocument, IProfLogDocuments)
   private
     FDocuments: array of IProfLogDocument;
   protected

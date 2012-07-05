@@ -68,7 +68,7 @@ type //** Сущность
 
 implementation
 
-{ TProfEntity }
+{ TANamedEntity }
 
 function TANamedEntity.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AMsg: WideString): Integer;
 begin

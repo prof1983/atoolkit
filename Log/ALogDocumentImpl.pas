@@ -70,6 +70,7 @@ type //** Документ работы с Log
     function AddNode(ANode: TALogNode): Boolean;
     function GetFreeId(): Integer;
     function GetNodeById(Id: Integer): TALogNode; virtual;
+    function GetSelf(): ALogDocument;
     function NewNode(LogType: TLogTypeMessage; const Msg: WideString; Parent: Integer = 0; Id: Integer = 0): TALogNode; virtual;
   public
     constructor Create(ALogType: TLogType; AName: WideString = ''; AParent: TALogDocument = nil);
@@ -176,6 +177,11 @@ begin
     end;
   end;
   Result := nil;
+end;
+
+function TALogDocument.GetSelf(): ALogDocument;
+begin
+  Result := ALogDocument(Self);
 end;
 
 function TALogDocument.GetIsOpened(): WordBool;

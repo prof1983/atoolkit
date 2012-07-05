@@ -108,7 +108,7 @@ type
 
   TProfXmlDocument1 = TProfXmlDocument;
   TProfXmlDocument2 = TProfXmlDocument;
-  TProfXmlDocument3 = TProfXmlDocument;
+  //TProfXmlDocument3 = TProfXmlDocument;
   TProfXmlDocumentA = TProfXmlDocument;
 
 implementation

@@ -80,11 +80,6 @@ type
   protected
       //** Срабатывает при добавлении записи в лог
     function DoAddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; virtual; safecall;
-      //** Срабатывает, когда нужно выполнить внешнюю команду. см. TProcMessageStr
-    //function DoCommand(const AMsg: WideString): Integer; override; safecall;
-      //** Срабатывает при создании объекта
-    procedure DoCreate(); override; safecall;
-    procedure DoCreated(); override; safecall;
       //** Срабатывает при уничтожении объекта
     procedure DoDestroy(); override; safecall;
       //** Срабатывает после успешной финализации
@@ -184,6 +179,7 @@ type
     property IsTest: Boolean read FIsTest write FIsTest default False;
   end;
 
+  //TProgram2007 = AProgramImpl.TProfProgram;
   //TProgram = TProfProgram;
 
 implementation
@@ -208,6 +204,10 @@ begin
 end;
 
 constructor TProfProgram.Create();
+{$IFNDEF UseComXml}
+var
+  doc: TProfXmlDocument;
+{$ENDIF}
 begin
   FConfigDocument := nil;
   FLogDocuments := nil;
@@ -215,17 +215,10 @@ begin
   FGlbTypeLib := nil;
   FSrvTypeLib := nil;
   FStdTypeLib := nil;
+
   inherited Create();
-end;
 
-function TProfProgram.DoAddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
-begin
-  Result := AddToLog(AGroup, AType, AStrMsg);
-end;
-
-procedure TProfProgram.DoCreate;
-begin
-  inherited DoCreate;
+  Prog := Self;
 
   // В виде консоли
   FIsConsole := FindCmdLineSwitch(STR_SWITCH[sConsole], ['-','/'], True);
@@ -253,8 +246,6 @@ begin
   FFileVersionInfo := AProgramUtils.GetProgramVersionInfo(FExeFullName);
   FProgramVersion := FFileVersionInfo.FileVersion;
 
-  Prog := Self;
-
   InitializeCriticalSection(FCSAddToLog);
 
   if FIsComServer and Assigned(ComServer) then
@@ -262,16 +253,10 @@ begin
     FSrvTypeLib := ComServer.TypeLib;
   except
   end;
-end;
 
-procedure TProfProgram.DoCreated;
-{$IFNDEF UseComXml}
-var
-  doc: TProfXmlDocument3;
-{$ENDIF}
-begin
+  // ---
+
   {$IFDEF UseComXml}CoInitialize(nil);{$ENDIF}
-  inherited DoCreated;
   // Создать конфигурации программы
   if not(Assigned(FConfigDocument)) then
   try
@@ -282,7 +267,7 @@ begin
     {$ELSE}
     if (Self.ConfigFileName = '') then
       Self.ConfigFileName := Self.ExePath + Self.ProgramName + '.' + FILE_EXT_CONFIG;
-    doc := TProfXmlDocument3.Create();
+    doc := TProfXmlDocument.Create();
     doc.FileName := ConfigFileName;
     doc.DefElementName := 'Config';
     doc.OnAddToLog := AddToLog;
@@ -295,6 +280,11 @@ begin
   except
     FConfigDocument := nil;
   end;
+end;
+
+function TProfProgram.DoAddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
+begin
+  Result := AddToLog(AGroup, AType, AStrMsg);
 end;
 
 procedure TProfProgram.DoDestroy();

@@ -2,7 +2,7 @@
 @Abstract(Глобальные типы и константы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.10.2006)
-@LastMod(10.05.2012)
+@LastMod(05.07.2012)
 @Version(0.5)
 }
 unit AConsts2;
@@ -10,14 +10,15 @@ unit AConsts2;
 interface
 
 const
-  DIR_CONFIGS  = 'Configs';
+  DIR_CONFIGS = 'Configs';
   DIR_DATABASE = 'DataBase';
   DIR_LOGS = 'Logs';
 
 // === Глобальные константы ====================================================
 
 const // Расширения файлов -----------------------------------------------------
-  FILE_EXT_CONFIG = 'config';
+  FILE_EXT_CONF = 'conf';
+  FILE_EXT_CONFIG = FILE_EXT_CONF;
   FILE_EXT_INI    = 'ini';
   FILE_EXT_LOG    = 'log';
   FILE_EXT_MDB    = 'mdb';

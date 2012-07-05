@@ -19,9 +19,8 @@ interface
 uses
   ActiveX, Classes, ComObj, ComServ, Messages, SysUtils, Windows, WinSock, WinSvc,
   {$IFDEF UseComDocument}MSXML24_TLB{$ELSE}XmlIntf, AXmlDocumentImpl{$ENDIF},
-  AConsts2, ALogDocumentIntf, ALogDocuments, ALogJournal, ALogNodeImpl, AProcessImpl, AProgramUtils, ATypes;
-
-  //ALogDocuments2007, AObjectImpl,
+  ABase, AConsts2, ALogDocumentIntf, ALogDocuments, ALogJournal, ALogNodeImpl,
+  AProcessImpl, AProgramUtils, ATypes;
 
 type
   {$IFDEF UseComXml}
@@ -31,6 +30,8 @@ type
   //** Основной объект программы
   TProfProgram = class(TProfProcess)
   protected
+    FConfigDir: APascalString;
+    FConfigPath: APascalString;
       //** Критическая секция для добавления в лог
     FCSAddToLog: TRTLCriticalSection;
     FExeFullName: WideString;
@@ -75,7 +76,6 @@ type
     FStdTypeLib: ITypeLib;
   protected
     function GetIsDemo(): Boolean; virtual;
-    function GetTimeWork(): Integer;
     procedure SetIsDemo(Value: Boolean); virtual;
   protected
       //** Срабатывает при добавлении записи в лог
@@ -92,16 +92,19 @@ type
       //** Добавление записи в лог
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: WideString): Integer; override;
-      //** Получить эобъкт Program
-    class function GetInstance(): TProfProgram;
-  public
-      //** Завершить работу программы
-    class procedure DoneProgram(); virtual;
+    function GetConfigFileName(): APascalString;
+    function GetConfigPath(): APascalString;
+    function GetTimeWork(): Integer;
       //** Инициализировать программу
     function Initialize(): TProfError; override;
   public
     constructor Create(); override;
     procedure Free(); override;
+  public
+      //** Завершить работу программы
+    class procedure DoneProgram(); virtual;
+      //** Получить эобъкт Program
+    class function GetInstance(): TProfProgram;
   public
     //** Конфигурации программы
     property ConfigDocument: IXmlDocument read FConfigDocument;
@@ -265,10 +268,8 @@ begin
     if not(FConfigDocument.load(Self.ExePath + Self.ExeName + FILE_EXT_CONFIG)) then
       FConfigDocument := nil;
     {$ELSE}
-    if (Self.ConfigFileName = '') then
-      Self.ConfigFileName := Self.ExePath + Self.ProgramName + '.' + FILE_EXT_CONFIG;
     doc := TProfXmlDocument.Create();
-    doc.FileName := ConfigFileName;
+    doc.FileName := GetConfigFileName();
     doc.DefElementName := 'Config';
     doc.OnAddToLog := AddToLog;
     doc.Initialize();
@@ -387,6 +388,22 @@ begin
   DoDestroy();
   Prog := nil;
   //inherited Free();
+end;
+
+function TProfProgram.GetConfigFileName(): APascalString;
+begin
+  if (FConfigFileName = '') then
+    FConfigFileName := GetConfigPath() + Self.ProgramName + '.' + FILE_EXT_CONFIG;
+  Result := FConfigFileName;
+end;
+
+function TProfProgram.GetConfigPath(): APascalString;
+begin
+  if (FConfigPath = '') then
+    FConfigPath := ExpandFileName(FExePath + FConfigDir);
+  if (Length(FConfigPath) > 0) and (FConfigPath[Length(FConfigPath)] <> '\') and (FConfigPath[Length(FConfigPath)] <> '/') then
+    FConfigPath := FConfigPath + '\';
+  Result := FConfigPath;
 end;
 
 class function TProfProgram.GetInstance(): TProfProgram;

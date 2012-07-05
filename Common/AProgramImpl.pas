@@ -10,17 +10,25 @@
 }
 unit AProgramImpl;
 
+{DEFINE UseComXml}
+
 interface
 
 // TODO: Deliver from ProfProcess
 
 uses
-  ActiveX, Classes, ComObj, ComServ, Messages, SysUtils, Windows, WinSock, WinSvc, XmlIntf{MSXML24_TLB},
+  ActiveX, Classes, ComObj, ComServ, Messages, SysUtils, Windows, WinSock, WinSvc,
+  {$IFDEF UseComDocument}MSXML24_TLB{$ELSE}XmlIntf, AXmlDocumentImpl{$ENDIF},
   AConsts2, ALogDocumentIntf, ALogDocuments, ALogJournal, ALogNodeImpl, AProcessImpl, AProgramUtils, ATypes;
 
-  //ALogDocuments2007, AObjectImpl, AXmlDocumentImpl;
+  //ALogDocuments2007, AObjectImpl,
 
-type //** Основной объект программы
+type
+  {$IFDEF UseComXml}
+  IXmlDocument = IXmlDomDocument;
+  {$ENDIF}
+
+  //** Основной объект программы
   TProfProgram = class(TProfProcess)
   protected
       //** Критическая секция для добавления в лог
@@ -52,14 +60,14 @@ type //** Основной объект программы
     FIsTeach: Boolean;
     FIsTest: Boolean;
   protected
-    FConfigDocument: IXmlDomDocument;
+    FConfigDocument: IXmlDocument;
     FConfigFileName: WideString;
     FConfigInitialize: Boolean;
     FDateStart: TDateTime;
     FIsComServer: Boolean;
     FIsService: Boolean;
     FMaxClientAccount: Integer;
-    FLogDocuments: IProfLogDocuments;
+    FLogDocuments: IALogDocuments;
     FLogJournal: TLogJournal;
   protected
     FGlbTypeLib: ITypeLib;
@@ -101,7 +109,7 @@ type //** Основной объект программы
     procedure Free(); override;
   public
     //** Конфигурации программы
-    property ConfigDocument: IXmlDomDocument read FConfigDocument;
+    property ConfigDocument: IXmlDocument read FConfigDocument;
     //** Имя файла конфигураций
     property ConfigFileName: WideString read FConfigFileName write FConfigFileName;
     //** Время запуска сервиса
@@ -121,7 +129,7 @@ type //** Основной объект программы
     //** Максимальное число клиентов
     property MaxClientAccount: Integer read FMaxClientAccount default 100;
     //** Класс, объединяющий вывод логов сразу в несколько мест
-    property LogDocuments: IProfLogDocuments read FLogDocuments;
+    property LogDocuments: IALogDocuments read FLogDocuments;
     //** Класс, объединяющий вывод логов сразу в несколько мест
     property LogJournal: TLogJournal read FLogJournal write FLogJournal;
     //** Глобальный ID объекта - владельца
@@ -257,29 +265,33 @@ begin
 end;
 
 procedure TProfProgram.DoCreated;
-//var
-//  doc: TProfXmlDocument3;
+{$IFNDEF UseComXml}
+var
+  doc: TProfXmlDocument3;
+{$ENDIF}
 begin
-  CoInitialize(nil);
+  {$IFDEF UseComXml}CoInitialize(nil);{$ENDIF}
   inherited DoCreated;
   // Создать конфигурации программы
   if not(Assigned(FConfigDocument)) then
   try
+    {$IFDEF UseComXml}
     FConfigDocument := CoDOMDocument.Create();
     if not(FConfigDocument.load(Self.ExePath + Self.ExeName + FILE_EXT_CONFIG)) then
       FConfigDocument := nil;
-
-    {if Self.ConfigFileName = '' then
+    {$ELSE}
+    if (Self.ConfigFileName = '') then
       Self.ConfigFileName := Self.ExePath + Self.ProgramName + '.' + FILE_EXT_CONFIG;
     doc := TProfXmlDocument3.Create();
     doc.FileName := ConfigFileName;
-    doc.DocumentElementName := 'Config';
-    //doc.OnAddToLog := AddToLog;
+    doc.DefElementName := 'Config';
+    doc.OnAddToLog := AddToLog;
     doc.Initialize();
     //doc.DocumentElement.Attributes['app'] := Self.ProgramName;
-    FConfigDocument := doc;
+    Self.FConfigDocument := doc.Document;
     FConfigInitialize := True;
-    Self.FConfig := FConfigDocument.DocumentElement;}
+    Self.FConfig := doc.GetDocumentElement();
+    {$ENDIF UseComXml}
   except
     FConfigDocument := nil;
   end;
@@ -304,7 +316,7 @@ begin
   // Сохраняем конфигурации программы
   if Assigned(FConfigDocument) then
   try
-    FConfigDocument.save(Self.ExePath + Self.ExeName + FILE_EXT_CONFIG);
+    FConfigDocument.SaveToFile(Self.ExePath + Self.ExeName + FILE_EXT_CONFIG);
   finally
     try
       FConfigDocument := nil;
@@ -341,7 +353,7 @@ begin
   Result := inherited DoInitialize();
   if not(Assigned(FLogDocuments)) then
   try
-    FLogDocuments := TProfLogDocuments3.Create();
+    FLogDocuments := TALogDocuments.Create();
   except
   end;
   if not(Assigned(FLog)) then

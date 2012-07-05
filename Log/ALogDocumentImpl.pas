@@ -14,7 +14,7 @@ uses
   ADocumentImpl, ALogDocumentIntf, ALogNodeImpl, ALogNodeIntf, AMessageConst, ANodeIntf, ATypes;
 
 type //** Документ работы с Log
-  TALogDocument = class(TALogNode, IProfLogDocument, ILogDocument)
+  TALogDocument = class(TALogNode, IALogDocument)
   protected
     FAddToLog: TAddToLogProc;
     FConfig: IProfNode;
@@ -46,8 +46,8 @@ type //** Документ работы с Log
         отрицательное число, если есть ошибки (открыть документ не удалось))
     }
     function OpenDocument(): TProfError; safecall;
-  public // IProfLogDocument
-    function GetDocumentElement(): IALogNode2; safecall;
+  public // IALogDocument
+    function GetDocumentElement(): IALogNode2;
   public
     {**
       Добавить лог-сообщение

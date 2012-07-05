@@ -55,7 +55,7 @@ type // Основной объект программы
     FIsComServer: Boolean;
     FIsService: Boolean;
     FMaxClientAccount: Integer;
-    FLogDocuments: ILogDocuments2;
+    FLogDocuments: IALogDocuments;
 
     FGlbTypeLib: ITypeLib;
     FSrvTypeLib: ITypeLib;
@@ -131,7 +131,7 @@ type // Основной объект программы
     //** Максимальное число клиентов
     property MaxClientAccount: Integer read FMaxClientAccount default 100;
     //** Класс, объединяющий вывод логов сразу в несколько мест
-    property LogDocuments: ILogDocuments2 read FLogDocuments;
+    property LogDocuments: IALogDocuments read FLogDocuments;
     //** Глобальный ID объекта - владельца
     property ObjectGlobalID: Integer read FObjectGlobalID write FObjectGlobalID;
     //** Название объекта - владельца
@@ -328,7 +328,7 @@ begin
   Result := inherited DoInitialize();
   if not(Assigned(FLogDocuments)) then
   try
-    FLogDocuments := TLogDocuments2007.Create();
+    FLogDocuments := TALogDocuments.Create();
   except
   end;
 end;

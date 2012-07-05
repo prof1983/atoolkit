@@ -2,7 +2,7 @@
 @Abstract(Класс главной форма - оболочка для TForm)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.11.2005)
-@LastMod(25.05.2012)
+@LastMod(05.07.2012)
 @Version(0.5)
 }
 unit AFormMain;
@@ -26,7 +26,7 @@ type
     FLogName: string;
     FLogTypeSet: TLogTypeSet;
   protected
-    FLogDocuments: ILogDocuments2;
+    FLogDocuments: IALogDocuments;
   public
     constructor Create(AOwner: TComponent); override;
       //** Финализация программы (конфигурации, логирование)

@@ -2,7 +2,7 @@
 @Abstract(Общие интерфейсы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(03.07.2012)
+@LastMod(05.07.2012)
 @Version(0.5)
 }
 unit ALogDocumentIntf;
@@ -14,19 +14,8 @@ uses
 
 type
     //** Интерфейс документа логирования
-  ILogDocument = IALogNode2;
-
-    //** Интерфейс документов логирования
-  ILogDocuments = interface(ILogDocument)
-    function AddLogDocument(ADocument: ILogDocument): Integer;
-  end;
-
-  ILogDocument2 = ILogDocument;
-  ILogDocuments2 = ILogDocuments;
-
-type //** Интерфейс документа логирования
-  IProfLogDocument = interface //(IProfDocument)
-    function GetDocumentElement(): IALogNode2; safecall;
+  IALogDocument = interface //(IProfDocument)
+    function GetDocumentElement(): IALogNode2;
 
     {**
       Добавить лог-сообщение
@@ -37,21 +26,29 @@ type //** Интерфейс документа логирования
     property DocumentElement: IALogNode2 read GetDocumentElement;
   end;
 
-type //** Интерфейс документов логирования
-  IProfLogDocuments = interface(IProfLogDocument)
-    function GetDocumentByID(ID: Int64): IProfLogDocument; safecall;
-    function GetDocumentByIndex(Index: Integer): IProfLogDocument; safecall;
-    function GetDocumentCount(): Integer; safecall;
+    //** Интерфейс документов логирования
+  IALogDocuments = interface(IALogDocument)
+    function GetDocumentByID(ID: Int64): ALogDocument;
+    function GetDocumentByIndex(Index: Integer): ALogDocument;
+    function GetDocumentCount(): Integer;
 
-    function Add(Document: IProfLogDocument): Integer; safecall;
-    function Delete(Index: Integer): Integer; safecall;
-    function Insert(Index: Integer; Document: IProfLogDocument): Integer; safecall;
-    //function New(const Name: WideString): IProfLogDocument; safecall;
+    function Add(Document: ALogDocument): Integer;
+    //function AddLogDocument(ADocument: ALogDocument): Integer;
+    function Delete(Index: Integer): Integer;
+    function Insert(Index: Integer; Document: ALogDocument): Integer;
+    //function New(const Name: WideString): IALogDocument; safecall;
 
-    property DocumentByID[ID: Int64]: IProfLogDocument read GetDocumentByID;
-    property DocumentByIndex[Index: Integer]: IProfLogDocument read GetDocumentByIndex;
+    property DocumentById[Id: Int64]: ALogDocument read GetDocumentById;
+    property DocumentByIndex[Index: Integer]: ALogDocument read GetDocumentByIndex;
     property DocumentCount: Integer read GetDocumentCount;
   end;
+
+  //ILogDocument = IALogNode2;
+  //ILogDocuments = IALogDocuments;
+  //ILogDocument2 = IALogDocument;
+  //ILogDocuments2 = ILogDocuments;
+  //IProfLogDocument = IALogDocument;
+  //IProfLogDocuments = IALogDocuments;
 
 implementation
 

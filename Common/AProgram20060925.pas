@@ -2,7 +2,7 @@
 @Abstract(Реализация основной функциональности для главного объекта)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.05.2006)
-@LastMod(04.07.2012)
+@LastMod(05.07.2012)
 @Version(0.5)
 }
 unit AProgram20060925;
@@ -11,7 +11,7 @@ interface
 
 uses
   ActiveX, Classes, ComObj, ComServ, Messages, SysUtils, Windows, WinSock, WinSvc,
-  ABase, AConfig2007, AConsts2, ALogDocuments2006, ALogObj, ATypes, AXmlNodeImpl;
+  ABase, AConfig2007, AConsts2, ALogDocuments, ALogObj, ATypes, AXmlNodeImpl;
 
 type //** Основной объект сервиса
   TProgram = class(TLoggerObject)
@@ -47,7 +47,7 @@ type //** Основной объект сервиса
     FConfig: AConfig{TConfigNode1}{TConfigDocument1};
     FConfigDocument: TConfigDocument1;
     FDateStart: TDateTime;
-    FLogDocuments: TLogDocuments;
+    FLogDocuments: TALogDocuments;
 
     FGlbTypeLib: ITypeLib;
     FSrvTypeLib: ITypeLib;
@@ -102,7 +102,7 @@ type //** Основной объект сервиса
     // Путь расположения программы "C:\AR\BIN\Modules\"
     property ExePath: WideString read FExePath;
     // Класс, объединяющий вывод логов сразу в несколько мест
-    property LogDocuments: TLogDocuments read FLogDocuments;
+    property LogDocuments: TALogDocuments read FLogDocuments;
     // Глобальный ID объекта - владельца
     property ObjectGlobalID: Integer read FObjectGlobalID write FObjectGlobalID;
     // Название объекта - владельца
@@ -205,7 +205,7 @@ function TProgram.DoStart(): WordBool;
 begin
   if not(Assigned(FLogDocuments)) then
   try
-    FLogDocuments := TLogDocuments.Create();
+    FLogDocuments := TALogDocuments.Create();
   except
   end;
 

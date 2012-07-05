@@ -2,7 +2,7 @@
 @Abstract(Класс, объединяющий вывод логов сразу в несколько мест)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(14.09.2006)
-@LastMod(26.04.2012)
+@LastMod(05.07.2012)
 @Version(0.5)
 }
 unit ALogDocumentsAll;
@@ -15,7 +15,7 @@ uses
   ATypes;
 
 type
-  TLogDocumentsAll = class(TLogDocuments)
+  TLogDocumentsAll = class(TALogDocuments)
   public
     constructor Create(AConfig: IXmlNode; ASetLogType: TLogTypeSet; ALogFilePath: WideString = ''; LogId: Integer = 123; LogName: String = 'Program123');
   end;

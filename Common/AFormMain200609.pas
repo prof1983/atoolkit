@@ -2,7 +2,7 @@
 @Abstract(Класс главной форма - оболочка для TForm)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.11.2005)
-@LastMod(03.07.2012)
+@LastMod(05.07.2012)
 @Version(0.5)
 }
 unit AFormMain200609;
@@ -12,7 +12,7 @@ interface
 uses
   Classes, Forms, SysUtils, XmlIntf,
   AConfig2007, ALogDocumentsAll, AForm2007, ATypes, AXmlUtils,
-  ALogDocuments2006;
+  ALogDocuments;
 
 type
   TProfFormMain = class(TProfForm)

@@ -2,7 +2,7 @@
 @Abstract(Глобальные типы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(20.02.2007)
-@LastMod(03.07.2012)
+@LastMod(05.07.2012)
 @Version(0.5)
 
 0.0.5.8 - 30.12.2011
@@ -209,7 +209,7 @@ type //** @abstract(Тип логирования)
   TLogType = (
       //** Не задано или не известно
     lNone,
-      //** TLogDocuments - записывает сразу в несколько мест (unLogDocuments)
+      //** Записывает сразу в несколько мест (unLogDocuments)
     lDocuments,
       //** Записывать в файл (unLogFile)
     lFile,
@@ -228,35 +228,13 @@ type //** @abstract(Тип логирования)
 
 const
   int_lNone = $00;        //**< Не задано или не известно
-  int_lDocuments = $01;   // TLogDocuments - записывает сразу в несколько мест
+  int_lDocuments = $01;   //**< Записывает сразу в несколько мест
   int_lFile      = $02;   // Записывать в файл
   int_lWindow    = $04;   // Показывать в окне
   int_lLogSystem = $08;   // Подключаться к сервису логирования AR_LogSystem
   int_lProgram   = $10;   // Выводить в лог программы (класс TProgram)
   int_lTreeView  = $20;   // Выводить в TreeView
   int_lUnknown   = $40;   // Uncnown
-{
-type
-  //** @abstract(Тип логирования)
-  TLogType = Integer;
-const
-    //** Нет логирования
-  lNone      = $01;
-    //** Не известно
-  lUnknown   = $02;
-    //** TLogDocuments - записывает сразу в несколько мест (unLogDocuments)
-  lDocuments = $04;
-    //** Записывать в файл (unLogFile)
-  lFile      = $08;
-    //** Показывать в окне (unLogFormTree)
-  lWindow    = $10;
-    //** Подключаться к сервису логирования AR_LogSystem (unLogSystem)
-  lLogSystem = $20;
-    //** Выводить в лог программы (класс TProgram) (unLogProgram)
-  lProgram   = $40;
-    //** Выводить лог в TreeView (unLogTreeView, unLogControl)
-  lTreeView  = $80;
-}
 
 // Дополнительные типы ---------------------------------------------------------
 

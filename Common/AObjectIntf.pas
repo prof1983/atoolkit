@@ -2,7 +2,7 @@
 @Abstract(Общие интерфейсы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(04.07.2012)
+@LastMod(05.07.2012)
 @Version(0.5)
 }
 unit AObjectIntf;
@@ -21,7 +21,7 @@ type //** Интерфейс для любого объекта
     procedure SetLogNode(Value: IALogNode2); safecall;
 
       //** Добавить (выполнить) сообщение
-    function AddMessage(const Msg: WideString): Integer; safecall;
+    function AddMessage(const Msg: WideString): Integer;
       //** Загрузить конфигурации
     function ConfigureLoad(AConfig: IProfNode): TProfError; safecall;
       //** Сохранить конфигурации

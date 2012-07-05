@@ -2,7 +2,7 @@
 @Abstract(Объект с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.12.2005)
-@LastMod(04.07.2012)
+@LastMod(05.07.2012)
 @Version(0.5)
 }
 unit AObjectImpl;
@@ -50,7 +50,7 @@ type //** Объект с логированием и конфигурациям
     function DoInitialized(): TProfError; virtual; safecall;
   public // IProfObject
       //** Выполнить или передать дочерним объектам
-    function AddMessage(const AMsg: WideString): Integer; virtual; safecall;
+    function AddMessage(const AMsg: WideString): Integer; virtual;
       //** Загрузить конфигурации
     function ConfigureLoad(AConfig: IProfNode): TProfError; safecall;
       //** Сохранить конфигурации

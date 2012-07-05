@@ -1,9 +1,9 @@
-object fmOpenGL3: TfmOpenGL3
+object fmOpenGL: TfmOpenGL
   Left = 0
   Top = 0
-  Width = 434
-  Height = 250
   Caption = 'OpenGL'
+  ClientHeight = 223
+  ClientWidth = 426
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

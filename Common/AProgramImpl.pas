@@ -307,7 +307,7 @@ begin
   // Сохраняем конфигурации программы
   if Assigned(FConfigDocument) then
   try
-    FConfigDocument.SaveToFile(Self.ExePath + Self.ExeName + FILE_EXT_CONFIG);
+    FConfigDocument.SaveToFile(GetConfigFileName());
   finally
     try
       FConfigDocument := nil;

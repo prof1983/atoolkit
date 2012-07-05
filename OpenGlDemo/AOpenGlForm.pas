@@ -2,7 +2,7 @@
 @Abstract(Главная форма программы ArOpenGL)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(04.10.2006)
-@LastMod(27.04.2012)
+@LastMod(05.07.2012)
 @Version(0.5)
 }
 unit AOpenGlForm;
@@ -15,7 +15,7 @@ uses
   AXVrmlOpenGl;
 
 type
-  TfmOpenGL3 = class(TForm)
+  TfmOpenGL = class(TForm)
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormPaint(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -115,20 +115,20 @@ end;
 
 { TfmOpenGL }
 
-procedure TfmOpenGL3.AppOnIdle(Sender: TObject; var Done: Boolean);
+procedure TfmOpenGL.AppOnIdle(Sender: TObject; var Done: Boolean);
 begin
   //InvalidateRect(Handle, nil, False);
   Done := False;
 end;
 
-procedure TfmOpenGL3.DoClose(var Action: TCloseAction);
+procedure TfmOpenGL.DoClose(var Action: TCloseAction);
 begin
   inherited DoClose(Action);
   if not(FEnabledClose) then
     Action := caNone; //caMinimize;
 end;
 
-procedure TfmOpenGL3.DoCreate;
+procedure TfmOpenGL.DoCreate;
 begin
   inherited DoCreate;
   FEnabledClose := True;
@@ -143,7 +143,7 @@ begin
   FTimer.Enabled := True;
 end;
 
-procedure TfmOpenGL3.DoDestroy;
+procedure TfmOpenGL.DoDestroy;
 begin
   if FIsStar then
   begin
@@ -160,7 +160,7 @@ begin
   inherited DoDestroy;
 end;
 
-procedure TfmOpenGL3.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TfmOpenGL.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_LEFT then
   begin
@@ -188,22 +188,22 @@ begin
   end;
 end;
 
-procedure TfmOpenGL3.FormPaint(Sender: TObject);
+procedure TfmOpenGL.FormPaint(Sender: TObject);
 begin
   if FIsStar then
   begin
     wglMakeCurrent(Canvas.Handle, hrc);
-    glViewPort (0, 0, ClientWidth, ClientHeight);
-    glMatrixMode (GL_PROJECTION);
-    glLoadIdentity;
+    glViewPort(0, 0, ClientWidth, ClientHeight);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
 
     gluPerspective(30.0,           // угол видимости в направлении оси Y
                     ClientWidth / ClientHeight, // угол видимости в направлении оси X
                     1.0,            // расстояние от наблюдателя до ближней плоскости отсечения
                     35.0);          // расстояние от наблюдателя до дальней плоскости отсечения
 
-    glMatrixMode (GL_MODELVIEW);
-    glLoadIdentity;
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
     { wglMakeCurrent(Canvas.Handle, hrc);
     glViewPort (0, 0, ClientWidth, ClientHeight);
@@ -359,7 +359,7 @@ begin
   end;
 end;
 
-procedure TfmOpenGL3.FormResize(Sender: TObject);
+procedure TfmOpenGL.FormResize(Sender: TObject);
 const
   amb_dif: array [0..3] of GLfloat = (0.2,0.8,1.0,1.0);
   spec: array [0..3] of GLfloat = (1.0,1.0,1.0,1.0);
@@ -395,7 +395,7 @@ begin
   InvalidateRect(Handle, nil, False);
 end;
 
-function TfmOpenGL3.Initialize: Integer;
+function TfmOpenGL.Initialize: Integer;
 
   procedure SetPoint(var P: TGLArrayf3; x, y, z: GLFloat);
   begin
@@ -438,14 +438,14 @@ begin
   end;
 end;
 
-procedure TfmOpenGL3.Timer1Timer(Sender: TObject);
+procedure TfmOpenGL.Timer1Timer(Sender: TObject);
 begin
   x1 := x1 + 1;
   y1 := y1 + 2;
   InvalidateRect(Handle, nil, False);
 end;
 
-procedure TfmOpenGL3.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TfmOpenGL.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   //DoClose;
 end;

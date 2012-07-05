@@ -2,7 +2,7 @@
 @Abstract(Контрол вывода лог-сообщений в RichEdit)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(07.03.2007)
-@LastMod(03.07.2012)
+@LastMod(05.07.2012)
 @Version(0.5)
 }
 unit ALogRichEditControl;
@@ -11,10 +11,10 @@ interface
 
 uses
   ComCtrls, Graphics,
-  ALogGlobals, ALogNodeIntf, ALogUiUtils, ANodeImpl, ATypes;
+  ALogGlobals, ALogNodeImpl, ALogUiUtils, ATypes;
 
 type //** Контрол вывода лог-сообщений в RichEdit
-  TProfLogRichEditControl = class(TProfNode, IALogNode)
+  TALogRichEditControl = class(TALogNode)
   private
     FController: TRichEdit;
     FDelimer1: WideString;
@@ -25,35 +25,35 @@ type //** Контрол вывода лог-сообщений в RichEdit
     {** Добавить сообщение
       @returns(Возвращает номер добавленого сообщения или 0)
     }
-    function AddMsg(const AMsg: WideString): Integer; safecall;
+    function AddMsg(const AMsg: WideString): Integer;
     function AddMsgA(const AMsg: WideString; const APrefix: WideString = ''): Integer; safecall;
     {** Добавить строку
       @returns(Возвращает номер добавленой строки или 0)
     }
-    function AddStr(const AStr: WideString): Integer; safecall;
+    function AddStr(const AStr: WideString): Integer;
     {** Добавить лог-сообщение
       @returns(Возвращает номер добавленого лог-сообщения или 0)
     }
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer; override; {safecall;}
+        const AStrMsg: WideString): Integer; override;
     //** Не используется
-    procedure Hide(); safecall;
+    procedure Hide();
     //** Не используется
-    procedure Show(); safecall;
+    procedure Show();
+  public
+    constructor Create();
   public
     //** RichEdit для вывода лог-сообщений
     property Controller: TRichEdit read FController write FController;
     property Delimer1: WideString read FDelimer1 write FDelimer1;
     property Delimer2: WideString read FDelimer2 write FDelimer2;
   end;
-  TProfLogRichEditControl3 = TProfLogRichEditControl;
-  TLogRichEditControl = TProfLogRichEditControl;
 
 implementation
 
-{ TProfLogRichEditControl }
+{ TALogRichEditControl }
 
-function TProfLogRichEditControl.AddMsg(const AMsg: WideString): Integer;
+function TALogRichEditControl.AddMsg(const AMsg: WideString): Integer;
 begin
   if AMsg = '-' then
     Result := AddStr(FDelimer1)
@@ -63,7 +63,7 @@ begin
     Result := AddStr(AMsg);
 end;
 
-function TProfLogRichEditControl.AddMsgA(const AMsg, APrefix: WideString): Integer;
+function TALogRichEditControl.AddMsgA(const AMsg, APrefix: WideString): Integer;
 begin
   if AMsg = '-' then
     Result := AddStr(APrefix + FDelimer1)
@@ -73,7 +73,7 @@ begin
     Result := AddStr(APrefix + AMsg);
 end;
 
-function TProfLogRichEditControl.AddStr(const AStr: WideString): Integer;
+function TALogRichEditControl.AddStr(const AStr: WideString): Integer;
 begin
   if Assigned(FController) then
   try
@@ -82,7 +82,7 @@ begin
   end;
 end;
 
-function TProfLogRichEditControl.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
+function TALogRichEditControl.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
 var
   tmpColor: TColor;
 begin
@@ -92,18 +92,23 @@ begin
   FController.SelAttributes.Color := tmpColor;
 end;
 
-procedure TProfLogRichEditControl.AfterConstruction();
+procedure TALogRichEditControl.AfterConstruction();
 begin
   inherited;
   FDelimer1 := '----------------------------------------------------------';
   FDelimer2 := '==========================================================';
 end;
 
-procedure TProfLogRichEditControl.Hide();
+constructor TALogRichEditControl.Create();
+begin
+  inherited Create(nil, '', 0);
+end;
+
+procedure TALogRichEditControl.Hide();
 begin
 end;
 
-procedure TProfLogRichEditControl.Show();
+procedure TALogRichEditControl.Show();
 begin
 end;
 

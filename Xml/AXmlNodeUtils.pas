@@ -86,9 +86,15 @@ function AXmlNode_SetValueAsFloat64(Node: AXmlNode; Value: AFloat64): AError;
 
 function AXmlNode_SetValueAsInt32(Node: AXmlNode; Value: AInt32): AError;
 
+function AXmlNode_SetValueAsString(Node: AXmlNode; const Value: APascalString): AError;
+
 function AXmlNode_SetXml(Node: AXmlNode; const S: APascalString): AError;
 
 function AXmlNode_SetXmlA(Node: AXmlNode; var Value: APascalString; const CloseTag: APascalString): AError;
+
+function AXmlNode_WriteBool(Node: AXmlNode; const Name: APascalString; Value: ABool): AError;
+
+function AXmlNode_WriteInt(Node: AXmlNode; const Name: APascalString; Value: AInt): AError;
 
 function AXmlNode_WriteString(Node: AXmlNode; const Name, Value: APascalString): AError;
 
@@ -661,6 +667,23 @@ begin
     Result := -2;
 end;
 
+function AXmlNode_SetValueAsString(Node: AXmlNode; const Value: APascalString): AError;
+var
+  N1: TProfXmlNode1;
+begin
+  if (TObject(Node) is TProfXmlNode1) then
+  begin
+    N1 := TProfXmlNode1(Node);
+    if Assigned(N1.Node) then
+      N1.Node.NodeValue := Value
+    else
+      N1.ValueStr := Value;
+    Result := 0;
+  end
+  else
+    Result := -2;
+end;
+
 function AXmlNode_SetXml(Node: AXmlNode; const S: APascalString): AError;
 begin
   if TProfXmlNode1(Node).SetXml(S) then
@@ -683,14 +706,95 @@ begin
     Result := -1;
 end;
 
-function AXmlNode_WriteString(Node: AXmlNode; const Name, Value: APascalString): AError;
+function AXmlNode_WriteBool(Node: AXmlNode; const Name: APascalString; Value: ABool): AError;
+var
+  Nodes: AXmlNodeList;
+  N: AXmlNode;
 begin
-  if (TObject(Node) is TProfXmlNode1) then
+  if (TObject(Node) is TProfXmlNode) then
   begin
-    if TProfXmlNode1(Node).WriteString(Name, Value) then
+    if ProfXmlNode_WriteBool(TProfXmlNode(Node).Node, Name, Value) then
       Result := 0
     else
       Result := -3;
+  end
+  else if (TObject(Node) is TProfXmlNode1) then
+  begin
+    if Assigned(TProfXmlNode1(Node).Node) then
+    begin
+      if ProfXmlNode_WriteBool(TProfXmlNode1(Node).Node, Name, Value) then
+        Result := 0
+      else
+        Result := -3;
+    end
+    else
+    begin
+      Nodes := AXmlNode_GetChildNodes(Node);
+      N := AXmlNodeList_GetNodeByName1(Nodes, Name);
+      Result := AXmlNode_SetValueAsBool(N, Value);
+    end;
+  end
+  else
+    Result := -2;
+end;
+
+function AXmlNode_WriteInt(Node: AXmlNode; const Name: APascalString; Value: AInt): AError;
+var
+  Nodes: AXmlNodeList;
+  N: AXmlNode;
+begin
+  if (TObject(Node) is TProfXmlNode) then
+  begin
+    if ProfXmlNode_WriteInt(TProfXmlNode(Node).Node, Name, Value) then
+      Result := 0
+    else
+      Result := -3;
+  end
+  else if (TObject(Node) is TProfXmlNode1) then
+  begin
+    if Assigned(TProfXmlNode1(Node).Node) then
+    begin
+      if ProfXmlNode_WriteInt(TProfXmlNode1(Node).Node, Name, Value) then
+        Result := 0
+      else
+        Result := -3;
+    end
+    else
+    begin
+      Nodes := AXmlNode_GetChildNodes(Node);
+      N := AXmlNodeList_GetNodeByName1(Nodes, Name);
+      Result := AXmlNode_SetValueAsInt32(N, Value);
+    end;
+  end
+  else
+    Result := -2;
+end;
+
+function AXmlNode_WriteString(Node: AXmlNode; const Name, Value: APascalString): AError;
+var
+  N1: TProfXmlNode1;
+  Child: AXmlNode;
+begin
+  if (TObject(Node) is TProfXmlNode1) then
+  begin
+    N1 := TProfXmlNode1(Node);
+    if Assigned(N1.Node) then
+    begin
+      if ProfXmlNode_WriteString(N1.Node, Name, Value) then
+        Result := 0
+      else
+        Result := -3;
+    end
+    else
+    begin
+      if (Name = '') then
+      begin
+        Result := -4;
+        Exit;
+      end;
+      Child := AXmlNode_GetChildNodeByName(Node, Name);
+      Result := AXmlNode_SetValueAsString(Child, Value);
+    end;
   end
   else
     Result := -2;

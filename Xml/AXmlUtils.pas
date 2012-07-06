@@ -38,7 +38,7 @@ function ProfXmlNode_ReadString(Node: IXmlNode; const Name: WideString; var Valu
 function ProfXmlNode_ReadStringDef(Node: IXmlNode; const Name, Def: APascalString): APascalString;
 function ProfXmlNode_WriteBool(Node: IXmlNode; const Name: APascalString; Value: ABool): ABool;
 function ProfXmlNode_WriteDateTime(Node: IXmlNode; const Name: APascalString; Value: TDateTime): ABool;
-function ProfXmlNode_WriteFloat32(Node: IXmlNode; const Name: WideString; Value: Real): WordBool;
+function ProfXmlNode_WriteFloat32(Node: IXmlNode; const Name: APascalString; Value: AFloat32): ABool;
 function ProfXmlNode_WriteFloat64(Node: IXmlNode; const Name: WideString; Value: Float64): WordBool;
 function ProfXmlNode_WriteInt(Node: IXmlNode; const Name: APascalString; Value: AInt): WordBool;
 function ProfXmlNode_WriteInt32(Node: IXmlNode; const Name: APascalString; Value: AInt): WordBool;
@@ -75,16 +75,17 @@ end;
 
 function ProfXmlNode_GetValueAsBool(ANode: IXmlNode; var Value: WordBool): WordBool;
 begin
-  Result := Assigned(ANode);
-  if not(Result) then Exit;
-  Result := False;
+  if not(Assigned(ANode)) then
+  begin
+    Result := False;
+    Exit;
+  end;
   try
-    case VarType(ANode.NodeValue) of
-      varBoolean:
-        Value := ANode.NodeValue;
+    if (VarType(ANode.NodeValue) = varBoolean) then
+      Value := ANode.NodeValue
     else
       Value := StrToBool(ANode.NodeValue);
-    end;
+    Result := True;
   except
     Result := False;
   end;
@@ -104,8 +105,11 @@ function ProfXmlNode_GetValueAsFloat32(ANode: IXmlNode; var Value: Float32): Wor
 var
   Code: Integer;
 begin
-  Result := Assigned(ANode);
-  if not(Result) then Exit;
+  if not(Assigned(ANode)) then
+  begin
+    Result := False;
+    Exit;
+  end;
   try
     if (VarType(ANode.NodeValue) = varSingle) then
     begin
@@ -125,10 +129,14 @@ end;
 
 function ProfXmlNode_GetValueAsFloat64(ANode: IXmlNode; var Value: Float64): WordBool;
 var
-  Code: Integer;
+  //Code: Integer;
+  s: string;
 begin
-  Result := Assigned(ANode);
-  if not(Result) then Exit;
+  if not(Assigned(ANode)) then
+  begin
+    Result := False;
+    Exit;
+  end;
   try
     if (VarType(ANode.NodeValue) = varDouble) then
     begin
@@ -136,8 +144,10 @@ begin
     end
     else if (VarType(ANode.NodeValue) = varString) or (VarType(ANode.NodeValue) = varOleStr) then
     begin
-      Val(ANode.NodeValue, Value, Code);
-      Result := (Code = 0);
+      s := ANode.NodeValue;
+      Result := TryStrToFloat(s, Value);
+      {Val(ANode.NodeValue, Value, Code);
+      Result := (Code = 0);}
     end
     else
       Result := False;
@@ -148,12 +158,24 @@ end;
 
 function ProfXmlNode_GetValueAsInt32(ANode: IXmlNode; var Value: Int32): WordBool;
 var
+  tmp: Int64;
+begin
+  tmp := Value;
+  Result := ProfXmlNode_GetValueAsInt64(ANode, tmp);
+  Value := tmp;
+end;
+
+function ProfXmlNode_GetValueAsInt64(ANode: IXmlNode; var Value: Int64): WordBool;
+var
   Code: Integer;
 begin
-  Result := Assigned(ANode);
-  if not(Result) then Exit;
+  if not(Assigned(ANode)) then
+  begin
+    Result := False;
+    Exit;
+  end;
   try
-    if (VarType(ANode.NodeValue) = varInteger) then
+    if (VarType(ANode.NodeValue) = varInteger) or (VarType(ANode.NodeValue) = varInt64) then
     begin
       Value := ANode.NodeValue;
     end
@@ -167,16 +189,12 @@ begin
   except
     Result := False;
   end;
-end;
-
-function ProfXmlNode_GetValueAsInt64(ANode: IXmlNode; var Value: Int64): WordBool;
-begin
-  try
+  {try
     Value := ANode.NodeValue;
     Result := True;
   except
     Result := False;
-  end;
+  end;}
 end;
 
 function ProfXmlNode_GetValueAsString(Node: IXmlNode; var Value: WideString): WordBool;
@@ -459,7 +477,7 @@ begin
   end;
 end;
 
-function ProfXmlNode_WriteFloat32(Node: IXmlNode; const Name: WideString; Value: Real): WordBool;
+function ProfXmlNode_WriteFloat32(Node: IXmlNode; const Name: APascalString; Value: AFloat32): ABool;
 var
   Node1: IXmlNode;
 begin
@@ -559,10 +577,14 @@ begin
   end;
   try
     Node1 := Node.ChildNodes.FindNode(Name);
-    if Assigned(Node1) then
-      Node1.NodeValue := Value
-    else
-      Node.AddChild(Name).NodeValue := Value;
+    if not(Node.IsTextElement) then
+    begin
+      Result := False;
+      Exit;
+    end;
+    if not(Assigned(Node1)) then
+      Node1 := Node.AddChild(Name);
+    Node1.NodeValue := Value;
     Result := True;
   except
     Result := False;

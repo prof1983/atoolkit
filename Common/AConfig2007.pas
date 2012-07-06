@@ -2,7 +2,7 @@
 @Abstract(Конфигурации в виде XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(04.01.2006)
-@LastMod(03.07.2012)
+@LastMod(06.07.2012)
 @Version(0.5)
 
 [+] 30.09.2006 Prof - CLR
@@ -112,10 +112,10 @@ function ProcessLoadObject(AConfig: IXmlNode; AObj: TObject): Boolean;
   begin
     if Assigned(APropInfo.SetProc) then
     begin
-      if TProfXmlNode4.ReadIntegerA(AConfig, APropInfo.Name, tmpInt) then
+      if TProfXmlNode.ReadIntegerA(AConfig, APropInfo.Name, tmpInt) then
         SetOrdProp(AObj, APropInfo.Name, tmpInt)
       else
-        TProfXmlNode4.WriteIntegerA(AConfig, APropInfo.Name, GetOrdProp(AObj, APropInfo.Name));
+        TProfXmlNode.WriteIntegerA(AConfig, APropInfo.Name, GetOrdProp(AObj, APropInfo.Name));
     end;
   end;
 
@@ -125,10 +125,10 @@ function ProcessLoadObject(AConfig: IXmlNode; AObj: TObject): Boolean;
   begin
     if Assigned(APropInfo.SetProc) then
     begin
-      if TProfXmlNode4.ReadFloat64A(AConfig, APropInfo.Name, tmpFloat) then
+      if TProfXmlNode.ReadFloat64A(AConfig, APropInfo.Name, tmpFloat) then
         SetFloatProp(AObj, APropInfo.Name, tmpFloat)
       else
-        TProfXmlNode4.WriteFloat64A(AConfig, APropInfo.Name, GetFloatProp(AObj, APropInfo.Name));
+        TProfXmlNode.WriteFloat64A(AConfig, APropInfo.Name, GetFloatProp(AObj, APropInfo.Name));
     end;
   end;
 
@@ -138,10 +138,10 @@ function ProcessLoadObject(AConfig: IXmlNode; AObj: TObject): Boolean;
   begin
     if (APropInfo.SetProc <> nil) then
     begin
-      if TProfXmlNode4.ReadStringA(AConfig, APropInfo.Name, tmpStr) then
+      if TProfXmlNode.ReadStringA(AConfig, APropInfo.Name, tmpStr) then
         SetStrProp(AObj, APropInfo.Name, tmpStr)
       else
-        TProfXmlNode4.WriteStringA(AConfig, APropInfo.Name, GetStrProp(AObj, APropInfo.Name));
+        TProfXmlNode.WriteStringA(AConfig, APropInfo.Name, GetStrProp(AObj, APropInfo.Name));
     end;
   end;
 
@@ -216,7 +216,7 @@ function ProcessLoadObject(AConfig: IXmlNode; AObj: TObject): Boolean;
     try
       //FStorage.CloseKey();
       if Assigned(GetObjectProp(AObj, APropInfo.Name, TObject)) then
-        ProcessLoadObject(TProfXmlNode4.GetNodeByNameA(AConfig, APropInfo.Name), GetObjectProp(AObj, APropInfo.Name, TObject));
+        ProcessLoadObject(ProfXmlNode_GetNodeByName(AConfig, APropInfo.Name), GetObjectProp(AObj, APropInfo.Name, TObject));
         //ProcessLoadObject(GetPrmDesc(APrefix, AObj, APropInfo.Name), GetObjectProp(AObj, APropInfo.Name, TObject), AReestrKey + '\' + APropInfo.Name)
     finally
       //FStorage.CloseKey();
@@ -683,7 +683,7 @@ function ProcessSaveObject(AConfig: IXmlNode; AObj: TObject): boolean;
     try
       //FStorage.CloseKey();
       if Assigned(GetObjectProp(AObj, APropInfo.Name, TObject)) then
-        Result := ProcessSaveObject(TProfXmlNode4.GetNodeByNameA(AConfig, APropInfo.Name), GetObjectProp(AObj, APropInfo.Name, TObject)) or Result;
+        Result := ProcessSaveObject(ProfXmlNode_GetNodeByName(AConfig, APropInfo.Name), GetObjectProp(AObj, APropInfo.Name, TObject)) or Result;
         //Result := ProcessSaveObject(GetPrmDesc(APrefix, AObj, APropInfo.Name), GetObjectProp(AObj, APropInfo.Name, TObject), AReestrKey + '\' + APropInfo.Name) or Result;
     finally
       //FStorage.CloseKey();

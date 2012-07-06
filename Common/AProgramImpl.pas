@@ -2,7 +2,7 @@
 @Abstract(Реализация основной функциональности для главного объекта)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.05.2006)
-@LastMod(05.07.2012)
+@LastMod(06.07.2012)
 @Version(0.5)
 
 0.0.5.7 - 21.07.2011
@@ -37,7 +37,7 @@ type
     FExeFullName: WideString;
     FExeName: WideString;
     FExePath: WideString;
-    FFileVersionInfo: TFileVersionInfo;
+    FFileVersionInfo: TFileVersionInfoA;
   protected
     FDependencies: WideString;
     FObjectGlobalID: Integer;
@@ -123,7 +123,7 @@ type
     //** Путь расположения программы "C:\example\"
     property ExePath: WideString read FExePath;
     //** Информация прошитая в файле
-    property FileVersionInfo: TFileVersionInfo read FFileVersionInfo;
+    property FileVersionInfo: TFileVersionInfoA read FFileVersionInfo;
     //** Максимальное число клиентов
     property MaxClientAccount: Integer read FMaxClientAccount default 100;
     //** Класс, объединяющий вывод логов сразу в несколько мест

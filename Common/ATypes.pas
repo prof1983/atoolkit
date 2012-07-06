@@ -2,7 +2,7 @@
 @Abstract(Глобальные типы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(20.02.2007)
-@LastMod(05.07.2012)
+@LastMod(06.07.2012)
 @Version(0.5)
 
 0.0.5.8 - 30.12.2011
@@ -491,16 +491,17 @@ const // Текстовых описания глобальных типов
 // --- from ProfGlobals.pas ---
 
 type //** @abstract(Информация о файле)
-  TFileVersionInfo = record
-    ProductName: string;
-    ProductVersion: string;
-    OriginalFileName: string;
-    InternalName: string;
-    FileVersion: string;
-    LegalCopyright: string;
-    CompanyName: string;
-    FileDescription: string;
+  TFileVersionInfoA = record
+    ProductName: AnsiString;
+    ProductVersion: AnsiString;
+    OriginalFileName: AnsiString;
+    InternalName: AnsiString;
+    FileVersion: AnsiString;
+    LegalCopyright: AnsiString;
+    CompanyName: AnsiString;
+    FileDescription: AnsiString;
   end;
+  //TFileVersionInfo = TFileVersionInfoA;
 
 type //** @abstract(Параметры командной строки)
   TSwitch = (sTest, sDebug, sSilent, sConsole, sInstall, sUnInstall, sStart, sStop, sNoSplash, sTeach, sDemo);

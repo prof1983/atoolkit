@@ -2,7 +2,7 @@
 @Abstract(Некоторые часто используемые функции)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(13.03.2007)
-@LastMod(05.07.2012)
+@LastMod(06.07.2012)
 @Version(0.5)
 }
 unit AProgramUtils;
@@ -14,11 +14,11 @@ uses
   ATypes;
 
 //** @abstract(Возвращает информацию о файле)
-function GetProgramVersionInfo(const AFileName: AnsiString): TFileVersionInfo;
+function GetProgramVersionInfo(const AFileName: AnsiString): TFileVersionInfoA;
 
 implementation
 
-function GetProgramVersionInfo(const AFileName: AnsiString): TFileVersionInfo;
+function GetProgramVersionInfo(const AFileName: AnsiString): TFileVersionInfoA;
 type
   arrc = array[0..$ffff] of AnsiChar;
 var

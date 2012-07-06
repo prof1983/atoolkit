@@ -2,7 +2,7 @@
 @Abstract(Работа с Log. Классы для записи собщений программы в БД или файл или отображения в окне Log)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.08.2005)
-@LastMod(05.07.2012)
+@LastMod(06.07.2012)
 @Version(0.5)
 }
 unit ALogDocumentImpl;
@@ -18,6 +18,7 @@ type //** Документ работы с Log
   protected
     FAddToLog: TAddToLogProc;
     FConfig: IProfNode;
+    FDocumentElement: TALogNode;
     FLogType: TLogType;
     FOnCommand: TProcMessageStr;
     FNodes: array of TALogNode;
@@ -47,7 +48,8 @@ type //** Документ работы с Log
     }
     function OpenDocument(): TProfError; safecall;
   public // IALogDocument
-    function GetDocumentElement(): IALogNode2;
+    function GetDocumentElement(): ALogNode;
+    function GetDocumentElement2(): IALogNode2;
   public
     {**
       Добавить лог-сообщение
@@ -141,12 +143,14 @@ end;
 constructor TALogDocument.Create(ALogType: TLogType; AName: WideString = ''; AParent: TLogDocument = nil);
 begin
   inherited Create(AParent, AName, 0);
+  FDocumentElement := Self;
   //inherited Create(lNone);
 end;
 
 constructor TALogDocument.Create2(ALogType: TLogType; AName: WideString = ''; AParent: ALogDocument2 = 0);
 begin
   inherited Create2(AParent, 0, AName, 0);
+  FDocumentElement := Self;
 end;
 
 function TALogDocument.Finalize(): TProfError;
@@ -154,9 +158,14 @@ begin
   Result := 0;
 end;
 
-function TALogDocument.GetDocumentElement(): IALogNode2;
+function TALogDocument.GetDocumentElement(): ALogNode;
 begin
-  Result := Self;
+  Result := Self.FDocumentElement.GetSelf();
+end;
+
+function TALogDocument.GetDocumentElement2(): IALogNode2;
+begin
+  Result := FDocumentElement;
 end;
 
 function TALogDocument.GetFreeId(): Integer;

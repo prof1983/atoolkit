@@ -2,7 +2,7 @@
 @abstract(ProfXml)
 @author(Prof1983 prof1983@ya.ru)
 @created(15.02.2012)
-@lastmod(02.07.2012)
+@lastmod(06.07.2012)
 @version(0.5)
 }
 unit AXmlUtils;
@@ -26,13 +26,13 @@ function ProfXmlNode_ReadBool(ANode: IXmlNode; const AName: WideString; var Valu
 function ProfXmlNode_ReadBoolDef(ANode: IXmlNode; const AName: WideString; ADef: WordBool): WordBool;
 function ProfXmlNode_ReadDateTime(ANode: IXmlNode; const AName: WideString; var Value: TDateTime): WordBool;
 function ProfXmlNode_ReadDateTimeDef(ANode: IXmlNode; const AName: WideString; ADef: TDateTime): TDateTime;
-function ProfXmlNode_ReadFloat32(ANode: IXmlNode; const AName: WideString; var Value: Float32): WordBool;
-function ProfXmlNode_ReadFloat64(ANode: IXmlNode; const AName: WideString; var Value: Float64): WordBool;
+function ProfXmlNode_ReadFloat32(Node: IXmlNode; const Name: WideString; var Value: Float32): WordBool;
+function ProfXmlNode_ReadFloat64(Node: IXmlNode; const Name: WideString; var Value: Float64): WordBool;
 function ProfXmlNode_ReadFloatDef(ANode: IXmlNode; const AName: WideString; ADef: Float64): Float64;
-function ProfXmlNode_ReadInt(ANode: IXmlNode; const AName: WideString; var Value: Integer): WordBool;
+function ProfXmlNode_ReadInt(Node: IXmlNode; const Name: WideString; var Value: Integer): WordBool;
 function ProfXmlNode_ReadInt32(ANode: IXmlNode; const AName: WideString; var Value: Int32): WordBool;
 function ProfXmlNode_ReadInt32Def(ANode: IXmlNode; const AName: WideString; ADef: Int32): Int32;
-function ProfXmlNode_ReadInt64(ANode: IXmlNode; const AName: APascalString; var Value: Int64): WordBool;
+function ProfXmlNode_ReadInt64(Node: IXmlNode; const Name: APascalString; var Value: Int64): WordBool;
 function ProfXmlNode_ReadString(ANode: IXmlNode; const AName: WideString; var Value: WideString): WordBool;
 function ProfXmlNode_WriteBool(ANode: IXmlNode; const AName: WideString; Value: WordBool): WordBool;
 function ProfXmlNode_WriteDateTime(ANode: IXmlNode; const AName: APascalString; Value: TDateTime): ABoolean;
@@ -197,11 +197,17 @@ function ProfXmlNode_ReadBool(ANode: IXmlNode; const AName: WideString; var Valu
 var
   Node: IXmlNode;
 begin
-  Result := Assigned(ANode);
-  if not(Result) then Exit;
+  if not(Assigned(ANode)) then
+  begin
+    Result := False;
+    Exit;
+  end;
   Node := ANode.ChildNodes.FindNode(AName);
-  Result := Assigned(Node);
-  if not(Result) then Exit;
+  if not(Assigned(Node)) then
+  begin
+    Result := False;
+    Exit;
+  end;
   Result := ProfXmlNode_GetValueAsBool(Node, Value);
 end;
 
@@ -231,33 +237,45 @@ begin
   ProfXmlNode_ReadDateTime(ANode, AName, Result);
 end;
 
-function ProfXmlNode_ReadFloat32(ANode: IXmlNode; const AName: WideString; var Value: Float32): WordBool;
+function ProfXmlNode_ReadFloat32(Node: IXmlNode; const Name: WideString; var Value: Float32): WordBool;
 var
-  Node: IXmlNode;
+  Node1: IXmlNode;
 begin
-  Result := Assigned(ANode);
-  if not(Result) then Exit;
+  if not(Assigned(Node)) then
+  begin
+    Result := False;
+    Exit;
+  end;
   try
-    Node := ANode.ChildNodes.FindNode(AName);
-    Result := Assigned(Node);
-    if not(Result) then Exit;
-    Result := ProfXmlNode_GetValueAsFloat32(Node, Value);
+    Node1 := Node.ChildNodes.FindNode(Name);
+    if not(Assigned(Node1)) then
+    begin
+      Result := False;
+      Exit;
+    end;
+    Result := ProfXmlNode_GetValueAsFloat32(Node1, Value);
   except
     Result := False;
   end;
 end;
 
-function ProfXmlNode_ReadFloat64(ANode: IXmlNode; const AName: WideString; var Value: Float64): WordBool;
+function ProfXmlNode_ReadFloat64(Node: IXmlNode; const Name: WideString; var Value: Float64): WordBool;
 var
-  Node: IXmlNode;
+  Node1: IXmlNode;
 begin
-  Result := Assigned(ANode);
-  if not(Result) then Exit;
+  if not(Assigned(Node)) then
+  begin
+    Result := False;
+    Exit;
+  end;
   try
-    Node := ANode.ChildNodes.FindNode(AName);
-    Result := Assigned(Node);
-    if not(Result) then Exit;
-    Result := ProfXmlNode_GetValueAsFloat64(Node, Value);
+    Node1 := Node.ChildNodes.FindNode(Name);
+    if not(Assigned(Node1)) then
+    begin
+      Result := False;
+      Exit;
+    end;
+    Result := ProfXmlNode_GetValueAsFloat64(Node1, Value);
   except
     Result := False;
   end;
@@ -269,9 +287,32 @@ begin
   ProfXmlNode_ReadFloat64(ANode, AName, Result);
 end;
 
-function ProfXmlNode_ReadInt(ANode: IXmlNode; const AName: WideString; var Value: Integer): WordBool;
+function ProfXmlNode_ReadInt(Node: IXmlNode; const Name: WideString; var Value: Integer): WordBool;
+var
+  Node1: IXmlNode;
+  Code: Integer;
 begin
-  Result := ProfXmlNode_ReadInt32(ANode, AName, Value);
+  try
+    Node1 := Node.ChildNodes.FindNode(Name);
+    if not(Assigned(Node1)) then
+    begin
+      Result := False;
+      Exit;
+    end;
+    if (VarType(Node1.NodeValue) = varInteger) then
+    begin
+      Value := Node1.NodeValue;
+    end
+    else if (VarType(Node1.NodeValue) = varString) or (VarType(Node1.NodeValue) = varOleStr) then
+    begin
+      Val(Node1.NodeValue, Value, Code);
+      Result := (Code = 0);
+    end
+    else
+      Result := False;
+  except
+    Result := False;
+  end
 end;
 
 function ProfXmlNode_ReadInt32(ANode: IXmlNode; const AName: WideString; var Value: Int32): WordBool;
@@ -300,17 +341,23 @@ begin
     Result := ADef;
 end;
 
-function ProfXmlNode_ReadInt64(ANode: IXmlNode; const AName: APascalString; var Value: Int64): WordBool;
+function ProfXmlNode_ReadInt64(Node: IXmlNode; const Name: APascalString; var Value: Int64): WordBool;
 var
-  Node: IXmlNode;
+  Node1: IXmlNode;
 begin
-  Result := Assigned(ANode);
-  if not(Result) then Exit;
+  if not(Assigned(Node)) then
+  begin
+    Result := False;
+    Exit;
+  end;
   try
-    Node := ANode.ChildNodes.FindNode(AName);
-    Result := Assigned(Node);
-    if not(Result) then Exit;
-    Result := ProfXmlNode_GetValueAsInt64(Node, Value);
+    Node1 := Node.ChildNodes.FindNode(Name);
+    if not(Assigned(Node1)) then
+    begin
+      Result := False;
+      Exit;
+    end;
+    Result := ProfXmlNode_GetValueAsInt64(Node1, Value);
   except
     Result := False;
   end;

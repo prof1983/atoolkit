@@ -2,7 +2,7 @@
 @Abstract(Класс-потомок для форм с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.10.2005)
-@LastMod(04.07.2012)
+@LastMod(06.07.2012)
 @Version(0.5)
 }
 unit AForm2007;
@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ABase, AConfig2007, ALogNodeImpl, ATypes, AXmlUtils;
+  ABase, AConfig2007, ALogGlobals, ALogNodeUtils, ATypes, AXmlUtils;
 
 type //** @abstract(Класс-потомок для форм с логированием и конфигурациями)
   TProfForm = class(TForm)
@@ -21,7 +21,7 @@ type //** @abstract(Класс-потомок для форм с логиров�
     FConfigDocument: IXmlDocument;
     FConfigDocument1: TConfigDocument1;
     FInitialized: WordBool;
-    FLog: TALogNode; //FLog: IALogNode2;
+    FLog: ALogNode{TALogNode}; //FLog: IALogNode2;
     FLogPrefix: WideString;
     FOnAddToLog: TAddToLogProc;
     //FOnAddToLog: TProfAddToLog;
@@ -54,7 +54,7 @@ type //** @abstract(Класс-потомок для форм с логиров�
     property ConfigDocument: IXmlDocument read FConfigDocument write FConfigDocument;
     property ConfigDocument1: TConfigDocument1 read FConfigDocument1 write FConfigDocument1;
     property Initialized: WordBool read FInitialized;
-    property Log: TALogNode read FLog write FLog; //property Log: ILogNode2 read FLog write FLog;
+    property Log: ALogNode read FLog write FLog;
     property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
     //property OnAddToLog: TProfAddToLog read FOnAddToLog write FOnAddToLog;
     //property OnAddToLog: TAddToLog read FOnAddToLog write FOnAddToLog;
@@ -74,12 +74,7 @@ implementation
 
 function TProfForm.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: APascalString): AInteger;
 begin
-  Result := 0;
-  if Assigned(FLog) then
-  try
-    Result := FLog.AddToLog(AGroup, AType, AStrMsg);
-  except
-  end;
+  Result := ALogNode_AddToLog(FLog, AGroup, AType, AStrMsg);
   if Assigned(FOnAddToLog) then
   try
     Result := FOnAddToLog(AGroup, AType, AStrMsg);
@@ -210,7 +205,8 @@ function TProfForm.DoFinalize(): WordBool;
 begin
   FConfig := nil;
   FConfigDocument := nil;
-  FLog := nil;
+  ALogNode_Free(FLog);
+  FLog := 0;
   Result := True;
 end;
 
@@ -253,12 +249,7 @@ end;
 
 function TProfForm.ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage; const AStrMsg: WideString): Integer;
 begin
-  Result := -1;
-  if Assigned(FLog) then
-  try
-    Result := FLog.ToLogE(AGroup, AType, AStrMsg);
-  except
-  end;
+  Result := AddToLog(IntToLogGroupMessage(AGroup), IntToLogTypeMessage(AType), AStrMsg);
 end;
 
 end.

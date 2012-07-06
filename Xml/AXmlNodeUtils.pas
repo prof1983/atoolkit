@@ -2,7 +2,7 @@
 @Abstract(AXmlNode functions)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(28.06.2012)
-@LastMod(03.07.2012)
+@LastMod(06.07.2012)
 @Version(0.5)
 }
 unit AXmlNodeUtils;
@@ -66,6 +66,12 @@ function AXmlNode_GetXml(Node: AXmlNode): APascalString;
 function AXmlNode_GetXmlA(Node: AXmlNode; const Prefix: APascalString): APascalString;
 
 function AXmlNode_Free(Node: AXmlNode): AError;
+
+function AXmlNode_ReadBool(Node: AXmlNode; const Name: APascalString;
+    out Value: ABoolean): AError;
+
+function AXmlNode_ReadInt(Node: AXmlNode; const Name: APascalString;
+    var Value: AInt): AError;
 
 function AXmlNode_ReadString(Node: AXmlNode; const Name: APascalString;
     out Value: APascalString): AError;
@@ -515,6 +521,63 @@ begin
   end
   else
     Result := -1;
+end;
+
+function AXmlNode_ReadBool(Node: AXmlNode; const Name: APascalString;
+    out Value: ABoolean): AError;
+var
+  Node1: AProfXmlNode;
+  V: ABoolean;
+  Res: AError;
+  Nodes: AXmlNodeList;
+begin
+  Nodes := AXmlNode_GetChildNodes(Node);
+  if (Nodes = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  Node1 := AXmlNodeList_FindNode(Nodes, Name);
+  if (Node1 = 0) then
+  begin
+    Result := -3;
+    Exit;
+  end;
+  V := Value;
+  Res := AXmlNode_GetValueAsBool(Node1, V);
+  Value := V;
+  Result := Res;
+end;
+
+function AXmlNode_ReadInt(Node: AXmlNode; const Name: APascalString;
+    var Value: AInt): AError;
+var
+  Node1: AProfXmlNode;
+  Nodes: AXmlNodeList;
+begin
+  if (TObject(Node) is TProfXmlNode1) then
+  begin
+    if Assigned(TProfXmlNode1(Node).Node) then
+    begin
+      if ProfXmlNode_ReadInt(TProfXmlNode1(Node).Node, Name, Value) then
+        Result := 0
+      else
+        Result := -3;
+    end
+    else
+    begin
+      Nodes := AXmlNode_GetChildNodes(Node);
+      Node1 := AXmlNodeList_FindNode(Nodes, Name);
+      if (Node1 = 0) then
+      begin
+        Result := -4;
+        Exit;
+      end;
+      Result := AXmlNode_GetValueAsInt(Node1, Value);
+    end;
+  end
+  else
+    Result := -2;
 end;
 
 function AXmlNode_ReadString(Node: AXmlNode; const Name: APascalString;

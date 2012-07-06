@@ -2,7 +2,7 @@
 @Abstract(Класс, объединяющий вывод логов сразу в несколько мест)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(14.09.2006)
-@LastMod(05.07.2012)
+@LastMod(06.07.2012)
 @Version(0.5)
 }
 unit ALogDocumentsAll;
@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ABaseUtils2, ALogDocumentForm2007, ALogDocuments2007, ALogFile, ALogProgram,
+  ABaseUtils2, ALogDocumentForm2007, ALogDocuments, ALogFile, ALogProgram,
   ATypes;
 
 type

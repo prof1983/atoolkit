@@ -2,7 +2,7 @@
 @Abstract(Класс главной форма - оболочка для TForm)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.11.2005)
-@LastMod(05.07.2012)
+@LastMod(06.07.2012)
 @Version(0.5)
 }
 unit AFormMain;
@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ALogDocumentsAll, AForm2007, ALogDocumentIntf, AXml3,
+  ALogDocumentsAll, AForm2007, {ALogDocumentIntf,} ALogDocuments, {AXml3,} AXmlDocumentImpl,
   ATypes, AXmlUtils;
 
 type
@@ -26,7 +26,7 @@ type
     FLogName: string;
     FLogTypeSet: TLogTypeSet;
   protected
-    FLogDocuments: IALogDocuments;
+    FLogDocuments: TALogDocuments;
   public
     constructor Create(AOwner: TComponent); override;
       //** Финализация программы (конфигурации, логирование)
@@ -150,7 +150,7 @@ begin
     FLogDocuments := TLogDocumentsAll.Create(conf, FLogTypeSet, FLogFilePath, FLogID, FLogName);
     FIsLogDocumentsInit := True;
   end;
-  FLog := FLogDocuments;
+  FLog := FLogDocuments.GetDocumentElement();
 end;
 
 end.

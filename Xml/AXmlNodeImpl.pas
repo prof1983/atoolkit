@@ -2,7 +2,7 @@
 @Abstract(Класс работы с XML нодами)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(07.03.2007)
-@LastMod(04.07.2012)
+@LastMod(06.07.2012)
 @Version(0.5)
 }
 unit AXmlNodeImpl;
@@ -281,6 +281,26 @@ type //** Класс работы с XML нодами
     class function GetAsInt64A(Node: IXmlNode): Int64; safecall;
     class function GetAsStringA(Node: IXmlNode): WideString; safecall;
   public
+    class function ReadBoolA(ANode: IXmlNode; const AName: WideString;
+        var Value: WordBool): WordBool; safecall; deprecated; // Use ProfXmlNode_ReadBool()
+    class function ReadDateTimeA(ANode: IXmlNode; const AName: WideString;
+        var Value: TDateTime): WordBool; safecall; deprecated; // Use ProfXmlNode_ReadDateTime()
+    class function ReadFloat32A(ANode: IXmlNode; const AName: WideString;
+        var Value: Float32): WordBool; safecall; deprecated; // Use ProfXmlNode_ReadFloat32()
+    class function ReadFloat64A(ANode: IXmlNode; const AName: WideString;
+        var Value: Float64): WordBool; safecall; deprecated; // Use ProfXmlNode_ReadFloat64()
+    class function ReadInt64A(ANode: IXmlNode; const AName: WideString;
+        var Value: Int64): WordBool; safecall; deprecated; // Use ProfXmlNode_ReadInt64()
+    class function ReadIntegerA(ANode: IXmlNode; const AName: WideString;
+        var Value: Integer): WordBool; safecall; deprecated; // Use ProfXmlNode_ReadInt()
+  public
+    class function ReadBoolDef(ANode: IXmlNode; const AName: WideString;
+        ADef: WordBool = False): WordBool; safecall; deprecated; // Use ProfXmlNode_ReadBoolDef()
+    class function ReadFloatDef(ANode: IXmlNode; const AName: WideString;
+        ADef: Float64 = 0): Float64; safecall; deprecated; // Use ProfXmlNode_ReadFloatDef()
+    class function ReadInt64Def(ANode: IXmlNode; const AName: WideString;
+        ADef: Int64 = 0): Int64; safecall;
+  public
     constructor Create(Node: IXmlNode);
     constructor Create1(Document: AXmlDocument = 0);
     //constructor Create(const ADomNode: IDOMNode; const AParentNode: TXMLNode; const OwnerDoc: TXMLDocument);
@@ -352,15 +372,6 @@ type //** Класс работы с XML нодами
     procedure TransformNode(const stylesheet: IXMLNode; var output: WideString); overload;
     procedure TransformNode(const stylesheet: IXMLNode; const output: IXMLDocument); overload;
   public
-    function ReadBool(const AName: WideString; var Value: WordBool): WordBool; virtual; safecall;
-    function ReadDateTime(const AName: WideString; var Value: TDateTime): WordBool; virtual; safecall;
-    function ReadFloat32(const AName: WideString; var Value: Float32): WordBool; virtual; safecall;
-    function ReadFloat64(const AName: WideString; var Value: Float64): WordBool; virtual; safecall;
-    function ReadInt08(const AName: WideString; var Value: Int08): WordBool; virtual; safecall;
-    function ReadInt16(const AName: WideString; var Value: Int16): WordBool; virtual; safecall;
-    function ReadInt32(const AName: WideString; var Value: Int32): WordBool; virtual; safecall;
-    function ReadInt64(const AName: WideString; var Value: Int64): WordBool; virtual; safecall;
-    function ReadInteger(const AName: WideString; var Value: Integer): WordBool; virtual; safecall;
     function ReadString(const AName: WideString; var Value: WideString): WordBool; virtual; safecall;
     function ReadUInt08(const AName: WideString; var Value: UInt08): WordBool; virtual; safecall;
     function ReadUInt16(const AName: WideString; var Value: UInt16): WordBool; virtual; safecall;
@@ -368,19 +379,10 @@ type //** Класс работы с XML нодами
     function ReadUInt64(const AName: WideString; var Value: UInt64): WordBool; virtual; safecall;
   public
     class function GetNodeByNameA(ANode: IXmlNode; const AName: WideString): IXmlNode; safecall;
-    class function ReadBoolA(ANode: IXmlNode; const AName: WideString; var Value: WordBool): WordBool; safecall;
-    class function ReadDateTimeA(ANode: IXmlNode; const AName: WideString; var Value: TDateTime): WordBool; safecall;
-    class function ReadFloat32A(ANode: IXmlNode; const AName: WideString; var Value: Float32): WordBool; safecall;
-    class function ReadFloat64A(ANode: IXmlNode; const AName: WideString; var Value: Float64): WordBool; safecall;
-    class function ReadInt64A(ANode: IXmlNode; const AName: WideString; var Value: Int64): WordBool; safecall;
-    class function ReadIntegerA(ANode: IXmlNode; const AName: WideString; var Value: Integer): WordBool; safecall;
     class function ReadStringA(ANode: IXmlNode; const AName: WideString; var Value: WideString): WordBool; safecall;
   public
-    class function ReadBoolDef(ANode: IXmlNode; const AName: WideString; ADef: WordBool = False): WordBool; safecall;
     class function ReadDateTimeDef(ANode: IXmlNode; const AName: WideString; ADef: TDateTime = 0): TDateTime; safecall;
-    class function ReadFloatDef(ANode: IXmlNode; const AName: WideString; ADef: Float64 = 0): Float64; safecall;
     class function ReadInt32Def(ANode: IXmlNode; const AName: WideString; ADef: Int32 = 0): Int32; safecall;
-    class function ReadInt64Def(ANode: IXmlNode; const AName: WideString; ADef: Int64 = 0): Int64; safecall;
     class function ReadStringDef(ANode: IXmlNode; const AName: WideString; const ADef: WideString = ''): WideString; safecall;
   public
     class function WriteBoolA(ANode: IXmlNode; const AName: WideString; Value: WordBool): WordBool; safecall;
@@ -1737,39 +1739,26 @@ var
 begin
   if Assigned(FNode) then
   begin
-    Node := FNode.ChildNodes.FindNode(AName);
-    if not(Assigned(Node)) then
-    begin
-      Exit;
-      Result := False;
-    end;
-    if not(VarType(Node.NodeValue) = varBoolean) then
-    begin
-      Exit;
-      Result := False;
-    end;
-    Value := Node.NodeValue;
-    Result := True;
+    Result := ProfXmlNode_ReadBool(FNode, AName, Value);
   end
   else
   begin
-    Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
-    if (Nodes = 0) then
-    begin
-      Result := False;
-      Exit;
-    end;
-    Node1 := AXmlNodeList_FindNode(Nodes, AName);
-    if (Node1 = 0) then
-    begin
-      Result := False;
-      Exit;
-    end;
     V := Value;
-    Res := AXmlNode_GetValueAsBool(Node1, V);
+    Result := (AXmlNode_ReadBool(AXmlNode(Self), AName, V) >= 0);
     Value := V;
-    Result := (Res >= 0);
   end;
+end;
+
+class function TProfXmlNode2.ReadBoolA(ANode: IXmlNode; const AName: WideString;
+    var Value: WordBool): WordBool;
+begin
+  Result := ProfXmlNode_ReadBool(ANode, AName, Value);
+end;
+
+class function TProfXmlNode2.ReadBoolDef(ANode: IXmlNode; const AName: WideString;
+    ADef: WordBool): WordBool;
+begin
+  Result := ProfXmlNode_ReadBoolDef(ANode, AName, ADef);
 end;
 
 function TProfXmlNode2.ReadDateTime(const AName: WideString; var Value: TDateTime): WordBool;
@@ -1778,58 +1767,61 @@ var
   Node: AProfXmlNode;
   Nodes: AXmlNodeList;
 begin
-  Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
-  if (Nodes <> 0) then
-  begin
-    Node := AXmlNodeList_FindNode(Nodes, AName);
-    if (Node = 0) then
-    begin
-      Result := False;
-      Exit;
-    end;
-    Result := (AXmlNode_GetValueAsDateTime(Node, Value) >= 0);
-  end
+  if Assigned(FNode) then
+    Result := ProfXmlNode_ReadDateTime(FNode, AName, Value)
   else
   begin
-    Result := ReadString(AName, S);
-    if not(Result) then Exit;
-    try
-      Value := StrToDateTime(S);
-      Result := True;
-    except
-      Result := False;
+    Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
+    if (Nodes <> 0) then
+    begin
+      Node := AXmlNodeList_FindNode(Nodes, AName);
+      if (Node = 0) then
+      begin
+        Result := False;
+        Exit;
+      end;
+      Result := (AXmlNode_GetValueAsDateTime(Node, Value) >= 0);
+    end
+    else
+    begin
+      Result := ReadString(AName, S);
+      if not(Result) then Exit;
+      try
+        Value := StrToDateTime(S);
+        Result := True;
+      except
+        Result := False;
+      end;
     end;
   end;
+end;
+
+class function TProfXmlNode2.ReadDateTimeA(ANode: IXmlNode; const AName: WideString;
+    var Value: TDateTime): WordBool;
+begin
+  Result := ProfXmlNode_ReadDateTime(ANode, AName, Value);
 end;
 
 function TProfXmlNode2.ReadFloat32(const AName: WideString; var Value: Float32): WordBool;
 var
   Code: Integer;
   Node: IXmlNode;
+  V64: Float64;
 begin
-  if not(Assigned(FNode)) then
+  if Assigned(FNode) then
+    Result := ProfXmlNode_ReadFloat32(FNode, AName, Value)
+  else
   begin
-    Result := False;
-    Exit;
+    V64 := Value;
+    Result := ReadFloat64(AName, V64);
+    Value := V64;
   end;
-  try
-    Node := FNode.ChildNodes.FindNode(AName);
-    Result := Assigned(Node);
-    if not(Result) then Exit;
-    if (VarType(Node.NodeValue) = varSingle) then
-    begin
-      Value := Node.NodeValue;
-    end
-    else if (VarType(Node.NodeValue) = varString) or (VarType(Node.NodeValue) = varOleStr) then
-    begin
-      Val(Node.NodeValue, Value, Code);
-      Result := (Code = 0);
-    end
-    else
-      Result := False;
-  except
-    Result := False;
-  end;
+end;
+
+class function TProfXmlNode2.ReadFloat32A(ANode: IXmlNode; const AName: WideString;
+    var Value: Float32): WordBool;
+begin
+  Result := ProfXmlNode_ReadFloat32(ANode, AName, Value);
 end;
 
 function TProfXmlNode2.ReadFloat64(const AName: WideString; var Value: Float64): WordBool;
@@ -1839,24 +1831,7 @@ var
   S: WideString;
 begin
   if Assigned(FNode) then
-  try
-    Node := FNode.ChildNodes.FindNode(AName);
-    Result := Assigned(Node);
-    if not(Result) then Exit;
-    if (VarType(Node.NodeValue) = varDouble) then
-    begin
-      Value := Node.NodeValue;
-    end
-    else if (VarType(Node.NodeValue) = varString) or (VarType(Node.NodeValue) = varOleStr) then
-    begin
-      Val(Node.NodeValue, Value, Code);
-      Result := (Code = 0);
-    end
-    else
-      Result := False;
-  except
-    Result := False;
-  end
+    Result := ProfXmlNode_ReadFloat64(FNode, AName, Value)
   else
   begin
     if not(ReadString(AName, S)) then
@@ -1867,6 +1842,16 @@ begin
     Val(S, Value, Code);
     Result := (Code = 0);
   end;
+end;
+
+class function TProfXmlNode2.ReadFloat64A(ANode: IXmlNode; const AName: WideString; var Value: Float64): WordBool;
+begin
+  Result := ProfXmlNode_ReadFloat64(ANode, AName, Value);
+end;
+
+class function TProfXmlNode2.ReadFloatDef(ANode: IXmlNode; const AName: WideString; ADef: Float64): Float64;
+begin
+  Result := ProfXmlNode_ReadFloatDef(ANode, AName, ADef);
 end;
 
 function TProfXmlNode2.ReadInt08(const AName: WideString; var Value: Int08): WordBool;
@@ -1909,38 +1894,25 @@ begin
   end;
 end;
 
-function TProfXmlNode2.ReadInteger(const AName: WideString; var Value: Integer): WordBool;
-var
-  Code: Integer;
-  Node: IXmlNode;
-  Node1: AProfXmlNode;
-  Nodes: AXmlNodeList;
+class function TProfXmlNode2.ReadInt64A(ANode: IXmlNode; const AName: WideString; var Value: Int64): WordBool;
 begin
-  if Assigned(FNode) then
-  try
-    Node := FNode.ChildNodes.FindNode(AName);
-    Result := Assigned(Node);
-    if not(Result) then Exit;
-    if (VarType(Node.NodeValue) = varInteger) then begin
-      Value := Node.NodeValue;
-    end else if (VarType(Node.NodeValue) = varString) or (VarType(Node.NodeValue) = varOleStr) then begin
-      Val(Node.NodeValue, Value, Code);
-      Result := (Code = 0);
-    end else Result := False;
-  except
-    Result := False;
-  end
-  else
-  begin
-    Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
-    Node1 := AXmlNodeList_FindNode(Nodes, AName);
-    if (Node1 = 0) then
-    begin
-      Result := False;
-      Exit;
-    end;
-    Result := (AXmlNode_GetValueAsInt(Node1, Value) >= 0);
-  end;
+  Result := ProfXmlNode_ReadInt64(ANode, AName, Value);
+end;
+
+class function TProfXmlNode2.ReadInt64Def(ANode: IXmlNode; const AName: WideString; ADef: Int64): Int64;
+begin
+  Result := ADef;
+  ProfXmlNode_ReadInt64(ANode, AName, Result);
+end;
+
+function TProfXmlNode2.ReadInteger(const AName: WideString; var Value: Integer): WordBool;
+begin
+  Result := (AXmlNode_ReadInt(AXmlNode(Self), AName, Value) >= 0);
+end;
+
+class function TProfXmlNode2.ReadIntegerA(ANode: IXmlNode; const AName: WideString; var Value: Integer): WordBool;
+begin
+  Result := ProfXmlNode_ReadInt(ANode, AName, Value);
 end;
 
 function TProfXmlNode2.ReadNodes(var Value: WideString; CloseTag: WideString): Boolean;
@@ -2771,118 +2743,15 @@ begin
   Result := ProfXmlNode_GetNodeByName(ANode, AName);
 end;
 
-function TProfXmlNode4.ReadBool(const AName: WideString; var Value: WordBool): WordBool;
-begin
-  Result := ReadBoolA(FNode, AName, Value);
-end;
-
-class function TProfXmlNode4.ReadBoolA(ANode: IXmlNode; const AName: WideString; var Value: WordBool): WordBool;
-begin
-  Result := ProfXmlNode_ReadBool(ANode, AName, Value);
-end;
-
-class function TProfXmlNode4.ReadBoolDef(ANode: IXmlNode; const AName: WideString; ADef: WordBool): WordBool;
-begin
-  Result := ProfXmlNode_ReadBoolDef(ANode, AName, ADef);
-end;
-
-function TProfXmlNode4.ReadDateTime(const AName: WideString; var Value: TDateTime): WordBool;
-begin
-  Result := ProfXmlNode_ReadDateTime(FNode, AName, Value);
-end;
-
-class function TProfXmlNode4.ReadDateTimeA(ANode: IXmlNode; const AName: WideString; var Value: TDateTime): WordBool;
-begin
-  Result := ProfXmlNode_ReadDateTime(ANode, AName, Value);
-end;
-
 class function TProfXmlNode4.ReadDateTimeDef(ANode: IXmlNode; const AName: WideString; ADef: TDateTime): TDateTime;
 begin
   Result := ProfXmlNode_ReadDateTimeDef(ANode, AName, ADef);
-end;
-
-function TProfXmlNode4.ReadFloat32(const AName: WideString; var Value: Float32): WordBool;
-begin
-  Result := ProfXmlNode_ReadFloat32(FNode, AName, Value);
-end;
-
-class function TProfXmlNode4.ReadFloat32A(ANode: IXmlNode; const AName: WideString; var Value: Float32): WordBool;
-begin
-  Result := ProfXmlNode_ReadFloat32(ANode, AName, Value);
-end;
-
-function TProfXmlNode4.ReadFloat64(const AName: WideString; var Value: Float64): WordBool;
-begin
-  Result := ProfXmlNode_ReadFloat64(FNode, AName, Value);
-end;
-
-class function TProfXmlNode4.ReadFloat64A(ANode: IXmlNode; const AName: WideString; var Value: Float64): WordBool;
-begin
-  Result := ProfXmlNode_ReadFloat64(ANode, AName, Value);
-end;
-
-class function TProfXmlNode4.ReadFloatDef(ANode: IXmlNode; const AName: WideString; ADef: Float64): Float64;
-begin
-  Result := ProfXmlNode_ReadFloatDef(ANode, AName, ADef);
-end;
-
-function TProfXmlNode4.ReadInt08(const AName: WideString; var Value: Int08): WordBool;
-var
-  tmpValue: Integer;
-begin
-  Result := ReadInteger(AName, tmpValue);
-  if Result then Value := tmpValue;
-end;
-
-function TProfXmlNode4.ReadInt16(const AName: WideString; var Value: Int16): WordBool;
-var
-  tmpValue: Integer;
-begin
-  Result := ReadInteger(AName, tmpValue);
-  if Result then Value := tmpValue;
-end;
-
-function TProfXmlNode4.ReadInt32(const AName: WideString; var Value: Int32): WordBool;
-begin
-  Result := ReadInteger(AName, Value);
 end;
 
 class function TProfXmlNode4.ReadInt32Def(ANode: IXmlNode; const AName: WideString; ADef: Int32): Int32;
 begin
   Result := ADef;
   ReadIntegerA(ANode, AName, Result);
-end;
-
-function TProfXmlNode4.ReadInt64(const AName: WideString; var Value: Int64): WordBool;
-var
-  tmpValue: Integer;
-begin
-  Result := ReadInteger(AName, tmpValue);
-  if Result then Value := tmpValue;
-end;
-
-class function TProfXmlNode4.ReadInt64A(ANode: IXmlNode; const AName: WideString; var Value: Int64): WordBool;
-var
-  tmpValue: Integer;
-begin
-  Result := ReadIntegerA(ANode, AName, tmpValue);
-  if Result then Value := tmpValue;
-end;
-
-class function TProfXmlNode4.ReadInt64Def(ANode: IXmlNode; const AName: WideString; ADef: Int64): Int64;
-begin
-  Result := ADef;
-  ReadInt64A(ANode, AName, Result);
-end;
-
-function TProfXmlNode4.ReadInteger(const AName: WideString; var Value: Integer): WordBool;
-begin
-  Result := ReadIntegerA(FNode, AName, Value);
-end;
-
-class function TProfXmlNode4.ReadIntegerA(ANode: IXmlNode; const AName: WideString; var Value: Integer): WordBool;
-begin
-  Result := ProfXmlNode_ReadInt(ANode, AName, Value);
 end;
 
 function TProfXmlNode4.ReadString(const AName: WideString; var Value: WideString): WordBool;

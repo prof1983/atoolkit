@@ -2,7 +2,7 @@
 @Abstract(Работа с XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(09.10.2005)
-@LastMod(03.07.2012)
+@LastMod(06.07.2012)
 @Version(0.5)
 }
 unit AXml2007;
@@ -19,7 +19,7 @@ uses
   //IXmlDomNode = IXmlNode;
 
 type // Используемые классы для работы с XML -----------------------------------
-  TProfXmlDocument = TProfXmlDocument1;
+  TProfXmlDocument = AXmlDocumentImpl.TProfXmlDocument;
   TProfXmlNode = TProfXmlNode1;
 
 const // Сообщения -------------------------------------------------------------

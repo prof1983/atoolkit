@@ -68,7 +68,7 @@ type
     FIsComServer: Boolean;
     FIsService: Boolean;
     FMaxClientAccount: Integer;
-    FLogDocuments: IALogDocuments;
+    FLogDocuments: TALogDocuments;
     FLogJournal: TLogJournal;
   protected
     FGlbTypeLib: ITypeLib;
@@ -127,7 +127,7 @@ type
     //** Максимальное число клиентов
     property MaxClientAccount: Integer read FMaxClientAccount default 100;
     //** Класс, объединяющий вывод логов сразу в несколько мест
-    property LogDocuments: IALogDocuments read FLogDocuments;
+    property LogDocuments: TALogDocuments read FLogDocuments;
     //** Класс, объединяющий вывод логов сразу в несколько мест
     property LogJournal: TLogJournal read FLogJournal write FLogJournal;
     //** Глобальный ID объекта - владельца

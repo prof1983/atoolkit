@@ -2,7 +2,7 @@
 @Abstract(Реализация основной функциональности для главного объекта с логами)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(23.05.2006)
-@LastMod(05.07.2012)
+@LastMod(06.07.2012)
 @Version(0.5)
 }
 unit AProgramLog2007;
@@ -10,7 +10,7 @@ unit AProgramLog2007;
 interface
 
 uses
-  ALogDocuments2007, ALogDocumentsAll, AProgramImpl, ATypes;
+  ALogDocuments, ALogDocumentsAll, AProgramImpl, ATypes;
 
 type
   TProgramLog = class(TProfProgram)

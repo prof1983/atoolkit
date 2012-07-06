@@ -564,6 +564,8 @@ type
   {** Атрибуты (Name1="Value1" Name2="Value2") }
   TAttributes = array of TAttribute;
 
+  ALogNode = type AInt; // =TALogNode
+
 implementation
 
 end.

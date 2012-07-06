@@ -2,7 +2,7 @@
 @Abstract(Implementation of interfaces ILogNode and IProfLogNode)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.08.2005)
-@LastMod(03.07.2012)
+@LastMod(06.07.2012)
 @Version(0.5)
 }
 unit ALogNodeImpl;
@@ -65,6 +65,7 @@ type //** Нод логирования - элемент дерева логирования
         const StrMsg: WideString): AInteger; virtual;
     function AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
         const StrMsg: string; Params: array of const): Boolean; virtual;
+    function GetSelf(): ALogNode;
     procedure Hide(); virtual;
     function Prefix(): string;
     procedure Show(); virtual;
@@ -198,6 +199,11 @@ end;}
 begin
   Result := FParent;
 end;}
+
+function TALogNode.GetSelf(): ALogNode;
+begin
+  Result := ALogNode(Self);
+end;
 
 function TALogNode.Get_GroupEnum(): EnumGroupMessage;
 begin

@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ALogDocumentsAll, AForm2007, {ALogDocumentIntf,} ALogDocuments, {AXml3,} AXmlDocumentImpl,
+  AConsts2, ALogDocumentsAll, AForm2007, ALogDocuments, AXmlDocumentImpl,
   ATypes, AXmlUtils;
 
 type
@@ -108,16 +108,20 @@ procedure TProfFormMain.Init();
 var
   doc: TProfXmlDocument;
   conf: IXmlNode;
+  ExeName: String;
+  ExePath: String;
 begin
   if not(Assigned(FConfigDocument)) and not(Assigned(FConfig)) then
   try
+    ExeName := ExtractFileName(ParamStr(0));
     if (FConfigFileName = '') then
-      FConfigFileName := ChangeFileExt(ExtractFileName(ParamStr(0)), '.config');
+      FConfigFileName := ChangeFileExt(ExeName, '.'+FILE_EXT_CONF);
     // Получение полного имени файла
     if ExtractFilePath(FConfigFileName) = '' then
     begin
+      ExePath := ExtractFilePath(ParamStr(0));
       if (FConfigFilePath = '') then
-        FConfigFileName := ExtractFilePath(ParamStr(0)) + FConfigFileName
+        FConfigFileName := ExePath + FConfigFileName
       else
         FConfigFileName := FConfigFilePath + FConfigFileName;
     end;

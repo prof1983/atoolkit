@@ -28,14 +28,15 @@ type // Простые типы
   AWideChar = WideChar;
 
 type // Простые типы
-  ABoolean = Boolean;
+  ABool = Boolean;
   AChar = Char; // Или UTF-32 (UCS4Char)
-  AInteger = Integer;
+  AInt = Integer;
   ASize = LongWord;
 
 type
+  ABoolean = ABool;
   AFloat = AFloat32;
-  AInt = AInt32;
+  AInteger = AInt;
   AUInt = AUInt32;
 
 type // Версия. Имеет формат $AABBCCDD = AA.BB.CC.DD

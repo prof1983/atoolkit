@@ -167,43 +167,28 @@ end;
 constructor TProfXmlDocument.Create2(const AFileName: WideString = ''; AAddToLog: TAddToLogProc = nil);
 begin
   inherited Create;
-  //FDocumentElementName := 'Config';
+  //Self.FDefElementName := 'Config';
   FOnAddToLog := AAddToLog;
   try
     // Открываем документ
-    FDocument := TXmlDocument.Create(AFileName); //(nil);
-    if AFileName = '' then FDocument.Active := True;
+    FDocument := TXmlDocument.Create(AFileName);
+    if (AFileName = '') then
+      FDocument.Active := True;
   except
-    on E: Exception do begin
-    // Произошла ошибка при открытиии файла
-    AddToLog(lgGeneral, ltError, 'Произошла ошибка при открытиии файла конфигураций "%s"', [AFileName]);
-    // Создаем документ
-    AddToLog(lgGeneral, ltInformation, 'Создаем документ', []);
-    //if not(Assigned(XmlDocument)) then
-      FDocument := TXMLDocument(TXmlDocument.Create(nil));
-    // Активируем документ
-    AddToLog(lgGeneral, ltInformation, 'Активируем документ', []);
-    FDocument.Active := True;
-    // Задаем кодировку
-    AddToLog(lgGeneral, ltInformation, 'Задаем кодировку "Windows-1251"', []);
-    FDocument.Encoding := 'Windows-1251';
-    // Задаем версию
-    AddToLog(lgGeneral, ltInformation, 'Задаем версию "1.0"', []);
-    FDocument.Version := '1.0';
-    // Задаем отступы
-    AddToLog(lgGeneral, ltInformation, 'Задаем отступы <2 пробела>', []);
-    FDocument.NodeIndentStr := '  ';
-    // Создаем главный элемент документа
-    AddToLog(lgGeneral, ltInformation, 'Создаем главный элемент документа "Config"', []);
-    //XmlDocument.CreateElement('Config', 'B111');
-    FDocument.AddChild('Config').NodeValue := '';
-    // Создаем дочерние элементы
-    AddToLog(lgGeneral, ltInformation, 'Создаем дочерние элементы', []);
-    // ...
-    // Сохраняем документ
-    AddToLog(lgGeneral, ltInformation, 'Сохраняем документ', []);
-    FDocument.FileName := AFileName;
-    FDocument.SaveToFile('');
+    on E: Exception do
+    begin
+      // Произошла ошибка при открытиии файла
+      AddToLog(lgGeneral, ltError, 'Произошла ошибка при открытиии файла конфигураций "%s"', [AFileName]);
+      AddToLog(lgGeneral, ltInformation, 'Создаем документ', []);
+      FDocument := TXmlDocument.Create(nil);
+
+      // Создаем документ
+      CreateDocument();
+
+      // Сохраняем документ
+      AddToLog(lgGeneral, ltInformation, 'Сохраняем документ', []);
+      FDocument.FileName := AFileName;
+      FDocument.SaveToFile('');
     end;
   end;
 

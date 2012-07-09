@@ -14,6 +14,8 @@ uses
 
 function AConfig_Free(Config: AConfig): AError;
 
+function AConfig_GetChildNodeByName(Config: AConfig; const Name: APascalString): AConfig;
+
 function AConfig_ReadInt(Config: AConfig; const Name: APascalString;
     out Value: AInt): AError;
 
@@ -43,6 +45,11 @@ implementation
 function AConfig_Free(Config: AConfig): AError;
 begin
   Result := AXmlNode_Free(Config);
+end;
+
+function AConfig_GetChildNodeByName(Config: AConfig; const Name: APascalString): AConfig;
+begin
+  Result := AXmlNode_GetChildNodeByName(Config, Name);
 end;
 
 function AConfig_ReadInt(Config: AConfig; const Name: APascalString;

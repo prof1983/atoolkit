@@ -2,7 +2,7 @@
 @Abstract(Server socket)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(30.10.2005)
-@LastMod(04.05.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 }
 unit ANetServerSocket;
@@ -11,7 +11,7 @@ interface
 
 uses
   ScktComp,
-  ABase, AObjectImpl2006;
+  ABase, AConfigUtils, AObjectImpl2006;
 
 type
   TClient = record
@@ -49,8 +49,10 @@ var
 begin
   Result := inherited ConfigureLoad;
   if not(Result) then Exit;
-  if Assigned(FServerSocket) then begin
-    FConfig.ReadInt32('Port', I); FServerSocket.Port := I;
+  if Assigned(FServerSocket) then
+  begin
+    AConfig_ReadInt32(FConfig, 'Port', I);
+    FServerSocket.Port := I;
   end;
 end;
 

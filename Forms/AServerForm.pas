@@ -2,7 +2,7 @@
 @Abstract(Server form)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(31.10.2005)
-@LastMod(04.07.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 }
 unit AServerForm;
@@ -12,7 +12,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ScktComp, Registry, StdCtrls, ExtCtrls,
-  AConfig2007, AFormImpl, ALogGlobals2006;
+  AConfig2007, AFormImpl, ALogNodeImpl;
 
 type
   TClient = record
@@ -43,7 +43,7 @@ type
     A: array of TClient;
     {Reg: TRegistry;}
     constructor Create(AConfig: TConfigNode1 = nil; ALog: TALogNode = nil; AOwner: TComponent = nil);
-    procedure Free; override;
+    procedure Free();
     procedure RefreshA;
     procedure Refresh(Socket: TCustomWinSocket);
     procedure DeleteSocket(Socket: TCustomWinSocket);

@@ -2,7 +2,7 @@
 @Abstract(Объект с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.12.2005)
-@LastMod(04.07.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 }
 unit AObjectImpl2006;
@@ -11,7 +11,7 @@ interface
 
 uses
   SysUtils,
-  ALogGlobals2006, ALogNodeIntf, AObjectIntf2006, ATypes, AXmlNodeIntf;
+  ABase, ALogNodeImpl, ALogNodeIntf, AObjectIntf2006, ATypes, AXmlNodeIntf;
 
 type //** Объект с логированием и конфигурациями
   TProfObject = class(TInterfacedObject, IProfObject)
@@ -31,7 +31,7 @@ type //** Объект с логированием и конфигурациям
     //procedure SetLog(const Value: TLogNode); virtual;
   public
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: String; AParams: array of const): Boolean; virtual;
-    function AddToLog2(AMsg: WideString): TLogNode; virtual;
+    function AddToLog2(AMsg: WideString): TALogNode; virtual;
     //function AddToLogProf(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg, AParams: WideString; AParentId: Integer): Integer; virtual;
     function AssignedConfig: Boolean;
     function CheckInitialized: Boolean; virtual;
@@ -40,7 +40,7 @@ type //** Объект с логированием и конфигурациям
     function Finalize: WordBool; virtual; safecall;
     function Initialize: WordBool; virtual; safecall;
   public
-    constructor Create(AConfig: AProfXmlNode2 = nil; ALog: TALogNode = nil);
+    constructor Create(AConfig: AProfXmlNode2 = 0; ALog: TALogNode = nil);
     procedure Free; virtual;
   public
     //property Config: TConfigNode read GetConfig write SetConfig;
@@ -66,7 +66,7 @@ begin
     Result := False;
 end;
 
-function TProfObject.AddToLog2(AMsg: WideString): TLogNode;
+function TProfObject.AddToLog2(AMsg: WideString): TALogNode;
 begin
   if Assigned(FLog) then
   begin
@@ -90,9 +90,13 @@ end;}
 
 function TProfObject.AssignedConfig: Boolean;
 begin
-  Result := Assigned(FConfig);
-  if not(Result) then
+  if (FConfig = 0) then
+  begin
     AddToLog(lgGeneral, ltError, stNotAssignedConfig, []);
+    Result := False;
+    Exit;
+  end;
+  Result := True;
 end;
 
 function TProfObject.CheckInitialized: Boolean;
@@ -112,7 +116,7 @@ begin
   Result := AssignedConfig;
 end;
 
-constructor TProfObject.Create(AConfig: AProfXmlNode2 = nil; ALog: TALogNode = nil);
+constructor TProfObject.Create(AConfig: AProfXmlNode2 = 0; ALog: TALogNode = nil);
 begin
   inherited Create;
   FConfig := AConfig;

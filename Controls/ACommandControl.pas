@@ -2,7 +2,7 @@
 @Abstract(Контрол ввода команд)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(01.04.2007)
-@LastMod(03.05.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 }
 unit ACommandControl;
@@ -21,7 +21,7 @@ type
   protected
     function DoInitialize(): TProfError; override; safecall;
   public
-    function AddMessage(const Msg: WideString): Integer; override; safecall;
+    function AddMessage(const Msg: WideString): Integer; override;
   end;
 
 implementation

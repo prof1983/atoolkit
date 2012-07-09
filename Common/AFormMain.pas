@@ -2,7 +2,7 @@
 @Abstract(Класс главной форма - оболочка для TForm)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.11.2005)
-@LastMod(06.07.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 }
 unit AFormMain;
@@ -11,12 +11,13 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  AConsts2, ALogDocumentsAll, AForm2007, ALogDocuments, AXmlDocumentImpl,
+  ABase, AConsts2, ALogDocumentsAll, AForm2007, ALogDocuments, AXmlDocumentImpl,
   ATypes, AXmlUtils;
 
 type
   TProfFormMain = class(TProfForm)
-  private
+  protected
+    FConfigDir: APascalString;
     FConfigFileName: WideString;
     FConfigFilePath: WideString;
     FIsConfigDocumentInit: Boolean; // ConfigDocument инициализирован в этом объекте
@@ -121,10 +122,21 @@ begin
     begin
       ExePath := ExtractFilePath(ParamStr(0));
       if (FConfigFilePath = '') then
-        FConfigFileName := ExePath + FConfigFileName
+      begin
+        if (Length(FConfigDir) > 0) then
+        begin
+          if (FConfigDir[Length(FConfigDir)] <> '/') and (FConfigDir[Length(FConfigDir)] <> '\') then
+            FConfigFileName := ExePath + FConfigDir + '\' + FConfigFileName
+          else
+            FConfigFileName := ExePath + FConfigDir + FConfigFileName;
+        end
+        else
+          FConfigFileName := ExePath + FConfigFileName
+      end
       else
         FConfigFileName := FConfigFilePath + FConfigFileName;
     end;
+    FConfigFileName := ExpandFileName(FConfigFileName);
     // Проверка существования директории
     {$IFDEF VER150}
     ForceDirectories(ExtractFilePath(FConfigFileName));

@@ -2,7 +2,7 @@
 @Abstract(Надстройка над модулем ATcpIpClient)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.12.2005)
-@LastMod(04.07.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 }
 unit ANetTcpIpClient2006;
@@ -11,13 +11,13 @@ interface
 
 uses
   SysUtils,
-  AConfig2007, ALogGlobals2007, ANetTcpIpClient, ANetTcpIpGlobals, ATypes;
+  AConfig2007, ALogNodeImpl, ANetTcpIpClient, ANetTcpIpGlobals, ATypes;
 
 type
   TProfTcpIpClient = class(TTcpIpClient)
   private
     FConfig: TConfigNode1;
-    FLog: TLogNode;
+    FLog: TALogNode;
     F_ServerPort: LongWord;
     F_ServerHost: String;
   protected
@@ -33,7 +33,7 @@ type
     function Finalize: Boolean;
     procedure Free;
     function Initialize: Boolean;
-    property Log: TLogNode read FLog write FLog;
+    property Log: TALogNode read FLog write FLog;
     function SendMessage(AMsg: String): Boolean;
     property _ServerHost: String read F_ServerHost write F_ServerHost;
     property _ServerPort: LongWord read F_ServerPort write F_ServerPort;

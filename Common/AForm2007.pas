@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ABase, AConfig2007, AConfigUtils, ALogGlobals, ALogNodeUtils, ATypes, AXmlUtils;
+  ABase, AConfig2007, AConfigUtils, ALogGlobals, ALogNodeUtils, ATypes; {AXmlUtils;}
 
 type //** @abstract(Класс-потомок для форм с логированием и конфигурациями)
   TProfForm = class(TForm)
@@ -108,7 +108,7 @@ end;
 function TProfForm.ConfigureLoad1(): WordBool;
 var
   I: Integer;
-  S: WideString;
+  S: APascalString;
 begin
   if (FConfig = 0) then
   begin
@@ -132,10 +132,10 @@ end;
 function TProfForm.ConfigureLoad2(AConfig: IXmlNode): WordBool;
 var
   I: Integer;
-  S: WideString;
+  S: APascalString;
   tmpWindowState: TWindowState;
 begin
-  if not(Assigned(FConfig)) then
+  if (FConfig = 0) then
   begin
     Result := False;
     Exit;
@@ -143,22 +143,26 @@ begin
   //if TProfXmlNode.ReadIntegerA(FConfig, 'WindowState', I) and (WindowState <> TWindowState(I)) then
   //  WindowState := TWindowState(I);
 
-  //if TProfXmlNode.ReadIntegerA(FConfig, 'WindowState', I) then WindowState := TWindowState(I);
-  tmpWindowState := TWindowState(ProfXmlNode_ReadInt32Def(FConfig, 'WindowState', Integer(wsNormal)));
+  tmpWindowState := TWindowState(AConfig_ReadInt32Def(FConfig, 'WindowState', Integer(wsNormal)));
 
   WindowState := wsNormal;
 
   //if tmpWindowState = wsNormal then
   begin
-    if ProfXmlNode_ReadInt(FConfig, 'Left', I) then Left := I;
-    if ProfXmlNode_ReadInt(FConfig, 'Top', I) then Top := I;
-    if ProfXmlNode_ReadInt(FConfig, 'Width', I) then Width := I;
-    if ProfXmlNode_ReadInt(FConfig, 'Height', I) then Height := I;
+    if (AConfig_ReadInt(FConfig, 'Left', I) >= 0) then
+      Left := I;
+    if (AConfig_ReadInt(FConfig, 'Top', I) >= 0) then
+      Top := I;
+    if (AConfig_ReadInt(FConfig, 'Width', I) >= 0) then
+      Width := I;
+    if (AConfig_ReadInt(FConfig, 'Height', I) >= 0) then
+      Height := I;
   end;
   if (WindowState <> tmpWindowState) then
     WindowState := tmpWindowState;
 
-  if ProfXmlNode_ReadString(FConfig, 'Caption', S) then Caption := S; // Заголовок окна
+  if (AConfig_ReadString(FConfig, 'Caption', S) >= 0) then
+    Caption := S; // Заголовок окна
 
 //  WindowState := TWindowState(TProfXmlNode.ReadInt32Def(FConfig, 'WindowState', Integer(WindowState)));
 //  Left := TProfXmlNode.ReadInt32Def(FConfig, 'Left', Left);
@@ -171,7 +175,7 @@ end;
 
 function TProfForm.ConfigureSave(): WordBool;
 begin
-  Result := Assigned(FConfig);
+  Result := (FConfig <> 0);
 end;
 
 function TProfForm.ConfigureSave1(): WordBool;

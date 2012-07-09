@@ -10,7 +10,7 @@ unit AXmlNodeUtils;
 interface
 
 uses
-  XmlIntf,
+  SysUtils, XmlIntf,
   ABase;
 
 // --- AXmlNode ---
@@ -70,14 +70,44 @@ function AXmlNode_Free(Node: AXmlNode): AError;
 function AXmlNode_ReadBool(Node: AXmlNode; const Name: APascalString;
     out Value: ABoolean): AError;
 
+function AXmlNode_ReadBoolDef(Node: AXmlNode; const Name: APascalString;
+    DefValue: ABoolean): ABoolean;
+
+function AXmlNode_ReadDateTime(Node: AXmlNode; const Name: APascalString;
+    out Value: TDateTime): AError;
+
+function AXmlNode_ReadDateTimeDef(Node: AXmlNode; const Name: APascalString;
+    DefValue: TDateTime): TDateTime;
+
+function AXmlNode_ReadFloat32(Node: AXmlNode; const Name: APascalString;
+    var Value: AFloat32): AError;
+
+function AXmlNode_ReadFloat64(Node: AXmlNode; const Name: APascalString;
+    out Value: AFloat64): AError;
+
+function AXmlNode_ReadFloat64Def(Node: AXmlNode; const Name: APascalString;
+    DefValue: AFloat64): AFloat64;
+
 function AXmlNode_ReadInt(Node: AXmlNode; const Name: APascalString;
     var Value: AInt): AError;
 
 function AXmlNode_ReadInt32(Node: AXmlNode; const Name: APascalString;
     out Value: AInt32): AError;
 
+function AXmlNode_ReadInt32Def(Node: AXmlNode; const Name: APascalString;
+    DefValue: AInt32): AInt32;
+
+function AXmlNode_ReadInt64(Node: AXmlNode; const Name: APascalString;
+    out Value: AInt64): AError;
+
+function AXmlNode_ReadInt64Def(Node: AXmlNode; const Name: APascalString;
+    DefValue: AInt64): AInt64;
+
 function AXmlNode_ReadString(Node: AXmlNode; const Name: APascalString;
     out Value: APascalString): AError;
+
+function AXmlNode_ReadStringDef(Node: AXmlNode; const Name,
+    DefValue: APascalString): APascalString;
 
 function AXmlNode_SetDocument(Node: AXmlNode; Document: AXmlDocument): AError;
 
@@ -277,8 +307,10 @@ end;
 
 function AXmlNode_GetChildNodes(Node: AXmlNode): AXmlNodeList;
 begin
-  if (TObject(Node) is TProfXmlNode2) then
-    Result := TProfXmlNode2(Node).GetChildNodes()
+  if (TObject(Node) is TProfXmlNode1) then
+    Result := TProfXmlNode1(Node).GetChildNodes()
+  else if (TObject(Node) is TProfXmlNode) then
+    Result := 0 //TProfXmlNode(Node).GetChildNodes()
   else
     Result := 0;
 end;
@@ -347,6 +379,17 @@ begin
       Value := (TProfXmlNode1(Node).ValueStr = 'True');
       Result := 0;
     end;
+  end
+  else if (TObject(Node) is TProfXmlNode) then
+  begin
+    V := Value;
+    if ProfXmlNode_GetValueAsBool(TProfXmlNode(Node).Node, V) then
+    begin
+      Value := V;
+      Result := 0;
+    end
+    else
+      Result := -3;
   end
   else
     Result := -3;
@@ -536,26 +579,200 @@ function AXmlNode_ReadBool(Node: AXmlNode; const Name: APascalString;
     out Value: ABoolean): AError;
 var
   Node1: AProfXmlNode;
-  V: ABoolean;
-  Res: AError;
+  V: WordBool;
+  Res: ABoolean;
   Nodes: AXmlNodeList;
 begin
-  Nodes := AXmlNode_GetChildNodes(Node);
-  if (Nodes = 0) then
+  if (TObject(Node) is TProfXmlNode1) then
   begin
+    if Assigned(TProfXmlNode1(Node).Node) then
+    begin
+      V := Value;
+      Res := ProfXmlNode_ReadBool(TProfXmlNode1(Node).Node, Name, V);
+      Value := V;
+      if Res then
+        Result := 0
+      else
+        Result := -3;
+    end
+    else
+    begin
+      Nodes := AXmlNode_GetChildNodes(Node);
+      if (Nodes = 0) then
+      begin
+        Result := -2;
+        Exit;
+      end;
+      Node1 := AXmlNodeList_FindNode(Nodes, Name);
+      if (Node1 = 0) then
+      begin
+        Result := -3;
+        Exit;
+      end;
+      Result := AXmlNode_GetValueAsBool(Node1, Value);
+    end;
+  end
+  else if (TObject(Node) is TProfXmlNode) then
+  begin
+    V := Value;
+    Res := ProfXmlNode_ReadBool(TProfXmlNode(Node).Node, Name, V);
+    Value := V;
+    if Res then
+      Result := 0
+    else
+      Result := -3;
+  end
+  else
     Result := -2;
-    Exit;
-  end;
-  Node1 := AXmlNodeList_FindNode(Nodes, Name);
-  if (Node1 = 0) then
+end;
+
+function AXmlNode_ReadBoolDef(Node: AXmlNode; const Name: APascalString;
+    DefValue: ABoolean): ABoolean;
+begin
+  Result := DefValue;
+  AXmlNode_ReadBool(Node, Name, Result);
+end;
+
+function AXmlNode_ReadDateTime(Node: AXmlNode; const Name: APascalString;
+    out Value: TDateTime): AError;
+var
+  S: APascalString;
+  Node1: AProfXmlNode;
+  Nodes: AXmlNodeList;
+begin
+  if (TObject(Node) is TProfXmlNode1) then
   begin
-    Result := -3;
-    Exit;
-  end;
-  V := Value;
-  Res := AXmlNode_GetValueAsBool(Node1, V);
-  Value := V;
-  Result := Res;
+    if Assigned(TProfXmlNode(Node).Node) then
+    begin
+      if ProfXmlNode_ReadDateTime(TProfXmlNode(Node).Node, Name, Value) then
+        Result := 0
+      else
+        Result := -3;
+    end
+    else
+    begin
+      Nodes := AXmlNode_GetChildNodes(Node);
+      if (Nodes <> 0) then
+      begin
+        Node1 := AXmlNodeList_FindNode(Nodes, Name);
+        if (Node1 = 0) then
+        begin
+          Result := -3;
+          Exit;
+        end;
+        Result := AXmlNode_GetValueAsDateTime(Node1, Value);
+      end
+      else
+      begin
+        if (AXmlNode_ReadString(Node, Name, S) < 0) then
+        begin
+          Result := -3;
+          Exit;
+        end;
+        try
+          Value := StrToDateTime(S);
+          Result := 0;
+        except
+          Result := -4;
+        end;
+      end;
+    end;
+  end
+  else if (TObject(Node) is TProfXmlNode) then
+  begin
+    if ProfXmlNode_ReadDateTime(TProfXmlNode(Node).Node, Name, Value) then
+      Result := 0
+    else
+      Result := -3;
+  end
+  else
+    Result := -2;
+end;
+
+function AXmlNode_ReadDateTimeDef(Node: AXmlNode; const Name: APascalString;
+    DefValue: TDateTime): TDateTime;
+begin
+  Result := DefValue;
+  AXmlNode_ReadDateTime(Node, Name, Result);
+end;
+
+function AXmlNode_ReadFloat32(Node: AXmlNode; const Name: APascalString;
+    var Value: AFloat32): AError;
+var
+  F64: AFloat64;
+begin
+  if (TObject(Node) is TProfXmlNode1) then
+  begin
+    if Assigned(TProfXmlNode1(Node).Node) then
+    begin
+      if ProfXmlNode_ReadFloat32(TProfXmlNode1(Node).Node, Name, Value) then
+        Result := 0
+      else
+        Result := -3;
+    end
+    else
+    begin
+      F64 := Value;
+      Result := AXmlNode_ReadFloat64(Node, Name, F64);
+      Value := F64;
+    end;
+  end
+  else if (TObject(Node) is TProfXmlNode) then
+  begin
+    if ProfXmlNode_ReadFloat32(TProfXmlNode(Node).Node, Name, Value) then
+      Result := 0
+    else
+      Result := -3;
+  end
+  else
+    Result := -2;
+end;
+
+function AXmlNode_ReadFloat64(Node: AXmlNode; const Name: APascalString;
+    out Value: AFloat64): AError;
+var
+  Code: Integer;
+  S: APascalString;
+begin
+  if (TObject(Node) is TProfXmlNode1) then
+  begin
+    if Assigned(TProfXmlNode(Node).Node) then
+    begin
+      if ProfXmlNode_ReadFloat64(TProfXmlNode(Node).Node, Name, Value) then
+        Result := 0
+      else
+        Result := -3;
+    end
+    else
+    begin
+      if (AXmlNode_ReadString(Node, Name, S) < 0) then
+      begin
+        Result := -2;
+        Exit;
+      end;
+      Val(S, Value, Code);
+      if (Code = 0) then
+        Result := 0
+      else
+        Result := -3;
+    end;
+  end
+  else if (TObject(Node) is TProfXmlNode) then
+  begin
+    if ProfXmlNode_ReadFloat64(TProfXmlNode(Node).Node, Name, Value) then
+      Result := 0
+    else
+      Result := -3;
+  end
+  else
+    Result := -2;
+end;
+
+function AXmlNode_ReadFloat64Def(Node: AXmlNode; const Name: APascalString;
+    DefValue: AFloat64): AFloat64;
+begin
+  Result := DefValue;
+  AXmlNode_ReadFloat64(Node, Name, Result);
 end;
 
 function AXmlNode_ReadInt(Node: AXmlNode; const Name: APascalString;
@@ -612,6 +829,43 @@ begin
     Result := -2;
 end;
 
+function AXmlNode_ReadInt32Def(Node: AXmlNode; const Name: APascalString;
+    DefValue: AInt32): AInt32;
+begin
+  Result := DefValue;
+  AXmlNode_ReadInt32(Node, Name, Result);
+  {if (TObject(Node) is TProfXmlNode1) then
+    Result := ProfXmlNode_ReadInt32Def(TProfXmlNode1(Node).Node, Name, DefValue)
+  else if (TObject(Node) is TProfXmlNode) then
+  begin
+    Result := DefValue;
+    AXmlNode_ReadInt32(Node, Name, Result);
+  end
+  else
+    Result := DefValue;}
+end;
+
+function AXmlNode_ReadInt64(Node: AXmlNode; const Name: APascalString;
+    out Value: AInt64): AError;
+begin
+  if (TObject(Node) is TProfXmlNode) then
+  begin
+    if ProfXmlNode_ReadInt64(TProfXmlNode(Node).Node, Name, Value) then
+      Result := 0
+    else
+      Result := -3;
+  end
+  else
+    Result := -2;
+end;
+
+function AXmlNode_ReadInt64Def(Node: AXmlNode; const Name: APascalString;
+    DefValue: AInt64): AInt64;
+begin
+  Result := DefValue;
+  AXmlNode_ReadInt64(Node, Name, Result);
+end;
+
 function AXmlNode_ReadString(Node: AXmlNode; const Name: APascalString;
     out Value: APascalString): AError;
 var
@@ -651,6 +905,13 @@ begin
   end
   else
     Result := -2;
+end;
+
+function AXmlNode_ReadStringDef(Node: AXmlNode; const Name,
+    DefValue: APascalString): APascalString;
+begin
+  Result := DefValue;
+  AXmlNode_ReadString(Node, Name, Result);
 end;
 
 function AXmlNode_SetDocument(Node: AXmlNode; Document: AXmlDocument): AError;

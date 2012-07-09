@@ -2,7 +2,7 @@
 @Abstract(AXmlDucument functions)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(28.06.2012)
-@LastMod(04.07.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 }
 unit AXmlDocumentUtils;
@@ -79,11 +79,11 @@ end;
 function AXmlDocument_GetDocumentElement(XmlDocument: AXmlDocument): AProfXmlNode;
 var
   D: TProfXmlDocument;
-  DA: TProfXmlDocumentA;
+  DA: TProfXmlDocument;
 begin
-  if (TObject(XmlDocument) is TProfXmlDocumentA) then
+  if (TObject(XmlDocument) is TProfXmlDocument) then
   begin
-    DA := TProfXmlDocumentA(XmlDocument);
+    DA := TProfXmlDocument(XmlDocument);
     if (DA.FDocumentElement = 0) then
     begin
       if not(Assigned(DA.FDocument)) then

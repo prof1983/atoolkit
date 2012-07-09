@@ -2,7 +2,7 @@
 @Abstract(Реализация основной функциональности для главного объекта)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.05.2006)
-@LastMod(06.07.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 
 0.0.5.7 - 21.07.2011
@@ -61,7 +61,7 @@ type
     FIsTeach: Boolean;
     FIsTest: Boolean;
   protected
-    FConfigDocument: IXmlDocument;
+    FConfigDocument: TProfXmlDocument;
     FConfigFileName: WideString;
     FConfigInitialize: Boolean;
     FDateStart: TDateTime;
@@ -75,6 +75,7 @@ type
     FSrvTypeLib: ITypeLib;
     FStdTypeLib: ITypeLib;
   protected
+    function GetConfigDocument(): IXmlDocument;
     function GetIsDemo(): Boolean; virtual;
     procedure SetIsDemo(Value: Boolean); virtual;
   protected
@@ -107,7 +108,9 @@ type
     class function GetInstance(): TProfProgram;
   public
     //** Конфигурации программы
-    property ConfigDocument: IXmlDocument read FConfigDocument;
+    property ConfigDocument: TProfXmlDocument read FConfigDocument;
+    //** Конфигурации программы
+    property ConfigDocument2: IXmlDocument read GetConfigDocument;
     //** Имя файла конфигураций
     property ConfigFileName: WideString read FConfigFileName write FConfigFileName;
     //** Время запуска сервиса
@@ -196,13 +199,7 @@ function TProfProgram.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
     const AStrMsg: WideString): Integer;
 begin
   EnterCriticalSection(FCSAddToLog);
-
   inherited AddToLog(AGroup, AType, AStrMsg);
-  if Assigned(FLogDocuments) then
-    Result := FLogDocuments.AddToLog(AGroup, AType, AStrMsg)
-  else
-    Result := -1;
-
   LeaveCriticalSection(FCSAddToLog);
 end;
 
@@ -274,7 +271,7 @@ begin
     doc.OnAddToLog := AddToLog;
     doc.Initialize();
     //doc.DocumentElement.Attributes['app'] := Self.ProgramName;
-    Self.FConfigDocument := doc.Document;
+    Self.FConfigDocument := doc;
     FConfigInitialize := True;
     Self.FConfig := doc.GetDocumentElement();
     {$ENDIF UseComXml}
@@ -348,9 +345,11 @@ begin
   except
   end;
   if not(Assigned(FLog)) then
+    FLog := FLogDocuments.GetDocumentElement2();
+  if not(Assigned(FLog)) then
   begin
     LogNode1 := TALogNode.Create(nil, '', 0);
-    LogNode1.OnAddToLog := AddToLog;
+    LogNode1.OnAddToLog := FLogDocuments.AddToLog;
     FLog := LogNode1;
   end;
   {if not(Assigned(FLogJournal)) then
@@ -388,6 +387,14 @@ begin
   DoDestroy();
   Prog := nil;
   //inherited Free();
+end;
+
+function TProfProgram.GetConfigDocument(): IXmlDocument;
+begin
+  if Assigned(FConfigDocument) then
+    Result := FConfigDocument.Document
+  else
+    Result := nil;
 end;
 
 function TProfProgram.GetConfigFileName(): APascalString;

@@ -114,9 +114,9 @@ type //** Объект с логированием и конфигурациям
 type //** Объект с логированием и конфигурациями
   TProfObject2 = class(TProfObject, IProfObject2)
   protected
-    function GetConfig(): IXmlNode; safecall;
+    function GetConfig2(): IXmlNode; safecall;
     function GetLog(): ILogNode2; safecall;
-    procedure SetConfig(const Value: IXmlNode); virtual; safecall;
+    procedure SetConfig2(const Value: IXmlNode); virtual; safecall;
     procedure SetLog(const Value: ILogNode2); virtual; safecall;
   protected
     //** Срабатывает, когда нужно выполнить внешнюю команду. см. TProcMessageStr
@@ -162,7 +162,7 @@ type //** Объект с логированием и конфигурациям
     function AssignedConfig(): Boolean;
     function CheckInitialized(): Boolean; virtual;
   public
-    property Config: IXmlNode read GetConfig write SetConfig;
+    property Config2: IXmlNode read GetConfig2 write SetConfig2;
     property Log: ILogNode2 read GetLog write SetLog;
   end;
 
@@ -536,7 +536,7 @@ begin
   FInitialized := False;
 end;
 
-function TProfObject2.GetConfig(): IXmlNode;
+function TProfObject2.GetConfig2(): IXmlNode;
 begin
   Result := nil{FConfig};
 end;
@@ -576,7 +576,7 @@ begin
   Result := 0;
 end;
 
-procedure TProfObject2.SetConfig(const Value: IXmlNode);
+procedure TProfObject2.SetConfig2(const Value: IXmlNode);
 begin
   //FConfig := Value;
 end;

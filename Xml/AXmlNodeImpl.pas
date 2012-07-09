@@ -1044,7 +1044,6 @@ begin
   AXmlNodeCollection_Free(FCollection);
   FCollection := 0;
   Self._Release();
-  inherited Free;
 end;
 
 function TProfXmlNode2.GetAsString(): WideString;

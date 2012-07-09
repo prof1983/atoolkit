@@ -67,12 +67,12 @@ type //** Интерфейс для любого объекта
     {function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
         const AStrMsg: WideString): Integer; safecall;}
 
-    function GetConfig(): IXmlNode; safecall;
+    function GetConfig2(): IXmlNode; safecall;
     function GetLog(): ILogNode2; safecall;
-    procedure SetConfig(const Value: IXmlNode); safecall;
+    procedure SetConfig2(const Value: IXmlNode); safecall;
     procedure SetLog(const Value: ILogNode2); safecall;
 
-    property Config: IXmlNode read GetConfig write SetConfig;
+    property Config2: IXmlNode read GetConfig2 write SetConfig2;
     property Log: ILogNode2 read GetLog write SetLog;
   end;
 

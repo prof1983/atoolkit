@@ -2,7 +2,7 @@
 @Abstract(Класс работы с XML документом)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(07.03.2007)
-@LastMod(06.07.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 
 История версий:
@@ -16,11 +16,6 @@ uses
   SysUtils, XmlDoc, XmlIntf,
   ABase, ABaseUtils2, AConsts2, ADocumentImpl, ATypes,
   AXmlDocumentIntf, AXmlDocumentUtils, AXmlNodeUtils;
-
-  //ANodeIntf, AXmlNodeImpl;
-
-  //Variants, XmlDom,
-  //AXmlNodeImpl, AXmlNodeIntf;
 
 type
   {**
@@ -38,8 +33,6 @@ type
     FFileName: WideString;
   protected
     FDefFileName: WideString;
-    FToLog: TAddToLogProc;
-  protected
     FEncoding: WideString;   // Набор символов = 'Windows-1251'
     FOnAddToLog: TAddToLogProc;
     FStandAlone: WideString; // Указывает на внешнее описание = ''
@@ -105,36 +98,19 @@ type
       //** Имя файла XML документа
     property FileName: WideString read GetFileName write SetFileName;
     property OnAddToLog: TAddToLogProc{TAddToLog} read FOnAddToLog write FOnAddToLog; //property OnToLog: TAddToLogProc read FToLog write FToLog;
+    property OnToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
     property StandAlone: WideString read FStandAlone write FStandAlone;
     property Version: WideString read FVersion write FVersion;
   end;
 
-  TProfXmlDocument2 = class(TXmlDocument)
-  private
-    FDefFileName: WideString;
-    FDefElementName: WideString;
-    FToLog: TAddToLogProc;
+  TProfXmlDocument1 = TProfXmlDocument;
+
+  {TProfXmlDocument1 = class(TXmlDocument)
   protected
     //function GetChildNodeClass(const Node: IDOMNode): TXMLNodeClass; override;
     //function GetDocumentElement(): IProfXmlNode; safecall;
     //function Get_DocumentElement(): TProfXmlNode2;
-  public
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: String; AParams: array of const): Boolean;
-    function Initialize(): WordBool; virtual;
-    function LoadFromString(const Value: WideString): WordBool;
-    function SaveToString(var Value: WideString): Boolean;
-  public
-    constructor Create(const AFileName: WideString = '';
-        const AElementName: WideString = 'Config'; AToLog: TAddToLogProc = nil);
-    procedure Free();
-  public
-    property OnToLog: TAddToLogProc read FToLog write FToLog;
-  end;
-
-  TProfXmlDocument1 = TProfXmlDocument;
-  //TProfXmlDocument3 = TProfXmlDocument;
-  TProfXmlDocumentA = TProfXmlDocument;
+  end;}
 
 implementation
 
@@ -183,7 +159,7 @@ constructor TProfXmlDocument.Create1(const AFileName: WideString = '';
     const AElementName: WideString = 'Config'; AToLog: TAddToLogProc = nil);
 begin
   inherited Create();
-  FToLog := AToLog;
+  FOnAddToLog := AToLog;
   FDefFileName := AFileName;
   FDefElementName := AElementName;
 end;
@@ -337,7 +313,7 @@ begin
   Result := True;
 
   // Проверка сущестрования директории
-  if FDefFileName <> '' then
+  if (FDefFileName <> '') then
     ForceDirectories(ExtractFilePath(FDefFileName));
 
   if not(Assigned(FDocument)) then
@@ -345,11 +321,11 @@ begin
 
   FDocument.ParseOptions := [poPreserveWhiteSpace];
 
-  if FDefFileName = '' then
+  if (FDefFileName = '') then
     CreateDocument()
   else
   try
-    Controller.LoadFromFile(FDefFileName);
+    FDocument.LoadFromFile(FDefFileName);
   except
     on E: Exception do
     begin
@@ -360,8 +336,8 @@ begin
 
       // Сохраняем документ
       AddToLog(lgGeneral, ltInformation, 'Сохраняем документ', []);
-      Controller.FileName := FDefFileName;
-      Controller.SaveToFile('');
+      FDocument.FileName := FDefFileName;
+      FDocument.SaveToFile('');
     end;
   end;
 end;
@@ -631,27 +607,7 @@ begin
   FFileName := Value;
 end;
 
-{ TProfXmlDocument2 }
-
-function TProfXmlDocument2.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-    const AStrMsg: String; AParams: array of const): Boolean;
-begin
-  Result := False;
-  if Assigned(FToLog) then
-  try
-    Result := (FToLog(AGroup, AType, Format(AStrMsg, AParams)) > 0);
-  except
-  end;
-end;
-
-constructor TProfXmlDocument2.Create(const AFileName: WideString = '';
-    const AElementName: WideString = 'Config'; AToLog: TAddToLogProc = nil);
-begin
-  inherited Create(nil);
-  FToLog := AToLog;
-  FDefFileName := AFileName;
-  FDefElementName := AElementName;
-end;
+{ TProfXmlDocument1 }
 
 {function TProfXmlDocument.CreateNode(const NameOrData: DOMString; NodeType: TNodeType = ntElement;
     const AddlData: DOMString = ''): IXmlNode;
@@ -659,15 +615,6 @@ begin
   Result := TProfXmlNode.Create(CreateDOMNode(DOMDocument, NameOrData,
     NodeType, AddlData), nil, Self);
 end;}
-
-procedure TProfXmlDocument2.Free();
-begin
-  {try
-  if FDocument.FileName <> '' then FDocument.SaveToFile('');
-  except
-  end;}
-  inherited Free;
-end;
 
 {function TProfXmlDocument2.GetChildNodeClass(const Node: IDOMNode): TXMLNodeClass;
 begin
@@ -683,59 +630,6 @@ end;}
 begin
   Result := TProfXmlNode(DocumentElement);
 end;}
-
-function TProfXmlDocument2.Initialize(): WordBool;
-begin
-  Result := True;
-  if FDefFileName <> '' then
-  try
-    Self.LoadFromFile(FDefFileName);
-  except
-    on E: Exception do
-    begin
-      // Произошла ошибка при открытиии файла
-      AddToLog(lgGeneral, ltError, 'Произошла ошибка при открытиии файла конфигураций "%s"', [FDefFileName]);
-      // Создаем документ
-      AddToLog(lgGeneral, ltInformation, 'Создаем документ', []);
-      Self.FileName := '';
-      // Активируем документ
-      AddToLog(lgGeneral, ltInformation, 'Активируем документ', []);
-      //FDocument.Active := True;
-      Self.Active := True;
-      // Задаем кодировку
-      AddToLog(lgGeneral, ltInformation, 'Задаем кодировку "Windows-1251"', []);
-      //FDocument.Encoding := 'Windows-1251';
-      Self.Encoding := 'Windows-1251';
-      // Задаем версию
-      AddToLog(lgGeneral, ltInformation, 'Задаем версию "1.0"', []);
-      Self.Version := '1.0';
-      // Задаем отступы
-      AddToLog(lgGeneral, ltInformation, 'Задаем отступы <2 пробела>', []);
-      Self.NodeIndentStr := '  ';
-      // Создаем главный элемент документа
-      AddToLog(lgGeneral, ltInformation, 'Создаем главный элемент документа "Config"', []);
-      //Self.CreateElement('Config', 'B111');
-      if FDefElementName = '' then FDefElementName := 'Config';
-      Self.AddChild(FDefElementName);
-      // Создаем дочерние элементы
-      AddToLog(lgGeneral, ltInformation, 'Создаем дочерние элементы', []);
-      // ...
-      // Сохраняем документ
-      AddToLog(lgGeneral, ltInformation, 'Сохраняем документ', []);
-      //FDocument.FileName := AFileName;
-      Self.FileName := FDefFileName;
-      //FDocument.SaveToFile('');
-      Self.SaveToFile('');
-    end;
-  end;
-end;
-
-function TProfXmlDocument2.LoadFromString(const Value: WideString): WordBool;
-begin
-  //FDocument.LoadFromXml(Value);
-  Self.XML.Text := Value;
-  Result := True;
-end;
 
 {function TProfXmlDocument.NewNode(const ADomNode: IDOMNode; const AParentNode: TXMLNode;
     const OwnerDoc: TXMLDocument): TXmlNode;
@@ -761,22 +655,5 @@ begin
   except
   end;
 end;*)
-
-function TProfXmlDocument2.SaveToString(var Value: WideString): Boolean;
-begin
-  Result := False;
-  try
-    Value := Self.XML.Text;
-    Result := True;
-  except
-  end;
-
-  {try
-    Value := FDocument.XML.Text;
-    Result := True;
-  except
-    Result := False;
-  end;}
-end;
 
 end.

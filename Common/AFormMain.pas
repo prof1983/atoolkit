@@ -11,8 +11,8 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ABase, AConsts2, ALogDocumentsAll, AForm2007, ALogDocuments, AXmlDocumentImpl,
-  ATypes, AXmlUtils;
+  ABase, AConsts2, ALogDocumentsAll, AForm2007, ALogDocuments,
+  ATypes, AXmlDocumentImpl, AXmlNodeUtils, AXmlUtils;
 
 type
   TProfFormMain = class(TProfForm)
@@ -94,7 +94,7 @@ begin
 
   Result := inherited Finalize();
 
-  if FIsConfigDocumentInit and Assigned(FConfigDocument) then
+  if FIsConfigDocumentInit and Assigned(FConfigDocument1) then
   try
     { $IFDEF VER150}
     // Проверим наличие файла
@@ -105,8 +105,8 @@ begin
     end;
     { $ENDIF}
 
-    FConfigDocument.SaveToFile(FConfigFileName);
-    FreeAndNil(FConfigDocument);
+    FConfigDocument1.SaveToFile(FConfigFileName);
+    FreeAndNil(FConfigDocument1);
     //FConfigDocument := nil;
   except
   end;
@@ -115,11 +115,11 @@ end;
 procedure TProfFormMain.Init();
 var
   doc: TProfXmlDocument;
-  conf: IXmlNode;
+  Conf: AXmlNode;
   ExeName: String;
   ExePath: String;
 begin
-  if not(Assigned(FConfigDocument)) and not(Assigned(FConfig)) then
+  if not(Assigned(FConfigDocument1)) and (FConfig = 0) then
   try
     ExeName := ExtractFileName(ParamStr(0));
     if (FConfigFileName = '') then
@@ -151,15 +151,15 @@ begin
     // Создание объекта
     doc := TProfXmlDocument.Create(FConfigFileName);
     doc.Initialize();
-    FConfigDocument := doc.Controller;
+    FConfigDocument1 := doc;
     // Проверим наличие файла----
     FIsConfigDocumentInit := True;
   except
   end;
-  if not(Assigned(FConfig)) and Assigned(FConfigDocument) then
-  try          
-    conf := FConfigDocument.DocumentElement as IXmlNode;
-    FConfig := ProfXmlNode_GetNodeByName(conf, 'FormMain');
+  if (FConfig = 0) and Assigned(FConfigDocument1) then
+  try
+    Conf := FConfigDocument1.FDocumentElement;
+    FConfig := AXmlNode_GetChildNodeByName(Conf, 'FormMain')
   except
   end;
 
@@ -167,10 +167,8 @@ begin
 
   if not(Assigned(FLogDocuments)) then
   begin
-    conf := nil;
     //if Assigned(FConfig) then conf := FConfig.GetNodeByName('Logs');
-
-    FLogDocuments := TLogDocumentsAll.Create(conf, FLogTypeSet, FLogFilePath, FLogID, FLogName);
+    FLogDocuments := TLogDocumentsAll.Create(nil, FLogTypeSet, FLogFilePath, FLogID, FLogName);
     FIsLogDocumentsInit := True;
   end;
   FLog := FLogDocuments.GetDocumentElement();

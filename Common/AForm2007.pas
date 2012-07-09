@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ABase, AConfig2007, AConfigUtils, ALogGlobals, ALogNodeUtils, ATypes; {AXmlUtils;}
+  ABase, AConfig2007, AConfigUtils, ALogGlobals, ALogNodeUtils, ATypes;
 
 type //** @abstract(Класс-потомок для форм с логированием и конфигурациями)
   TProfForm = class(TForm)
@@ -19,8 +19,8 @@ type //** @abstract(Класс-потомок для форм с логиров�
     FConfig: AConfig;
     //FConfig1: TConfigNode1; - Use FConfig
     //FConfig2: IXmlNode; - Use FConfig
-    FConfigDocument: IXmlDocument;
-    FConfigDocument1: TConfigDocument1;
+    //FConfigDocument: IXmlDocument;
+    FConfigDocument1: TConfigDocument;
     FInitialized: WordBool;
     FLog: ALogNode{TALogNode}; //FLog: IALogNode2;
     FLogPrefix: WideString;
@@ -52,7 +52,7 @@ type //** @abstract(Класс-потомок для форм с логиров�
   public
     property Config: AConfig{IXmlNode} read FConfig write FConfig;
     //property Config1: TConfigNode1 read FConfig1 write FConfig1; - Use Config
-    property ConfigDocument: IXmlDocument read FConfigDocument write FConfigDocument;
+    //property ConfigDocument: IXmlDocument read FConfigDocument write FConfigDocument;
     property ConfigDocument1: TConfigDocument1 read FConfigDocument1 write FConfigDocument1;
     property Initialized: WordBool read FInitialized;
     property Log: ALogNode read FLog write FLog;
@@ -60,8 +60,6 @@ type //** @abstract(Класс-потомок для форм с логиров�
     //property OnAddToLog: TProfAddToLog read FOnAddToLog write FOnAddToLog;
     //property OnAddToLog: TAddToLog read FOnAddToLog write FOnAddToLog;
   end;
-
-  TProfForm2006 = TProfForm;
 
 resourcestring // Сообщения ----------------------------------------------------
   stCreateOk = 'Объект создан';
@@ -224,7 +222,8 @@ end;
 function TProfForm.DoFinalize(): WordBool;
 begin
   AConfig_Free(FConfig);
-  FConfigDocument := nil;
+  FConfig := 0;
+  FConfigDocument1 := nil;
   ALogNode_Free(FLog);
   FLog := 0;
   Result := True;

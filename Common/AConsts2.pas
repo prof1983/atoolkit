@@ -2,7 +2,7 @@
 @Abstract(Глобальные типы и константы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.10.2006)
-@LastMod(05.07.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 }
 unit AConsts2;
@@ -11,6 +11,7 @@ interface
 
 const
   DIR_CONFIGS = 'Configs';
+  DIR_DATA = 'Data';
   DIR_DATABASE = 'DataBase';
   DIR_LOGS = 'Logs';
 

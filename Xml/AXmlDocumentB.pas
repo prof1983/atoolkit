@@ -2,7 +2,7 @@
 @Abstract(XML документ. Класс реализует интерфейсы IProfXmlDocumentA и IProfXmlNodeA)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(25.05.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 }
 unit AXmlDocumentB;
@@ -11,7 +11,7 @@ interface
 
 uses
   SysUtils, Variants, XmlDoc, XmlDom, XmlIntf,
-  AXmlIntf;
+  ABase, ATypes, AXmlDocumentIntf, AXmlNodeIntf;
 
 type
   //** @abstract(XML документ. Класс реализует интерфейсы IProfXmlDocumentA и IProfXmlNodeA)
@@ -22,7 +22,7 @@ type
     FFileName: WideString;
     function GetDocumentElementName(): WideString;
   protected
-    function GetDocumentElement(): IProfXmlNodeA; safecall;
+    function GetDocumentElement(): AProfXmlNodeA; safecall;
     function GetFileName(): WideString; safecall;
     procedure SetFileName(const Value: WideString); safecall;
   protected
@@ -87,7 +87,7 @@ type
   public
     property AsString: WideString read GetAsString write SetAsString;
   public
-    property DocumentElement: IProfXmlNodeA read GetDocumentElement;
+    property DocumentElement: AProfXmlNodeA read GetDocumentElement;
     {** Имя главного нода. Должно задаваться до открытия XML файла и
       используется при создании XML документа. При открытии существующего файла
       не используется. }
@@ -97,133 +97,114 @@ type
 
 implementation
 
-// TProfXmlDocumentA -----------------------------------------------------------
-// -----------------------------------------------------------------------------
+{ TProfXmlDocumentB }
+
 procedure TProfXmlDocumentB.Close();
 begin
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 constructor TProfXmlDocumentB.Create();
 begin
   inherited Create();
   FDocumentElementName := 'Config';
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.GetAsBool(): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.GetAsDateTime(): TDateTime;
 begin
   Result := 0;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.GetAsFloat32(): Float32;
 begin
   Result := 0;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.GetAsFloat64(): Float64;
 begin
   Result := 0;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.GetAsInt32(): Integer;
 begin
   Result := 0;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.GetAsInt64(): Integer;
 begin
   Result := 0;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.GetAsString(): WideString;
 begin
   Result := '';
   // ...
 end;
 
-// -----------------------------------------------------------------------------
-function TProfXmlDocumentB.GetDocumentElement(): IProfXmlNodeA;
+function TProfXmlDocumentB.GetDocumentElement(): AProfXmlNodeA;
 begin
-  Result := nil;
-  // ...
+  Result := 0;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.GetDocumentElementName(): WideString;
 begin
   Result := FDocumentElementName;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.GetFileName(): WideString;
 begin
   Result := FFileName;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.GetNodeByName(const AName: WideString): IProfXmlNodeA;
 begin
   Result := nil;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.GetValueAsBool(var Value: WordBool): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.GetValueAsDateTime(var Value: TDateTime): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.GetValueAsInt32(var Value: Integer): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.GetValueAsInt64(var AValue: Int64): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.GetValueAsString(var Value: WideString): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 class function TProfXmlDocumentB.GetValueAsStringA(ANode: IXmlNode; var Value: WideString): WordBool;
 begin
   Result := Assigned(ANode);
@@ -241,14 +222,12 @@ begin
   end;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.GetValueAsUInt08(var Value: Byte): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.LoadFromFile(const FileName: WideString): WordBool;
 begin
   Close();
@@ -257,7 +236,6 @@ begin
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.Open(): Integer;
 
   procedure CreateA();
@@ -326,56 +304,48 @@ begin
   end;
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.ReadBool(const AName: WideString; var Value: WordBool): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.ReadDateTime(const AName: WideString; var Value: TDateTime): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.ReadFloat64(const AName: WideString; var Value: Float64): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.ReadInt08(const AName: WideString; var Value: Int08): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.ReadInt16(const AName: WideString; var Value: Int16): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.ReadInt32(const AName: WideString; var Value: Int32): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.ReadInt64(const AName: WideString; var AValue: Int64): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.ReadString(const AName: WideString; var Value: WideString): WordBool;
 var
   Node: IXmlNode;
@@ -388,124 +358,101 @@ begin
   Result := GetValueAsStringA(Node, Value);
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.ReadUInt08(const AName: WideString; var Value: UInt08): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.ReadUInt16(const AName: WideString; var Value: UInt16): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.ReadUInt32(const AName: WideString; var Value: UInt32): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.SaveToFile(const FileName: WideString): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 procedure TProfXmlDocumentB.SetAsString(const Value: WideString);
 begin
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 procedure TProfXmlDocumentB.SetFileName(const Value: WideString);
 begin
   FFileName := Value;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.SetValueAsBool(Value: WordBool): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.SetValueAsFloat64(Value: Float64): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.SetValueAsInt32(AValue: Integer): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.SetValueAsString(const AValue: WideString): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.SetValueAsUInt08(AValue: Byte): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.WriteBool(const AName: WideString; Value: WordBool): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.WriteDateTime(const AName: WideString; AValue: TDateTime): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.WriteFloat64(const AName: WideString; Value: Float64): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.WriteInt32(const AName: WideString; Value: Int32): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.WriteInt64(const AName: WideString; Value: Int64): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
-{function TProfXmlDocumentB.WriteInteger(const AName: WideString; Value: Integer): WordBool;
-begin
-
-end;}
-
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.WriteString(const AName, Value: WideString): WordBool;
 begin
 //  //Result := False;
@@ -513,14 +460,12 @@ begin
 //  // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.WriteUInt08(const AName: WideString; AValue: UInt08): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-// -----------------------------------------------------------------------------
 function TProfXmlDocumentB.WriteXml(const AName, Value: WideString): WordBool;
 begin
   Result := False;

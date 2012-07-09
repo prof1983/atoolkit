@@ -180,33 +180,39 @@ end;
 
 function TProfForm.ConfigureSave1(): WordBool;
 begin
-  Result := Assigned(FConfig);
-  if not(Result) then Exit;
+  if (FConfig = 0) then
+  begin
+    Result := False;
+    Exit;
+  end;
   if (WindowState <> wsMaximized) then
   begin
-    FConfig1.WriteInt32('Left', Left);
-    FConfig1.WriteInt32('Top', Top);
-    FConfig1.WriteInt32('Width', Width);
-    FConfig1.WriteInt32('Height', Height);
+    AConfig_WriteInt32(FConfig, 'Left', Left);
+    AConfig_WriteInt32(FConfig, 'Top', Top);
+    AConfig_WriteInt32(FConfig, 'Width', Width);
+    AConfig_WriteInt32(FConfig, 'Height', Height);
   end;
-  FConfig1.WriteInt32('WindowState', Integer(WindowState));
-  FConfig1.WriteString('Caption', Caption); // Заголовок окна
+  AConfig_WriteInt32(FConfig, 'WindowState', Integer(WindowState));
+  AConfig_WriteString(FConfig, 'Caption', Caption); // Заголовок окна
 end;
 
 function TProfForm.ConfigureSave2(AConfig: IXmlNode): WordBool;
 begin
-  Result := Assigned(FConfig);
-  if not(Result) then Exit;
-  if WindowState <> wsMaximized then
+  if (FConfig = 0) then
   begin
-    ProfXmlNode_WriteInt(FConfig, 'Left', Left);
-    ProfXmlNode_WriteInt(FConfig, 'Top', Top);
-    ProfXmlNode_WriteInt(FConfig, 'Width', Width);
-    ProfXmlNode_WriteInt(FConfig, 'Height', Height);
+    Result := False;
+    Exit;
   end;
-  ProfXmlNode_WriteInt(FConfig, 'WindowState', Integer(WindowState));
-  ProfXmlNode_WriteString(FConfig, 'Caption', Caption); // Заголовок окна
-  ProfXmlNode_WriteBool(FConfig, 'Visible', Self.Visible);
+  if (WindowState <> wsMaximized) then
+  begin
+    AConfig_WriteInt(FConfig, 'Left', Left);
+    AConfig_WriteInt(FConfig, 'Top', Top);
+    AConfig_WriteInt(FConfig, 'Width', Width);
+    AConfig_WriteInt(FConfig, 'Height', Height);
+  end;
+  AConfig_WriteInt(FConfig, 'WindowState', Integer(WindowState));
+  AConfig_WriteString(FConfig, 'Caption', Caption); // Заголовок окна
+  AConfig_WriteBool(FConfig, 'Visible', Self.Visible);
 end;
 
 procedure TProfForm.DoDestroy();
@@ -217,7 +223,7 @@ end;
 
 function TProfForm.DoFinalize(): WordBool;
 begin
-  FConfig := nil;
+  AConfig_Free(FConfig);
   FConfigDocument := nil;
   ALogNode_Free(FLog);
   FLog := 0;

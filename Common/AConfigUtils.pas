@@ -12,6 +12,8 @@ interface
 uses
   ABase, AXmlNodeUtils;
 
+function AConfig_Free(Config: AConfig): AError;
+
 function AConfig_ReadInt(Config: AConfig; const Name: APascalString;
     out Value: AInt): AError;
 
@@ -24,7 +26,24 @@ function AConfig_ReadInt32Def(Config: AConfig; const Name: APascalString;
 function AConfig_ReadString(Config: AConfig; const Name: APascalString;
     out Value: APascalString): AError;
 
+function AConfig_WriteBool(Config: AConfig; const Name: APascalString;
+    Value: ABool): AError;
+
+function AConfig_WriteInt(Config: AConfig; const Name: APascalString;
+    Value: AInt): AError;
+
+function AConfig_WriteInt32(Config: AConfig; const Name: APascalString;
+    Value: AInt32): AError;
+
+function AConfig_WriteString(Config: AConfig; const Name,
+    Value: APascalString): AError;
+
 implementation
+
+function AConfig_Free(Config: AConfig): AError;
+begin
+  Result := AXmlNode_Free(Config);
+end;
 
 function AConfig_ReadInt(Config: AConfig; const Name: APascalString;
     out Value: AInt): AError;
@@ -48,6 +67,30 @@ function AConfig_ReadString(Config: AConfig; const Name: APascalString;
     out Value: APascalString): AError;
 begin
   Result := AXmlNode_ReadString(Config, Name, Value);
+end;
+
+function AConfig_WriteBool(Config: AConfig; const Name: APascalString;
+    Value: ABool): AError;
+begin
+  Result := AXmlNode_WriteBool(Config, Name, Value);
+end;
+
+function AConfig_WriteInt(Config: AConfig; const Name: APascalString;
+    Value: AInt): AError;
+begin
+  Result := AXmlNode_WriteInt(Config, Name, Value);
+end;
+
+function AConfig_WriteInt32(Config: AConfig; const Name: APascalString;
+    Value: AInt32): AError;
+begin
+  Result := AXmlNode_WriteInt32(Config, Name, Value);
+end;
+
+function AConfig_WriteString(Config: AConfig; const Name,
+    Value: APascalString): AError;
+begin
+  Result := AXmlNode_WriteString(Config, Name, Value);
 end;
 
 end.

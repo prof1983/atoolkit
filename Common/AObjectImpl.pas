@@ -2,7 +2,7 @@
 @Abstract(Объект с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.12.2005)
-@LastMod(05.07.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 }
 unit AObjectImpl;
@@ -18,12 +18,15 @@ type //** Объект с логированием и конфигурациям
   protected
       //** Конфигурации
     FConfig: AXmlNode{IProfNode};
+    //FConfig2: IXmlNode;
       //** Инициализирован
     FInitialized: WordBool;
       //** Ветка логирования
     FLog: IALogNode2;
       //** Префикс лог-сообщений
     //FLogPrefix: WideString;
+      //** Функция добавления в log
+    //FOnAddToLog: TProfAddToLog;
       //** CallBack функция. Срабатывает при поступлении сообщения.
     FOnSendMessage: TProcMessageStr;
     //FOnSendMessageX: TProcMessageX;
@@ -71,9 +74,19 @@ type //** Объект с логированием и конфигурациям
     function AddMessageStr(const AMsg: WideString): Integer; virtual;
       //** Выполнить или передать дочерним объектам
     function AddMessageX(AMsg: IProfNode): Integer; virtual; safecall;
+    function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: WideString): AInt; virtual;
+    function AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: string; Params: array of const): ABoolean; virtual;
     function AssignedConfig(): Boolean;
     function CheckInitialized(): Boolean; virtual;
     function SendMessageX(const AMsg: IProfNode): Integer; virtual; safecall;
+    function ToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: WideString; Params: array of const): AInteger; virtual;
+    function ToLogA(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: WideString): AInteger; virtual;
+    function ToLogE(LogGroup: EnumGroupMessage; LogType: EnumTypeMessage;
+        const StrMsg: WideString): AInteger; virtual; safecall;
   public
     constructor Create(); virtual;
     destructor Destroy(); override;
@@ -101,12 +114,6 @@ type //** Объект с логированием и конфигурациям
 type //** Объект с логированием и конфигурациями
   TProfObject2 = class(TProfObject, IProfObject2)
   protected
-    FConfig: IXmlNode;
-    FLog: ILogNode2;
-    //** Функция добавления в log
-    FOnAddToLog: TProfAddToLog;
-    procedure SetInitialized(Value: WordBool);
-  protected
     function GetConfig(): IXmlNode; safecall;
     function GetLog(): ILogNode2; safecall;
     procedure SetConfig(const Value: IXmlNode); virtual; safecall;
@@ -130,19 +137,7 @@ type //** Объект с логированием и конфигурациям
     function DoStop(AIsShutDown: WordBool): WordBool; virtual; safecall;
     //** Срабатывает при завершении процедуры остановки
     function DoStoped(AIsShutDown: WordBool): WordBool; virtual; safecall;
-  public // IProfEntity
-    function GetEntityType(): TProfEntityType; safecall;
-    function GetId(): Int64; safecall;
-    function GetName(): WideString; safecall;
-    procedure SetName(const Value: WideString); safecall;
   public // IProfObject
-    function GetConfigNode(): IProfNode; safecall;
-    function GetLogNode(): IALogNode2; safecall;
-    procedure SetConfigNode(Value: IProfNode); safecall;
-    procedure SetLogNode(Value: IALogNode2); safecall;
-  public // IProfObject
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer; virtual;
       //** Добавить (выполнить) сообщение
     function AddMessage(const Msg: WideString): Integer; safecall;
       //** Передать сообщение
@@ -164,25 +159,11 @@ type //** Объект с логированием и конфигурациям
     procedure AfterConstruction(); override;
     procedure BeforeDestruction(); override;
   public
-    function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: string; AParams: array of const): Boolean; virtual;
     function AssignedConfig(): Boolean;
     function CheckInitialized(): Boolean; virtual;
-    constructor Create(); virtual;
-    destructor Destroy(); override;
-    procedure Free(); virtual;
-    function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString; AParams: array of const): Integer; virtual;
-    function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer; virtual; safecall;
-    function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
-        const AStrMsg: WideString): Integer; virtual; safecall;
   public
     property Config: IXmlNode read GetConfig write SetConfig;
-    property Initialized: WordBool read FInitialized write SetInitialized;
-    property Name: WideString read FName write FName;
     property Log: ILogNode2 read GetLog write SetLog;
-    property OnAddToLog: TProfAddToLog read FOnAddToLog write FOnAddToLog;
   end;
 
 const // Сообщения
@@ -208,6 +189,29 @@ end;
 function TProfObject.AddMessageX(AMsg: IProfNode): Integer;
 begin
   Result := 0;
+end;
+
+function TProfObject.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+    const StrMsg: WideString): AInt;
+begin
+  Result := -1;
+  if Assigned(FOnAddToLog) then
+  try
+    Result := FOnAddToLog(LogGroup, LogType, StrMsg);
+  except
+  end;
+
+  if Assigned(FLog) then
+  try
+    Result := FLog.AddToLog(LogGroup, LogType, StrMsg);
+  except
+  end;
+end;
+
+function TProfObject.AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+    const StrMsg: string; Params: array of const): ABoolean;
+begin
+  Result := (AddToLog(LogGroup, LogType, Format(StrMsg, Params)) > 0);
 end;
 
 procedure TProfObject.AfterConstruction();
@@ -255,6 +259,7 @@ begin
   inherited Create();
   FConfig := 0;
   DoCreate();
+  //DoCreated();
 end;
 
 destructor TProfObject.Destroy();
@@ -383,23 +388,30 @@ begin
   FLog := Value;
 end;
 
+function TProfObject.ToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+    const StrMsg: WideString; Params: array of const): AInteger;
+begin
+  Result := AddToLog(LogGroup, LogType, Format(StrMsg, Params));
+end;
+
+function TProfObject.ToLogA(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+    const StrMsg: WideString): AInteger;
+begin
+  Result := AddToLog(LogGroup, LogType, StrMsg);
+end;
+
+function TProfObject.ToLogE(LogGroup: EnumGroupMessage; LogType: EnumTypeMessage;
+    const StrMsg: WideString): AInteger;
+begin
+  Result := AddToLog(ALogGlobals.IntToLogGroupMessage(LogGroup),
+      ALogGlobals.IntToLogTypeMessage(LogType), StrMsg);
+end;
+
 { TProfObject2 }
 
 function TProfObject2.AddMessage(const Msg: WideString): Integer;
 begin
   Result := 0;
-end;
-
-function TProfObject2.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-    const AStrMsg: WideString): Integer;
-begin
-  Result := ToLog(AGroup, AType, AStrMsg, []);
-end;
-
-function TProfObject2.AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-    const AStrMsg: string; AParams: array of const): Boolean;
-begin
-  Result := (ToLog(AGroup, AType, AStrMsg, AParams) > 0);
 end;
 
 procedure TProfObject2.AfterConstruction();
@@ -410,7 +422,7 @@ end;
 
 function TProfObject2.AssignedConfig(): Boolean;
 begin
-  Result := Assigned(FConfig);
+  Result := (FConfig <> 0);
   if not(Result) then
     AddToLog(lgGeneral, ltError, stNotAssignedConfig);
 end;
@@ -446,23 +458,6 @@ end;
 function TProfObject2.ConfigureSave2(AConfig: IXmlNode): WordBool;
 begin
   Result := AssignedConfig or Assigned(AConfig);
-end;
-
-constructor TProfObject2.Create({AConfig: IXmlNode = nil; ALog: ILogNode2 = nil});
-begin
-  inherited Create();
-  FConfig := nil;
-  FLog := nil;
-  //FConfig := AConfig;
-  //FLog := ALog;
-  DoCreate();
-  //DoCreated();
-end;
-
-destructor TProfObject2.Destroy();
-begin
-  if FInitialized then Finalize();
-  inherited Destroy();
 end;
 
 function TProfObject2.DoCommand(const AMsg: WideString): WordBool;
@@ -541,44 +536,14 @@ begin
   FInitialized := False;
 end;
 
-procedure TProfObject2.Free();
-begin
-  //inherited Free();
-end;
-
 function TProfObject2.GetConfig(): IXmlNode;
 begin
-  Result := FConfig;
-end;
-
-function TProfObject2.GetConfigNode(): IProfNode;
-begin
-  Result := nil;
-end;
-
-function TProfObject2.GetEntityType(): TProfEntityType;
-begin
-  Result := 0;
-end;
-
-function TProfObject2.GetId(): Int64;
-begin
-  Result := 0;
+  Result := nil{FConfig};
 end;
 
 function TProfObject2.GetLog(): ILogNode2;
 begin
   Result := FLog;
-end;
-
-function TProfObject2.GetLogNode(): IALogNode2;
-begin
-  Result := nil;
-end;
-
-function TProfObject2.GetName(): WideString;
-begin
-  Result := '';
 end;
 
 function TProfObject2.Initialize(): TProfError;
@@ -613,33 +578,12 @@ end;
 
 procedure TProfObject2.SetConfig(const Value: IXmlNode);
 begin
-  FConfig := Value;
-end;
-
-procedure TProfObject2.SetConfigNode(Value: IProfNode);
-begin
-end;
-
-procedure TProfObject2.SetInitialized(Value: WordBool);
-begin
-  if FInitialized = Value then Exit;
-  if Value then
-    Initialize()
-  else
-    Finalize();
+  //FConfig := Value;
 end;
 
 procedure TProfObject2.SetLog(const Value: ILogNode2);
 begin
   FLog := Value;
-end;
-
-procedure TProfObject2.SetLogNode(Value: IALogNode2);
-begin
-end;
-
-procedure TProfObject2.SetName(const Value: WideString);
-begin
 end;
 
 function TProfObject2.Start(): WordBool;
@@ -654,40 +598,6 @@ begin
   Result := DoStop(False);
   if Result then
     Result := DoStoped(False);
-end;
-
-function TProfObject2.ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer;
-begin
-  //Result := ToLogA(OLE_GROUP_MESSAGE[AGroup], OLE_TYPE_MESSAGE[AType], Format(AStrMsg, AParams));
-  Result := ToLogA(AGroup, AType, Format(AStrMsg, AParams));
-
-  if (Result < 0) and Assigned(FOnAddToLog) then
-  try
-    Result := FOnAddToLog(AGroup, AType, AStrMsg, AParams);
-  except
-  end;
-end;
-
-function TProfObject2.ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-    const AStrMsg: WideString): Integer;
-begin
-  Result := -1;
-  if Assigned(FLog) then
-  try
-    Result := FLog.ToLogA(AGroup, AType, AStrMsg);
-  except
-  end;
-end;
-
-function TProfObject2.ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
-    const AStrMsg: WideString): Integer;
-begin
-  Result := -1;
-  if Assigned(FLog) then
-  try
-    Result := FLog.ToLogA(ALogGlobals.IntToLogGroupMessage(AGroup), ALogGlobals.IntToLogTypeMessage(AType), AStrMsg);
-  except
-  end;
 end;
 
 end.

@@ -1,8 +1,8 @@
 {**
-@Abstract(Implementation of interfaces ILogNode and IProfLogNode)
+@Abstract(Implementation of interfaces IALogNode)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.08.2005)
-@LastMod(06.07.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 }
 unit ALogNodeImpl;
@@ -37,17 +37,17 @@ type //** Нод логирования - элемент дерева логирования
       //** Статус нода
     FStatus: TLogNodeStatus;
   protected
-    //function Get_Document(): ILogDocument2{IProfLogNode};
+    //function Get_Document(): ILogDocument2;
     function Get_GroupEnum(): EnumGroupMessage;
     function Get_Id(): Integer;
-    //function Get_LogDocument(): ILogDocument2(IProfLogNode);
+    //function Get_LogDocument(): ILogDocument2;
     function Get_LogType(): EnumTypeMessage;
     function Get_Parent(): Integer;
     function Get_StatusEnum(): StatusNodeEnum;
     function Get_StrMsg(): WideString;
     procedure Set_GroupEnum(Value: EnumGroupMessage);
     procedure Set_Id(Value: Integer);
-    //procedure Set_LogDocument(const Value: ILogDocument2{IProfLogNode});
+    //procedure Set_LogDocument(const Value: ILogDocument2);
     procedure Set_LogType(Value: EnumTypeMessage);
     procedure Set_Parent(Value: Integer);
     procedure Set_StatusEnum(Value: StatusNodeEnum);
@@ -195,10 +195,6 @@ begin
   LogDoc := TObject(FLogDoc) as TALogDocument;
   Result := TObject(LogDoc) as ILogDocument;
 end;}
-{function TALogNode.Get_Document(): IProfLogNode;
-begin
-  Result := FParent;
-end;}
 
 function TALogNode.GetSelf(): ALogNode;
 begin
@@ -218,10 +214,6 @@ end;
 {function TALogNode.Get_LogDocument(): ILogDocument2;
 begin
   Result := Get_Document();
-end;}
-{function TALogNode.Get_LogDocument(): IProfLogNode;
-begin
-  Result := FParent;
 end;}
 
 function TALogNode.Get_LogType(): EnumTypeMessage;
@@ -281,10 +273,6 @@ end;
 {procedure TALogNode.Set_LogDocument(const Value: ILogDocument2);
 begin
   //FLogDoc := Value;
-end;}
-{procedure TALogNode.Set_LogDocument(const Value: IProfLogNode);
-begin
-  FParent := Value;
 end;}
 
 procedure TALogNode.Set_LogType(Value: EnumTypeMessage);

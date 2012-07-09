@@ -793,7 +793,7 @@ end;
 
 function TProfXmlNode.ReadInt32(const Name: WideString; var Value: Integer): WordBool;
 begin
-  Result := ProfXmlNode_ReadInt32(FNode, Name, Value);
+  Result := (AXmlNode_ReadInt32(AXmlNode(Self), Name, Value) >= 0);
 end;
 
 class function TProfXmlNode.ReadInt32A(ANode: IXmlNode; const AName: WideString; var Value: Integer): WordBool;
@@ -831,8 +831,12 @@ begin
 end;
 
 function TProfXmlNode.ReadString(const Name: WideString; var Value: WideString): WordBool;
+var
+  V: APascalString;
 begin
-  Result := ReadStringA(FNode, Name, Value);
+  V := Value;
+  Result := (AXmlNode_ReadString(AXmlNode(Self), Name, V) >= 0);
+  Value := V;
 end;
 
 class function TProfXmlNode.ReadStringA(ANode: IXmlNode; const AName: WideString;
@@ -1585,7 +1589,7 @@ end;
 
 function TProfXmlNode2.ReadInt32(const AName: WideString; var Value: Int32): WordBool;
 begin
-  Result := ReadInteger(AName, Value);
+  Result := (AXmlNode_ReadInt32(AXmlNode(Self), AName, Value) >= 0);
 end;
 
 class function TProfXmlNode2.ReadInt32Def(ANode: IXmlNode; const AName: WideString;
@@ -1686,21 +1690,11 @@ end;
 
 function TProfXmlNode2.ReadString(const AName: WideString; var Value: WideString): WordBool;
 var
-  Node: IXmlNode;
-  Node1: AProfXmlNode;
-  Nodes: AXmlNodeList;
   V: APascalString;
 begin
-  if Assigned(FNode) then
-    Result := ProfXmlNode_ReadString(FNode, AName, Value)
-  else
-  begin
-    Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
-    Node1 := AXmlNodeList_FindNode(Nodes, AName);
-    V := Value;
-    Result := (AXmlNode_GetValueAsString(Node1, V) >= 0);
-    Value := V;
-  end;
+  V := Value;
+  Result := (AXmlNode_ReadString(AXmlNode(Self), AName, V) >= 0);
+  Value := V;
 end;
 
 class function TProfXmlNode2.ReadStringDef(ANode: IXmlNode; const AName: WideString;

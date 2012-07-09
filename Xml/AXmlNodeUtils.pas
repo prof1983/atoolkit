@@ -2,7 +2,7 @@
 @Abstract(AXmlNode functions)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(28.06.2012)
-@LastMod(06.07.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 }
 unit AXmlNodeUtils;
@@ -72,6 +72,9 @@ function AXmlNode_ReadBool(Node: AXmlNode; const Name: APascalString;
 
 function AXmlNode_ReadInt(Node: AXmlNode; const Name: APascalString;
     var Value: AInt): AError;
+
+function AXmlNode_ReadInt32(Node: AXmlNode; const Name: APascalString;
+    out Value: AInt32): AError;
 
 function AXmlNode_ReadString(Node: AXmlNode; const Name: APascalString;
     out Value: APascalString): AError;
@@ -582,6 +585,29 @@ begin
       Result := AXmlNode_GetValueAsInt(Node1, Value);
     end;
   end
+  else if (TObject(Node) is TProfXmlNode) then
+  begin
+    if ProfXmlNode_ReadInt(TProfXmlNode(Node).Node, Name, Value) then
+      Result := 0
+    else
+      Result := -3;
+  end
+  else
+    Result := -2;
+end;
+
+function AXmlNode_ReadInt32(Node: AXmlNode; const Name: APascalString;
+    out Value: AInt32): AError;
+begin
+  if (TObject(Node) is TProfXmlNode1) then
+    Result := AXmlNode_ReadInt(Node, Name, Value)
+  else if (TObject(Node) is TProfXmlNode) then
+  begin
+    if ProfXmlNode_ReadInt32(TProfXmlNode(Node).Node, Name, Value) then
+      Result := 0
+    else
+      Result := -3;
+  end
   else
     Result := -2;
 end;
@@ -589,13 +615,34 @@ end;
 function AXmlNode_ReadString(Node: AXmlNode; const Name: APascalString;
     out Value: APascalString): AError;
 var
-  V: WideString;
+  Node1: AProfXmlNode;
+  Nodes: AXmlNodeList;
   Res: WordBool;
+  V: WideString;
 begin
   if (TObject(Node) is TProfXmlNode1) then
   begin
+    if Assigned(TProfXmlNode1(Node).Node) then
+    begin
+      V := Value;
+      Res := ProfXmlNode_ReadString(TProfXmlNode1(Node).Node, Name, V);
+      Value := V;
+      if Res then
+        Result := 0
+      else
+        Result := -3;
+    end
+    else
+    begin
+      Nodes := AXmlNode_GetChildNodes(Node);
+      Node1 := AXmlNodeList_FindNode(Nodes, Name);
+      Result := AXmlNode_GetValueAsString(Node1, Value);
+    end;
+  end
+  else if (TObject(Node) is TProfXmlNode) then
+  begin
     V := Value;
-    Res := TProfXmlNode1(Node).ReadString(Name, V);
+    Res := ProfXmlNode_ReadString(TProfXmlNode(Node).Node, Name, V);
     Value := V;
     if Res then
       Result := 0

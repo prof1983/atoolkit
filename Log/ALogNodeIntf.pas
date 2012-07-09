@@ -2,7 +2,7 @@
 @Abstract(Интерфейс элемента логирования)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(12.03.2012)
-@LastMod(03.07.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 }
 unit ALogNodeIntf;
@@ -70,8 +70,6 @@ type //** Интерфейс элемента логирования
   end;
 
   ILogNode2 = IALogNode2;
-  //IProfLogNode = IALogNode;
-  IProfLogNodes = IProfNodes;
 
 implementation
 

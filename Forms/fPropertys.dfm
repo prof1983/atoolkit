@@ -1,9 +1,9 @@
 object FormPropertys: TFormPropertys
   Left = 199
   Top = 106
-  Width = 365
-  Height = 307
   Caption = 'FormPropertys'
+  ClientHeight = 280
+  ClientWidth = 357
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

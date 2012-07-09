@@ -2,7 +2,7 @@
 @Abstract(Класс-потомок для форм с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.10.2005)
-@LastMod(06.07.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 }
 unit AForm2007;
@@ -11,13 +11,14 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ABase, AConfig2007, ALogGlobals, ALogNodeUtils, ATypes, AXmlUtils;
+  ABase, AConfig2007, AConfigUtils, ALogGlobals, ALogNodeUtils, ATypes, AXmlUtils;
 
 type //** @abstract(Класс-потомок для форм с логированием и конфигурациями)
   TProfForm = class(TForm)
   protected
-    FConfig: IXmlNode;
-    FConfig1: TConfigNode1;
+    FConfig: AConfig;
+    //FConfig1: TConfigNode1; - Use FConfig
+    //FConfig2: IXmlNode; - Use FConfig
     FConfigDocument: IXmlDocument;
     FConfigDocument1: TConfigDocument1;
     FInitialized: WordBool;
@@ -49,8 +50,8 @@ type //** @abstract(Класс-потомок для форм с логиров�
   public
     procedure Free(); virtual;
   public
-    property Config: IXmlNode read FConfig write FConfig;
-    property Config1: TConfigNode1 read FConfig1 write FConfig1;
+    property Config: AConfig{IXmlNode} read FConfig write FConfig;
+    //property Config1: TConfigNode1 read FConfig1 write FConfig1; - Use Config
     property ConfigDocument: IXmlDocument read FConfigDocument write FConfigDocument;
     property ConfigDocument1: TConfigDocument1 read FConfigDocument1 write FConfigDocument1;
     property Initialized: WordBool read FInitialized;
@@ -101,7 +102,7 @@ end;
 
 function TProfForm.ConfigureLoad(): WordBool;
 begin
-  Result := Assigned(FConfig);
+  Result := (FConfig <> 0);
 end;
 
 function TProfForm.ConfigureLoad1(): WordBool;
@@ -109,14 +110,23 @@ var
   I: Integer;
   S: WideString;
 begin
-  Result := Assigned(FConfig);
-  if not(Result) then Exit;
-  if FConfig1.ReadInt32('Left', I) then Left := I;
-  if FConfig1.ReadInt32('Top', I) then Top := I;
-  if FConfig1.ReadInt32('Width', I) then Width := I;
-  if FConfig1.ReadInt32('Height', I) then Height := I;
-  if FConfig1.ReadInt32('WindowState', I) then WindowState := TWindowState(I);
-  if FConfig1.ReadString('Caption', S) then Caption := S; // Заголовок окна
+  if (FConfig = 0) then
+  begin
+    Result := False;
+    Exit;
+  end;
+  if (AConfig_ReadInt32(FConfig, 'Left', I) >= 0) then
+    Left := I;
+  if (AConfig_ReadInt32(FConfig, 'Top', I) >= 0) then
+    Top := I;
+  if (AConfig_ReadInt32(FConfig, 'Width', I) >= 0) then
+    Width := I;
+  if (AConfig_ReadInt32(FConfig, 'Height', I) >= 0) then
+    Height := I;
+  if (AConfig_ReadInt32(FConfig, 'WindowState', I) >= 0) then
+    WindowState := TWindowState(I);
+  if (AConfig_ReadString(FConfig, 'Caption', S) >= 0) then
+    Caption := S; // Заголовок окна
 end;
 
 function TProfForm.ConfigureLoad2(AConfig: IXmlNode): WordBool;
@@ -217,7 +227,7 @@ end;
 
 function TProfForm.Finalize(): WordBool;
 begin
-  Result := True;
+  Result := DoFinalize();
 end;
 
 procedure TProfForm.Free();

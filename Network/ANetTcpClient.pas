@@ -2,7 +2,7 @@
 @Abstract(Оболочка для TCP/IP соединения (Client))
 @Author(Prof1983 prof1983@ya.ru)
 @Created(23.10.2005)
-@LastMod(04.07.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 }
 unit ANetTcpClient;
@@ -11,14 +11,14 @@ interface
 
 uses
   Classes, Sockets, XmlIntf,
-  ALogGlobals2007, ATypes;
+  ALogNodeImpl, ATypes;
 
 type
   TProfTcpClient = class(TTcpClient)
   private
     FConfig: IXmlNode;
     FInitialized: Boolean;
-    FLog: TLogNode;
+    FLog: TALogNode;
   protected
     procedure DoConnect(Sender: TObject); //virtual;
     procedure DoDisconnect(Sender: TObject); //virtual;
@@ -37,7 +37,7 @@ type
     function Finalize: Boolean; virtual;
     procedure Free; virtual;
     function Initialize: Boolean; virtual;
-    property Log: TLogNode read FLog write FLog;
+    property Log: TALogNode read FLog write FLog;
     function SendString(Value: WideString): Boolean; virtual;
     function ReseiveString(var Value: WideString): Boolean; virtual;
   end;

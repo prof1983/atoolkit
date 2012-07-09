@@ -2,7 +2,7 @@
 @Abstract(Общие интерфейсы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(05.07.2012)
+@LastMod(09.07.2012)
 @Version(0.5)
 }
 unit AObjectIntf;
@@ -61,11 +61,11 @@ type //** Интерфейс для любого объекта
       //** Инициализировать
     function Initialize(): TProfError;
       //** Функция логирования
-    function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer; safecall;
+    {function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+        const AStrMsg: WideString): Integer; safecall;}
       //** Функция логирования
-    function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
-        const AStrMsg: WideString): Integer; safecall;
+    {function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
+        const AStrMsg: WideString): Integer; safecall;}
 
     function GetConfig(): IXmlNode; safecall;
     function GetLog(): ILogNode2; safecall;

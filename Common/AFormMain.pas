@@ -31,7 +31,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
       //** Финализация программы (конфигурации, логирование)
-    procedure Done(); virtual;
+    procedure Done(); virtual; deprecated; // Use Finalize()
+      //** Финализация программы (конфигурации, логирование)
+    function Finalize(): WordBool; virtual;
       //** Инициализация программы (конфигурации, логирование)
     procedure Init(); virtual;
   published
@@ -62,7 +64,7 @@ begin
   for I := Length(St) downto 1 do if St[I] = C then begin Result := I; Exit; end;
 end;
 
-// TProfFormMain ---------------------------------------------------------------
+{ TProfFormMain }
 
 constructor TProfFormMain.Create(AOwner: TComponent);
 begin
@@ -75,6 +77,11 @@ end;
 
 procedure TProfFormMain.Done();
 begin
+  Finalize();
+end;
+
+function TProfFormMain.Finalize(): WordBool;
+begin
   {if FIsLogDocumentsInit and Assigned(FLogDocuments) then
   try
     FLogDocuments.Finalize();
@@ -85,7 +92,7 @@ begin
 
   ConfigureSave();
 
-  DoFinalize();
+  Result := inherited Finalize();
 
   if FIsConfigDocumentInit and Assigned(FConfigDocument) then
   try

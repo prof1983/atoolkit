@@ -2,7 +2,7 @@
 @Abstract(TreeView которое может отбражать структуру XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.12.2005)
-@LastMod(05.05.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 
 0.0.0.3 - 22.12.2005 - XmlS, Mode, TProfTreeViewMode
@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, ComCtrls, Controls,
-  AXml2007;
+  AXmlNodeImpl;
 
 type
   TProfTreeViewMode = (
@@ -34,14 +34,14 @@ type
     FXml: TProfXmlNode1;
     FXmlS: String;
     procedure SetMode(Value: TProfTreeViewMode);
-    procedure SetXml(Value: TProfXmlNode);
+    procedure SetXml(Value: TProfXmlNode1);
     procedure SetXmlS(Value: String);
   public
-    procedure AddXmlNode(ParentNode: TTreeNode; XmlNode: TProfXmlNode);
+    procedure AddXmlNode(ParentNode: TTreeNode; XmlNode: TProfXmlNode1);
     constructor Create(AOwner: TWinControl);
     property Mode: TProfTreeViewMode read FMode write SetMode;
     procedure Refresh; virtual;
-    property Xml: TProfXmlNode read FXml write SetXml;
+    property Xml: TProfXmlNode1 read FXml write SetXml;
     property XmlS: String read FXmlS write SetXmlS;
   end;
 
@@ -49,19 +49,19 @@ implementation
 
 { TProfTreeView }
 
-procedure TProfTreeView.AddXmlNode(ParentNode: TTreeNode; XmlNode: TProfXmlNode);
+procedure TProfTreeView.AddXmlNode(ParentNode: TTreeNode; XmlNode: TProfXmlNode1);
 var
   Count: Int32;
   I: Int32;
-  Node: TProfXmlNode;
+  Node: TProfXmlNode1;
 begin
   if not(Assigned(ParentNode)) then Exit;
-  Count := XmlNode.Collection.Count; //XmlNode.GetCountNodes;
+  Count := XmlNode.GetCountNodes();
   for I := 0 to Count - 1 do begin
-    Node := XmlNode.Collection.Nodes[I]; //XmlNode.GetNode(I);
+    Node := XmlNode.GetNode(I);
     case FMode of
       tvOnlyNodes:
-        if (Node.Collection.Count > 0) then //if (Node.GetCountNodes > 0) then
+        if (Node.GetCountNodes() > 0) then
         begin
           AddXmlNode(Items.AddChild(ParentNode, Node.NodeName), Node);
         end;
@@ -95,7 +95,7 @@ begin
   Refresh;
 end;
 
-procedure TProfTreeView.SetXml(Value: TProfXmlNode);
+procedure TProfTreeView.SetXml(Value: TProfXmlNode1);
 begin
   FXml := Value;
   Refresh;
@@ -104,8 +104,8 @@ end;
 procedure TProfTreeView.SetXmlS(Value: String);
 begin
   FXmlS := Value;
-  if not(Assigned(FXml)) then FXml := TProfXmlNode.Create(nil);
-  FXml.Xml := Value;
+  if not(Assigned(FXml)) then FXml := TProfXmlNode1.Create(nil);
+  FXml.SetXml(Value);
   Refresh;
 end;
 

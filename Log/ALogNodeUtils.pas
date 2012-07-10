@@ -2,7 +2,7 @@
 @Abstract(ALogNode functions)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.07.2012)
-@LastMod(09.07.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 }
 unit ALogNodeUtils;
@@ -16,6 +16,11 @@ function ALogNode_AddToLog(LogNode: ALogNode; LogGroup: TLogGroupMessage; LogTyp
     const StrMsg: APascalString): AInt;
 
 function ALogNode_Free(LogNode: ALogNode): AError;
+
+function ALogNode_New(LogDoc: ALogDocument; ParentNodeId: AInt;
+    const LogPrefix: APascalString; Id: AInt): ALogNode;
+
+function ALogNode_SetOnAddToLog(LogNode: ALogNode; OnAddToLog: TAddToLogProc): AError;
 
 function ALogNode_Show(LogNode: ALogNode): AError;
 
@@ -49,6 +54,27 @@ begin
   if (TObject(LogNode) is TALogNode) then
     IInterface(TALogNode(LogNode))._Release();
   Result := 0;
+end;
+
+function ALogNode_New(LogDoc: ALogDocument; ParentNodeId: AInt;
+    const LogPrefix: APascalString; Id: AInt): ALogNode;
+begin
+  Result := ALogNode(TALogNode.Create2(LogDoc, ParentNodeId, LogPrefix, Id));
+end;
+
+function ALogNode_SetOnAddToLog(LogNode: ALogNode; OnAddToLog: TAddToLogProc): AError;
+begin
+  if (LogNode = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if not(TObject(LogNode) is TALogNode) then
+  begin
+    Result := -3;
+    Exit;
+  end;
+  TALogNode(LogNode).OnAddToLog := OnAddToLog;
 end;
 
 function ALogNode_Show(LogNode: ALogNode): AError;

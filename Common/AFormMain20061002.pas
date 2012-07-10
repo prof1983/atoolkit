@@ -2,7 +2,7 @@
 @Abstract(Класс главной форма - оболочка для TForm)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.11.2005)
-@LastMod(09.07.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 }
 unit AFormMain20061002;
@@ -11,7 +11,8 @@ interface
 
 uses
   Classes, Forms, SysUtils,
-  AConfig2007, AForm2007, ALogDocumentsAll, ATypes, AXml2007, AXmlDocumentUtils;
+  AConfig2007, AForm2007, ALogDocumentsAll, ALogNodeUtils, ATypes,
+  AXml2007, AXmlDocumentUtils, AXmlNodeUtils;
 
 type
   TProfFormMain = class(TProfForm)
@@ -84,7 +85,7 @@ begin
   }
 
   ConfigureSave();
-  if Assigned(FConfigDocument) then
+  if Assigned(FConfigDocument1) then
   try
     {$IFDEF VER150}
     // Проверим наличие файла
@@ -95,8 +96,8 @@ begin
     end;
     {$ENDIF}
 
-    AXmlDocument_SaveToFile1(FConfigDocument, FConfigFileName);
-    FreeAndNil(FConfigDocument);
+    AXmlDocument_SaveToFile1(FConfigDocument1.GetSelf(), FConfigFileName);
+    FreeAndNil(FConfigDocument1);
   except
   end;
 end;
@@ -109,7 +110,7 @@ end;
 
 procedure TProfFormMain.InitConfig();
 begin
-  if not(Assigned(FConfigDocument)) and not(Assigned(FConfig)) then
+  if not(Assigned(FConfigDocument1)) and (FConfig = 0) then
   try
     if (FConfigFileName = '') then
       FConfigFileName := ChangeFileExt(ExtractFileName(ParamStr(0)), '.config');
@@ -124,9 +125,9 @@ begin
     // Проверка существования директории
     ForceDirectories(ExtractFilePath(FConfigFileName));
     // Создание объекта
-    FConfigDocument := TConfigDocument1.Create(FConfigFileName);
+    FConfigDocument1 := TConfigDocument1.Create(FConfigFileName);
     // Проверим наличие файла
-    FConfig := FConfigDocument.DocumentElement.GetNodeByName('FormMain');
+    FConfig := AXmlNode_GetChildNodeByName(FConfigDocument1.GetDocumentElement(), 'FormMain');
     ConfigureLoad();
   except
   end;
@@ -135,7 +136,9 @@ end;
 procedure TProfFormMain.InitLog();
 begin
   ALog := TLogDocumentsAll.Create(nil{FConfig.GetNodeByName('Logs')}, FLogTypeSet, FLogFilePath, FLogID, FLogName);
-  FLog := ALog;
+  if (FLog = 0) then
+    FLog := ALogNode_New(0, 0, '', 0);
+  ALogNode_SetOnAddToLog(FLog, ALog.AddToLog);
 end;
 
 end.

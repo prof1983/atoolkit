@@ -2,7 +2,7 @@
 @Abstract(Работа с Log. Классы для записи собщений программы в БД или файл или отображения в окне Log)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.08.2005)
-@LastMod(06.07.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 }
 unit ALogDocumentImpl;
@@ -16,7 +16,7 @@ uses
 type //** Документ работы с Log
   TALogDocument = class(TALogNode, IALogDocument)
   protected
-    FAddToLog: TAddToLogProc;
+    //FAddToLog: TAddToLogProc;
     FConfig: IProfNode;
     FDocumentElement: TALogNode;
     FLogType: TLogType;
@@ -57,8 +57,6 @@ type //** Документ работы с Log
     }
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: WideString): Integer; override;
-    function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: string; AParams: array of const): Boolean; override;
   public
       //** Загрузить конфигурации
     function ConfigureLoad(): WordBool; virtual;
@@ -81,7 +79,7 @@ type //** Документ работы с Log
     property Config: IProfNode read FConfig write FConfig;
       //** Тип лог-документа
     property LogType: TLogType read FLogType;
-    property OnAddToLog: TAddToLogProc read FAddToLog write FAddToLog;
+    property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
     property OnCommand: TProcMessageStr read FOnCommand write SetOnCommand;
   end;
 
@@ -103,27 +101,10 @@ end;
 
 function TALogDocument.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
 begin
-  if Assigned(FAddToLog) then
-    Result := FAddToLog(AGroup, AType, AStrMsg)
+  if Assigned(FOnAddToLog) then
+    Result := FOnAddToLog(AGroup, AType, AStrMsg)
   else
     Result := 0;
-end;
-
-function TALogDocument.AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-    const AStrMsg: string; AParams: array of const): Boolean;
-var
-  S: WideString;
-begin
-  try
-    S := Format(AStrMsg, AParams);
-  except
-    S := AStrMsg;
-  end;
-
-  if Assigned(FAddToLog) then
-    Result := (FAddToLog(AGroup, AType, S) >= 0)
-  else
-    Result := False;
 end;
 
 procedure TALogDocument.CloseDocument();
@@ -155,6 +136,7 @@ end;
 
 function TALogDocument.Finalize(): TProfError;
 begin
+  FDocumentElement := nil;
   Result := 0;
 end;
 

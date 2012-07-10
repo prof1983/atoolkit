@@ -2,7 +2,7 @@
 @Abstract(Форма "О программе")
 @Author(Prof1983 prof1983@ya.ru)
 @Created(04.04.2006)
-@LastMod(25.04.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 
 История версий:
@@ -15,7 +15,8 @@ interface
 
 uses
   Buttons, Classes, Controls, Dialogs, ExtCtrls, Graphics, Forms, Messages,
-  ShellAPI, SysUtils, StdCtrls, Windows;
+  ShellAPI, SysUtils, StdCtrls, Windows,
+  AProgramUtils, ATypes;
 
 type //** Форма "О программе"
   TAboutForm = class(TForm)
@@ -52,83 +53,32 @@ implementation
 { TAboutForm }
 
 procedure TAboutForm.FormCreate(Sender: TObject);
-type
-  arrc = array[0..$ffff] of char;
 var
-  Wnd, InfoSize, Size: DWORD;
-  VersionInfo: Pointer;
-  st: ShortString;
-  p: ^arrc{ absolute VersionInfo};
+  VersionInfo: TFileVersionInfoA;
 begin
   Caption := 'О программе';
 
   lbName.Caption := (Owner as TForm).Caption;
   lbWWW.Caption := '';
-  InfoSize := GetFileVersionInfoSize(PChar(Paramstr(0)), Wnd);
-  if (InfoSize <> 0) then
-  begin
-    GetMem(VersionInfo, InfoSize);
-    try
-      if GetFileVersionInfo(PChar(Paramstr(0)), Wnd, InfoSize, VersionInfo) then begin
-        if(VerQueryValue(VersionInfo, '\StringFileInfo\041904E3\ProductName', pointer(p),Size))and(Size>1)then
-        begin
-          setlength(st,size); st:=copy(p^,1,Size);
-          lbCopyright.Caption:=lbCopyright.Caption+st;
-        if(VerQueryValue(VersionInfo, '\StringFileInfo\041904E3\ProductVersion', pointer(p),Size))and(Size>1) then
-        begin
-          setlength(st,size); st:=copy(p^,1,Size);
-          lbCopyright.Caption:=lbCopyright.Caption+' ('+st+')'#13#10;
-        end else lbCopyright.Caption:=lbCopyright.Caption+#13#10;
-        end;
-        if(VerQueryValue(VersionInfo, '\StringFileInfo\041904E3\OriginalFilename', pointer(p),Size))and(Size>1) then
-        begin
-          setlength(st,size); st:=copy(p^,1,Size);
-          lbCopyright.Caption:=lbCopyright.Caption+'Имя файла: '+st+#13#10;
-        end;
-        if(VerQueryValue(VersionInfo, '\StringFileInfo\041904E3\InternalName', pointer(p),Size))and(Size>1) then
-        begin
-          setlength(st,size); st:=copy(p^,1,Size);
-          lbCopyright.Caption:=lbCopyright.Caption+st+#13#10;
-        end;
-        if(VerQueryValue(VersionInfo, '\StringFileInfo\041904E3\FileVersion', pointer(p),Size))and(Size>1) then
-        begin
-          setlength(st,size); st:=copy(p^,1,Size);
-          lbCopyright.Caption:=lbCopyright.Caption+'Версия: '+st+#13#10;
-        end;
-        if(VerQueryValue(VersionInfo, '\StringFileInfo\041904E3\LegalCopyright', pointer(p),Size))and(Size>1) then
-        begin
-          setlength(st,size); st:=copy(p^,1,Size);
-          lbCopyright.Caption:=lbCopyright.Caption+st+#13#10;
-        end;
-        if(VerQueryValue(VersionInfo, '\StringFileInfo\041904E3\CompanyName', pointer(p),Size))and(Size>1) then
-        begin
-          setlength(st,size); st:=copy(p^,1,Size);
-          lbCopyright.Caption:=lbCopyright.Caption+'Компания: '+st+#13#10;
-        end;
-        if(VerQueryValue(VersionInfo, '\StringFileInfo\041904E3\FileDescription', pointer(p),Size))and(Size>1) then
-        begin
-          setlength(st,size); st:=copy(p^,1,Size);
-          lbCopyright.Caption:=lbCopyright.Caption+'Описание: '+st+#13#10;
-        end;
-        lbCopyright.Width:=Width-lbCopyright.Left-5;
-        lbCopyright.AutoSize:=True;
-        if lbCopyright.Height>70 then Height:=lbCopyright.Height+90;
-      end;
-    finally
-      FreeMem(VersionInfo);
-    end;
-  end;
+  VersionInfo := GetProgramVersionInfo(ParamStr(0));
 
-{
-var
-   Ver: TVersionInfo;
-begin
-  Ver := TVersionInfo.Create(Application.ExeName);
-  Label1.Caption := Ver.FileVersion;
-  Label2.Caption := Ver.LegalCopyright;
-  Caption := Ver.ProductName;
-end;
-}
+  lbCopyright.Caption := lbCopyright.Caption + VersionInfo.ProductName;
+  if (Length(VersionInfo.ProductVersion) > 0) then
+    lbCopyright.Caption:=lbCopyright.Caption+' ('+VersionInfo.ProductVersion+')'#13#10
+  else
+    lbCopyright.Caption := lbCopyright.Caption+#13#10;
+  if (Length(VersionInfo.OriginalFileName) > 0) then
+    lbCopyright.Caption := lbCopyright.Caption+'Имя файла: '+VersionInfo.OriginalFileName+#13#10;
+  if (Length(VersionInfo.InternalName) > 0) then
+    lbCopyright.Caption := lbCopyright.Caption+VersionInfo.InternalName+#13#10;
+  if (Length(VersionInfo.FileVersion) > 0) then
+    lbCopyright.Caption := lbCopyright.Caption+'Версия: '+VersionInfo.FileVersion+#13#10;
+  if (Length(VersionInfo.LegalCopyright) > 0) then
+    lbCopyright.Caption := lbCopyright.Caption+VersionInfo.LegalCopyright+#13#10;
+  if (Length(VersionInfo.CompanyName) > 0) then
+    lbCopyright.Caption := lbCopyright.Caption+'Компания: '+VersionInfo.CompanyName+#13#10;
+  if (Length(VersionInfo.FileDescription) > 0) then
+    lbCopyright.Caption := lbCopyright.Caption+'Описание: '+VersionInfo.FileDescription+#13#10;
 end;
 
 function TAboutForm.GetPicture(): TPicture;

@@ -2,7 +2,7 @@
 @Abstract(Класс работы с XML нодами)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(07.03.2007)
-@LastMod(09.07.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 }
 unit AXmlNodeImpl;
@@ -437,7 +437,7 @@ begin
     else
       AValue := ''; // Пустое значение
     // Создание атрибута
-    SetAttribute(FAttributes, AName, AValue);
+    AXmlAttributes_SetAttribute(FAttributes, AName, AValue);
   until Length(Value) = 0;
 end;
 

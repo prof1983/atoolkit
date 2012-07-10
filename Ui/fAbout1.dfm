@@ -120,7 +120,8 @@ object AboutForm: TAboutForm
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
-    TabOrder = 1
     Kind = bkOK
+    NumGlyphs = 2
+    TabOrder = 1
   end
 end

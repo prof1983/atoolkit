@@ -2,7 +2,7 @@
 @abstract(ProfXml)
 @author(Prof1983 prof1983@ya.ru)
 @created(15.02.2012)
-@lastmod(06.07.2012)
+@lastmod(10.07.2012)
 @version(0.5)
 }
 unit AXmlUtils;
@@ -114,6 +114,7 @@ begin
     if (VarType(ANode.NodeValue) = varSingle) then
     begin
       Value := ANode.NodeValue;
+      Result := True;
     end
     else if (VarType(ANode.NodeValue) = varString) or (VarType(ANode.NodeValue) = varOleStr) then
     begin
@@ -129,7 +130,6 @@ end;
 
 function ProfXmlNode_GetValueAsFloat64(ANode: IXmlNode; var Value: Float64): WordBool;
 var
-  //Code: Integer;
   s: string;
 begin
   if not(Assigned(ANode)) then
@@ -141,13 +141,12 @@ begin
     if (VarType(ANode.NodeValue) = varDouble) then
     begin
       Value := ANode.NodeValue;
+      Result := True;
     end
     else if (VarType(ANode.NodeValue) = varString) or (VarType(ANode.NodeValue) = varOleStr) then
     begin
       s := ANode.NodeValue;
       Result := TryStrToFloat(s, Value);
-      {Val(ANode.NodeValue, Value, Code);
-      Result := (Code = 0);}
     end
     else
       Result := False;
@@ -178,6 +177,7 @@ begin
     if (VarType(ANode.NodeValue) = varInteger) or (VarType(ANode.NodeValue) = varInt64) then
     begin
       Value := ANode.NodeValue;
+      Result := True;
     end
     else if (VarType(ANode.NodeValue) = varString) or (VarType(ANode.NodeValue) = varOleStr) then
     begin
@@ -189,12 +189,6 @@ begin
   except
     Result := False;
   end;
-  {try
-    Value := ANode.NodeValue;
-    Result := True;
-  except
-    Result := False;
-  end;}
 end;
 
 function ProfXmlNode_GetValueAsString(Node: IXmlNode; var Value: WideString): WordBool;
@@ -334,6 +328,7 @@ begin
     if (VarType(Node1.NodeValue) = varInteger) then
     begin
       Value := Node1.NodeValue;
+      Result := True;
     end
     else if (VarType(Node1.NodeValue) = varString) or (VarType(Node1.NodeValue) = varOleStr) then
     begin

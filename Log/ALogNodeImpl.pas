@@ -156,8 +156,15 @@ end;
 
 function TALogNode.AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
     const StrMsg: string; Params: array of const): Boolean;
+var
+  S: WideString;
 begin
-  Result := (AddToLog(LogGroup, LogType, Format(StrMsg, Params)) > 0);
+  try
+    S := Format(StrMsg, Params);
+  except
+    S := StrMsg;
+  end;
+  Result := (AddToLog(LogGroup, LogType, S) > 0);
 end;
 
 constructor TALogNode.Create(ALogDoc: IALogNode2; ALogPrefix: string; AID: Integer);

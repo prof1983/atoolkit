@@ -2,7 +2,7 @@
 @Abstract(Класс, объединяющий вывод логов сразу в несколько мест)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(26.01.2006)
-@LastMod(05.07.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 }
 unit ALogDocuments;
@@ -18,7 +18,7 @@ uses
 type //** Класс для записи Log сразу в несколько мест
   TALogDocuments = class(TALogDocument, IALogDocuments)
   protected
-    FDocuments: array of TALogDocument{IALogDocument};
+    FDocuments: array of TALogDocument;
   public
     procedure SetOnCommand(Value: TProcMessageStr); override;
   public // IALogDocuments
@@ -27,7 +27,7 @@ type //** Класс для записи Log сразу в несколько м
     function GetDocumentCount(): Integer;
   public // IALogDocument
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer;
+        const AStrMsg: WideString): Integer; override;
   public // IALogDocuments
     function Add(Document: ALogDocument): Integer;
     function Delete(Index: Integer): Integer;
@@ -90,7 +90,8 @@ begin
     FDocuments[i].AddStr(AStr);
 end;
 
-function TALogDocuments.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
+function TALogDocuments.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+    const AStrMsg: WideString): Integer;
 var
   I: Integer;
   R: Integer;

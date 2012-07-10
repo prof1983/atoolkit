@@ -349,13 +349,13 @@ begin
     FLogDocuments := TALogDocuments.Create();
   except
   end;
-  if not(Assigned(FLog)) then
-    FLog := FLogDocuments.GetDocumentElement2();
-  if not(Assigned(FLog)) then
+  if (FLog = 0) then
+    FLog := FLogDocuments.GetDocumentElement();
+  if (FLog = 0) then
   begin
     LogNode1 := TALogNode.Create(nil, '', 0);
     LogNode1.OnAddToLog := FLogDocuments.AddToLog;
-    FLog := LogNode1;
+    FLog := LogNode1.GetSelf();
   end;
   {if not(Assigned(FLogJournal)) then
   try

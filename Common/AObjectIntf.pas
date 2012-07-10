@@ -2,7 +2,7 @@
 @Abstract(Общие интерфейсы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(09.07.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 }
 unit AObjectIntf;
@@ -15,10 +15,10 @@ uses
 
 type //** Интерфейс для любого объекта
   IProfObject = interface(IANamedEntity)
-    function GetConfigNode(): AXmlNode{IProfNode}; safecall;
-    function GetLogNode(): IALogNode2; safecall;
-    procedure SetConfigNode(Value: AXmlNode{IProfNode}); safecall;
-    procedure SetLogNode(Value: IALogNode2); safecall;
+    function GetConfigNode(): AConfigNode; safecall;
+    function GetLogNode(): ALogNode; safecall;
+    procedure SetConfigNode(Value: AConfigNode); safecall;
+    procedure SetLogNode(Value: ALogNode); safecall;
 
       //** Добавить (выполнить) сообщение
     function AddMessage(const Msg: WideString): Integer;
@@ -33,8 +33,8 @@ type //** Интерфейс для любого объекта
       //** Передать сообщение
     function SendMessage(const Msg: WideString): Integer; safecall;
 
-    property ConfigNode: AXmlNode{IProfNode} read GetConfigNode write SetConfigNode;
-    property LogNode: IALogNode2 read GetLogNode write SetLogNode;
+    property ConfigNode: AConfigNode read GetConfigNode write SetConfigNode;
+    property LogNode: ALogNode read GetLogNode write SetLogNode;
   end;
 
   IProfObject2 = interface
@@ -68,12 +68,12 @@ type //** Интерфейс для любого объекта
         const AStrMsg: WideString): Integer; safecall;}
 
     function GetConfig2(): IXmlNode; safecall;
-    function GetLog(): ILogNode2; safecall;
+    function GetLog(): ALogNode; safecall;
     procedure SetConfig2(const Value: IXmlNode); safecall;
-    procedure SetLog(const Value: ILogNode2); safecall;
+    procedure SetLog(const Value: ALogNode); safecall;
 
     property Config2: IXmlNode read GetConfig2 write SetConfig2;
-    property Log: ILogNode2 read GetLog write SetLog;
+    property Log: ALogNode read GetLog write SetLog;
   end;
 
     // LastMod(16.03.2006)

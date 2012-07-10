@@ -2,7 +2,7 @@
 @Abstract(Реализация основной функциональности для главного объекта)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.05.2006)
-@LastMod(09.07.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 
 0.0.5.7 - 21.07.2011
@@ -28,12 +28,14 @@ type
   {$ENDIF}
 
   //** Основной объект программы
-  TProfProgram = class(TProfProcess)
+  TAProgram = class(TProfProcess)
   protected
     FConfigDir: APascalString;
     FConfigPath: APascalString;
       //** Критическая секция для добавления в лог
     FCSAddToLog: TRTLCriticalSection;
+    FDataDir: APascalString;
+    FDataPath: APascalString;
     FExeFullName: WideString;
     FExeName: WideString;
     FExePath: WideString;
@@ -95,6 +97,7 @@ type
         const AStrMsg: WideString): Integer; override;
     function GetConfigFileName(): APascalString;
     function GetConfigPath(): APascalString;
+    function GetDataPath(): APascalString;
     function GetTimeWork(): Integer;
       //** Инициализировать программу
     function Initialize(): TProfError; override;
@@ -105,7 +108,7 @@ type
       //** Завершить работу программы
     class procedure DoneProgram(); virtual;
       //** Получить эобъкт Program
-    class function GetInstance(): TProfProgram;
+    class function GetInstance(): TAProgram;
   public
     //** Конфигурации программы
     property ConfigDocument: TProfXmlDocument read FConfigDocument;
@@ -185,17 +188,17 @@ type
     property IsTest: Boolean read FIsTest write FIsTest default False;
   end;
 
-  //TProgram2007 = AProgramImpl.TProfProgram;
+  TProfProgram = TAProgram;
   //TProgram = TProfProgram;
 
 implementation
 
 var
-  Prog: TProfProgram;
+  Prog: TAProgram;
 
-{ TProfProgram }
+{ TAProgram }
 
-function TProfProgram.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+function TAProgram.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
     const AStrMsg: WideString): Integer;
 begin
   EnterCriticalSection(FCSAddToLog);
@@ -203,7 +206,7 @@ begin
   LeaveCriticalSection(FCSAddToLog);
 end;
 
-constructor TProfProgram.Create();
+constructor TAProgram.Create();
 {$IFNDEF UseComXml}
 var
   doc: TProfXmlDocument;
@@ -278,20 +281,22 @@ begin
   except
     FConfigDocument := nil;
   end;
+
+  GetDataPath();
 end;
 
-function TProfProgram.DoAddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
+function TAProgram.DoAddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
 begin
   Result := AddToLog(AGroup, AType, AStrMsg);
 end;
 
-procedure TProfProgram.DoDestroy();
+procedure TAProgram.DoDestroy();
 begin
   DeleteCriticalSection(FCSAddToLog);
   inherited DoDestroy();
 end;
 
-function TProfProgram.DoFinalized(): TProfError;
+function TAProgram.DoFinalized(): TProfError;
 begin
   if Assigned(FLogJournal) then
   try
@@ -334,7 +339,7 @@ begin
   Result := inherited DoFinalized();
 end;
 
-function TProfProgram.DoInitialize(): TProfError;
+function TAProgram.DoInitialize(): TProfError;
 var
   LogNode1: TALogNode;
 begin
@@ -359,7 +364,7 @@ begin
   end;}
 end;
 
-class procedure TProfProgram.DoneProgram();
+class procedure TAProgram.DoneProgram();
 begin
   if Assigned(Prog) then
   try
@@ -372,24 +377,24 @@ begin
   end;
 end;
 
-function TProfProgram.DoTime(): WordBool;
+function TAProgram.DoTime(): WordBool;
 begin
   Result := DoTimer;
 end;
 
-function TProfProgram.DoTimer(): WordBool;
+function TAProgram.DoTimer(): WordBool;
 begin
   Result := True;
 end;
 
-procedure TProfProgram.Free();
+procedure TAProgram.Free();
 begin
   DoDestroy();
   Prog := nil;
   //inherited Free();
 end;
 
-function TProfProgram.GetConfigDocument(): IXmlDocument;
+function TAProgram.GetConfigDocument(): IXmlDocument;
 begin
   if Assigned(FConfigDocument) then
     Result := FConfigDocument.Document
@@ -397,14 +402,14 @@ begin
     Result := nil;
 end;
 
-function TProfProgram.GetConfigFileName(): APascalString;
+function TAProgram.GetConfigFileName(): APascalString;
 begin
   if (FConfigFileName = '') then
     FConfigFileName := GetConfigPath() + Self.ProgramName + '.' + FILE_EXT_CONFIG;
   Result := FConfigFileName;
 end;
 
-function TProfProgram.GetConfigPath(): APascalString;
+function TAProgram.GetConfigPath(): APascalString;
 begin
   if (FConfigPath = '') then
     FConfigPath := ExpandFileName(FExePath + FConfigDir);
@@ -413,29 +418,38 @@ begin
   Result := FConfigPath;
 end;
 
-class function TProfProgram.GetInstance(): TProfProgram;
+function TAProgram.GetDataPath(): APascalString;
+begin
+  if (FDataPath = '') then
+    FDataPath := ExpandFileName(FExePath + FDataDir);
+  if (Length(FDataPath) > 0) and (FDataPath[Length(FDataPath)] <> '\') and (FDataPath[Length(FDataPath)] <> '/') then
+    FDataPath := FDataPath + '\';
+  Result := FDataPath;
+end;
+
+class function TAProgram.GetInstance(): TAProgram;
 begin
   Result := Prog;
 end;
 
-function TProfProgram.GetIsDemo(): Boolean;
+function TAProgram.GetIsDemo(): Boolean;
 begin
   Result := FIsDemo;
 end;
 
-function TProfProgram.GetTimeWork(): Integer;
+function TAProgram.GetTimeWork(): Integer;
 begin
   Result := Round((Now - FDateStart) * 24 * 60);
 end;
 
-function TProfProgram.Initialize(): TProfError;
+function TAProgram.Initialize(): TProfError;
 begin
   AddToLog(lgGeneral, ltInformation, 'Инициализация программы');
   Result := inherited Initialize;
   AddToLog(lgGeneral, ltInformation, 'Программа инициализирована');
 end;
 
-procedure TProfProgram.SetIsDemo(Value: Boolean);
+procedure TAProgram.SetIsDemo(Value: Boolean);
 begin
   FIsDemo := Value;
 end;

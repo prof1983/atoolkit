@@ -2,7 +2,7 @@
 @Abstract(AUiWorkbench)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(20.08.2007)
-@LastMod(25.05.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 }
 unit AUiWorkbench2007;
@@ -10,8 +10,13 @@ unit AUiWorkbench2007;
 interface
 
 uses
+  Forms, SysUtils,
   ABase, AModuleImpl, AAbstractModuleInformation, ANode1,
   AUiWorkbenchForm;
+
+const
+  AUiWorkbench_Name = 'Workbench';
+  AUiWorkbench_SId = 'ui.workbench';
 
 type
   TMasWorkbench = class(TAbstractModule)
@@ -33,11 +38,11 @@ implementation
 
 constructor TMasWorkbench.Create();
 begin
-  FLocalName := 'Workbench';
+  FLocalName := AUiWorkbench_Name;
 
   FInformation := TAbstractModuleInformation.Create();
-  FInformation.ID := 'ui.workbench';
-  FInformation.Name := 'Workbench';
+  FInformation.ID := AUiWorkbench_SId;
+  FInformation.Name := AUiWorkbench_Name;
   FInformation.Description := 'Модуль главного окна программы';
   FInformation.Author := '';
   FInformation.Copyright := '';
@@ -55,8 +60,16 @@ begin
 end;
 
 function TMasWorkbench.Initialize(): AError;
+var
+  ExePath: APascalString;
+  ResourcePath: APascalString;
 begin
+  //Application.CreateForm(TWorkbenchForm, FWorkbenchForm);
   FWorkbenchForm := TWorkbenchForm.Create(nil);
+  ExePath := ExtractFilePath(ParamStr(0));
+  ResourcePath := ExpandFileName(ExePath + '..\Resources\');
+  FWorkbenchForm.SetPersonageFileName(ResourcePath + 'Assistant-64x64.bmp');
+  FWorkbenchForm.Init();
   Result := 0;
 end;
 

@@ -1,8 +1,8 @@
-{**
+﻿{**
 @Abstract(Workbench form)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(21.08.2007)
-@LastMod(05.05.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 }
 unit AUiWorkbenchForm;
@@ -13,7 +13,7 @@ uses
   ActnCtrls, ActnList, ActnMan, ActnMenus, Classes, ComCtrls, Controls, Dialogs,
   ExtCtrls, Forms, Graphics, Messages, SysUtils, ToolWin, Variants,
   Windows, XPStyleActnCtrls,
-  AModuleInformationIntf, ARuntimeObj;
+  ABase, AModuleInformationIntf, ARuntimeObj;
 
 type
   TWorkbenchForm = class(TForm)
@@ -42,9 +42,11 @@ type
     TasksTabSheet: TTabSheet;
     TasksTreeView: TTreeView;
   protected
-    procedure DoCreate(); override;
+    FPersonageFileName: APascalString;
   public
+    procedure Init();
     procedure Refresh();
+    procedure SetPersonageFileName(const Value: APascalString);
   end;
 
 implementation
@@ -53,17 +55,22 @@ implementation
 
 { TWorkbenchForm }
 
-procedure TWorkbenchForm.DoCreate();
+procedure TWorkbenchForm.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   runtime: TARuntimeObject;
-  FileName: string;
 begin
-  inherited DoCreate();
+  runtime := TARuntimeObject.GetInstance();
+  if not(Assigned(runtime)) then Exit;
+  runtime.RunExitCommand();
+end;
 
-  FileName := ExtractFilePath(ParamStr(0)) + 'assistant.bmp';
-  if FileExists(FileName) then
+procedure TWorkbenchForm.Init();
+var
+  Runtime: TARuntimeObject;
+begin
+  if (Length(FPersonageFileName) > 0) and FileExists(FPersonageFileName) then
   try
-    PersonageImage.Picture.LoadFromFile(FileName);
+    PersonageImage.Picture.LoadFromFile(FPersonageFileName);
   except
   end;
 
@@ -117,20 +124,11 @@ begin
   TasksTreeView.Parent := TasksTabSheet;
   TasksTreeView.Align := alClient;
 
-  runtime := TARuntimeObject.GetInstance();
-  if Assigned(runtime) then
+  Runtime := TARuntimeObject.GetInstance();
+  if Assigned(Runtime) then
   begin
     //variablesModule := IAssistantVariablesModule(runtime.Modules.ModuleByID['mas.platform.core.runtime.variables']);
   end;
-end;
-
-procedure TWorkbenchForm.FormClose(Sender: TObject; var Action: TCloseAction);
-var
-  runtime: TARuntimeObject;
-begin
-  runtime := TARuntimeObject.GetInstance();
-  if not(Assigned(runtime)) then Exit;
-  runtime.RunExitCommand();
 end;
 
 procedure TWorkbenchForm.Refresh();
@@ -171,6 +169,11 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TWorkbenchForm.SetPersonageFileName(const Value: APascalString);
+begin
+  FPersonageFileName := Value;
 end;
 
 end.

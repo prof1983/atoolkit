@@ -2,7 +2,7 @@
 @Abstract(Первая форма при запуске системы)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(04.08.2007)
-@LastMod(05.05.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 
 При создании формы создается таймер, который проверяет
@@ -23,7 +23,7 @@ unit AUiSplashForm;
 interface
 
 uses
-  Classes, ComCtrls, Controls, Dialogs, ExtCtrls, Graphics, Forms, IniFiles, Jpeg,
+  Classes, ComCtrls, Controls, Dialogs, ExtCtrls, Graphics, Forms, IniFiles,
   StdCtrls, SysUtils;
 
 type
@@ -51,7 +51,7 @@ implementation
 var
   StartForm: TStartForm;
 
-{TStartForm}
+{ TStartForm }
 
 class function TStartForm.AddToLog(Msg: WideString): Integer;
 begin

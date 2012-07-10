@@ -22,6 +22,7 @@ object StartForm: TStartForm
     Top = 63
     Width = 557
     Height = 224
+    ParentFont = False
     ReadOnly = True
     ScrollBars = ssBoth
     TabOrder = 0

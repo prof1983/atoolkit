@@ -1,9 +1,9 @@
 object WorkbenchForm: TWorkbenchForm
   Left = 0
   Top = 0
-  Width = 732
-  Height = 514
-  Caption = 'AIAssistant'
+  Caption = 'Assistant'
+  ClientHeight = 487
+  ClientWidth = 724
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

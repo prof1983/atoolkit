@@ -2,7 +2,7 @@
 @Abstract(Класс для работа с модулями в режиме runtime)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(28.08.2007)
-@LastMod(05.05.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 }
 unit AModules;
@@ -17,7 +17,7 @@ type
   private
     FModules: array of IProfModule;
     FModuleInformations: array of IModuleInformation;
-  protected
+  public
     function GetIndexByID(ID: WideString): Integer;
     function GetModuleByID(ID: WideString): IProfModule;
     function GetModuleByIndex(Index: Integer): IProfModule;

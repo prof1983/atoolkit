@@ -2,7 +2,7 @@
 @Abstract(Глобальные типы и константы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.10.2006)
-@LastMod(09.07.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 }
 unit AConsts2;
@@ -62,15 +62,11 @@ const // Стандартная структура папок проекта ---
   //DEFAULT_HTTP_DIR = 'HTTP';
   DEFAULT_MODULE_DIR = 'Modules';
   DEFAULT_LOGS_DIR = 'Logs';
-  //DEFAULT_SIGNAL_DIR = 'Signals';
-  //DEFAULT_RELS_COEF_DIR = 'RelsCOEF';
 
 {const
   FILE_EXT_RELS_TKR = 'tkr'; }
 
 const
-  AR_HOME_PAGE = 'http://aikernel.org';
-  AR_EMAIL_MAIN = 'prof1983@yandex.ru';
   PROF_HOME_PAGE = 'http://prof1983.info';
   PROF_EMAIL_MAIN = 'prof1983@yandex.ru';
 

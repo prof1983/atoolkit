@@ -2,7 +2,7 @@
 @Abstract(Класс-потомок для форм с логированием и конфигурациями)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.10.2005)
-@LastMod(09.07.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 }
 unit AForm2007;
@@ -40,11 +40,11 @@ type //** @abstract(Класс-потомок для форм с логиров�
     function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage; const AStrMsg: WideString): Integer; virtual;
   public
     function ConfigureLoad(): WordBool; virtual;
-    function ConfigureLoad1(): WordBool; virtual;
-    function ConfigureLoad2(AConfig: IXmlNode = nil): WordBool; virtual; safecall;
+    function ConfigureLoad1(): WordBool; virtual; deprecated; // Use ConfigureLoad()
+    //function ConfigureLoad2(AConfig: IXmlNode = nil): WordBool; virtual; safecall;
     function ConfigureSave(): WordBool; virtual;
-    function ConfigureSave1(): WordBool; virtual;
-    function ConfigureSave2(AConfig: IXmlNode = nil): WordBool; virtual; safecall;
+    function ConfigureSave1(): WordBool; virtual; deprecated; // Use ConfigureSave()
+    //function ConfigureSave2(AConfig: IXmlNode = nil): WordBool; virtual; safecall;
     function Finalize(): WordBool; virtual;
     function Initialize(): WordBool; virtual;
   public
@@ -99,20 +99,20 @@ begin
 end;
 
 function TProfForm.ConfigureLoad(): WordBool;
-begin
-  Result := (FConfig <> 0);
-end;
-
-function TProfForm.ConfigureLoad1(): WordBool;
 var
   I: Integer;
   S: APascalString;
+  tmpWindowState: TWindowState;
 begin
   if (FConfig = 0) then
   begin
     Result := False;
     Exit;
   end;
+
+  tmpWindowState := TWindowState(AConfig_ReadInt32Def(FConfig, 'WindowState', Integer(wsNormal)));
+  WindowState := wsNormal;
+
   if (AConfig_ReadInt32(FConfig, 'Left', I) >= 0) then
     Left := I;
   if (AConfig_ReadInt32(FConfig, 'Top', I) >= 0) then
@@ -125,9 +125,19 @@ begin
     WindowState := TWindowState(I);
   if (AConfig_ReadString(FConfig, 'Caption', S) >= 0) then
     Caption := S; // Заголовок окна
+
+  if (WindowState <> tmpWindowState) then
+    WindowState := tmpWindowState;
+
+  Result := True;
 end;
 
-function TProfForm.ConfigureLoad2(AConfig: IXmlNode): WordBool;
+function TProfForm.ConfigureLoad1(): WordBool;
+begin
+  Result := ConfigureLoad();
+end;
+
+{function TProfForm.ConfigureLoad2(AConfig: IXmlNode): WordBool;
 var
   I: Integer;
   S: APascalString;
@@ -138,11 +148,8 @@ begin
     Result := False;
     Exit;
   end;
-  //if TProfXmlNode.ReadIntegerA(FConfig, 'WindowState', I) and (WindowState <> TWindowState(I)) then
-  //  WindowState := TWindowState(I);
 
   tmpWindowState := TWindowState(AConfig_ReadInt32Def(FConfig, 'WindowState', Integer(wsNormal)));
-
   WindowState := wsNormal;
 
   //if tmpWindowState = wsNormal then
@@ -162,21 +169,10 @@ begin
   if (AConfig_ReadString(FConfig, 'Caption', S) >= 0) then
     Caption := S; // Заголовок окна
 
-//  WindowState := TWindowState(TProfXmlNode.ReadInt32Def(FConfig, 'WindowState', Integer(WindowState)));
-//  Left := TProfXmlNode.ReadInt32Def(FConfig, 'Left', Left);
-//  Top := TProfXmlNode.ReadInt32Def(FConfig, 'Top', Top);
-//  Width := TProfXmlNode.ReadInt32Def(FConfig, 'Width', Width);
-//  Height := TProfXmlNode.ReadInt32Def(FConfig, 'Height', Height);
-//  Caption := TProfXmlNode.ReadStringDef(FConfig, 'Caption', Caption);
   Result := True;
-end;
+end;}
 
 function TProfForm.ConfigureSave(): WordBool;
-begin
-  Result := (FConfig <> 0);
-end;
-
-function TProfForm.ConfigureSave1(): WordBool;
 begin
   if (FConfig = 0) then
   begin
@@ -192,9 +188,15 @@ begin
   end;
   AConfig_WriteInt32(FConfig, 'WindowState', Integer(WindowState));
   AConfig_WriteString(FConfig, 'Caption', Caption); // Заголовок окна
+  AConfig_WriteBool(FConfig, 'Visible', Self.Visible);
 end;
 
-function TProfForm.ConfigureSave2(AConfig: IXmlNode): WordBool;
+function TProfForm.ConfigureSave1(): WordBool;
+begin
+  Result := ConfigureSave();
+end;
+
+{function TProfForm.ConfigureSave2(AConfig: IXmlNode): WordBool;
 begin
   if (FConfig = 0) then
   begin
@@ -211,7 +213,7 @@ begin
   AConfig_WriteInt(FConfig, 'WindowState', Integer(WindowState));
   AConfig_WriteString(FConfig, 'Caption', Caption); // Заголовок окна
   AConfig_WriteBool(FConfig, 'Visible', Self.Visible);
-end;
+end;}
 
 procedure TProfForm.DoDestroy();
 begin

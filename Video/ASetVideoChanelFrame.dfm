@@ -47,7 +47,6 @@ object frSetVideoChanel: TfrSetVideoChanel
     Top = 104
     Width = 273
     Height = 21
-    ItemHeight = 13
     TabOrder = 2
   end
   object cbChanel: TComboBox
@@ -55,7 +54,6 @@ object frSetVideoChanel: TfrSetVideoChanel
     Top = 8
     Width = 81
     Height = 21
-    ItemHeight = 13
     TabOrder = 3
     OnChange = cbChanelChange
   end

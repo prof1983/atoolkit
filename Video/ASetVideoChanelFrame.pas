@@ -2,7 +2,7 @@
 @Abstract(Настройка работы с видео)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(04.04.2006)
-@LastMod(05.05.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 }
 unit ASetVideoChanelFrame;
@@ -11,7 +11,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Spin,
+  Dialogs, StdCtrls,
+  AUiSpin,
   AVideoGlobals;
 
 type
@@ -34,9 +35,11 @@ type
     procedure SetVideo(Value: TVideoSources);
     procedure SaveChanel();
   public
-    constructor Create(AOwner: TComponent); override;
     procedure Refresh();
     function Save(): Boolean;
+  public
+    constructor Create(AOwner: TComponent); override;
+  public
     property SourceIndex: Integer read GetSourceIndex;
     property Video: TVideoSources write SetVideo;
   end;

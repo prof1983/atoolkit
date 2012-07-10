@@ -2,7 +2,7 @@
 @Abstract(Конфигурации в виде XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(04.01.2006)
-@LastMod(09.07.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 
 [+] 30.09.2006 Prof - CLR
@@ -18,8 +18,8 @@ uses
 type
   TConfigDocument = AXmlDocumentImpl.TProfXmlDocument;
   TConfigDocument1 = TConfigDocument;
-  TConfigNode = AXmlNodeImpl.TProfXmlNode4;
-  TConfigNode1 = AXmlNodeImpl.TProfXmlNode1;
+  TConfigNode = AXmlNodeImpl.TProfXmlNode1;
+  TConfigNode1 = TConfigNode;
 
 resourcestring // Сообщения ----------------------------------------------------
   info_Start_Load_Param       = '--> Загрузка параметров.';

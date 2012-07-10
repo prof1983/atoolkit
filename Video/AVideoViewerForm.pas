@@ -2,7 +2,7 @@
 @Abstract(Просмотр видеоизображений с видеоисточников)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(05.04.2006)
-@LastMod(04.05.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 }
 unit AVideoViewerForm;
@@ -146,7 +146,7 @@ var
   VideoViewerForm: TVideoViewerForm;
 
 const
-  LOG_COLOR: array[TLogTypeMessage] of TColor = (clBlack, clRed, clBlue, clGreen);
+  LOG_COLOR: array[TLogTypeMessage] of TColor = (clBlack, clRed, clBlue, clGreen, clBlack, clBlack);
 
 implementation
 

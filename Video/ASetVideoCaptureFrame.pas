@@ -2,7 +2,7 @@
 @Abstract(Настройка видеозахвата)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(04.04.2006)
-@LastMod(05.05.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 }
 unit ASetVideoCaptureFrame;
@@ -11,7 +11,8 @@ interface
 
 uses
   DbCtrls, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Spin, StdCtrls, Mask;
+  StdCtrls, Mask,
+  AUiSpin;
 
 type
   TfrSetVideoCapture = class(TFrame)

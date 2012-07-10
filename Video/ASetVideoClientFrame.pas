@@ -2,7 +2,7 @@
 @Abstract(Настройка подключения к видеосерверу)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(17.04.2006)
-@LastMod(05.05.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 }
 unit ASetVideoClientFrame;
@@ -10,8 +10,8 @@ unit ASetVideoClientFrame;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Spin, StdCtrls;
+  Classes, Controls, Dialogs, Forms, Graphics, Messages, StdCtrls, SysUtils, Windows,
+  AUiSpin;
 
 type
   TfrSetVideoClient = class(TFrame)

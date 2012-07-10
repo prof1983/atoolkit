@@ -1,9 +1,9 @@
 object VideoViewerForm: TVideoViewerForm
   Left = 265
   Top = 80
-  Width = 551
-  Height = 450
   Caption = 'VideoViewerForm'
+  ClientHeight = 423
+  ClientWidth = 543
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

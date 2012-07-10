@@ -2,7 +2,7 @@
 @Abstract(Работа с видео изображением)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(17.05.2005)
-@LastMod(04.05.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 
 Использует AVICAP32.DLL
@@ -14,7 +14,7 @@ interface
 
 uses
   ActiveX, Graphics, Messages, SysUtils, Windows,
-  AConfig2007, AConsts2, AVideoGlobals;
+  ABase, AConfig2007, AConsts2, AVideoGlobals;
 
 type // ------------------------------------------------------------------------
   PCAPTUREPARMS                   = ^TCAPTUREPARMS;
@@ -112,21 +112,15 @@ type // Класс для получения видеопотока из вид�
   public
     // Вывести диалог выбора видеоисточника
     procedure ChangeVideoSource();
-    function ConfigureLoad(AConfig: TConfigNode1): WordBool; override;
-    function ConfigureSave(AConfig: TConfigNode1): WordBool; override;
     // Присоединиться к видеоисточнику
     function Connect(): WordBool; override;
-    constructor Create(AOwnerHandle: Integer);
     procedure Disconnect(); override;
     // Поместить картинку в буфер обмена
     procedure EditCopy();
-    procedure Free(); override;
     // Послать запрос на получение картинки
     function GetPicture(NumCamera: Integer): WordBool; override;
     // Получить высоту изображения
     function GetWidth(): Integer;
-    // Номер устройства
-    property IndexDevice: Integer read FIndexDevice write FIndexDevice;
     function Reconnect(): WordBool; override;
     procedure PreviewScale();
     // Изменить размер и расположение
@@ -146,6 +140,12 @@ type // Класс для получения видеопотока из вид�
     function StartAvi(FileName: WideString): Boolean;
     function StopAvi(): Boolean;
     function ToWindow(Handle, Left, Top, Width, Height: Integer): Integer;
+  public
+    constructor Create(AOwnerHandle: Integer);
+    procedure Free(); override;
+  public
+    // Номер устройства
+    property IndexDevice: Integer read FIndexDevice write FIndexDevice;
   end;
 
 function capCreateCaptureWindowA(
@@ -326,20 +326,6 @@ begin
     FHandle := 0;
   end;
   Result := True;
-end;
-
-function TVideoSourceCapture.ConfigureLoad(AConfig: TConfigNode1): WordBool;
-begin
-  Result := Assigned(AConfig);
-  if not(Result) then Exit;
-  // ...
-end;
-
-function TVideoSourceCapture.ConfigureSave(AConfig: TConfigNode1): WordBool;
-begin
-  Result := Assigned(AConfig);
-  if not(Result) then Exit;
-  // ...
 end;
 
 function TVideoSourceCapture.Connect(): WordBool;

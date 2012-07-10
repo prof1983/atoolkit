@@ -2,7 +2,7 @@
 @Abstract(Функции работы с видео)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(31.03.2006)
-@LastMod(04.05.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 
 Канал(Chanel) - приемник видеоизображения с видеоисточника
@@ -14,7 +14,7 @@ interface
 
 uses
   ActiveX, Classes, Graphics, SyncObjs, SysUtils, Windows,
-  AConfig2007, AConsts2, AEventObj, ALogObj;
+  ABase, AConfig2007, AConfigUtils, AConsts2, AEventObj, ALogObj;
 
 type
   TPictureEventProc = procedure(AChanelNum: Integer; ABitmap: Graphics.TBitmap) of object;
@@ -63,9 +63,9 @@ type
   // Интерфейс видеоисточника --------------------------------------------------
   IVideoSource = interface
     // Загрузить конфигурации
-    function ConfigureLoad(AConfig: TConfigNode1): WordBool;
+    function ConfigureLoad(Config: AConfig): AError;
     // Сохранить конфигурации
-    function ConfigureSave(AConfig: TConfigNode1): WordBool;
+    function ConfigureSave(Config: AConfig): AError;
     // Получить BitMap последней захваченой картинки. Должно выполняться после GetPicture, когда IsReceived=True
     function GetBitmap(): Graphics.TBitmap;
     // Получить канал
@@ -204,15 +204,17 @@ type // Видеоисточник (шаблон)
     function GetPicture(ANumCamera: Integer): WordBool; virtual;
     procedure SetID(Value: Integer);
   public
-    function ConfigureLoad(AConfig: TConfigNode1): WordBool; virtual;
-    function ConfigureSave(AConfig: TConfigNode1): WordBool; virtual;
+    function ConfigureLoad(Config: AConfig): AError; virtual;
+    function ConfigureSave(Config: AConfig): AError; virtual;
     function Connect(): WordBool; virtual;
-    constructor Create();
     procedure Disconnect(); virtual;
-    procedure Free(); virtual;
-    property OnPicture: TEventPicture read FOnPicture;
     function Reconnect(): WordBool; virtual;
     function SavePicture(const AFileName: WideString; ANumCamera: Integer = 0; ASaveNow: WordBool = False): WordBool; virtual;
+  public
+    constructor Create();
+    procedure Free(); virtual;
+  public
+    property OnPicture: TEventPicture read FOnPicture;
   end;
 
 type // Видеоисточники (Класс работы с подпроцессами чтения видеоизображений) --
@@ -238,6 +240,18 @@ type // Видеоисточники (Класс работы с подпроц�
     function AddChanel(AChanel: TVideoChanel): Integer;
     // Добавить источник
     function AddSource(ASource: IVideoSource): Integer;
+    // Удаление всех видеоисточников и подпроцессов
+    procedure Clear();
+    function ConfigureSave(Config: AConfig): AError;
+    // Возвращает информацию об видеоисточниках и видеоканалах в виде строки с переносами
+    function GetInfo(): WideString;
+    function NewChanel(): TVideoChanel;
+    procedure Start();
+    procedure Stop();
+  public
+    constructor Create();
+    procedure Free();
+  public
     // Возвращает картинку, если это возможно. Иначе nil
     property Bitmap[Chanel: Integer]: Graphics.TBitmap read GetBitmap;
     // Номер канала (только по этому каналу будут запрашиваться изображения)
@@ -247,21 +261,11 @@ type // Видеоисточники (Класс работы с подпроц�
     property ChanelCount: Integer read GetChanelCount write SetChanelCount;
     // Видеоканалы
     property Chanels[Index: Integer]: TVideoChanel read GetChanel write SetChanel;
-    // Удаление всех видеоисточников и подпроцессов
-    procedure Clear();
-    function ConfigureSave(AConfig: TConfigNode1): WordBool;
-    constructor Create();
-    procedure Free();
-    // Возвращает информацию об видеоисточниках и видеоканалах в виде строки с переносами
-    function GetInfo(): WideString;
-    function NewChanel(): TVideoChanel;
     property OnPicture: TEventPicture read FOnPicture;
     // Колличество видеоисточников
     property SourceCount: Integer read GetSourceCount;
     // Видеоисточники
     property Sources[Index: Integer]: IVideoSource read GetSource;
-    procedure Start();
-    procedure Stop();
     // Колличество подпроцессов работы с видеоисточниками
     property VideoThreadCount: Integer read GetVideoThreadCount;
     // Подпроцессы работы с видеосточниками
@@ -326,14 +330,24 @@ end;
 
 { TVideoSource }
 
-function TVideoSource.ConfigureLoad(AConfig: TConfigNode1): WordBool;
+function TVideoSource.ConfigureLoad(Config: AConfig): AError;
 begin
-  Result := Assigned(AConfig);
+  if (Config = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  Result := 0;
 end;
 
-function TVideoSource.ConfigureSave(AConfig: TConfigNode1): WordBool;
+function TVideoSource.ConfigureSave(Config: AConfig): AError;
 begin
-  Result := Assigned(AConfig);
+  if (Config = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  Result := 0;
 end;
 
 function TVideoSource.Connect(): WordBool;
@@ -458,35 +472,37 @@ begin
   FCritical.Release();
 end;
 
-function TVideoSources.ConfigureSave(AConfig: TConfigNode1): WordBool;
+function TVideoSources.ConfigureSave(Config: AConfig): AError;
 var
   I: Integer;
-  Node: TConfigNode1;
-  nChanel: TConfigNode1;
-  //c: TChanelRec;
-  c: TVideoChanel;
+  Node: AConfig;
+  nChanel: AConfig;
+  C: TVideoChanel;
 begin
-  Result := Assigned(AConfig);
-  if not(Result) then Exit;
+  if (Config = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
 
   FCritical.Enter();
-  Node := AConfig.GetNodeByName('Chanels');
+  Node := AConfig_GetChildNodeByName(Config, 'Chanels');
   for I := 0 to High(FChanels) do
   begin
     c := FChanels[I];
     //unConfig.SaveObjectToConfig(Node.GetNodeByName('Chanel'+IntToStr(I)), FChanels[I], nil);
-    nChanel := Node.GetNodeByName('Chanel'+IntToStr(I));
-    nChanel.WriteBool('Enabled', c.Enabled);
-    nChanel.WriteInt32('NumCamera', c.NumCamera);
-    nChanel.WriteBool('Save', c.Save);
-    nChanel.WriteInt32('Source', c.Source.ID);
-    nChanel.WriteBool('Visible', c.Visible);
+    NChanel := AConfig_GetChildNodeByName(Node, 'Chanel'+IntToStr(I));
+    AConfig_WriteBool(nChanel, 'Enabled', C.Enabled);
+    AConfig_WriteInt32(nChanel, 'NumCamera', C.NumCamera);
+    AConfig_WriteBool(nChanel, 'Save', C.Save);
+    AConfig_WriteInt32(nChanel, 'Source', C.Source.Id);
+    AConfig_WriteBool(nChanel, 'Visible', C.Visible);
   end;
   FCritical.Release();
 
-  Node := AConfig.GetNodeByName('Sources');
+  Node := AConfig_GetChildNodeByName(Config, 'Sources');
   for I := 0 to High(FSources) do
-    FSources[I].ConfigureSave(Node.GetNodeByName('Source'+IntToStr(I)));
+    FSources[I].ConfigureSave(AConfig_GetChildNodeByName(Node, 'Source'+IntToStr(I)));
 end;
 
 constructor TVideoSources.Create();

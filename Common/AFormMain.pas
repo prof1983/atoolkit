@@ -2,7 +2,7 @@
 @Abstract(Класс главной форма - оболочка для TForm)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.11.2005)
-@LastMod(09.07.2012)
+@LastMod(10.07.2012)
 @Version(0.5)
 }
 unit AFormMain;
@@ -22,6 +22,7 @@ type
     FConfigFilePath: WideString;
     FIsConfigDocumentInit: Boolean; // ConfigDocument инициализирован в этом объекте
     FIsLogDocumentsInit: Boolean;   // LogDocuments инициализирован в этом объекте
+    FLogDir: APascalString;
     FLogFilePath: WideString;
     FLogID: Integer;
     FLogName: string;
@@ -119,6 +120,7 @@ var
   ExeName: String;
   ExePath: String;
 begin
+  ExePath := ExtractFilePath(ParamStr(0));
   if not(Assigned(FConfigDocument1)) and (FConfig = 0) then
   try
     ExeName := ExtractFileName(ParamStr(0));
@@ -127,7 +129,6 @@ begin
     // Получение полного имени файла
     if ExtractFilePath(FConfigFileName) = '' then
     begin
-      ExePath := ExtractFilePath(ParamStr(0));
       if (FConfigFilePath = '') then
       begin
         if (Length(FConfigDir) > 0) then
@@ -164,6 +165,17 @@ begin
   end;
 
   ConfigureLoad();
+
+  if (Length(FLogFilePath) = 0) then
+  begin
+    if (Length(FLogDir) > 0) then
+      FLogFilePath := ExePath + FLogDir
+    else
+      FLogFilePath := ExePath;
+  end;
+  FLogFilePath := ExpandFileName(FLogFilePath);
+  if (FLogFilePath[Length(FLogFilePath)] <> '/') and (FLogFilePath[Length(FLogFilePath)] <> '\') then
+    FLogFilePath := FLogFilePath + '\';
 
   if not(Assigned(FLogDocuments)) then
   begin

@@ -1,8 +1,8 @@
-﻿{**
-@Abstract(Класс-потомок для форм с логированием и конфигурациями)
+{**
+@Abstract(TForm with Logging and Configurations)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.10.2005)
-@LastMod(10.07.2012)
+@LastMod(11.07.2012)
 @Version(0.5)
 }
 unit AForm2007;
@@ -13,65 +13,69 @@ uses
   Classes, Forms, SysUtils, XmlIntf,
   ABase, AConfig2007, AConfigUtils, ALogGlobals, ALogNodeUtils, ATypes;
 
-type //** @abstract(Класс-потомок для форм с логированием и конфигурациями)
-  TProfForm = class(TForm)
+type
+    //** TForm with Logging and Configurations
+  TAFormObject = class(TForm)
   protected
     FConfig: AConfig;
-    //FConfig1: TConfigNode1; - Use FConfig
-    //FConfig2: IXmlNode; - Use FConfig
-    //FConfigDocument: IXmlDocument;
     FConfigDocument1: TConfigDocument;
     FInitialized: WordBool;
-    FLog: ALogNode{TALogNode}; //FLog: IALogNode2;
+    FLog: ALogNode;
     FLogPrefix: WideString;
     FOnAddToLog: TAddToLogProc;
-    //FOnAddToLog: TProfAddToLog;
-    //FOnAddToLog: TAddToLog;
   protected
     procedure DoDestroy(); override;
     function DoFinalize(): WordBool; virtual;
     function DoInitialize(): WordBool; virtual;
   public
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: APascalString): AInteger; virtual;
-    function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: string; AParams: array of const): Boolean; virtual;
-    function AddToLogW(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): AInteger;
-    function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer; virtual;
-    function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; virtual;
-    function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage; const AStrMsg: WideString): Integer; virtual;
+    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+        const AStrMsg: APascalString): AInteger; virtual;
+    function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+        const AStrMsg: string; AParams: array of const): Boolean; virtual;
+    function AddToLogW(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+        const AStrMsg: WideString): AInteger;
+    function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+        const AStrMsg: WideString; AParams: array of const): Integer; virtual;
+    function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+        const AStrMsg: WideString): Integer; virtual;
+    function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
+        const AStrMsg: WideString): Integer; virtual;
   public
     function ConfigureLoad(): WordBool; virtual;
     function ConfigureLoad1(): WordBool; virtual; deprecated; // Use ConfigureLoad()
-    //function ConfigureLoad2(AConfig: IXmlNode = nil): WordBool; virtual; safecall;
     function ConfigureSave(): WordBool; virtual;
     function ConfigureSave1(): WordBool; virtual; deprecated; // Use ConfigureSave()
-    //function ConfigureSave2(AConfig: IXmlNode = nil): WordBool; virtual; safecall;
     function Finalize(): WordBool; virtual;
     function Initialize(): WordBool; virtual;
   public
     procedure Free(); virtual;
   public
-    property Config: AConfig{IXmlNode} read FConfig write FConfig;
-    //property Config1: TConfigNode1 read FConfig1 write FConfig1; - Use Config
-    //property ConfigDocument: IXmlDocument read FConfigDocument write FConfigDocument;
+    property Config: AConfig read FConfig write FConfig;
     property ConfigDocument1: TConfigDocument1 read FConfigDocument1 write FConfigDocument1;
     property Initialized: WordBool read FInitialized;
     property Log: ALogNode read FLog write FLog;
     property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
-    //property OnAddToLog: TProfAddToLog read FOnAddToLog write FOnAddToLog;
-    //property OnAddToLog: TAddToLog read FOnAddToLog write FOnAddToLog;
   end;
 
-resourcestring // Сообщения ----------------------------------------------------
-  stCreateOk = 'Объект создан';
+  //TProfForm = TAFormObject;
 
-const // Состояние окна --------------------------------------------------------
+// --- Messages ---
+{$IFDEF DELPHI_XE_UP}
+{$I AForm.ru.utf8.inc}
+{$ELSE}
+{$I AForm.ru.win1251.inc}
+{$ENDIF DELPHI_XE_UP}
+
+const
+    //** Window state
   WINDOW_STATE: array[TWindowState] of string = ('Normal', 'Minimized', 'Maximized');
 
 implementation
 
 { TProfForm }
 
-function TProfForm.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: APascalString): AInteger;
+function TAFormObject.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+    const AStrMsg: APascalString): AInteger;
 begin
   Result := ALogNode_AddToLog(FLog, AGroup, AType, AStrMsg);
   if Assigned(FOnAddToLog) then
@@ -81,7 +85,8 @@ begin
   end;
 end;
 
-function TProfForm.AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: string; AParams: array of const): Boolean;
+function TAFormObject.AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+    const AStrMsg: string; AParams: array of const): Boolean;
 var
   S: WideString;
 begin
@@ -93,12 +98,13 @@ begin
   Result := (AddToLog(AGroup, AType, S) >= 0);
 end;
 
-function TProfForm.AddToLogW(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): AInteger;
+function TAFormObject.AddToLogW(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+    const AStrMsg: WideString): AInteger;
 begin
   Result := AddToLog(AGroup, AType, AStrMsg);
 end;
 
-function TProfForm.ConfigureLoad(): WordBool;
+function TAFormObject.ConfigureLoad(): WordBool;
 var
   I: Integer;
   S: APascalString;
@@ -132,7 +138,7 @@ begin
   Result := True;
 end;
 
-function TProfForm.ConfigureLoad1(): WordBool;
+function TAFormObject.ConfigureLoad1(): WordBool;
 begin
   Result := ConfigureLoad();
 end;
@@ -172,7 +178,7 @@ begin
   Result := True;
 end;}
 
-function TProfForm.ConfigureSave(): WordBool;
+function TAFormObject.ConfigureSave(): WordBool;
 begin
   if (FConfig = 0) then
   begin
@@ -187,11 +193,11 @@ begin
     AConfig_WriteInt32(FConfig, 'Height', Height);
   end;
   AConfig_WriteInt32(FConfig, 'WindowState', Integer(WindowState));
-  AConfig_WriteString(FConfig, 'Caption', Caption); // Заголовок окна
+  AConfig_WriteString(FConfig, 'Caption', Caption);
   AConfig_WriteBool(FConfig, 'Visible', Self.Visible);
 end;
 
-function TProfForm.ConfigureSave1(): WordBool;
+function TAFormObject.ConfigureSave1(): WordBool;
 begin
   Result := ConfigureSave();
 end;
@@ -211,17 +217,17 @@ begin
     AConfig_WriteInt(FConfig, 'Height', Height);
   end;
   AConfig_WriteInt(FConfig, 'WindowState', Integer(WindowState));
-  AConfig_WriteString(FConfig, 'Caption', Caption); // Заголовок окна
+  AConfig_WriteString(FConfig, 'Caption', Caption);
   AConfig_WriteBool(FConfig, 'Visible', Self.Visible);
 end;}
 
-procedure TProfForm.DoDestroy();
+procedure TAFormObject.DoDestroy();
 begin
   DoFinalize();
   inherited DoDestroy();
 end;
 
-function TProfForm.DoFinalize(): WordBool;
+function TAFormObject.DoFinalize(): WordBool;
 begin
   AConfig_Free(FConfig);
   FConfig := 0;
@@ -231,27 +237,28 @@ begin
   Result := True;
 end;
 
-function TProfForm.DoInitialize(): WordBool;
+function TAFormObject.DoInitialize(): WordBool;
 begin
   Result := True;
 end;
 
-function TProfForm.Finalize(): WordBool;
+function TAFormObject.Finalize(): WordBool;
 begin
   Result := DoFinalize();
 end;
 
-procedure TProfForm.Free();
+procedure TAFormObject.Free();
 begin
   inherited Free;
 end;
 
-function TProfForm.Initialize(): WordBool;
+function TAFormObject.Initialize(): WordBool;
 begin
   Result := DoInitialize();
 end;
 
-function TProfForm.ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString; AParams: array of const): Integer;
+function TAFormObject.ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+    const AStrMsg: WideString; AParams: array of const): Integer;
 var
   S: WideString;
 begin
@@ -263,12 +270,14 @@ begin
   Result := AddToLog(AGroup, AType, S);
 end;
 
-function TProfForm.ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
+function TAFormObject.ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+    const AStrMsg: WideString): Integer;
 begin
   Result := AddToLog(AGroup, AType, AStrMsg);
 end;
 
-function TProfForm.ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage; const AStrMsg: WideString): Integer;
+function TAFormObject.ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
+    const AStrMsg: WideString): Integer;
 begin
   Result := AddToLog(IntToLogGroupMessage(AGroup), IntToLogTypeMessage(AType), AStrMsg);
 end;

@@ -2,7 +2,7 @@
 @Abstract(Общие интерфейсы для всех проектов)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(25.02.2007)
-@LastMod(03.07.2012)
+@LastMod(11.07.2012)
 @Version(0.5)
 
 История версий
@@ -13,17 +13,17 @@ unit ANodeIntf;
 interface
 
 uses
-  AAttributesIntf, AEntityIntf;
+  AAttributesIntf, ABase, AEntityIntf;
 
 type
   IProfNodes = interface;
 
   IProfNode = interface(IANamedEntity)
     function GetAttributes(): IProfAttributes; safecall;
-    function GetChildNodes(): IProfNodes; safecall;
+    function GetChildNodes(): AXmlNodeList{IProfNodes};
 
     property Attributes: IProfAttributes read GetAttributes;
-    property ChildNodes: IProfNodes read GetChildNodes;
+    property ChildNodes: AXmlNodeList{IProfNodes} read GetChildNodes;
   end;
 
   IProfNodes = interface

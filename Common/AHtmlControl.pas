@@ -2,7 +2,7 @@
 @Abstract(Контрол для работы с XHTML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(11.03.2007)
-@LastMod(27.04.2012)
+@LastMod(11.07.2012)
 @Version(0.5)
 }
 unit AHtmlControl;
@@ -11,7 +11,7 @@ interface
 
 uses
   ExtCtrls, StdCtrls,
-  AHtmlConst, ANodeIntf, AXmlDocument; 
+  ABase, AHtmlConst, ANodeIntf, AXmlDocumentImpl, AXmlNodeUtils;
 
 type
   //** @abstract(Класс для отрисовки элементов управления XHTML)
@@ -25,7 +25,7 @@ type
     FHtmlCode: WideString;
     //** Имя формы - имя тега для построения XML ответа
     FFormName: WideString;
-    procedure RefreshForm(AForm: IProfNode);
+    procedure RefreshForm(Form: AXmlNode);
   public
     //** Удалить все элементы
     procedure Clear();
@@ -66,61 +66,61 @@ end;
 
 procedure THtmlControl.Refresh();
 var
-  nBody: IProfNode;
-  nForm: IProfNode;
+  nBody: AXmlNode;
+  nForm: AXmlNode;
   xhtml: TProfXmlDocument;
+  de: AXmlNode;
 begin
   Clear();
 
   xhtml := TProfXmlDocument.Create();
-  xhtml.Initialize();
-  xhtml.Document.XML.Clear();
-  xhtml.Document.XML.Add(FHtmlCode);
   try
+    xhtml.Initialize();
+    xhtml.Document.XML.Clear();
+    xhtml.Document.XML.Add(FHtmlCode);
     xhtml.Document.Active := True;
-    xhtml.OpenA();
+    de := xhtml.GetDocumentElement();
     // TODO: Сделать проверку главного тега
-    if (xhtml.Document.DocumentElement.NodeName = HTML_TAG_HTML) then
+    if (AXmlNode_GetName(de) = HTML_TAG_HTML) then
     try
       // Получаем элемент body
-      nBody := xhtml.NodeByName[HTML_TAG_BODY];
-      if Assigned(nBody) and Assigned(nBody.ChildNodes) then
+      nBody := AXmlNode_GetChildNodeByName(de, HTML_TAG_BODY);
+      if (nBody <> 0) then
       begin
         // Получаем элемент form
-        nForm := nBody.ChildNodes.NodeByName[HTML_TAG_FORM];
+        nForm := AXmlNode_GetChildNodeByName(nBody, HTML_TAG_FORM);
         RefreshForm(nForm);
       end;
     except
     end;
-    xhtml.Document.Active := False;
+    xhtml.CloseDocument();
   except
   end;
-  xhtml.CloseDocument();
   xhtml.Free();
 end;
 
-procedure THtmlControl.RefreshForm(AForm: IProfNode);
+procedure THtmlControl.RefreshForm(Form: AXmlNode);
 var
   i: Integer;
-  nElement: IProfNode;
+  nElement: AXmlNode;
   aType: WideString;
 var
   ed: TEdit;
   lbl: TLabel;
 begin
-  if Assigned(AForm) then
+  if (Form = 0) then Exit;
   try
     // Получаем все элементы и стром форму
-    FFormName := AForm.Attributes.AttributeByName[HTML_ATTR_FORM_NAME].Value;
-    for i := 0 to AForm.ChildNodes.Count - 1 do
+    FFormName := AXmlNode_GetAttributeValue(Form, HTML_ATTR_FORM_NAME);
+    for i := 0 to AXmlNode_GetChildNodeCount(Form) - 1 do
     begin
       aType := '';
-      nElement := AForm.ChildNodes.NodeByIndex[i];
-      if Assigned(nElement) then
+      nElement := AXmlNode_GetChildNodeByIndex(Form, i);
+      if (nElement <> 0) then
       begin
-        if (nElement.Name = HTML_TAG_FORM_INPUT) then
+        if (AXmlNode_GetName(nElement) = HTML_TAG_FORM_INPUT) then
         begin
-          aType := nElement.Attributes.AttributeByName[HTML_ATTR_FORM_INPUT_TYPE].Value;
+          aType := AXmlNode_GetAttributeValue(nElement, HTML_ATTR_FORM_INPUT_TYPE);
           if (aType = HTML_ATTR_FORM_INPUT_TYPE_TEXT) then
           begin
             ed := TEdit.Create(FController);
@@ -130,7 +130,7 @@ begin
             // ...
           end
         end
-        else if (nElement.Name = 'b') then
+        else if (AXmlNode_GetName(nElement) = 'b') then
         begin
           lbl := TLabel.Create(FController);
           lbl.Parent := FController;

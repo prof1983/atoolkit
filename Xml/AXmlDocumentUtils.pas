@@ -2,7 +2,7 @@
 @Abstract(AXmlDucument functions)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(28.06.2012)
-@LastMod(09.07.2012)
+@LastMod(11.07.2012)
 @Version(0.5)
 }
 unit AXmlDocumentUtils;

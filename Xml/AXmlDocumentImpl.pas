@@ -132,6 +132,7 @@ begin
   if Assigned(FDocument) then
   begin
     //FDocument.SaveToFile(FFileName);
+    FDocument.Active := False;
     FDocument := nil;
   end;
 end;

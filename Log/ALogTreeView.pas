@@ -2,7 +2,7 @@
 @Abstract(Работа с Log. Классы для отображения собщений программы окне в виде дерева)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(19.10.2006)
-@LastMod(03.07.2012)
+@LastMod(11.07.2012)
 @Version(0.5)
 
 Работа с Log. Классы для записи собщений программы в БД или файл или
@@ -16,65 +16,50 @@ interface
 
 uses
   ComCtrls, SysUtils,
-  ALogDocumentImpl, ATypes;
+  ABase, ALogDocumentImpl, ATypes;
 
 type
   TLogTreeView = class(TALogDocument)
   private
     FTreeView: TTreeView;
   public
-    procedure AddMsg(const Msg: WideString); override;
-    procedure AddStr(const Str: WideString); override;
-    function AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
-        const AStrMsg: string; AParams: array of const): Boolean; override;
+    function AddMsg(const Msg: WideString): AInt; override;
+    function AddStr(const Str: WideString): AInt; override;
+    function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: WideString): AInteger; override;
+  public
     constructor Create(ATreeView: TTreeView; const AName: WideString = '');
-    function ToLogA(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer; override;
-    function ToLogE(LogGroup: EnumGroupMessage; LogType: EnumTypeMessage;
-        const StrMsg: WideString): Integer; override;
   end;
 
 implementation
 
 { TLogTreeView }
 
-procedure TLogTreeView.AddMsg(const Msg: WideString);
+function TLogTreeView.AddMsg(const Msg: WideString): AInt;
 begin
-  ToLogA(lgNone, ltNone, Msg);
+  AddToLog(lgNone, ltNone, Msg);
 end;
 
-procedure TLogTreeView.AddStr(const Str: WideString);
+function TLogTreeView.AddStr(const Str: WideString): AInt;
 begin
-  ToLogA(lgNone, ltNone, Str);
+  AddToLog(lgNone, ltNone, Str);
 end;
 
-function TLogTreeView.AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
-    const AStrMsg: string; AParams: array of const): Boolean;
+function TLogTreeView.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+  const StrMsg: WideString): AInteger;
 begin
-  Result := (ToLogA(LogGroup, LogType, Format(AStrMsg, AParams)) >= 0);
+  Result := 0;
+  if Assigned(FTreeView) then
+  begin
+    FTreeView.Items.AddChild(nil, StrMsg);
+    Result := 1;
+  end;
 end;
 
 constructor TLogTreeView.Create(ATreeView: TTreeView; const AName: WideString = '');
 begin
   inherited Create(lTreeView, AName);
   FTreeView := ATreeView;
-end;
-
-function TLogTreeView.ToLogA(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
-    const AStrMsg: WideString): Integer;
-begin
-  Result := 0;
-  if Assigned(FTreeView) then
-  begin
-    FTreeView.Items.AddChild(nil, AStrMsg);
-    Result := 1;
-  end;
-end;
-
-function TLogTreeView.ToLogE(LogGroup: EnumGroupMessage; LogType: EnumTypeMessage;
-    const StrMsg: WideString): Integer;
-begin
-  Result := ToLogA(lgNone, ltNone, StrMsg);
 end;
 
 end.

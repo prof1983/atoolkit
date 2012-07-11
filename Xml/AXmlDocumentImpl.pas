@@ -2,7 +2,7 @@
 @Abstract(Класс работы с XML документом)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(07.03.2007)
-@LastMod(09.07.2012)
+@LastMod(11.07.2012)
 @Version(0.5)
 
 История версий:
@@ -22,18 +22,18 @@ type
     XML документ.
     Класс реализует интерфейс IProfXmlDocument
   }
-  TProfXmlDocument = class(TInterfacedObject{TProfDocument}, IProfXmlDocument)
+  TProfXmlDocument = class(TInterfacedObject, IProfXmlDocument)
   public
       //** XML документ
     FDocument: IXmlDocument; //FDocument: TXmlDocument;
     FDocumentElement: AProfXmlNode;
       //** Название главного элемента документа (используется при создании XML документа)
     FDefElementName: WideString; //FDocumentElementName: WideString;
-      //** Имя файла XML документа
-    FFileName: WideString;
-  protected
     FDefFileName: WideString;
     FEncoding: WideString;   // Набор символов = 'Windows-1251'
+      //** Имя файла XML документа
+    FFileName: WideString;
+    FInitialized: ABoolean;
     FOnAddToLog: TAddToLogProc;
     FStandAlone: WideString; // Указывает на внешнее описание = ''
     FVersion: WideString;    // Версия XML = '1.0'
@@ -295,6 +295,12 @@ end;
 
 function TProfXmlDocument.Initialize(): WordBool;
 begin
+  if FInitialized then
+  begin
+    Result := True;
+    Exit;
+  end;
+
   Result := True;
 
   // Проверка сущестрования директории
@@ -325,6 +331,7 @@ begin
       FDocument.SaveToFile('');
     end;
   end;
+  FInitialized := True;
 end;
 
 function TProfXmlDocument.LoadFromFile(const AFileName: WideString): WordBool;

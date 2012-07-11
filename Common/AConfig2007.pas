@@ -1,4 +1,4 @@
-{**
+﻿{**
 @Abstract(Configurations in XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(04.01.2006)
@@ -6,6 +6,8 @@
 @Version(0.5)
 }
 unit AConfig2007;
+
+{$I A.inc}
 
 interface
 
@@ -26,6 +28,12 @@ function SaveObjectToConfig2006(AConfig: TConfigNode1; AObject: TObject; AAddToL
 
 function ProcessLoadObject(AConfig: IXmlNode; AObj: TObject): Boolean; {forward;}
 function ProcessLoadObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean; {forward;}
+
+{$IFDEF DELPHI_XE_UP}
+{$I AConfig.ru.utf8.inc}
+{$ELSE}
+{$I AConfig.ru.win1251.inc}
+{$ENDIF DELPHI_XE_UP}
 
 implementation
 

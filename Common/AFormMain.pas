@@ -2,7 +2,7 @@
 @Abstract(Класс главной форма - оболочка для TForm)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.11.2005)
-@LastMod(10.07.2012)
+@LastMod(11.07.2012)
 @Version(0.5)
 }
 unit AFormMain;
@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ABase, AConsts2, ALogDocumentsAll, AForm2007, ALogDocuments,
+  ABase, AConsts2, ALogDocumentsAll, AFormObj, ALogDocuments,
   ATypes, AXmlDocumentImpl, AXmlNodeUtils, AXmlUtils;
 
 type

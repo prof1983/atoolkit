@@ -2,7 +2,7 @@
 @Abstract(Форма отображения свойств)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(12.10.2005)
-@LastMod(09.07.2011)
+@LastMod(11.07.2011)
 @Version(0.5)
 }
 unit fPropertys;
@@ -13,7 +13,7 @@ uses
   Classes, Controls, ComCtrls, Dialogs, ExtCtrls, Graphics, Grids, Forms,
   Messages, SysUtils, ValEdit, Variants, Windows,
   NlStatusBar, NlXmlTreeView,
-  AForm2007, ATypes;
+  AFormObj, ATypes;
 
 type
   TFormPropertys = class(TProfForm)

@@ -2,7 +2,7 @@
 @Abstract(Форма отображения свойств)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(12.10.2005)
-@LastMod(18.05.2012)
+@LastMod(11.07.2012)
 @Version(0.5)
 }
 unit fProperties20061013;
@@ -15,7 +15,7 @@ uses
   Classes, Controls, ComCtrls, Dialogs, ExtCtrls, Graphics, Grids, Forms,
   Messages, SysUtils, ValEdit, Variants, Windows,
   {$IFDEF USENL}NLStatusBar, NLXmlTreeView,{$ENDIF}
-  fProfShablon, AForm2007, ATreeView, ATypes;
+  fProfShablon, {AFormObj,} ATreeView, ATypes;
 
 type
   TfmProperties = class(TfmProfShablon)

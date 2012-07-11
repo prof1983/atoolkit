@@ -1,11 +1,11 @@
-{**
+﻿{**
 @Abstract(TForm with Logging and Configurations)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.10.2005)
 @LastMod(11.07.2012)
 @Version(0.5)
 }
-unit AForm2007;
+unit AFormObj;
 
 interface
 

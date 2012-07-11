@@ -2,7 +2,7 @@
 @Abstract(Конфигурации формы)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(18.03.2006)
-@LastMod(03.05.2012)
+@LastMod(11.07.2012)
 @Version(0.5)
 }
 unit AConfigFormUtils;
@@ -245,9 +245,9 @@ end;
 
 function XmlFromFormConfig(var AXml: WideString; AForm: TForm): WordBool;
 var
-  c: TConfigDocument1;
+  c: TConfigDocument;
 begin
-  C := TConfigDocument1.Create();
+  C := TConfigDocument.Create();
   try
     C.CreateDocument();
     Result := (AConfig_PullFromForm(C.DocumentElement, AForm) >= 0);

@@ -2,7 +2,7 @@
 @Abstract(Интерфейс для модулей импорта, экспорта и синхронизации)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.04.2006)
-@LastMod(04.07.2012)
+@LastMod(11.07.2012)
 @Version(0.5)
 
   Команды формарования строк вставки и обновления данных (SqlInsert, SqlUpdate)
@@ -182,10 +182,10 @@ end;
 
 function TDataModules.ConfigureLoad2(const AXml: WideString): WordBool;
 var
-  C: TConfigDocument1;
+  C: TConfigDocument;
   N: AXmlNode;
 begin
-  C := TConfigDocument1.Create();
+  C := TConfigDocument.Create();
   try
     N := C.GetDocumentElement();
     AXmlNode_SetName(N, 'DataModules');
@@ -234,11 +234,11 @@ end;
 
 function TDataModules.ConfigureSave2(var AXml: WideString): WordBool;
 var
-  C: TConfigDocument1;
+  C: TConfigDocument;
   N: AXmlNode;
   Res: AError;
 begin
-  C := TConfigDocument1.Create();
+  C := TConfigDocument.Create();
   try
     N := C.GetDocumentElement();
     AXmlNode_SetName(N, 'DataModules');

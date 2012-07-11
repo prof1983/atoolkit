@@ -1,4 +1,4 @@
-﻿{**
+{**
 @Abstract(TForm with Logging and Configurations)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.10.2005)
@@ -51,7 +51,7 @@ type
     procedure Free(); virtual;
   public
     property Config: AConfig read FConfig write FConfig;
-    property ConfigDocument1: TConfigDocument1 read FConfigDocument1 write FConfigDocument1;
+    property ConfigDocument1: TConfigDocument read FConfigDocument1 write FConfigDocument1;
     property Initialized: WordBool read FInitialized;
     property Log: ALogNode read FLog write FLog;
     property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
@@ -130,7 +130,7 @@ begin
   if (AConfig_ReadInt32(FConfig, 'WindowState', I) >= 0) then
     WindowState := TWindowState(I);
   if (AConfig_ReadString(FConfig, 'Caption', S) >= 0) then
-    Caption := S; // Заголовок окна
+    Caption := S;
 
   if (WindowState <> tmpWindowState) then
     WindowState := tmpWindowState;
@@ -173,7 +173,7 @@ begin
     WindowState := tmpWindowState;
 
   if (AConfig_ReadString(FConfig, 'Caption', S) >= 0) then
-    Caption := S; // Заголовок окна
+    Caption := S;
 
   Result := True;
 end;}

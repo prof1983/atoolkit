@@ -125,7 +125,7 @@ begin
     // Проверка существования директории
     ForceDirectories(ExtractFilePath(FConfigFileName));
     // Создание объекта
-    FConfigDocument1 := TConfigDocument1.Create(FConfigFileName);
+    FConfigDocument1 := TConfigDocument.Create(FConfigFileName);
     // Проверим наличие файла
     FConfig := AXmlNode_GetChildNodeByName(FConfigDocument1.GetDocumentElement(), 'FormMain');
     ConfigureLoad();

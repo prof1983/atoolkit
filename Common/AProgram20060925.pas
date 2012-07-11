@@ -2,7 +2,7 @@
 @Abstract(Реализация основной функциональности для главного объекта)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.05.2006)
-@LastMod(05.07.2012)
+@LastMod(11.07.2012)
 @Version(0.5)
 }
 unit AProgram20060925;
@@ -44,8 +44,8 @@ type //** Основной объект сервиса
     FIsTeach: Boolean;
     FIsTest: Boolean;
   protected
-    FConfig: AConfig{TConfigNode1}{TConfigDocument1};
-    FConfigDocument: TConfigDocument1;
+    FConfig: AConfig;
+    FConfigDocument: TConfigDocument;
     FDateStart: TDateTime;
     FLogDocuments: TALogDocuments;
 
@@ -90,7 +90,7 @@ type //** Основной объект сервиса
     function Initialize(): WordBool;
   public
     // Конфигурации программы
-    property ConfigDocument: TConfigDocument1 read FConfigDocument;
+    property ConfigDocument: TConfigDocument read FConfigDocument;
     // Время запуска сервиса
     property DateStart: TDateTime read FDateStart;
     // Зависимости от других сервисов
@@ -298,7 +298,7 @@ begin
 
   // Создать конфигурации программы
   if not(Assigned(FConfigDocument)) then
-    FConfigDocument := TConfigDocument1.Create2(FConfigPath + Self.ProgramName + '.' +
+    FConfigDocument := TConfigDocument.Create2(FConfigPath + Self.ProgramName + '.' +
         FILE_EXT_CONFIG, AddToLog);
   FConfig := FConfigDocument.GetDocumentElement();
 

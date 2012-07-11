@@ -1,11 +1,9 @@
-﻿{**
-@Abstract(Конфигурации в виде XML)
+{**
+@Abstract(Configurations in XML)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(04.01.2006)
 @LastMod(11.07.2012)
 @Version(0.5)
-
-[+] 30.09.2006 Prof - CLR
 }
 unit AConfig2007;
 
@@ -20,12 +18,6 @@ type
   TConfigNode = AXmlNodeImpl.TProfXmlNode1;
   TConfigNode1 = TConfigNode;
 
-resourcestring // Сообщения ----------------------------------------------------
-  info_Start_Load_Param       = '--> Загрузка параметров.';
-  info_Succ_Load_Param        = '--> Параметры загружены успешно.';
-  info_Start_Save_Param       = '--> Сохранение параметров.';
-  info_Succ_Save_Param        = '--> Параметры успешно сохранены.';
-
 function LoadObjectFromConfig(AConfig: IXmlNode; AObject: TObject; AAddToLog: TAddToLogProc): WordBool;
 function SaveObjectToConfig(AConfig: IXmlNode; AObject: TObject; AAddToLog: TAddToLogProc): WordBool;
 // --- From unConfig2006 ---
@@ -39,10 +31,8 @@ implementation
 
 // -----------------------------------------------------------------------------
 function LoadObjectFromConfig(AConfig: IXmlNode; AObject: TObject; AAddToLog: TAddToLogProc): WordBool;
-//function LoadObjectFromConfig(AConfig: TConfigNode; AObject: TObject; AAddToLog: TAddToLogA): WordBool;
 begin
   Result := False;
-  {$IFNDEF CLR}
   try
     //Lock();
     try
@@ -52,7 +42,7 @@ begin
         //FStorage.SetDescription(str_Description);
         if Assigned(AAddToLog) then
           AAddToLog(lgSetup, ltInformation, info_Start_Load_Param);
-        // Загрузим параметры
+        // Load params
         Result := ProcessLoadObject(AConfig, AObject);
         if Assigned(AAddToLog) then
           AAddToLog(lgSetup, ltInformation, info_Succ_Load_Param);
@@ -67,13 +57,11 @@ begin
       if Assigned(AAddToLog) then
         AAddToLog(lgSetup, ltError, Format(err_Exception_Str, [E.Message, '', 'LoadObjectFromConfig()']));
   end;
-  {$ENDIF}
 end;
 
 function LoadObjectFromConfig2006(AConfig: TConfigNode1; AObject: TObject; AAddToLog: TAddToLog): WordBool;
 begin
   Result := False;
-  {$IFNDEF CLR}
   try
     //Lock();
     try
@@ -83,7 +71,7 @@ begin
         //FStorage.SetDescription(str_Description);
         if Assigned(AAddTOLog) then
           AAddToLog(lgSetup, ltInformation, info_Start_Load_Param, []);
-        // Загрузим параметры
+        // Load params
         Result := ProcessLoadObject2006(AConfig, AObject);
         if Assigned(AAddToLog) then
           AAddToLog(lgSetup, ltInformation, info_Succ_Load_Param, []);
@@ -98,13 +86,10 @@ begin
       if Assigned(AAddToLog) then
         AAddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, {Self.ClassName} '', 'LoadObjectFromConfig()']);
   end;
-  {$ENDIF}
 end;
 
 function ProcessLoadObject(AConfig: IXmlNode; AObj: TObject): Boolean;
-//function ProcessLoadObject(AConfig: TConfigNode; AObj: TObject): Boolean;
 
-  {$IFNDEF CLR}
   procedure LoadIntegerProps(const APropInfo: TPropInfo);
   var
     tmpInt: Integer;
@@ -149,7 +134,7 @@ function ProcessLoadObject(AConfig: IXmlNode; AObj: TObject): Boolean;
     tmpStrings: TStrings;
     n: TConfigNode;}
   begin
-    // TODO: Реализовать
+    // TODO: Make
     {tmpStrings := (GetObjectProp(AObj, APropInfo.Name, TStrings) as TStrings);
     if (not Assigned(tmpStrings)) then Exit;
     n := AConfig.FindNode(APropInfo.Name);
@@ -177,27 +162,24 @@ function ProcessLoadObject(AConfig: IXmlNode; AObj: TObject): Boolean;
     tmpOldKeyName: string;
     m: integer;}
   begin
-    // TODO: Реализовать
-    {// Проверим на соответствие типов
+    // TODO: Make
+    {// Check types
     tmpCollection := (GetObjectProp(AObj, APropInfo.Name, TSetupRecCollection) as TSetupRecCollection);
     if (not tmpCollection.ItemClass.InheritsFrom(TSetupRecItem)) then Exit;
     tmpStringList := TStringList.Create;
     tmpOldKeyName := FStorage.CurrentKeyName;
     try
-      // Откроем ключь
       FStorage.CloseKey();
       FStorage.OpenKey(IncludeTrailingBackslash(tmpOldKeyName) + APropInfo.Name);
-      // Получим список сохранненых объектов
       FStorage.GetKeyNames(tmpStringList);
-      // Закроем ключ
       FStorage.CloseKey();
-      // Добавим новые элементы в случае необходимости
+      // Adde new elements
       for m:=0 to tmpStringList.Count - 1 do
         try
           tmpCollection.Add(StrToInt(tmpStringList.Strings[m]));
         except
         end;
-      // Загрузим параметры по каждому элементу
+      // Load params for all elements
       for m:=0 to tmpCollection.Count - 1 do
         ProcessLoadObject(GetPrmDesc(APrefix, AObj, APropInfo.Name), tmpCollection.ItemsByIndex[m], AReestrKey + '\' + APropInfo.Name + '\' + IntToStr(tmpCollection.ItemsByIndex[m].ID));
     finally
@@ -222,26 +204,22 @@ function ProcessLoadObject(AConfig: IXmlNode; AObj: TObject): Boolean;
       //FStorage.OpenKey(tmpOldKeyName);
     end;
   end;
-  {$ENDIF}
 
-{$IFNDEF CLR}
 var
   tmpTypeData: PTypeData;
   tmpList: PPropList;
-  n, i: integer;
-{$ENDIF}
+  n: Integer;
+  i: Integer;
 begin
   Result := False;
-  {$IFNDEF CLR}
   if not(Assigned(AConfig)) or not(Assigned(AObj)) then Exit;
-  // Откроем ключ
+  // Open key
   //if (not FStorage.OpenKey(AReestrKey)) then Exit;
-  // Получим информацию о свойствах
   tmpTypeData := GetTypeData(AObj.ClassInfo);
   n := tmpTypeData.PropCount;
   if (n <= 0) then Exit;
   GetMem(tmpList, SizeOf(PPropInfo) * n);
-  // Прочитаем значения свойств из реестра
+  // Read prop values from reestr
   try
     GetPropInfos(AObj.ClassInfo, tmpList);
     for i:= 0 to n - 1 do
@@ -255,11 +233,9 @@ begin
         tkClass:
           begin
             if GetObjectPropClass(AObj, tmpList[i]).InheritsFrom(TStrings) then
-              LoadStringListProps(tmpList[i]^) // Сохраним список
-            {else if GetObjectPropClass(AObj, tmpList[i]).InheritsFrom(TSetupRecCollection) then
-              LoadCollectionProps(tmpList[i]^) // Сохраним список объектов}
+              LoadStringListProps(tmpList[i]^) // Save list
             else
-              LoadClassProps(tmpList[i]^); // Обработаем произвольный класс
+              LoadClassProps(tmpList[i]^); // Working class
           end;
       end;
     Result := True;
@@ -267,12 +243,10 @@ begin
     FreeMem(tmpList, SizeOf(PPropInfo) * n);
     //FStorage.CloseKey();
   end;
-  {$ENDIF}
 end;
 
 function ProcessLoadObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
 
-  {$IFNDEF CLR}
   procedure LoadIntegerProps(const APropInfo: TPropInfo);
   var
     tmpInt: Integer;
@@ -317,7 +291,7 @@ function ProcessLoadObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
     tmpStrings: TStrings;
     n: TConfigNode;}
   begin
-    // TODO: Реализовать
+    // TODO: Make
     {tmpStrings := (GetObjectProp(AObj, APropInfo.Name, TStrings) as TStrings);
     if (not Assigned(tmpStrings)) then Exit;
     n := AConfig.FindNode(APropInfo.Name);
@@ -345,27 +319,24 @@ function ProcessLoadObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
     tmpOldKeyName: string;
     m: integer;}
   begin
-    // TODO: Реализовать
-    {// Проверим на соответствие типов
+    // TODO: Make
+    {// Check types
     tmpCollection := (GetObjectProp(AObj, APropInfo.Name, TSetupRecCollection) as TSetupRecCollection);
     if (not tmpCollection.ItemClass.InheritsFrom(TSetupRecItem)) then Exit;
     tmpStringList := TStringList.Create;
     tmpOldKeyName := FStorage.CurrentKeyName;
     try
-      // Откроем ключь
       FStorage.CloseKey();
       FStorage.OpenKey(IncludeTrailingBackslash(tmpOldKeyName) + APropInfo.Name);
-      // Получим список сохранненых объектов
       FStorage.GetKeyNames(tmpStringList);
-      // Закроем ключ
       FStorage.CloseKey();
-      // Добавим новые элементы в случае необходимости
+      // Adding new elements
       for m:=0 to tmpStringList.Count - 1 do
         try
           tmpCollection.Add(StrToInt(tmpStringList.Strings[m]));
         except
         end;
-      // Загрузим параметры по каждому элементу
+      // Loading param values for all elements
       for m:=0 to tmpCollection.Count - 1 do
         ProcessLoadObject(GetPrmDesc(APrefix, AObj, APropInfo.Name), tmpCollection.ItemsByIndex[m], AReestrKey + '\' + APropInfo.Name + '\' + IntToStr(tmpCollection.ItemsByIndex[m].ID));
     finally
@@ -390,26 +361,22 @@ function ProcessLoadObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
       //FStorage.OpenKey(tmpOldKeyName);
     end;
   end;
-  {$ENDIF}
 
-{$IFNDEF CLR}
 var
   tmpTypeData: PTypeData;
   tmpList: PPropList;
-  n, i: integer;
-{$ENDIF}
+  n: Integer;
+  i: Integer;
 begin
   Result := False;
-  {$IFNDEF CLR}
   if not(Assigned(AConfig)) or not(Assigned(AObj)) then Exit;
-  // Откроем ключ
+  // Open key
   //if (not FStorage.OpenKey(AReestrKey)) then Exit;
-  // Получим информацию о свойствах
   tmpTypeData := GetTypeData(AObj.ClassInfo);
   n := tmpTypeData.PropCount;
   if (n <= 0) then Exit;
   GetMem(tmpList, SizeOf(PPropInfo) * n);
-  // Прочитаем значения свойств из реестра
+  // Reading prop values from reestr
   try
     GetPropInfos(AObj.ClassInfo, tmpList);
     for i:= 0 to n - 1 do
@@ -423,11 +390,9 @@ begin
         tkClass:
           begin
             if GetObjectPropClass(AObj, tmpList[i]).InheritsFrom(TStrings) then
-              LoadStringListProps(tmpList[i]^) // Сохраним список
-            {else if GetObjectPropClass(AObj, tmpList[i]).InheritsFrom(TSetupRecCollection) then
-              LoadCollectionProps(tmpList[i]^) // Сохраним список объектов}
+              LoadStringListProps(tmpList[i]^) // Load list
             else
-              LoadClassProps(tmpList[i]^); // Обработаем произвольный класс
+              LoadClassProps(tmpList[i]^); // Work class
           end;
       end;
     Result := True;
@@ -435,14 +400,10 @@ begin
     FreeMem(tmpList, SizeOf(PPropInfo) * n);
     //FStorage.CloseKey();
   end;
-  {$ENDIF}
 end;
 
-// -----------------------------------------------------------------------------
 function ProcessSaveObject(AConfig: IXmlNode; AObj: TObject): boolean;
 
-  {$IFNDEF CLR}
-  // -------------------------------------------------------------------------
   procedure SaveIntegerProps(const APropInfo: TPropInfo);
   var
     tmpInt, tmpOldInt: Integer;
@@ -479,7 +440,6 @@ function ProcessSaveObject(AConfig: IXmlNode; AObj: TObject): boolean;
     end;}
   end;
 
-  // -------------------------------------------------------------------------
   procedure SaveFloatProps(const APropInfo: TPropInfo);
   var
     tmpFloat, tmpOldFloat: Double;
@@ -509,7 +469,6 @@ function ProcessSaveObject(AConfig: IXmlNode; AObj: TObject): boolean;
     end;}
   end;
 
-  // -------------------------------------------------------------------------
   procedure SaveStringProps(const APropInfo: TPropInfo);
   var
     tmpStr, tmpOldStr: WideString;
@@ -539,7 +498,6 @@ function ProcessSaveObject(AConfig: IXmlNode; AObj: TObject): boolean;
     end;}
   end;
 
-  // -------------------------------------------------------------------------
   procedure SaveStringListProps(const APropInfo: TPropInfo);
   {var
     tmpStrings: TStrings;
@@ -548,7 +506,7 @@ function ProcessSaveObject(AConfig: IXmlNode; AObj: TObject): boolean;
     tmpStr: string;
     k: integer;}
   begin
-    // TODO: Реализовать
+    // TODO: Make
     {tmpStrings := (GetObjectProp(AObj, APropInfo.Name, TStrings) as TStrings);
     if (not Assigned(tmpStrings)) then Exit;
     if (FStorage.GetValueType(APropInfo.Name) = vtStorage) then
@@ -559,7 +517,7 @@ function ProcessSaveObject(AConfig: IXmlNode; AObj: TObject): boolean;
         tmpIsChangeList := False;
         if GetObjectPropClass(AObj, APropInfo.Name).InheritsFrom(TParamStringList) then
         begin
-          // Проверим на добавление элементов
+          // Check for added elements
           for k:=0 to tmpStrings.Count - 1 do
           begin
             tmpStr := tmpStrings.Names[k];
@@ -569,7 +527,7 @@ function ProcessSaveObject(AConfig: IXmlNode; AObj: TObject): boolean;
               tmpIsChangeList := True;
             end;
           end;
-          // Проверим на удаление элементов
+          // Check for deleted elements
           for k:=0 to tmpOldStrings.Count - 1 do
           begin
             tmpStr := tmpOldStrings.Names[k];
@@ -579,7 +537,7 @@ function ProcessSaveObject(AConfig: IXmlNode; AObj: TObject): boolean;
               tmpIsChangeList := True;
             end;
           end;
-          // Проверим на изменение элементов
+          // Check edited elements
           for k:=0 to tmpStrings.Count - 1 do
           begin
             tmpStr := tmpStrings.Names[k];
@@ -592,14 +550,14 @@ function ProcessSaveObject(AConfig: IXmlNode; AObj: TObject): boolean;
           end;
         end else
         begin
-          // Проверим на добавление элементов
+          // Check added elements
           for k:=0 to tmpStrings.Count - 1 do
             if (tmpOldStrings.IndexOf(tmpStrings.Strings[k]) < 0) then
             begin
               AddToLog(lgSetup, ltInformation, info_Add_Param_List, [GetPrmDesc(APrefix, AObj, APropInfo.Name), tmpStrings.Strings[k]]);
               tmpIsChangeList := True;
             end;
-          // Проверим на удаление элементов
+          // Check deleted elements
           for k:=0 to tmpOldStrings.Count - 1 do
             if (tmpStrings.IndexOf(tmpOldStrings.Strings[k]) < 0) then
             begin
@@ -607,7 +565,6 @@ function ProcessSaveObject(AConfig: IXmlNode; AObj: TObject): boolean;
               tmpIsChangeList := True;
             end;
         end;
-        // Если изменился, то запишем
         if tmpIsChangeList then
         begin
           WriteStringList(GetObjectPropClass(AObj, APropInfo.Name).InheritsFrom(TParamStringList), APropInfo.Name, tmpStrings);
@@ -624,7 +581,6 @@ function ProcessSaveObject(AConfig: IXmlNode; AObj: TObject): boolean;
     end;}
   end;
 
-  // -------------------------------------------------------------------------
   procedure SaveCollectionProps(const APropInfo: TPropInfo);
   {var
     tmpCollection: TSetupRecCollection;
@@ -632,18 +588,16 @@ function ProcessSaveObject(AConfig: IXmlNode; AObj: TObject): boolean;
     tmpStringList: TStringList;
     m: integer;}
   begin
-    // TODO: Реализовать
+    // TODO: Make
     {tmpCollection := (GetObjectProp(AObj, APropInfo.Name, TSetupRecCollection) as TSetupRecCollection);
     if (not tmpCollection.ItemClass.InheritsFrom(TSetupRecItem)) then Exit;
     tmpOldKeyName := FStorage.CurrentKeyName;
     tmpStringList := TStringList.Create;
     try
-      // Откроем ключь
       FStorage.CloseKey();
       FStorage.OpenKey(IncludeTrailingBackslash(tmpOldKeyName) + APropInfo.Name);
-      // Получим список сохранненых объектов
       FStorage.GetKeyNames(tmpStringList);
-      // Удалим из реестра ключи которых нет в списке
+      // Remove keys
       for m := 0 to tmpStringList.Count - 1 do
         try
           if (tmpCollection.GetItemsByID(StrToInt(tmpStringList.Strings[m])) = nil) then
@@ -654,16 +608,15 @@ function ProcessSaveObject(AConfig: IXmlNode; AObj: TObject): boolean;
           end;
         except
         end;
-      // Закроем ключ
       FStorage.CloseKey();
-      // Добавляем новые объекты
+      // Adding new elements
       for m := 0 to tmpCollection.Count - 1 do
         if (tmpStringList.IndexOf(IntToStr(tmpCollection[m].ID)) < 0) then
         begin
           AddToLog(lgSetup, ltInformation, info_Add_New_Object, [tmpCollection.DescObject + ' №' + IntToStr(tmpCollection[m].ID)]);
           Result := True;
         end;
-      // Сохраним параметры по каждому элементу
+      // Save params for all elements
       for m := 0 to tmpCollection.Count - 1 do
         Result := ProcessSaveObject(GetPrmDesc(APrefix, AObj, APropInfo.Name), tmpCollection.ItemsByIndex[m], AReestrKey + '\' + APropInfo.Name + '\' + IntToStr(tmpCollection.ItemsByIndex[m].ID)) or Result;
     finally
@@ -673,7 +626,6 @@ function ProcessSaveObject(AConfig: IXmlNode; AObj: TObject): boolean;
     end;}
   end;
 
-  // -------------------------------------------------------------------------
   procedure SaveClassProps(const APropInfo: TPropInfo);
   {var
     tmpOldKeyName: string;}
@@ -689,17 +641,14 @@ function ProcessSaveObject(AConfig: IXmlNode; AObj: TObject): boolean;
       //FStorage.OpenKey(tmpOldKeyName);
     end;
   end;
-  {$ENDIF}
 
-{$IFNDEF CLR}
 var
   tmpTypeData: PTypeData;
   tmpList: PPropList;
-  n, i: integer;
-{$ENDIF}
+  n: Integer;
+  i: Integer;
 begin
   Result := False;
-  {$IFNDEF CLR}
   if not(Assigned(AConfig)) or not(Assigned(AObj)) then Exit;
   //if (not FStorage.OpenKey(AReestrKey)) then
   //  Exit;
@@ -708,7 +657,7 @@ begin
   n := tmpTypeData.PropCount;
   if (n <= 0) then Exit;
   GetMem(tmpList, SizeOf(PPropInfo) * n);
-  // Запишем все свойства
+  // Get props information
   try
     GetPropInfos(AObj.ClassInfo, tmpList);
     for i := 0 to n - 1 do
@@ -722,24 +671,19 @@ begin
         tkClass:
           begin
             if GetObjectPropClass(AObj, tmpList[i]).InheritsFrom(TStrings) then
-              SaveStringListProps(tmpList[i]^) // Сохраним список
-            {else if GetObjectPropClass(AObj, tmpList[i]).InheritsFrom(TSetupRecCollection) then
-              SaveCollectionProps(tmpList[i]^) // Сохраним список обьектов}
+              SaveStringListProps(tmpList[i]^) // Save list
             else
-              SaveClassProps(tmpList[i]^); // Обработаем произвольный класс
+              SaveClassProps(tmpList[i]^); // Save class
           end;
       end;
   finally
     FreeMem(tmpList, SizeOf(PPropInfo) * n);
     //FStorage.CloseKey();
   end;
-  {$ENDIF}
 end;
 
 function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
 
-  {$IFNDEF CLR}
-  // -------------------------------------------------------------------------
   procedure SaveIntegerProps(const APropInfo: TPropInfo);
   var
     tmpInt, tmpOldInt: Integer;
@@ -751,7 +695,6 @@ function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
       //AddToLogOrdProp(APrefix, AObj, APropInfo, tmpInt, tmpOldInt);
       //Result := True;
     end;
-
 
     {if (FStorage.GetValueType(APropInfo.Name) = vtInt) then
     begin
@@ -770,7 +713,6 @@ function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
     end;}
   end;
 
-  // -------------------------------------------------------------------------
   procedure SaveFloatProps(const APropInfo: TPropInfo);
   var
     tmpFloat, tmpOldFloat: Double;
@@ -800,7 +742,6 @@ function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
     end;}
   end;
 
-  // -------------------------------------------------------------------------
   procedure SaveStringProps(const APropInfo: TPropInfo);
   var
     tmpStr, tmpOldStr: WideString;
@@ -830,7 +771,6 @@ function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
     end;}
   end;
 
-  // -------------------------------------------------------------------------
   procedure SaveStringListProps(const APropInfo: TPropInfo);
   {var
     tmpStrings: TStrings;
@@ -839,7 +779,7 @@ function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
     tmpStr: string;
     k: integer;}
   begin
-    // TODO: Реализовать
+    // TODO: Make
     {tmpStrings := (GetObjectProp(AObj, APropInfo.Name, TStrings) as TStrings);
     if (not Assigned(tmpStrings)) then Exit;
     if (FStorage.GetValueType(APropInfo.Name) = vtStorage) then
@@ -850,7 +790,7 @@ function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
         tmpIsChangeList := False;
         if GetObjectPropClass(AObj, APropInfo.Name).InheritsFrom(TParamStringList) then
         begin
-          // Проверим на добавление элементов
+          // Ckeck added elements
           for k:=0 to tmpStrings.Count - 1 do
           begin
             tmpStr := tmpStrings.Names[k];
@@ -860,7 +800,7 @@ function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
               tmpIsChangeList := True;
             end;
           end;
-          // Проверим на удаление элементов
+          // Check deleted elements
           for k:=0 to tmpOldStrings.Count - 1 do
           begin
             tmpStr := tmpOldStrings.Names[k];
@@ -870,7 +810,7 @@ function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
               tmpIsChangeList := True;
             end;
           end;
-          // Проверим на изменение элементов
+          // Check edited elements
           for k:=0 to tmpStrings.Count - 1 do
           begin
             tmpStr := tmpStrings.Names[k];
@@ -883,14 +823,14 @@ function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
           end;
         end else
         begin
-          // Проверим на добавление элементов
+          // Check added elements
           for k:=0 to tmpStrings.Count - 1 do
             if (tmpOldStrings.IndexOf(tmpStrings.Strings[k]) < 0) then
             begin
               AddToLog(lgSetup, ltInformation, info_Add_Param_List, [GetPrmDesc(APrefix, AObj, APropInfo.Name), tmpStrings.Strings[k]]);
               tmpIsChangeList := True;
             end;
-          // Проверим на удаление элементов
+          // Check deleted elements
           for k:=0 to tmpOldStrings.Count - 1 do
             if (tmpStrings.IndexOf(tmpOldStrings.Strings[k]) < 0) then
             begin
@@ -898,7 +838,6 @@ function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
               tmpIsChangeList := True;
             end;
         end;
-        // Если изменился, то запишем
         if tmpIsChangeList then
         begin
           WriteStringList(GetObjectPropClass(AObj, APropInfo.Name).InheritsFrom(TParamStringList), APropInfo.Name, tmpStrings);
@@ -915,7 +854,6 @@ function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
     end;}
   end;
 
-  // -------------------------------------------------------------------------
   procedure SaveCollectionProps(const APropInfo: TPropInfo);
   {var
     tmpCollection: TSetupRecCollection;
@@ -923,18 +861,16 @@ function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
     tmpStringList: TStringList;
     m: integer;}
   begin
-    // TODO: Реализовать
+    // TODO: Make
     {tmpCollection := (GetObjectProp(AObj, APropInfo.Name, TSetupRecCollection) as TSetupRecCollection);
     if (not tmpCollection.ItemClass.InheritsFrom(TSetupRecItem)) then Exit;
     tmpOldKeyName := FStorage.CurrentKeyName;
     tmpStringList := TStringList.Create;
     try
-      // Откроем ключь
       FStorage.CloseKey();
       FStorage.OpenKey(IncludeTrailingBackslash(tmpOldKeyName) + APropInfo.Name);
-      // Получим список сохранненых объектов
       FStorage.GetKeyNames(tmpStringList);
-      // Удалим из реестра ключи которых нет в списке
+      // Deleting old elements
       for m := 0 to tmpStringList.Count - 1 do
         try
           if (tmpCollection.GetItemsByID(StrToInt(tmpStringList.Strings[m])) = nil) then
@@ -945,16 +881,15 @@ function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
           end;
         except
         end;
-      // Закроем ключ
       FStorage.CloseKey();
-      // Добавляем новые объекты
+      // Adding new elements
       for m := 0 to tmpCollection.Count - 1 do
         if (tmpStringList.IndexOf(IntToStr(tmpCollection[m].ID)) < 0) then
         begin
           AddToLog(lgSetup, ltInformation, info_Add_New_Object, [tmpCollection.DescObject + ' №' + IntToStr(tmpCollection[m].ID)]);
           Result := True;
         end;
-      // Сохраним параметры по каждому элементу
+      // Save params for all elements
       for m := 0 to tmpCollection.Count - 1 do
         Result := ProcessSaveObject(GetPrmDesc(APrefix, AObj, APropInfo.Name), tmpCollection.ItemsByIndex[m], AReestrKey + '\' + APropInfo.Name + '\' + IntToStr(tmpCollection.ItemsByIndex[m].ID)) or Result;
     finally
@@ -964,7 +899,6 @@ function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
     end;}
   end;
 
-  // -------------------------------------------------------------------------
   procedure SaveClassProps(const APropInfo: TPropInfo);
   {var
     tmpOldKeyName: string;}
@@ -980,26 +914,22 @@ function ProcessSaveObject2006(AConfig: TConfigNode1; AObj: TObject): Boolean;
       //FStorage.OpenKey(tmpOldKeyName);
     end;
   end;
-  {$ENDIF}
 
-{$IFNDEF CLR}
 var
   tmpTypeData: PTypeData;
   tmpList: PPropList;
-  n, i: integer;
-{$ENDIF}
+  n: Integer;
+  i: Integer;
 begin
   Result := False;
-  {$IFNDEF CLR}
   if not(Assigned(AConfig)) or not(Assigned(AObj)) then Exit;
   //if (not FStorage.OpenKey(AReestrKey)) then
   //  Exit;
-  // Получим информацию о свойствах
   tmpTypeData := GetTypeData(AObj.ClassInfo);
   n := tmpTypeData.PropCount;
   if (n <= 0) then Exit;
   GetMem(tmpList, SizeOf(PPropInfo) * n);
-  // Запишем все свойства
+  // Write all properties
   try
     GetPropInfos(AObj.ClassInfo, tmpList);
     for i := 0 to n - 1 do
@@ -1013,24 +943,20 @@ begin
         tkClass:
           begin
             if GetObjectPropClass(AObj, tmpList[i]).InheritsFrom(TStrings) then
-              SaveStringListProps(tmpList[i]^) // Сохраним список
-            {else if GetObjectPropClass(AObj, tmpList[i]).InheritsFrom(TSetupRecCollection) then
-              SaveCollectionProps(tmpList[i]^) // Сохраним список обьектов}
+              SaveStringListProps(tmpList[i]^) // Save list
             else
-              SaveClassProps(tmpList[i]^); // Обработаем произвольный класс
+              SaveClassProps(tmpList[i]^); // Save class
           end;
       end;
   finally
     FreeMem(tmpList, SizeOf(PPropInfo) * n);
     //FStorage.CloseKey();
   end;
-  {$ENDIF}
 end;
 
-function SaveObjectToConfig(AConfig: IXmlNode{IProfXmlNode}; AObject: TObject; AAddToLog: TAddToLogProc): WordBool;
+function SaveObjectToConfig(AConfig: IXmlNode; AObject: TObject; AAddToLog: TAddToLogProc): WordBool;
 begin
   Result := False;
-  {$IFNDEF CLR}
   try
     //Lock();
     try
@@ -1039,7 +965,6 @@ begin
       try
         if Assigned(AAddToLog) then
           AAddToLog(lgSetup, ltInformation, info_Start_Save_Param);
-        // Запишем основные параметры
         Result := ProcessSaveObject(AConfig, AObject);
         if Assigned(AAddToLog) then
           AAddToLog(lgSetup, ltInformation, info_Succ_Save_Param);
@@ -1054,13 +979,11 @@ begin
       if Assigned(AAddToLog) then
         AAddToLog(lgSetup, ltError, Format(err_Exception_Str, [E.Message, {Self.ClassName}'', 'SaveObjectToConfig()']));
   end;
-  {$ENDIF}
 end;
 
 function SaveObjectToConfig2006(AConfig: TConfigNode1; AObject: TObject; AAddToLog: TAddToLog): WordBool;
 begin
   Result := False;
-  {$IFNDEF CLR}
   try
     //Lock();
     try
@@ -1069,7 +992,6 @@ begin
       try
         if Assigned(AAddToLog) then
           AAddToLog(lgSetup, ltInformation, info_Start_Save_Param, []);
-        // Запишем основные параметры
         Result := ProcessSaveObject2006(AConfig, AObject);
         if Assigned(AAddToLog) then
           AAddToLog(lgSetup, ltInformation, info_Succ_Save_Param, []);
@@ -1084,7 +1006,6 @@ begin
       if Assigned(AAddToLog) then
         AAddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, {Self.ClassName}'', 'SaveObjectToConfig()']);
   end;
-  {$ENDIF}
 end;
 
 end.

@@ -1,12 +1,9 @@
-﻿{**
-@Abstract(Base types and consts (Базовые типы и константы))
+{**
+@Abstract(Base types and consts)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(06.03.2008)
-@LastMod(10.07.2012)
+@LastMod(11.07.2012)
 @Version(0.5)
-
-0.3.2
-[*] Восстановил использование AWideString (01.09.2011)
 }
 unit ABase;
 
@@ -16,7 +13,7 @@ unit ABase;
 
 interface
 
-type // Простые типы
+type // Simple types
   AFloat32 = Single;
   AFloat64 = Double;
   AInt08 = ShortInt;
@@ -29,9 +26,9 @@ type // Простые типы
   AUInt64 = Int64;
   AWideChar = WideChar;
 
-type // Простые типы
+type // Simple types
   ABool = Boolean;
-  AChar = Char; // Или UTF-32 (UCS4Char)
+  AChar = Char; // or UTF-32 (UCS4Char)
   AInt = Integer;
   ASize = LongWord;
 
@@ -41,16 +38,23 @@ type
   AInteger = AInt;
   AUInt = AUInt32;
 
-type // Версия. Имеет формат $AABBCCDD = AA.BB.CC.DD
+type
+  {**
+    Version type
+    Format: $AABBCCDD = AA.BB.CC.DD
+  }
   AVersion = type Integer;
-const // Маска для проверки соответсвия версий модулей
+const
+    //** Version mask for checking
   AVersionMask = $FFFF0000;
 
 type
-  { Возвращаемое значение функций. Значения:
-    <0 - ошибка при выполнении,
-    0 - выполнение прошло успешно
-    >0 - выполнение прошло успешно, но есть замечания или информация }
+  {**
+    Function result type
+    <0 - Error,
+    0 - Ok,
+    >0 - Information or Warnings
+  }
   AError = type Integer;
 
 // --- Array ---
@@ -76,12 +80,18 @@ type
     Reserved01: AInteger;
     Reserved02: AInteger;
     Reserved03: AInteger;
-    { Вероятно будет реализовано в V04
-    Str: PChar;                // Нультерминальная строка (UTF-8). Массив байтов, заканчивающийся нулем. Аналог GString Points to the string's current \0-terminated value (gchar).
-    Len: AInteger;             // Длина строки (кол-во символов). Аналог GString Current length (gsize)
-    AllocSize: ASize;          // Размер выделенной памяти в байтах. Аналог GString allocated_len (gsize).
-    Code: AInteger;            // Кодировка символов: 0-Нультерминальная строка UTF-8; (1-Нультерминальная строка Ansi)
-    }
+  end;
+
+    // (4x4 = 16 bytes)
+  AString_Type_4 = packed record
+      //** UTF-8. Analog GString Points to the string's current \0-terminated value (gchar).
+    Str: PChar;
+      //** Length (count chars). Analog GString Current length (gsize)
+    Len: AInteger;
+      //** Allocated size in bytes. Analog GString allocated_len (gsize).
+    AllocSize: ASize;
+      //** Code: 0 - UTF-8; 1 - PAnsiChar
+    Code: AInteger;
   end;
 
 type
@@ -93,10 +103,10 @@ type
 
 {
 type
-  // (для Win32 и Linux)
-  AData   = Pointer;
-  // (для CLR и Java)
-  //AData   = TObject;
+  // (for Win32 and Linux)
+  AData = Pointer;
+  // (for CLR and Java)
+  //AData = TObject;
 }
 
 // --- ---
@@ -127,10 +137,10 @@ type
 type
   // = TAbstractSettings or TProfXmlNode1 or TProfXmlNode4
   AConfig = type AInteger;
-  AEvent = type AInteger;       // = AEvent_Type^ - Указатель на структуру AEvent_Type
+  AEvent = type AInteger;       // = AEvent_Type^
   AColor = type AInteger;
   {$IFDEF A02}
-  //AStrings = type AInteger;     // Заменил на ACollectionsBase.AStringList
+  //AStrings = type AInteger; - Use ACollectionsBase.AStringList
   {$ENDIF A02}
 
 type
@@ -138,19 +148,7 @@ type
   ALibraryFlags = type AInteger;
 
 type
-  {**
-    Идентификатор. Глобальный тип для использования во всех модулях.
-    Номер 0 может использоваться для хранения глобальных параметров системы.
-    Номера от 0 до 1023 заререзвированы.
-    Номер 1024 используется для хранения настроек программы.
-    Номера от 1025 до 2047 используются для определения внутренних типов программы.
-    Номера от 2028 до 65535 зарезервированы.
-    Номера от 65535 до 2^31 используются свободно для локального приложения.
-    Использование номеров от 2^32 до 2^63 выделяются сервером системы.
-    Сущности с номерами от 2^32 хранятся на сервере
-    (локальные копии могут хранится на локальном компьютере).
-    Аналог: org.framerd.OID.OID
-  }
+    //** Identifier
   AId = AInt64;
   TAId = AId;
 

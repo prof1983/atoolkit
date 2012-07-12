@@ -2,7 +2,7 @@
 @Abstract(Класс работы с XML нодами)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(07.03.2007)
-@LastMod(11.07.2012)
+@LastMod(12.07.2012)
 @Version(0.5)
 }
 unit AXmlNodeImpl;
@@ -25,6 +25,11 @@ type //** Класс работы с XML нодами
     FAttributes1: TAttributes;
     FNode: IXmlNode;
     FChildNodes: AXmlNodeList; //FNodes: array of TProfXmlNode;
+  protected // --- from TProfXmlNode1 ---
+    FCollection: AXmlNodeCollection;
+    FDocument: TProfXmlDocument1;
+    FName: WideString;
+    FValue: WideString;
   public
     function GetAsBool(): WordBool; safecall;
     function GetAsDateTime(): TDateTime; safecall;
@@ -139,6 +144,13 @@ type //** Класс работы с XML нодами
     class function WriteStringA(Node: IXmlNode; const Name,
         Value: APascalString): ABool; safecall; deprecated; // Use ProfXmlNode_WriteString()
   public
+      //** Add message to log
+    function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const Msg: WideString): AInt; override;
+      //** Add message to log
+    function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+        const AStrMsg: string; AParams: array of const): Boolean;
+  public
     constructor Create();
     procedure Free();
   public
@@ -156,11 +168,6 @@ type //** Класс работы с XML нодами
   end;
 
   TProfXmlNode2 = class(TProfXmlNode, IProfXmlNode1, IProfXmlNode2{, IXmlNode})
-  protected
-    FCollection: AXmlNodeCollection;
-    FDocument: TProfXmlDocument1;
-    FName: WideString;
-    FValue: WideString;
   protected
     function _GetValueAsBool(): WordBool;
     function _GetValueAsString(): WideString;
@@ -262,8 +269,6 @@ type //** Класс работы с XML нодами
     procedure SetNodeValue(Value: OleVariant);
   public
     function AddFromXml(Xml: TProfXmlNode2): TError;
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: string; AParams: array of const): Boolean;
     function Clear(): AError;
       {** @return TProfXmlNode1 }
     function FindNode(const Name: WideString): AProfXmlNode; deprecated;
@@ -438,6 +443,20 @@ begin
 end;
 
 { TProfXmlNode }
+
+function TProfXmlNode.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+  const Msg: WideString): AInt;
+begin
+  Result := inherited AddToLog(LogGroup, LogType, Msg);
+  if Assigned(FDocument) then
+    FDocument.AddToLog(LogGroup, LogType, Msg, []);
+end;
+
+function TProfXmlNode.AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+    const AStrMsg: String; AParams: array of const): Boolean;
+begin
+  Result := (AddToLog(AGroup, AType, Format(AStrMsg, AParams)) >= 0);
+end;
 
 constructor TProfXmlNode.Create();
 begin
@@ -949,15 +968,6 @@ begin
     Result := 0
   else
     Result := -1;
-end;
-
-function TProfXmlNode2.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-    const AStrMsg: String; AParams: array of const): Boolean;
-begin
-  if Assigned(FDocument) then
-    Result := FDocument.AddToLog(AGroup, AType, AStrMsg, AParams)
-  else
-    Result := False;
 end;
 
 function TProfXmlNode2.Attributes_Count: Integer;
@@ -1511,7 +1521,7 @@ begin
     I := Pos('>', Value);
     if I = 0 then
     begin
-      AddToLog(lgGeneral, ltError, err_Xml_ReadNodes_1, []);
+      AddToLog(lgGeneral, ltError, err_Xml_ReadNodes_1);
       Result := False;
       Exit;
     end;
@@ -1685,7 +1695,7 @@ begin
     I2 := Pos(WideString('/>'), Value);
     if (I = 0) then
     begin
-      AddToLog(lgGeneral, ltError, 'Не найден закрывающий символ ">"', []);
+      AddToLog(lgGeneral, ltError, 'Не найден закрывающий символ ">"');
       Exit;
     end;
     if I2 <> I - 1 then I2 := 0; // I2 должен отставать от I на 1 символ

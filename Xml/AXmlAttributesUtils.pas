@@ -2,7 +2,7 @@
 @Abstract(AXmlAttributes functions)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(29.06.2012)
-@LastMod(29.06.2012)
+@LastMod(12.07.2012)
 @Version(0.5)
 }
 unit AXmlAttributesUtils;
@@ -69,7 +69,11 @@ function SetAttribute(var Attributes: TAttributes; const Name, Value: WideString
 var
   I: Integer;
 begin
-  if Name = '' then Exit;
+  if (Name = '') then
+  begin
+    Result := -2;
+    Exit;
+  end;
   // Поиск атрибута
   for I := 0 to High(Attributes) do
   begin

@@ -2,7 +2,7 @@
 @Abstract(Класс главной форма - оболочка для TForm)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(16.11.2005)
-@LastMod(11.07.2012)
+@LastMod(12.07.2012)
 @Version(0.5)
 }
 unit AFormMain;
@@ -11,11 +11,11 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ABase, AConsts2, ALogDocumentsAll, AFormObj, ALogDocuments,
-  ATypes, AXmlDocumentImpl, AXmlNodeUtils, AXmlUtils;
+  ABase, AConsts2, ALogDocumentsAll, AFormObj, ALogDocuments, ALogNodeUtils,
+  ATypes, AXmlDocumentImpl, AXmlDocumentUtils, AXmlNodeUtils, AXmlUtils;
 
 type
-  TProfFormMain = class(TProfForm)
+  TProfFormMain = class(TAFormObject)
   protected
     FConfigDir: APascalString;
     FConfigFileName: WideString;
@@ -27,8 +27,9 @@ type
     FLogID: Integer;
     FLogName: string;
     FLogTypeSet: TLogTypeSet;
+    FExePath: APascalString;
   protected
-    FLogDocuments: TALogDocuments;
+    FLogDocuments: TALogDocuments; //ALog: TLogDocumentsAll;
   public
     constructor Create(AOwner: TComponent); override;
       //** Финализация программы (конфигурации, логирование)
@@ -37,7 +38,12 @@ type
     function Finalize(): WordBool; virtual;
       //** Инициализация программы (конфигурации, логирование)
     procedure Init(); virtual;
+      //** Initialize config
+    procedure InitConfig(); virtual;
+      //** Initialize log
+    procedure InitLog(); virtual;
   published
+    property ALog: TALogDocuments read FLogDocuments write FLogDocuments;
       //** Имя файла конфигураций (с путем или без него)
     property ConfigFileName: WideString read FConfigFileName write FConfigFileName;
       //** Путь к файлу конфигураций (если ConfigFileName = '' то берется имя .exe файла без расширения)
@@ -83,13 +89,13 @@ end;
 
 function TProfFormMain.Finalize(): WordBool;
 begin
-  {if FIsLogDocumentsInit and Assigned(FLogDocuments) then
+  if {FIsLogDocumentsInit and} Assigned(FLogDocuments) then
   try
     FLogDocuments.Finalize();
-    FLogDocuments.Free();
+    //FLogDocuments.Free();
   finally
     FLogDocuments := nil;
-  end;}
+  end;
 
   ConfigureSave();
 
@@ -97,16 +103,17 @@ begin
 
   if FIsConfigDocumentInit and Assigned(FConfigDocument1) then
   try
-    { $IFDEF VER150}
+    {IFDEF VER150}
     // Проверим наличие файла
-    if (not FileExists(FConfigFileName)) then
+    if not(FileExists(FConfigFileName)) then
     begin
       // Создадим каталог, если надо
       ForceDirectories(ExtractFilePath(FConfigFileName));
     end;
-    { $ENDIF}
+    {ENDIF}
 
-    FConfigDocument1.SaveToFile(FConfigFileName);
+    AXmlDocument_SaveToFile1(FConfigDocument1.GetSelf(), FConfigFileName);
+    //FConfigDocument1.SaveToFile(FConfigFileName);
     FreeAndNil(FConfigDocument1);
     //FConfigDocument := nil;
   except
@@ -114,13 +121,19 @@ begin
 end;
 
 procedure TProfFormMain.Init();
-var
-  doc: TProfXmlDocument;
-  Conf: AXmlNode;
-  ExeName: String;
-  ExePath: String;
 begin
-  ExePath := ExtractFilePath(ParamStr(0));
+  FExePath := ExtractFilePath(ParamStr(0));
+  InitConfig();
+  ConfigureLoad();
+  InitLog();
+end;
+
+procedure TProfFormMain.InitConfig();
+var
+  ExeName: String;
+  Doc: TProfXmlDocument;
+  Conf: AXmlNode;
+begin
   if not(Assigned(FConfigDocument1)) and (FConfig = 0) then
   try
     ExeName := ExtractFileName(ParamStr(0));
@@ -134,25 +147,23 @@ begin
         if (Length(FConfigDir) > 0) then
         begin
           if (FConfigDir[Length(FConfigDir)] <> '/') and (FConfigDir[Length(FConfigDir)] <> '\') then
-            FConfigFileName := ExePath + FConfigDir + '\' + FConfigFileName
+            FConfigFileName := FExePath + FConfigDir + '\' + FConfigFileName
           else
-            FConfigFileName := ExePath + FConfigDir + FConfigFileName;
+            FConfigFileName := FExePath + FConfigDir + FConfigFileName;
         end
         else
-          FConfigFileName := ExePath + FConfigFileName
+          FConfigFileName := FExePath + FConfigFileName
       end
       else
         FConfigFileName := FConfigFilePath + FConfigFileName;
     end;
     FConfigFileName := ExpandFileName(FConfigFileName);
     // Проверка существования директории
-    {$IFDEF VER150}
     ForceDirectories(ExtractFilePath(FConfigFileName));
-    {$ENDIF}
     // Создание объекта
-    doc := TProfXmlDocument.Create(FConfigFileName);
-    doc.Initialize();
-    FConfigDocument1 := doc;
+    Doc := TProfXmlDocument.Create(FConfigFileName);
+    Doc.Initialize();
+    FConfigDocument1 := Doc;
     // Проверим наличие файла----
     FIsConfigDocumentInit := True;
   except
@@ -163,15 +174,18 @@ begin
     FConfig := AXmlNode_GetChildNodeByName(Conf, 'FormMain')
   except
   end;
+end;
 
-  ConfigureLoad();
-
+procedure TProfFormMain.InitLog();
+//var
+  //LogConfig: IXmlNode;
+begin
   if (Length(FLogFilePath) = 0) then
   begin
     if (Length(FLogDir) > 0) then
-      FLogFilePath := ExePath + FLogDir
+      FLogFilePath := FExePath + FLogDir
     else
-      FLogFilePath := ExePath;
+      FLogFilePath := FExePath;
   end;
   FLogFilePath := ExpandFileName(FLogFilePath);
   if (FLogFilePath[Length(FLogFilePath)] <> '/') and (FLogFilePath[Length(FLogFilePath)] <> '\') then
@@ -183,7 +197,14 @@ begin
     FLogDocuments := TLogDocumentsAll.Create(nil, FLogTypeSet, FLogFilePath, FLogID, FLogName);
     FIsLogDocumentsInit := True;
   end;
-  FLog := FLogDocuments.GetDocumentElement();
+
+  //FLog := FLogDocuments.GetDocumentElement();
+  if (FLog = 0) then
+    FLog := ALogNode_New(0, 0, '', 0);
+  ALogNode_SetOnAddToLog(FLog, FLogDocuments.AddToLog);
+  {LogConfig := AXmlUtils.ProfXmlNode_GetNodeByName(FConfig, 'Logs');
+  ALog := TLogDocumentsAll.Create(LogConfig, FLogTypeSet, FLogFilePath, FLogID, FLogName);
+  FLog := ALog;}
 end;
 
 end.

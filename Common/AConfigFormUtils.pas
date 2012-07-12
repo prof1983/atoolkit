@@ -2,7 +2,7 @@
 @Abstract(Конфигурации формы)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(18.03.2006)
-@LastMod(11.07.2012)
+@LastMod(12.07.2012)
 @Version(0.5)
 }
 unit AConfigFormUtils;
@@ -11,29 +11,13 @@ interface
 
 uses
   Forms, XmlIntf,
-  ABase, AConfig2007, ANodeIntf, {AObjectImpl,} ATypes, AXmlNodeUtils, AXmlUtils;
+  ABase, AConfig2007, ANodeIntf, ATypes, AXmlNodeUtils, AXmlUtils;
 
 type
   TConfigForm = class //(TProfObject)
-  private
-    FConfigNode: IProfNode;
-    FForm: TForm;
-  public
-      //** Элемент конфигураций из которого загружать и сохранять
-    property ConfigNode: IProfNode read FConfigNode write FConfigNode;
-      //** Загрузить конфигурации формы
-    function ConfigureLoad(): WordBool;
-      //** Сохранить конфигурации формы
-    function ConfigureSave(): WordBool;
-    //constructor Create(AConfigDocument: IXmlDocument = nil; ANodeName: WideString = ''; AForm: TForm = nil; AAddToLog: TAddToLog = nil); overload;
-    //constructor Create(AConfigNode: IXmlNode = nil; AForm: TForm = nil; AAddToLog: TAddToLog = nil); overload;
-      //** Форма
-    property Form: TForm read FForm write FForm;
-  end;
-
-  TConfigForm2006 = class(TConfigForm) //(TLoggerObject)
-  private
+  protected
     FConfig: AConfig;
+    //FConfigNode: IProfNode;
     //FConfigNode: TConfigNode1;
     //FConfigNodeXml: IXmlNode;
     FForm: TForm;
@@ -42,9 +26,14 @@ type
     function ConfigureLoad(): WordBool;
       //** Сохранить конфигурации формы
     function ConfigureSave(): WordBool;
+  public
+    //constructor Create(AConfigDocument: IXmlDocument = nil; ANodeName: WideString = ''; AForm: TForm = nil; AAddToLog: TAddToLog = nil); overload;
+    //constructor Create(AConfigNode: IXmlNode = nil; AForm: TForm = nil; AAddToLog: TAddToLog = nil); overload;
     constructor Create(AConfigDocument: TConfigDocument = nil; ANodeName: WideString = ''; AForm: TForm = nil; AAddToLog: TAddToLog = nil); overload;
     constructor Create(AConfigNode: TConfigNode1 = nil; AForm: TForm = nil; AAddToLog: TAddToLog = nil); overload;
   public
+      //** Элемент конфигураций из которого загружать и сохранять
+    //property ConfigNode: IProfNode read FConfigNode write FConfigNode;
       //** Элемент конфигураций из которого загружать и сохранять
     //property ConfigNode: TConfigNode1 read FConfigNode write FConfigNode;
       //** Элемент конфигураций из которого загружать и сохранять
@@ -291,14 +280,27 @@ end;*)
 
 function TConfigForm.ConfigureLoad(): WordBool;
 begin
-  Result := ConfigToForm(FConfigNode, FForm);
+  {if Assigned(FConfigNode) then
+    Result := ConfigToForm(FConfigNode, FForm)
+  else}
+    Result := (AConfig_PullFromForm(FConfig, FForm) >= 0);
 end;
 
 function TConfigForm.ConfigureSave(): WordBool;
 begin
-  Result := ConfigFromForm(FConfigNode, FForm);
+  {if Assigned(FConfigNode) then
+    Result := ConfigFromForm(FConfigNode, FForm)
+  else}
+    Result := (AConfig_PushToForm(FConfig, FForm) >= 0);
 end;
 
+constructor TConfigForm.Create(AConfigDocument: TConfigDocument; ANodeName: WideString;
+    AForm: TForm; AAddToLog: TAddToLog);
+begin
+  inherited Create();
+  FConfig := AXmlNode_GetChildNodeByName(AConfigDocument.DocumentElement, ANodeName);
+  FForm := AForm;
+end;
 {constructor TConfigForm.Create(AConfigDocument: IXmlDocument = nil; ANodeName: WideString = ''; AForm: TForm = nil; AAddToLog: TAddToLog = nil);
 begin
   inherited Create();
@@ -306,37 +308,17 @@ begin
   FForm := AForm;
 end;}
 
+constructor TConfigForm.Create(AConfigNode: TConfigNode1; AForm: TForm; AAddToLog: TAddToLog);
+begin
+  inherited Create();
+  FConfig := AConfig(AConfigNode);
+  FForm := AForm;
+end;
 {constructor TConfigForm.Create(AConfigNode: IXmlNode = nil; AForm: TForm = nil; AAddToLog: TAddToLog = nil);
 begin
   inherited Create();
   FConfigNode := AConfigNode;
   FForm := AForm;
 end;}
-
-{ TConfigForm2006 }
-
-function TConfigForm2006.ConfigureLoad(): WordBool;
-begin
-  Result := (AConfig_PullFromForm(FConfig, FForm) >= 0);
-end;
-
-function TConfigForm2006.ConfigureSave(): WordBool;
-begin
-  Result := (AConfig_PushToForm(FConfig, FForm) >= 0);
-end;
-
-constructor TConfigForm2006.Create(AConfigDocument: TConfigDocument = nil; ANodeName: WideString = ''; AForm: TForm = nil; AAddToLog: TAddToLog = nil);
-begin
-  inherited Create();
-  FConfig := AXmlNode_GetChildNodeByName(AConfigDocument.DocumentElement, ANodeName);
-  FForm := AForm;
-end;
-
-constructor TConfigForm2006.Create(AConfigNode: TConfigNode1 = nil; AForm: TForm = nil; AAddToLog: TAddToLog = nil);
-begin
-  inherited Create();
-  FConfig := AConfig(AConfigNode);
-  FForm := AForm;
-end;
 
 end.

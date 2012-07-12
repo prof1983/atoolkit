@@ -2,7 +2,7 @@
 @Abstract(Показывать Log в окне)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(22.10.2005)
-@LastMod(03.07.2012)
+@LastMod(12.07.2012)
 @Version(0.5)
 }
 unit ALogDocumentForm2007;
@@ -11,7 +11,7 @@ interface
 
 uses
   ComCtrls, XmlIntf,
-  AConfigForm2006, ALogDocumentImpl, ALogFormTree2007, ALogNodeImpl, ATypes;
+  AConfigFormUtils, ALogDocumentImpl, ALogFormTree2007, ALogNodeImpl, ATypes;
 
 type //** Показывать Log в окне
   TLogForm = class(TALogDocument)

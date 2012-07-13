@@ -1,8 +1,8 @@
 ﻿{**
-@Abstract()
+@Abstract(ASystem prepare function)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(01.08.2011)
-@LastMod(04.07.2012)
+@LastMod(13.07.2012)
 @Version(0.5)
 }
 unit ASystemPrepare;
@@ -15,7 +15,7 @@ uses
 
 procedure System_Prepare(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
     const ProductName: APascalString; ProductVersion: AVersion;
-    const CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath: APascalString); stdcall;
+    const CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath: APascalString);
 
 implementation
 
@@ -31,7 +31,7 @@ end;
 
 procedure System_Prepare(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
     const ProductName: APascalString; ProductVersion: AVersion;
-    const CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath: APascalString); stdcall;
+    const CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath: APascalString);
 {$IFNDEF UNIX}
 type
   arrc = array[0..$ffff] of Char;
@@ -60,6 +60,8 @@ var
 var
   S: string;
 begin
+  if FIsPrepare then Exit;
+
   FComments := Comments;
   FCompanyName := CompanyName;
   FCopyright := Copyright;
@@ -131,6 +133,8 @@ begin
     end;
   end;
   {$ENDIF}
+
+  FIsPrepare := True;
 end;
 
 end.

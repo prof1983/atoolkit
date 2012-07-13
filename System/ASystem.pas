@@ -2,7 +2,7 @@
 @Abstract(ASystem function)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(19.08.2009)
-@LastMod(06.04.2012)
+@LastMod(13.07.2012)
 @Version(0.5)
 
 0.3.2
@@ -53,11 +53,12 @@ uses
 
   {$IFDEF USE_SYSUTILS}SysUtils,{$ENDIF}
   {$IFNDEF UNIX}Windows,{$ENDIF}
-  {$IFDEF USE_EVENTS}{$IFDEF A0}AEvents0{$ELSE}AEvents{$ENDIF},{$ENDIF}
+  {$IFDEF USE_EVENTS}AEvents,{$ENDIF}
   {$IFDEF USE_CONFIG}ASystemConfig,{$ENDIF}
-  ABase, ABaseTypes, ALibraries, {$IFDEF A03}ARuntime0{$ELSE}ARuntime{$ENDIF},
-  //{$IFDEF A02}ASettings0, AStrings0, {ASystem0,}{$ENDIF}
+  ABase, ABaseTypes, ALibraries, ARuntime,
   ABaseUtils, AStrings, ASystemData, ASystemMain, ASystemPrepare, ASystemResourceString, ASystemUtils;
+
+function ASystem_GetExePath(): APascalString; stdcall;
 
 // --- Info functions ---
 
@@ -94,8 +95,11 @@ function Info_GetCopyrightP: APascalString; stdcall;
   Prototype: System.Application.Info.Copyright }
 function Info_GetCopyrightWS(): AWideString; stdcall;
 
-{ Возврящает полный путь к директории с данными. }
+//** Возвращает полный путь к директории с данными.
 function Info_GetDataDirectoryPathP: APascalString; stdcall;
+
+//** Возвращает полный путь к директории с данными.
+function Info_GetDataDirectoryPathWS(): AWideString; stdcall;
 
 { Gets the description associated with the application.
   Возвращает описание программы (Runtime_GetDescription).
@@ -295,33 +299,59 @@ function FileTextReadLnAnsi(FileID: AInteger; var Stroka: AnsiString): AError; s
 
 // ---
 
+//** Возвращает параметр.
 function ParamStr(Index: AInteger; out Value: AString_Type): AInteger; stdcall;
 
+//** Возвращает параметр.
 function ParamStrP(Index: AInteger): APascalString; stdcall;
 
+//** Возвращает параметр.
 function ParamStrWS(Index: AInteger): AWideString; stdcall;
 
+//** Обрабатывает сообщения от ОС.
 function ProcessMessages(): AError; stdcall;
 
+//** Обрабатывает сообщения от ОС.
 procedure ProcessMessages02(); stdcall;
 
+//** Выводит сообщение и ждет потверджения.
 function ShowMessage(const Msg: AString_Type): ADialogBoxCommands; stdcall;
 
-// Use ShowMessageExP()
-function ShowMessage2P(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall; deprecated;
+//** Выводит сообщение и ждет потверджения.
+function ShowMessage02(const Msg: AWideString): ADialogBoxCommands; stdcall;
 
+//** Выводит сообщение и ждет потверджения.
+function ShowMessage2P(const Text, Caption: APascalString; Flags: AMessageBoxFlags
+    ): ADialogBoxCommands; stdcall; deprecated; // Use ShowMessageExP()
+
+//** Выводит сообщение и ждет потверджения.
+function ShowMessageA(const Msg: PAnsiChar): ADialogBoxCommands; stdcall;
+
+//** Выводит сообщение и ждет потверджения.
 function ShowMessageEx(const Text, Caption: AString_Type; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 
+//** Выводит сообщение и ждет потверджения.
+function ShowMessageExA(const Text, Caption: PAnsiChar; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+
+//** Выводит сообщение и ждет потверджения.
 function ShowMessageExP(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 
+//** Выводит сообщение и ждет потверджения.
 function ShowMessageExWS(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 
+//** Выводит сообщение и ждет потверджения.
 function ShowMessageP(const Msg: APascalString): ADialogBoxCommands; stdcall;
 
+//** Выводит сообщение и ждет потверджения.
 function ShowMessageWS(const Msg: AWideString): ADialogBoxCommands; stdcall;
+
+function SetDataDirectoryPathP(const DataDir: APascalString): AError; stdcall;
+
+function SetDataDirectoryPathWS(const DataDir: AWideString): AError; stdcall;
 
 procedure SetOnProcessMessages(Value: AProc); stdcall;
 procedure SetOnProcessMessages02(Value: AProc02); stdcall;
+procedure SetOnProcessMessages03(Value: AProc03); stdcall;
 procedure SetOnShowError(Value: TAShowErrorWSProc); stdcall;
 procedure SetOnShowMessage(Value: TAShowMessageWSProc); stdcall;
 
@@ -330,7 +360,10 @@ function OnAfterRun: AEvent; stdcall;
 function OnBeforeRun: AEvent; stdcall;
 function OnAfterRun_Connect(Callback: ACallbackProc; Weight: AInteger = High(AInteger)): Integer; stdcall;
 function OnAfterRun_Disconnect(Callback: ACallbackProc): AInteger; stdcall;
+//** Подключает к событию.
 function OnBeforeRun_Connect(Callback: ACallbackProc; Weight: AInteger = High(AInteger)): AInteger; stdcall;
+{$IFDEF A02}function OnBeforeRun_Connect02(Callback: ACallbackProc02; Weight: AInteger = High(AInteger)): AInteger; stdcall;{$ENDIF}
+//** Отключает от события.
 function OnBeforeRun_Disconnect(Callback: ACallbackProc): AInteger; stdcall;
 {$ENDIF USE_EVENTS}
 
@@ -351,14 +384,24 @@ function Prepare2A(Title, ProgramName: PAnsiChar; ProgramVersion: AVersion;
     CompanyName, Copyright, Url, Description, DataPath: PAnsiChar): AError; stdcall;
 
 // Prepare system.
-procedure Prepare2P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
+function Prepare2P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
     const ProductName: APascalString; ProductVersion: AVersion;
-    const CompanyName, Copyright, Url, Description, DataPath: APascalString); stdcall;
+    const CompanyName, Copyright, Url, Description, DataPath: APascalString): AError; stdcall;
+
+// Prepare system.
+procedure Prepare2WS(const Title, ProgramName: AWideString; ProgramVersion: AVersion;
+    const ProductName: AWideString; ProductVersion: AVersion;
+    const CompanyName, Copyright, Url, Description, DataPath: AWideString); stdcall;
 
 // Prepare system.
 procedure Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
     const ProductName: APascalString; ProductVersion: AVersion;
     const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString); stdcall;
+
+// Prepare system.
+function Prepare3WS(const Title, ProgramName: AWideString; ProgramVersion: AVersion;
+    const ProductName: AWideString; ProductVersion: AVersion;
+    const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: AWideString): AError; stdcall;
 
 // Prepare system.
 procedure Prepare4P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
@@ -437,27 +480,65 @@ function Runtime_ShowMessageA(const Text, Caption: AWideString; Flags: AMessageB
 function Runtime_ShellExecute(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall; deprecated;
 
 function GetCompanyName(): APascalString; stdcall; deprecated;
+
 function GetCopyright(): APascalString; stdcall; deprecated;
-function GetDescription(): APascalString; stdcall; deprecated;
-function GetExePath(): APascalString; stdcall; deprecated;
+
+function GetDescription(): AWideString; stdcall; deprecated;
+
+function GetExePath(): APascalString; stdcall; deprecated; // Use Info_GetDirectoryPathWS()
+
+function GetExePathWS(): AWideString; stdcall;
+
 function GetProductName(): APascalString; stdcall; deprecated;
+
 function GetProductVersion(): APascalString; stdcall; deprecated;
+
 function GetExeName(): APascalString; stdcall;
+
 function GetExeNameWS(): AWideString; stdcall;
-function GetProgramName(): APascalString; stdcall; deprecated;
+
+{**
+  Gets the name, without the extension, of the assembly file for the application.
+  Возвращает наименование программы.
+  Prototype: System.Application.Info.AssemblyName
+}
+function GetProgramName(): APascalString; stdcall; deprecated; // Use GetProgramNameWS
+
+{**
+  Gets the name, without the extension, of the assembly file for the application.
+  Возвращает наименование программы.
+  Prototype: System.Application.Info.AssemblyName
+}
+function GetProgramNameWS(): AWideString; stdcall;
+
 function GetProgramVersion(): APascalString; stdcall; deprecated;
-function GetTitle(): APascalString; stdcall; deprecated;
+
+function GetProgramVersionWS(): AWideString; stdcall;
+
+function GetTitle(): APascalString; stdcall; deprecated; // Use Info_GetTitleWS()
+
+//** Возвращает наименование программы.
+function GetTitleWS(): AWideString; stdcall;
+
 function GetUrl(): APascalString; stdcall; deprecated;
-function GetDataPath: APascalString; stdcall; deprecated;
 
-function GetResourceString(const Section, Name, Default: AString_Type; out Value: AString_Type): AInteger; stdcall;
+//** Возвращает полный путь к директории с данными.
+function GetDataDirectoryPathWS(): APascalString; stdcall;
 
+//** Возвращает полный путь к директории с данными.
+function GetDataPath: APascalString; stdcall; //deprecated; // Use GetDataDirectoryPathWS()
+
+//** Возвращает ресурс в виде строки.
+function GetResourceString(const Section, Name, Default: AString_Type;
+    out Value: AString_Type): AInteger; stdcall;
+
+//** Возвращает ресурс в виде строки.
 function GetResourceStringWS(const Section, Name, Default: AWideString): AWideString; stdcall;
 
 function Runtime_GetCompanyName(): APascalString; stdcall; deprecated;
 function Runtime_GetCopyright(): APascalString; stdcall; deprecated;
 function Runtime_GetDescription(): APascalString; stdcall; deprecated;
-function Runtime_GetExePath(): APascalString; stdcall; deprecated;
+function Runtime_GetExePath(): APascalString; stdcall; deprecated; // Use ASystem_GetExePath()
 function Runtime_GetProductName(): APascalString; stdcall; deprecated;
 function Runtime_GetProductVersion(): APascalString; stdcall; deprecated;
 function Runtime_GetExeName(): APascalString; stdcall; deprecated;
@@ -465,7 +546,7 @@ function Runtime_GetProgramName(): APascalString; stdcall; deprecated;
 function Runtime_GetProgramVersion(): APascalString; stdcall; deprecated;
 function Runtime_GetTitle(): APascalString; stdcall; deprecated;
 function Runtime_GetUrl(): APascalString; stdcall; deprecated;
-function Runtime_GetDataPath: APascalString; stdcall; deprecated;
+function Runtime_GetDataPath: APascalString; stdcall; deprecated; // Use Info_GetDataDirectoryPathWS()
 
 // Возвращяет указатель на конфигурацию программы.
 function GetConfig(): AConfig; stdcall;
@@ -473,7 +554,10 @@ function GetConfig(): AConfig; stdcall;
 // Возвращент True, если получена команда на завершение работы
 function GetIsShutdown(): ABoolean; stdcall;
 
+{$IFDEF AOLD}
+{$ELSE}
 function ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; stdcall;
+{$ENDIF AOLD}
 
 function ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
 
@@ -552,6 +636,15 @@ begin
 end;
 {$ENDIF USE_EVENTS}
 
+// Обработчик по умолчанию
+function DoShowMessage(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+begin
+  if (Length(Caption) <= 0) then
+    Result := Windows.MessageBox(0, PChar(string(Text)), PChar(string(FTitle)), Flags)
+  else
+    Result := Windows.MessageBox(0, PChar(string(Text)), PChar(string(Caption)), Flags);
+end;
+
 { Info }
 
 function Info_CompanyName: APascalString; stdcall;
@@ -620,6 +713,11 @@ begin
 end;
 
 function Info_GetDataDirectoryPathP: APascalString; stdcall;
+begin
+  Result := FDataPath;
+end;
+
+function Info_GetDataDirectoryPathWS(): AWideString; stdcall;
 begin
   Result := FDataPath;
 end;
@@ -826,11 +924,27 @@ end;
 {$ENDIF USE_EVENTS}
 
 {$IFDEF USE_EVENTS}
+{$IFDEF A02}
+function OnBeforeRun_Connect02(Callback: ACallbackProc02; Weight: AInteger = High(AInteger)): AInteger; stdcall;
+begin
+  Result := AEvents.Event_Connect(FOnBeforeRunEvent, Callback, Weight);
+end;
+{$ENDIF A02}
+{$ENDIF USE_EVENTS}
+
+{$IFDEF USE_EVENTS}
 function OnBeforeRun_Disconnect(Callback: ACallbackProc): Integer; stdcall;
 begin
   Result := AEvents.Event_Disconnect(FOnBeforeRunEvent, Callback);
 end;
 {$ENDIF USE_EVENTS}
+
+// --- ASystem ---
+
+function ASystem_GetExePath(): APascalString; stdcall;
+begin
+  Result := FExePath;
+end;
 
 { System public procs }
 
@@ -839,6 +953,8 @@ begin
   Result := FConfig;
 end;
 
+{IFDEF AOLD}
+{ELSE}
 function ParamStr(Index: AInteger; out Value: AString_Type): AInteger; stdcall;
 var
   Res: string;
@@ -850,6 +966,7 @@ begin
     Result := -1;
   end;
 end;
+{ENDIF AOLD}
 
 function ParamStrP(Index: AInteger): APascalString; stdcall;
 begin
@@ -928,31 +1045,62 @@ begin
   end;
 end;
 
-procedure Prepare2P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
+function Prepare2P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
     const ProductName: APascalString; ProductVersion: AVersion;
-    const CompanyName, Copyright, Url, Description, DataPath: APascalString); stdcall;
+    const CompanyName, Copyright, Url, Description, DataPath: APascalString): AError; stdcall;
 begin
-  Prepare3P(Title, ProgramName, ProgramVersion, ProductName, ProductVersion, CompanyName, Copyright, Url, Description, DataPath, '');
+  Result := Prepare3WS(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
+      CompanyName, Copyright, Url, Description, DataPath, '');
 end;
 
-procedure Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
-    const ProductName: APascalString; ProductVersion: AVersion;
-    const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString); stdcall;
+procedure Prepare2WS(const Title, ProgramName: AWideString; ProgramVersion: AVersion;
+    const ProductName: AWideString; ProductVersion: AVersion;
+    const CompanyName, Copyright, Url, Description, DataPath: AWideString); stdcall;
 begin
+  Prepare3WS(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
+      CompanyName, Copyright, Url, Description, DataPath, '');
+end;
+
+function Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
+    const ProductName: APascalString; ProductVersion: AVersion;
+    const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString): AError; stdcall;
+begin
+  Result := Prepare3WS(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
+      CompanyName, Copyright, Url, Description, DataPath, ConfigPath);
+end;
+
+function Prepare3WS(const Title, ProgramName: AWideString; ProgramVersion: AVersion;
+    const ProductName: AWideString; ProductVersion: AVersion;
+    const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: AWideString): AError; stdcall;
+begin
+  SetOnShowMessage(DoShowMessage);
   {$IFDEF USE_EVENTS}
+    if (AEvents.Init() < 0) then
+    begin
+      Result := -3;
+      Exit;
+    end;
+
     FOnAfterRunEvent := AEvents.Event_NewW(0, 'AfterRun');
     FOnBeforeRunEvent := AEvents.Event_NewW(0, 'BeforeRun');
-    {$IFDEF A02}
+    {$IFDEF A01}
       ARuntime.OnAfterRun_Set(DoAfterRun02);
       ARuntime.OnBeforeRun_Set(DoBeforeRun02);
     {$ELSE}
+      {$IFDEF A02}
+      ARuntime.OnAfterRun_Set(DoAfterRun02);
+      ARuntime.OnBeforeRun_Set(DoBeforeRun02);
+      {$ELSE}
       ARuntime.OnAfterRun_Set(DoAfterRun);
       ARuntime.OnBeforeRun_Set(DoBeforeRun);
-    {$ENDIF A02}
+      {$ENDIF A02}
+    {$ENDIF A01}
   {$ENDIF USE_EVENTS}
 
   System_Prepare(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
       CompanyName, Copyright, Url, Description, '', DataPath, ConfigPath);
+
+  Result := 0;
 end;
 
 procedure Prepare4P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
@@ -962,13 +1110,18 @@ begin
   {$IFDEF USE_EVENTS}
     FOnAfterRunEvent := AEvents.Event_NewW(0, 'AfterRun');
     FOnBeforeRunEvent := AEvents.Event_NewW(0, 'BeforeRun');
-    {$IFDEF A02}
+    {$IFDEF A01}
       ARuntime.OnAfterRun_Set(DoAfterRun02);
       ARuntime.OnBeforeRun_Set(DoBeforeRun02);
     {$ELSE}
+      {$IFDEF A02}
+      ARuntime.OnAfterRun_Set(DoAfterRun02);
+      ARuntime.OnBeforeRun_Set(DoBeforeRun02);
+      {$ELSE}
       ARuntime.OnAfterRun_Set(DoAfterRun);
       ARuntime.OnBeforeRun_Set(DoBeforeRun);
-    {$ENDIF A02}
+      {$ENDIF A02}
+    {$ENDIF A01}
   {$ENDIF USE_EVENTS}
 
   System_Prepare(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
@@ -995,10 +1148,10 @@ end;
 
 function ProcessMessages(): AError; stdcall;
 begin
-  if Assigned(FOnProcessMessages) then
+  if Assigned(FOnProcessMessages02) then
   begin
     try
-      FOnProcessMessages;
+      FOnProcessMessages02;
       Result := 0;
     except
       Result := -1;
@@ -1006,13 +1159,13 @@ begin
     Exit;
   end;
 
-  if not(Assigned(FOnProcessMessages02)) then
+  if not(Assigned(FOnProcessMessages03)) then
   begin
     Result := 1;
     Exit;
   end;
   try
-    FOnProcessMessages02;
+    FOnProcessMessages03;
     Result := 0;
   except
     Result := -1;
@@ -1192,12 +1345,17 @@ begin
   Result := FCopyright;
 end;
 
-function GetDataPath(): APascalString; stdcall;
+function GetDataDirectoryPathWS(): APascalString; stdcall;
 begin
-  Result := Info_DataDirectoryPath;
+  Result := FDataPath;
 end;
 
-function GetDescription(): APascalString; stdcall;
+function GetDataPath(): APascalString; stdcall;
+begin
+  Result := FDataPath;
+end;
+
+function GetDescription(): AWideString; stdcall;
 begin
   Result := FDescription;
 end;
@@ -1213,6 +1371,11 @@ begin
 end;
 
 function GetExePath(): APascalString; stdcall;
+begin
+  Result := FExePath;
+end;
+
+function GetExePathWS(): AWideString; stdcall;
 begin
   Result := FExePath;
 end;
@@ -1237,7 +1400,17 @@ begin
   Result := FProgramName;
 end;
 
+function GetProgramNameWS(): AWideString; stdcall;
+begin
+  Result := FProgramName;
+end;
+
 function GetProgramVersion(): APascalString; stdcall;
+begin
+  Result := FProgramVersionStr;
+end;
+
+function GetProgramVersionWS(): AWideString; stdcall;
 begin
   Result := FProgramVersionStr;
 end;
@@ -1270,6 +1443,11 @@ begin
 end;
 
 function GetTitle(): APascalString; stdcall;
+begin
+  Result := FTitle;
+end;
+
+function GetTitleWS(): AWideString; stdcall;
 begin
   Result := FTitle;
 end;
@@ -1612,14 +1790,35 @@ begin
   Result := System_ShowMessageEx(Text, Caption, Flags);
 end;
 
+function SetDataDirectoryPathP(const DataDir: APascalString): AError; stdcall;
+begin
+  FDataPath := DataDir;
+  Result := 0;
+end;
+
+function SetDataDirectoryPathWS(const DataDir: AWideString): AError; stdcall;
+begin
+  FDataPath := DataDir;
+  Result := 0;
+end;
+
 procedure SetOnProcessMessages(Value: AProc); stdcall;
 begin
-  FOnProcessMessages := Value;
+  {$IFDEF A02}
+  FOnProcessMessages02 := Value;
+  {$ELSE}
+  FOnProcessMessages03 := Value;
+  {$ENDIF}
 end;
 
 procedure SetOnProcessMessages02(Value: AProc02); stdcall;
 begin
   FOnProcessMessages02 := Value;
+end;
+
+procedure SetOnProcessMessages03(Value: AProc03); stdcall;
+begin
+  FOnProcessMessages03 := Value;
 end;
 
 procedure SetOnShowError(Value: TAShowErrorWSProc); stdcall;
@@ -1699,9 +1898,30 @@ begin
   end;
 end;
 
+function ShowMessage02(const Msg: AWideString): ADialogBoxCommands; stdcall;
+begin
+  try
+    Result := System_ShowMessage(Msg);
+  except
+    Result := -1;
+  end;
+end;
+
 function ShowMessage2P(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
   Result := ShowMessageExP(Text, Caption, Flags);
+end;
+
+function ShowMessageA(const Msg: PAnsiChar): ADialogBoxCommands; stdcall;
+var
+  S: AnsiString;
+begin
+  try
+    S := Msg;
+    Result := System_ShowMessage(S);
+  except
+    Result := -1;
+  end;
 end;
 
 function ShowMessageEx(const Text, Caption: AString_Type; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
@@ -1711,6 +1931,15 @@ begin
         AStrings.String_ToPascalString(Text),
         AStrings.String_ToPascalString(Caption),
         Flags);
+  except
+    Result := -1;
+  end;
+end;
+
+function ShowMessageExA(const Text, Caption: PAnsiChar; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+begin
+  try
+    Result := System_ShowMessageEx(Text, Caption, Flags);
   except
     Result := -1;
   end;

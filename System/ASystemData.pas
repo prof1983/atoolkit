@@ -1,8 +1,8 @@
 ﻿{**
-@Abstract()
+@Abstract(ASystem data)
 @Author(Prof1983 prof1983@ya.ru)
 @Created(29.05.2011)
-@LastMod(22.05.2012)
+@LastMod(13.07.2012)
 @Version(0.5)
 
 0.3.2
@@ -40,6 +40,7 @@ var
   FExeFileName: APascalString; // "Program1.exe"  // Полный путь и имя выполняемого файла
   FExeName: APascalString;     // "Program1"      // Имя выполняемого файла
   FExePath: APascalString;     // "C:\Programs\Program1\"  // Путь к выполняемому файлу
+  FIsPrepare: Boolean;
   FProductName: APascalString;
   FProductVersion: AVersion;
   FProductVersionStr: APascalString;
@@ -49,8 +50,8 @@ var
   FProgramVersionStr: APascalString;
   FTitle: APascalString;
   FUrl: APascalString;
-  FOnProcessMessages: AProc;
   FOnProcessMessages02: AProc02;
+  FOnProcessMessages03: AProc03;
   FOnShowError: TAShowErrorWSProc;
   FOnShowMessage: TAShowMessageWSProc;
   {$IFDEF USE_EVENTS}

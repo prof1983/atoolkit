@@ -1,9 +1,8 @@
 ﻿{**
 @Abstract(Узлы)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(15.04.2007)
-@LastMod(26.06.2012)
-@Version(0.5)
+@LastMod(13.07.2012)
 }
 unit ANodesImpl;
 
@@ -110,7 +109,7 @@ end;
 
 function TProfNodes3.New(const Name: WideString): IProfNode;
 begin
-  Result := TProfNode3.Create();
+  Result := TANode.Create();
   Result.Name := Name;
   Self.Add(Result);
 end;

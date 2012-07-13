@@ -1,33 +1,39 @@
 ﻿{**
-@Abstract(Реализация интерфейса IProfNode)
-@Author(Prof1983 prof1983@ya.ru)
+@Abstract(Interface IProfNode implementation)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(11.04.2007)
-@LastMod(26.06.2012)
-@Version(0.5)
+@LastMod(13.07.2012)
+
+Uses
+  @link AAttributesIntf
+  @link AAttributesImpl
+  @link ABase
+  @link AEntityImpl
+  @link ANodeIntf
 }
 unit ANodeImpl;
 
 interface
 
 uses
-  AAttributesIntf, AAttributesImpl, AEntityImpl, ANodeIntf;
+  AAttributesIntf, AAttributesImpl, ABase, AEntityImpl, ANodeIntf;
 
 type
   {** Реализация интерфейса IProfNode }
-  TProfNode = class(TANamedEntity, IProfNode)
+  TANode = class(TANamedEntity, IProfNode)
   protected
     FAttributes: IProfAttributes;
-    FChildNodes: IProfNodes;
+    FChildNodes: AXmlNodeList{IProfNodes};
   protected
     function GetAttributes(): IProfAttributes; safecall;
-    function GetChildNodes(): IProfNodes; safecall;
+    function GetChildNodes(): AXmlNodeList;
   public
     procedure AfterConstruction(); override;
   public
     property Attributes: IProfAttributes read GetAttributes;
-    property ChildNodes: IProfNodes read GetChildNodes;
+    property ChildNodes: AXmlNodeList read GetChildNodes;
   end;
-  TProfNode3 = TProfNode;
+  TProfNode = TANode;
 
 implementation
 
@@ -36,24 +42,24 @@ uses
 
 { TProfNode }
 
-procedure TProfNode.AfterConstruction();
+procedure TANode.AfterConstruction();
 begin
   inherited;
   FAttributes := nil;
-  FChildNodes := nil;
+  FChildNodes := 0;
 end;
 
-function TProfNode.GetAttributes(): IProfAttributes;
+function TANode.GetAttributes(): IProfAttributes;
 begin
   if not(Assigned(FAttributes)) then
     FAttributes := TProfAttributes3.Create();
   Result := FAttributes;
 end;
 
-function TProfNode.GetChildNodes(): IProfNodes;
+function TANode.GetChildNodes(): AXmlNodeList;
 begin
-  if not(Assigned(FChildNodes)) then
-    FChildNodes := TProfNodes3.Create();
+  if (FChildNodes = 0) then
+    FChildNodes := AXmlNodeList(TProfNodes3.Create());
   Result := FChildNodes;
 end;
 

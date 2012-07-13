@@ -1,9 +1,14 @@
 ﻿{**
 @Abstract(Классы для записи собщений программы в БД или файл)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(16.08.2005)
-@LastMod(05.07.2012)
-@Version(0.5)
+@LastMod(13.07.2012)
+
+Uses
+  @link ABase
+  @link ALogDocumentImpl
+  @link ALogFileTextUtils
+  @link ATypes
 }
 unit ALogFileText;
 
@@ -11,7 +16,7 @@ interface
 
 uses
   Classes, SysUtils,
-  ALogDocumentImpl, ALogFileTextUtils, ATypes;
+  ABase, ALogDocumentImpl, ALogFileTextUtils, ATypes;
 
 type //** Запись в файл
   TProfLogFileText3 = class(TALogDocument)
@@ -21,9 +26,10 @@ type //** Запись в файл
   public
     //** Добавить сообщение
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; override;
-    constructor Create(); //(AConfig: IProfXmlNode; AFileName: WideString);
-    function Initialize(): TProfError; override; safecall;
+    function Initialize(): AError; override;
     class function SaveLog(Err: TLogTypeMessage; AStrMsg: string; AFileName: string = ''; AFileNameOld: string = ''; AFilePath: string = ''): Boolean;
+  public
+    constructor Create();
   public
     //** Имя файла
     property FileName: WideString read FFileName write FFileName;
@@ -48,16 +54,12 @@ begin
   Result := 1;
 end;
 
-constructor TProfLogFileText3.Create(); //(AConfig: IProfXmlNode; AFileName: WideString);
+constructor TProfLogFileText3.Create();
 begin
-  inherited Create(); //(lFile);
-  FLogType := lFile;
-//  FFileName := AFileName;
-  // Проверка сущестрования директории
-//  ForceDirectories(ExtractFilePath(FFileName));
+  inherited Create(lFile);
 end;
 
-function TProfLogFileText3.Initialize(): TProfError;
+function TProfLogFileText3.Initialize(): AError;
 begin
   Result := inherited Initialize();
   // Проверка сущестрования директории

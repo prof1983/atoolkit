@@ -1,9 +1,17 @@
 ﻿{**
 @Abstract(Объект с логированием и конфигурациями)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(22.12.2005)
-@LastMod(10.07.2012)
-@Version(0.5)
+@LastMod(13.07.2012)
+
+Uses
+  @link ABase
+  @link AEntityImpl
+  @link ALogGlobals
+  @link ALogNodeUtils
+  @link ANodeIntf
+  @link AObjectIntf
+  @link ATypes
 }
 unit AObjectImpl;
 
@@ -80,7 +88,8 @@ type //** Объект с логированием и конфигурациям
         const StrMsg: string; Params: array of const): ABoolean; virtual;
     function AssignedConfig(): Boolean;
     function CheckInitialized(): Boolean; virtual;
-    function SendMessageX(const AMsg: IProfNode): Integer; virtual; safecall;
+    function SendMessageX(Msg: AXmlNode): AInt; virtual;
+    function SendMessageX1(Msg: IProfNode): AInt; virtual;
     function ToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
         const StrMsg: WideString; Params: array of const): AInteger; virtual;
     function ToLogA(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
@@ -354,7 +363,12 @@ begin
   end;
 end;
 
-function TProfObject.SendMessageX(const AMsg: IProfNode): Integer;
+function TProfObject.SendMessageX(Msg: AXmlNode): AInt;
+begin
+  Result := 0;
+end;
+
+function TProfObject.SendMessageX1(Msg: IProfNode): AInt;
 begin
   Result := 0;
   {

@@ -1,9 +1,11 @@
 {**
 @Abstract(AXmlNode functions)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(28.06.2012)
-@LastMod(11.07.2012)
-@Version(0.5)
+@LastMod(13.07.2012)
+
+Uses
+  @link ABase
 }
 unit AXmlNodeUtils;
 
@@ -70,6 +72,12 @@ function AXmlNode_GetXmlA(Node: AXmlNode; const Prefix: APascalString): APascalS
 function AXmlNode_Free(Node: AXmlNode): AError;
 
 function AXmlNode_New(Node: IXmlNode): AXmlNode;
+
+function AXmlNode_New0(): AXmlNode;
+
+function AXmlNode_New1(Document: AXmlDocument): AXmlNode;
+
+function AXmlNode_New2(Node: IXmlNode): AXmlNode;
 
 function AXmlNode_ReadBool(Node: AXmlNode; const Name: APascalString;
     out Value: ABoolean): AError;
@@ -181,15 +189,15 @@ function AXmlNode_WriteUInt64(Node: AXmlNode; const Name: APascalString;
 
 // --- AXmlNode0 ---
 
-function AXmlNode0_New(): AXmlNode;
+function AXmlNode0_New(): AXmlNode; deprecated; // Use AXmlNode_New0()
 
 // --- AXmlNode1 ---
 
-function AXmlNode1_New(Document: AXmlDocument): AXmlNode;
+function AXmlNode1_New(Document: AXmlDocument): AXmlNode; deprecated; // Use AXmlNode_New1()
 
 // --- AXmlNode2 ---
 
-function AXmlNode2_New(Node: IXmlNode): AProfXmlNode2;
+function AXmlNode2_New(Node: IXmlNode): AProfXmlNode2; deprecated; // Use AXmlNode_New2()
 
 implementation
 
@@ -306,7 +314,7 @@ begin
     try
       if (AXmlNodeList_GetCount(Nodes) = 0) and (N.Node.ChildNodes.Count > 0) then
       try
-        // Заполнение FNodes
+        // Filling FNodes
         for I := 0 to N.Node.ChildNodes.Count - 1 do
         begin
           TmpNode := AXmlNode_New(N.Node.ChildNodes.Nodes[I]);
@@ -339,9 +347,8 @@ begin
     N := TProfXmlNode1(Node).Node;
     if Assigned(N) then
     begin
-      // Поиск XML нода
+      // Searching XML node
       Child := N.ChildNodes.FindNode(Name);
-      // Если нету - создание XML нода
       if not(Assigned(Child)) then
         Child := N.AddChild(Name);
       if not(Assigned(Child)) then
@@ -349,7 +356,7 @@ begin
         Result := 0;
         Exit;
       end;
-      // Создание оболочки нода
+      // Create node shell
       Result := AXmlNode2_New(Child);
     end
     else
@@ -704,6 +711,25 @@ var
 begin
   Res := TProfXmlNode.Create();
   Res.SetNode(Node);
+end;
+
+function AXmlNode_New0(): AXmlNode;
+begin
+  Result := AXmlNode(AXmlNodeImpl.TProfXmlNode.Create());
+end;
+
+function AXmlNode_New1(Document: AXmlDocument): AXmlNode;
+begin
+  Result := AXmlNode(TProfXmlNode1.Create1(Document));
+end;
+
+function AXmlNode_New2(Node: IXmlNode): AXmlNode;
+begin
+  try
+    Result := AXmlNode(TProfXmlNode1.Create(Node));
+  except
+    Result := 0;
+  end;
 end;
 
 function AXmlNode_ReadBool(Node: AXmlNode; const Name: APascalString;
@@ -1580,26 +1606,21 @@ end;
 
 function AXmlNode0_New(): AXmlNode;
 begin
-  Result := AXmlNode(AXmlNodeImpl.TProfXmlNode.Create());
+  Result := AXmlNode_New0();
 end;
 
 // --- AXmlNode1 ---
 
 function AXmlNode1_New(Document: AXmlDocument): AXmlNode;
-//function AXmlNode_New(Document: AXmlDocument): AXmlNode;
 begin
-  Result := AXmlNode(TProfXmlNode1.Create1(Document));
+  Result := AXmlNode_New1(Document);
 end;
 
 // --- AXmlNode2 ---
 
 function AXmlNode2_New(Node: IXmlNode): AProfXmlNode2;
 begin
-  try
-    Result := AProfXmlNode2(TProfXmlNode1.Create(Node));
-  except
-    Result := 0;
-  end;
+  Result := AXmlNode_New2(Node);
 end;
 
 end.

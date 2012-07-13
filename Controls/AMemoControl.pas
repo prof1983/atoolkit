@@ -1,9 +1,13 @@
 ﻿{**
-@Abstract(Контрол сообщений с выводом в Memo)
-@Author(Prof1983 prof1983@ya.ru)
+@Abstract(AMemoControl)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(28.10.2006)
-@LastMod(26.04.2012)
-@Version(0.5)
+@LastMod(13.07.2012)
+
+Uses
+  @link ABase
+  @link AControlImpl
+  @link ATypes
 }
 unit AMemoControl;
 
@@ -11,9 +15,9 @@ interface
 
 uses
   Classes, Controls, StdCtrls,
-  AControlImpl, ATypes;
+  ABase, AControlImpl, ATypes;
 
-type //** @abstract(Контрол сообщений с выводом в Memo)
+type
   TProfMemoControl = class(TProfControl)
   private
     procedure memInputKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -24,7 +28,7 @@ type //** @abstract(Контрол сообщений с выводом в Memo)
   protected
     function SendMessage(const Msg: WideString): Integer; override; safecall;
   public
-    function AddMessage(const Msg: WideString): Integer; override; safecall;
+    function AddMessage(const Msg: WideString): AInt; override;
     function Initialize(): TProfError; override; //safecall;
     procedure LoadFromFile(const FileName: WideString);
   end;

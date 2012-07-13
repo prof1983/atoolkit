@@ -1,9 +1,8 @@
 {**
 @Abstract(Base types and consts)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(06.03.2008)
 @LastMod(11.07.2012)
-@Version(0.5)
 }
 unit ABase;
 
@@ -188,7 +187,7 @@ type
   AProfXmlNode1 = type AProfXmlNode; // TProfXmlNode1
   AProfXmlNode2 = type AProfXmlNode; // TProfXmlNode2
   AProfXmlNodeA = type AInt; // IProfXmlNodeA
-  AXmlNodeList = type AInt; // =AXmlNodeList_Type.Id (TProfXmlNodeList)
+  AXmlNodeList = type AInt; // =AXmlNodeList_Type.Id (TProfXmlNodeList) or TProfNodes3
   AConfigNode = AXmlNode; // =AXmlNode or AConfig
 
 implementation

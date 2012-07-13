@@ -1,9 +1,13 @@
 ﻿{**
-@Abstract(Форма отображения свойств)
-@Author(Prof1983 prof1983@ya.ru)
+@Abstract(Properties form)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(12.10.2005)
-@LastMod(11.07.2012)
-@Version(0.5)
+@LastMod(13.07.2012)
+
+Uses
+  @link fProfShablon
+  @link ATreeView
+  @link ATypes
 }
 unit fProperties20061013;
 
@@ -15,7 +19,7 @@ uses
   Classes, Controls, ComCtrls, Dialogs, ExtCtrls, Graphics, Grids, Forms,
   Messages, SysUtils, ValEdit, Variants, Windows,
   {$IFDEF USENL}NLStatusBar, NLXmlTreeView,{$ENDIF}
-  fProfShablon, {AFormObj,} ATreeView, ATypes;
+  fProfShablon, ATreeView, ATypes;
 
 type
   TfmProperties = class(TfmProfShablon)
@@ -52,7 +56,7 @@ end;
 
 function TfmProperties.Initialize(): WordBool;
 begin
-  AddToLog(lgGeneral, ltInformation, 'TfmProperties.Initialize', []);
+  AddToLog(lgGeneral, ltInformation, 'TfmProperties.Initialize');
   Result := inherited Initialize();
   if not(Result) then Exit;
 

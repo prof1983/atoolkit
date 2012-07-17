@@ -1,71 +1,97 @@
-/*
-Abstract(AStrings)
-Author(Prof1983 prof1983@ya.ru)
-Created(07.02.2012)
-LastMod(20.02.2012)
-Version(0.5)
-*/
+/* AStrings functions
+ * Author Prof1983 <prof1983@ya.ru>
+ * Created 07.02.2012
+ * LastMod 17.07.2012
+ * Version 0.5
+ */
 
 #include <stdlib.h>
 #include <string.h>
 
-#include "ABase.h"
-#include "AStrings.h"
+#include "AStrings"
+
+// --- AStr ---
+
+AInt
+func AStr_Cat(AStr S1, AStr S2)
+{
+	return strcat(S1, S2);
+}
+
+AInt
+func AStr_Compare(AStr S1, AStr S2)
+{
+	return strcmp(S1, S2);
+}
+
+AInt
+func AStr_GetLength(AStr S)
+{
+	return strlen(S);
+}
+
+// --- AString ---
 
 AError
-AFunction String_AssignC(AString S, const AAnsiString Value)
+func AString_AssignC(AString S, const AAnsiString Value)
 {
 	AInteger i;
 	AInteger length;
 	AChar c;
 	void* mem;
 
-	length = strlen(Value);
+	if (S->Code != 1)
+		return -3;
+	length = AStr_GetLength(Value);
 	mem = calloc(length+1, sizeof(char)); //mem = calloc(length+1, sizeof(wchar_t));
 	if (mem == 0)
 	{
 		return -2;
 	};
-	(*S).Str = (AAnsiString)mem;
+	S->Str = (AAnsiString)mem;
 	for (i = 0; i < length+1; i++)
 	{
 		c = Value[i];
-		(*S).Str[i] = c;
+		S->Str[i] = c;
 	}
-	(*S).Len = length;
+	S->Len = length;
 	return 0;
 }
 
 AError
-AFunction String_CatC(AString S, const AAnsiString Value)
+func AString_CatC(AString S, const AAnsiString Value)
 {
 	AInteger Len;
 	AInteger Len2;
 	AInteger I;
 	AChar C;
-	void* mem;
+	APointer mem;
 
-	Len = strlen((*S).Str); //Len = wcslen((*S).Str);
-	Len2 = strlen(Value);
-	mem = (void*)(*S).Str;
+	if (S->Code != 1)
+		return -3;
+	Len = AStr_GetLength(S->Str); //Len = wcslen((*S).Str);
+	Len2 = AStr_GetLength(Value);
+	mem = (APointer)S->Str;
 	mem = realloc(mem, Len + Len2 + 1);
 	if (mem == 0)
 	{
 		return -2;
 	}
-	for (I = 0; I < Len2+1; I++)
+	S->Str = (AStr)mem;
+	AStr_Cat(S->Str, Value);
+	/*for (I = 0; I < Len2+1; I++)
 	{
 		C = Value[I];
-		(*S).Str[Len+I] = C;
-	}
-	(*S).Len = Len+Len2;
+		S->Str[Len+I] = C;
+	}*/
+	S->Len = Len+Len2;
 	//memmove(mem+Len*sizeof(AChar), Value
 	// ...
 	return 0;
 }
 
 AError
-AFunction String_Copy(AString S, const AString_Type Str2)
+func AString_Copy(AString S, const AString_Type Str2)
 {
 	if (strcpy((*S).Str, Str2.Str) == (*S).Str)
 	{
@@ -76,7 +102,7 @@ AFunction String_Copy(AString S, const AString_Type Str2)
 }
 
 AError
-AFunction String_CopyN(AString S, const AString_Type Str2, ASize Count)
+func AString_CopyN(AString S, const AString_Type Str2, ASize Count)
 {
 	if (strncpy((*S).Str, Str2.Str, Count) == (*S).Str)
 	{
@@ -86,8 +112,30 @@ AFunction String_CopyN(AString S, const AString_Type Str2, ASize Count)
 		return -1;
 }
 
-AInteger
-AFunction String_Pos(const AString_Type S, const AString_Type SubStr)
+AError
+func AString_Free(AString S)
+{
+	if (S == NULL)
+		return 1;
+	free(S);
+	return 0;
+}
+
+AString
+func AString_NewC(AAnsiString Str)
+{
+	AString S;
+	S = malloc(sizeof(AString_Type));
+	S->Len = AStr_GetLength(Str);
+	S->Str = calloc(S->Len+1, sizeof(char));
+	S->AllocSize = (S->Len+1) * sizeof(char);
+	S->Code = 1;
+	strcpy(S->Str, Str);
+	return S;
+}
+
+AInt
+func AString_Pos(const AString_Type S, const AString_Type SubStr)
 {
 	AInteger I;
 	I = (AInteger)strstr(S.Str, SubStr.Str);
@@ -98,8 +146,8 @@ AFunction String_Pos(const AString_Type S, const AString_Type SubStr)
 	return (I - (AInteger)(&S));
 }
 
-AInteger
-AFunction String_PosC(const AString_Type S, const AAnsiString SubStr)
+AInt
+func AString_PosC(const AString_Type S, const AAnsiString SubStr)
 {
 	AInteger I;
 	I = (AInteger)strstr(S.Str, SubStr);
@@ -111,12 +159,14 @@ AFunction String_PosC(const AString_Type S, const AAnsiString SubStr)
 }
 
 AError
-AFunction String_ToLower(AString S)
+func AString_ToLower(AString S)
 {
 	AInteger I;
 	AInteger length;
 
-	length = strlen((*S).Str); //length = wcslen((*S).Str);
+	if ((S->Code != 0) && (S->Code != 1))
+		return -3;
+	length = AStr_GetLength(S->Str); //length = wcslen((*S).Str);
 	if ((*S).Len != length)
 	{
 		return - 2;

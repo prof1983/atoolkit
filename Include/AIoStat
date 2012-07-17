@@ -15,12 +15,18 @@
 
 // ----
 
-typedef struct stat* AStat;
+typedef struct stat AStat_Type;
+typedef AStat_Type* AStat;
 
+/* Is directory */
 #define AStatIsDir(m) _S_ISDIR(m->st_mode)
+/* Is FIFO chanel */
 #define AStatIsFifo(m) _S_ISFIFO(m->st_mode)
+/* Is character device */
 #define AStatIsChr(m) _S_ISCHR(m->st_mode)
+/* Is block device: Is this ever set under w32? */
 #define AStatIsBlk(m) _S_ISBLK(m->st_mode)
+/* Is regular file */
 #define AStatIsReg(m) _S_ISREG(m->st_mode)
 
 // ----

@@ -1,0 +1,18 @@
+// 16.07.2012
+
+#ifndef AUi_H
+#define AUi_H
+
+#include "ABase"
+
+// ----
+
+typedef QPushButton* APushButton;
+typedef QWidget* AWidget;
+
+// ----
+
+APushButton
+afunc APushButton_New(QString Text, AWidget Parent);
+
+#endif

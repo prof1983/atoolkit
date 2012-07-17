@@ -1,0 +1,34 @@
+/* AIo stat functions
+ * Author Prof1983 <prof1983@ya.ru>
+ * Created 17.07.2012
+ * LastMod 17.07.2012
+ * Version 0.5
+ */
+
+#ifndef AIoStat_H
+#define AIoStat_H
+
+//#include <sys/types.h>
+#include <sys/stat.h>
+//#include <unistd.h>
+#include "ABase"
+
+// ----
+
+typedef struct stat* AStat;
+
+#define AStatIsDir(m) _S_ISDIR(m->st_mode)
+#define AStatIsFifo(m) _S_ISFIFO(m->st_mode)
+#define AStatIsChr(m) _S_ISCHR(m->st_mode)
+#define AStatIsBlk(m) _S_ISBLK(m->st_mode)
+#define AStatIsReg(m) _S_ISREG(m->st_mode)
+
+// ----
+
+AInt
+AIo_GetStat(const AStr FileName, AStat Buf);
+
+AInt
+AIo_GetStatF(AInt FileDes, AStat Buf);
+
+#endif // AIoStat_H

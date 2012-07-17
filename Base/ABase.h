@@ -1,8 +1,8 @@
 ﻿/*  Base consts and types
- *  Author(Prof1983 prof1983@ya.ru)
- *  Created(06.03.2008)
- *  LastMod(15.06.2012)
- *  Version(0.5)
+ *  Author Prof1983 <prof1983@ya.ru>
+ *  Created 06.03.2008
+ *  LastMod 17.07.2012
+ *  Version 0.5
  */
 
 #ifndef ABaseH
@@ -63,16 +63,31 @@ typedef AInt AEvent;
 
 /* --- String --- */
 
-/* string define */
-typedef char* AAnsiString; //#define PChar char*
-//typedef AChar* AWideString;
+typedef char* AAnsiString;
+typedef char* AStr;
+typedef wchar_t* AStrW;
+//#define PChar char*
 
 typedef struct
 {
-	AAnsiString Str;
+	AStr Str;
 	AInt Len;
-} AString_Type;
+} AString_Type_2;
 
-typedef AString_Type* AString; //#define AString AString_Type*
+typedef struct
+{
+	//** UTF-8 or Ansi \0-terminated value. Analog GString Points to the string's current \0-terminated value (gchar).
+	AStr Str;
+	//** Length (count chars). Analog GString Current length (gsize)
+	AInt Len;
+	//** Allocated size in bytes. Analog GString allocated_len (gsize).
+	AInt AllocSize;
+	//** Code: 0 - UTF-8; 1 - PAnsiChar
+	AInt Code;
+} AString_Type_4;
+
+typedef AString_Type_4 AString_Type;
+
+typedef AString_Type* AString;
 
 #endif

@@ -1,9 +1,8 @@
 ﻿{**
 @Abstract(Форма отображения свойств)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(12.10.2005)
-@LastMod(02.05.2012)
-@Version(0.5)
+@LastMod(18.07.2012)
 }
 unit fProperties2006;
 
@@ -37,7 +36,7 @@ implementation
 
 function TfmProperties.Initialize(): WordBool;
 begin
-  AddToLog(lgGeneral, ltInformation, 'TFormPropertys.Initialize', []);
+  AddToLog(lgGeneral, ltInformation, 'TFormPropertys.Initialize');
   Result := inherited Initialize;
   if not(Result) then Exit;
 

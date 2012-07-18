@@ -1,20 +1,23 @@
 ﻿{**
 @Abstract(Некоторые часто используемые функции)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(13.03.2007)
-@LastMod(06.07.2012)
-@Version(0.5)
+@LastMod(18.07.2012)
 }
 unit AProgramUtils;
+
+{$I A.inc}
 
 interface
 
 uses
   Windows,
-  ATypes;
+  ABase, ATypes;
 
 //** @abstract(Возвращает информацию о файле)
 function GetProgramVersionInfo(const AFileName: AnsiString): TFileVersionInfoA;
+
+function GetProgramVersionInfoStr(const FileName: AnsiString): APascalString;
 
 implementation
 
@@ -22,11 +25,12 @@ function GetProgramVersionInfo(const AFileName: AnsiString): TFileVersionInfoA;
 type
   arrc = array[0..$ffff] of AnsiChar;
 var
-  Wnd, InfoSize, Size: DWORD;
   VersionInfo: Pointer;
-  p: ^arrc; // absolute VersionInfo
 
   function Read(AName: AnsiString): ShortString;
+  var
+    Size: DWORD;
+    p: ^arrc; // absolute VersionInfo
   begin
     if (VerQueryValueA(VersionInfo, PAnsiChar(AName), Pointer(p), Size)) and (Size > 1) then
     begin
@@ -37,6 +41,11 @@ var
       Result := '';
   end;
 
+const
+  SubBlockPrefix = {$IFDEF DELPHI_XE_UP}'\StringFileInfo\040904E4\'{$ELSE}'\StringFileInfo\041904E3\'{$ENDIF};
+var
+  Wnd: DWORD;
+  InfoSize: DWORD;
 begin
   Result.ProductName := '';
   Result.ProductVersion := '';
@@ -47,26 +56,55 @@ begin
   Result.CompanyName := '';
   Result.FileDescription := '';
 
-  InfoSize := GetFileVersionInfoSizeA(PAnsiChar(AFileName{Paramstr(0)}), Wnd);
+  InfoSize := GetFileVersionInfoSizeA(PAnsiChar(AFileName), Wnd);
   if (InfoSize <> 0) then
   begin
     GetMem(VersionInfo, InfoSize);
     try
       if GetFileVersionInfoA(PAnsiChar(AFileName), Wnd, InfoSize, VersionInfo) then
       begin
-        Result.ProductName := Read('\StringFileInfo\041904E3\ProductName');
-        Result.ProductVersion := Read('\StringFileInfo\041904E3\ProductVersion');
-        Result.OriginalFileName := Read('\StringFileInfo\041904E3\OriginalFilename');
-        Result.InternalName := Read('\StringFileInfo\041904E3\InternalName');
-        Result.FileVersion := Read('\StringFileInfo\041904E3\FileVersion');
-        Result.LegalCopyright := Read('\StringFileInfo\041904E3\LegalCopyright');
-        Result.CompanyName := Read('\StringFileInfo\041904E3\CompanyName');
-        Result.FileDescription := Read('\StringFileInfo\041904E3\FileDescription');
+        Result.ProductName := Read(SubBlockPrefix+'ProductName');
+        Result.ProductVersion := Read(SubBlockPrefix+'ProductVersion');
+        Result.OriginalFileName := Read(SubBlockPrefix+'OriginalFilename');
+        Result.InternalName := Read(SubBlockPrefix+'InternalName');
+        Result.FileVersion := Read(SubBlockPrefix+'FileVersion');
+        Result.LegalCopyright := Read(SubBlockPrefix+'LegalCopyright');
+        Result.CompanyName := Read(SubBlockPrefix+'CompanyName');
+        Result.FileDescription := Read(SubBlockPrefix+'FileDescription');
       end;
     finally
       FreeMem(VersionInfo);
     end;
   end;
+end;
+
+function GetProgramVersionInfoStr(const FileName: AnsiString): APascalString;
+var
+  VersionInfo: TFileVersionInfoA;
+  S: APascalString;
+begin
+  S := '';
+  VersionInfo := GetProgramVersionInfo(ParamStr(0));
+
+  S := S + VersionInfo.ProductName;
+  if (Length(VersionInfo.ProductVersion) > 0) then
+    S := S + ' ('+VersionInfo.ProductVersion+')'#13#10
+  else
+    S := S + #13#10;
+  if (Length(VersionInfo.OriginalFileName) > 0) then
+    S := S + 'Имя файла: '+VersionInfo.OriginalFileName+#13#10;
+  if (Length(VersionInfo.InternalName) > 0) then
+    S := S + VersionInfo.InternalName+#13#10;
+  if (Length(VersionInfo.FileVersion) > 0) then
+    S := S + 'Версия: '+VersionInfo.FileVersion+#13#10;
+  if (Length(VersionInfo.LegalCopyright) > 0) then
+    S := S + VersionInfo.LegalCopyright+#13#10;
+  if (Length(VersionInfo.CompanyName) > 0) then
+    S := S + 'Компания: '+VersionInfo.CompanyName+#13#10;
+  if (Length(VersionInfo.FileDescription) > 0) then
+    S := S + 'Описание: '+VersionInfo.FileDescription+#13#10;
+
+  Result := S;
 end;
 
 end.

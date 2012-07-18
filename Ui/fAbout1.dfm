@@ -44,17 +44,6 @@ object AboutForm: TAboutForm
     133)
   PixelsPerInch = 96
   TextHeight = 13
-  object lbCopyright: TLabel
-    Left = 96
-    Top = 34
-    Width = 215
-    Height = 26
-    Anchors = [akLeft, akTop, akRight]
-    AutoSize = False
-    Color = clBtnFace
-    ParentColor = False
-    WordWrap = True
-  end
   object Bevel1: TBevel
     Left = 0
     Top = 99
@@ -123,5 +112,15 @@ object AboutForm: TAboutForm
     Kind = bkOK
     NumGlyphs = 2
     TabOrder = 1
+  end
+  object DescriptionMemo: TMemo
+    Left = 91
+    Top = 39
+    Width = 220
+    Height = 58
+    Color = clBtnFace
+    ReadOnly = True
+    ScrollBars = ssVertical
+    TabOrder = 2
   end
 end

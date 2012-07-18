@@ -1,9 +1,8 @@
 ﻿{**
 @Abstract(Форма отображения свойств)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(12.10.2005)
-@LastMod(11.07.2011)
-@Version(0.5)
+@LastMod(18.07.2011)
 }
 unit fPropertys;
 
@@ -16,7 +15,7 @@ uses
   AFormObj, ATypes;
 
 type
-  TFormPropertys = class(TProfForm)
+  TFormPropertys = class(TAFormObject)
   private
     FTreeView: TCustomTreeView; //TNLXmlTreeView;
     FSplitter: TSplitter;

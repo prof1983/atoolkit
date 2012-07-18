@@ -1,9 +1,8 @@
 ﻿{**
 @Abstract(Набор классов для работы с хранилищами)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(12.04.2006)
-@LastMod(02.05.2012)
-@Version(0.5)
+@LastMod(18.07.2012)
 }
 unit AStorageObj;
 
@@ -405,7 +404,7 @@ begin
       Res := StgCreateDocfile(PWideChar(WideString(FStorageFileName)), stgmOpenMode[FIsReadOnly], 0, FMainStorage);
       if (Res <> 0) then
         raise TStorageException.CreateFmt(err_Create_Stg, [FStorageFileName, DecodeOleError(Res)]);
-      AddToLog(lgSetup, ltInformation, info_Create_Storage, [FStorageFileName]);
+      AddToLog2(lgSetup, ltInformation, info_Create_Storage, [FStorageFileName]);
       SetDescription(str_Descr_New_Storage);
       // Внесем изменения
       Res := FMainStorage.Commit(STGC_DEFAULT or STGC_CONSOLIDATE);
@@ -417,7 +416,7 @@ begin
     Result := True;
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'Open()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'Open()']);
   end;
 end;
 
@@ -471,7 +470,7 @@ begin
     end;
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'SetDescription()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'SetDescription()']);
   end;
 end;
 
@@ -522,7 +521,7 @@ begin
     end;
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'Commit()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'Commit()']);
   end;
 end;
 
@@ -541,7 +540,7 @@ begin
     if (Res <> 0) then
       raise TStorageException.CreateFmt(err_Create_Sub_Key, [AKeyName, DecodeOleError(Res)]);
     FIsChanged := True;
-    AddToLog(lgSetup, ltInformation, info_Create_Key, [AFullKeyName, AKeyName]);
+    AddToLog2(lgSetup, ltInformation, info_Create_Key, [AFullKeyName, AKeyName]);
   end;
   tmpStorage._AddRef();
   FSubKeyProp.Add(Pointer(tmpStorage));
@@ -589,7 +588,7 @@ begin
     on E: Exception do
     begin
       CloseKey();
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'OpenKey()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'OpenKey()']);
     end;
   end;
 end;
@@ -615,7 +614,7 @@ begin
     end;
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'CloseKey()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'CloseKey()']);
   end;
 end;
 
@@ -646,7 +645,7 @@ begin
     end;
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'GetRootKeys()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'GetRootKeys()']);
   end;
 end;
 
@@ -678,7 +677,7 @@ begin
     end;
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'GetKeysName()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'GetKeysName()']);
   end;
 end;
 
@@ -710,7 +709,7 @@ begin
     end;
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'GetStreamsName()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'GetStreamsName()']);
   end;
 end;
 
@@ -735,7 +734,7 @@ begin
       Res := IStorage(FSubKeyProp.Items[FSubKeyProp.Count - 1]).CreateStream(PWideChar(WideString(AName)), STGM_READWRITE or STGM_SHARE_EXCLUSIVE, 0, 0, tmpStream);
       if (Res <> 0) then
         raise TStorageException.CreateFmt(err_Write_Value, [AName, DecodeOleError(Res)]);
-      AddToLog(lgSetup, ltInformation, info_Create_New_Stream, [AName]);
+      AddToLog2(lgSetup, ltInformation, info_Create_New_Stream, [AName]);
     end;
     try
       Res := tmpStream.SetSize(AStream.Size);
@@ -755,7 +754,7 @@ begin
     end;
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'WriteStream()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'WriteStream()']);
   end;
 end;
 
@@ -787,7 +786,7 @@ begin
     end;
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'WriteStream()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'WriteStream()']);
   end;
 end;
 
@@ -837,7 +836,7 @@ begin
                               0, FMainStorage);
       if (Res <> 0) then
         raise TStorageException.CreateFmt(err_Create_Stg, [FStorageFileName, DecodeOleError(Res)]);
-      AddToLog(lgSetup, ltInformation, info_Create_Storage, [FStorageFileName]);
+      AddToLog2(lgSetup, ltInformation, info_Create_Storage, [FStorageFileName]);
       SetDescription(str_Descr_New_Storage);
       // Внесем изменения
       Res := FMainStorage.Commit(STGC_DEFAULT or STGC_CONSOLIDATE);
@@ -849,7 +848,7 @@ begin
     Result := True;    
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'Open()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'Open()']);
   end;
 end;
 
@@ -902,7 +901,7 @@ begin
     end;
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'SetDescription()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'SetDescription()']);
   end;
 end;
 
@@ -992,7 +991,7 @@ begin
     end;
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'Commit()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'Commit()']);
   end;
 end;
 
@@ -1041,7 +1040,7 @@ begin
     if (Res <> 0) then
      raise TStorageException.CreateFmt(err_Set_Key_Name, [AKeyName, DecodeOleError(Res)]);
     FIsChanged := True;
-    AddToLog(lgSetup, ltInformation, info_Create_Key, [AFullKeyName, AKeyName]);
+    AddToLog2(lgSetup, ltInformation, info_Create_Key, [AFullKeyName, AKeyName]);
   end;
   tmpProp._AddRef();
   tmpProp.Stat(@FCurrentKeyInfo);
@@ -1099,7 +1098,7 @@ begin
     on E: Exception do
     begin
       CloseKey();
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'OpenKey()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'OpenKey()']);
     end;
   end;
 end;
@@ -1126,7 +1125,7 @@ begin
     end;
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'CloseKey()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'CloseKey()']);
   end;
 end;
 
@@ -1304,7 +1303,7 @@ begin
     end;
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'GetRootKeys()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'GetRootKeys()']);
   end;
 end;
 
@@ -1336,7 +1335,7 @@ begin
     end;
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'GetKeyNames()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'GetKeyNames()']);
   end;
 end;
 
@@ -1368,7 +1367,7 @@ begin
     end;
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'GetValueNames()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'GetValueNames()']);
   end;
 end;
 
@@ -1420,7 +1419,7 @@ begin
     end;
   except
     on E: Exception do
-      AddToLog(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'ClearKey()']);
+      AddToLog2(lgSetup, ltError, err_Exception_Str, [E.Message, Self.ClassName, 'ClearKey()']);
   end;
 end;
 

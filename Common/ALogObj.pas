@@ -1,9 +1,8 @@
 ﻿{**
 @Abstract(Предок для всех объектов требующих логирования)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(05.02.2005)
-@LastMod(08.05.2012)
-@Version(0.5)
+@LastMod(18.07.2012)
 
 Компонент для вывода лог информаци
 Отладка приложений.
@@ -14,6 +13,7 @@ unit ALogObj;
 interface
 
 uses
+  SysUtils,
   ABase, ATypes;
 
 type
@@ -28,22 +28,29 @@ type
       {** Return new log node identifier
           @return(log node identifier) }
     function Add(const Msg: APascalString): AInt; virtual;
+  public
     constructor Create(Proc: TProcedure);
+  public
     property S: String read FText;
   end;
 
 type //** Предок для всех объектов требующих логирования
   TLoggerObject = class
   protected
-    FAddToLog: TProfAddToLog;
+    FOnAddToLog: TAddToLogProc;
+    FOnAddToLog1: TProfAddToLog;
   public
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+    function AddToLog(MsgGroup: TLogGroupMessage; MsgType: TLogTypeMessage;
+        const StrMsg: WideString): AInt; virtual;
+    function AddToLog1(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: string; AParams: array of const): Boolean; virtual;
     function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: string; AParams: array of const): Integer; virtual;
-    property OnAddToLog: TProfAddToLog read FAddToLog write FAddToLog;
     function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: WideString; AParams: array of const): Integer; virtual;
+  public
+    property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
+    property OnAddToLog1: TProfAddToLog read FOnAddToLog1 write FOnAddToLog1;
   end;
 
 type
@@ -57,6 +64,7 @@ type
     constructor Create(Log: TLog);
     constructor Create1;
     constructor Create2(Log: TLog);
+  public
     property Log: TLog read FLog;
   end;
 
@@ -84,45 +92,42 @@ end;
 
 { TLoggerObject }
 
-function TLoggerObject.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-    const AStrMsg: string; AParams: array of const): Boolean;
+function TLoggerObject.AddToLog(MsgGroup: TLogGroupMessage; MsgType: TLogTypeMessage;
+    const StrMsg: WideString): AInt;
 begin
-  Result := False;
-  if Assigned(OnAddToLog) then
+  Result := 0;
+  if Assigned(FOnAddToLog) then
   begin
     try
-      OnAddToLog(AGroup, AType, AStrMsg, AParams);
-      Result := True;
+      FOnAddToLog(MsgGroup, MsgType, StrMsg);
     except
-      Result := False;
     end;
   end;
+  if Assigned(FOnAddToLog1) then
+  begin
+    try
+      FOnAddToLog1(MsgGroup, MsgType, StrMsg, []);
+    except
+    end;
+  end;
+end;
+
+function TLoggerObject.AddToLog1(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+    const AStrMsg: string; AParams: array of const): Boolean;
+begin
+  Result := (AddToLog(AGroup, AType, Format(AStrMsg, AParams)) >= 0);
 end;
 
 function TLoggerObject.AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
     const AStrMsg: string; AParams: array of const): Integer;
 begin
-  Result := -1;
-  if Assigned(OnAddToLog) then
-  begin
-    try
-      OnAddToLog(AGroup, AType, AStrMsg, AParams);
-      Result := 0;
-    except
-      Result := -1;
-    end;
-  end;
+  Result := AddToLog(AGroup, AType, Format(AStrMsg, AParams));
 end;
 
 function TLoggerObject.ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
     const AStrMsg: WideString; AParams: array of const): Integer;
 begin
-  Result := -1;
-  if Assigned(OnAddToLog) then
-    try
-      Result := OnAddToLog(AGroup, AType, AStrMsg, AParams);
-    except
-    end;
+  Result := AddToLog(AGroup, AType, Format(AStrMsg, AParams));
 end;
 
 { TProfClass }

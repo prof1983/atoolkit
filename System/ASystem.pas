@@ -1,14 +1,8 @@
 ﻿{**
 @Abstract(ASystem function)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(19.08.2009)
-@LastMod(13.07.2012)
-@Version(0.5)
-
-0.3.2
-[+] GetResourceStringWS, ProcessMessages02 (01.09.2011)
-[*] Runtime_ShowError -> ShowError02 (01.09.2011)
-[+] Info_SetDataDirectoryPathP (05.09.2011)
+@LastMod(18.07.2012)
 }
 unit ASystem;
 
@@ -394,9 +388,9 @@ procedure Prepare2WS(const Title, ProgramName: AWideString; ProgramVersion: AVer
     const CompanyName, Copyright, Url, Description, DataPath: AWideString); stdcall;
 
 // Prepare system.
-procedure Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
+function Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
     const ProductName: APascalString; ProductVersion: AVersion;
-    const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString); stdcall;
+    const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString): AError; stdcall;
 
 // Prepare system.
 function Prepare3WS(const Title, ProgramName: AWideString; ProgramVersion: AVersion;

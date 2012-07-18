@@ -30,17 +30,19 @@ type
   protected
     FLogDocuments: TALogDocuments; //ALog: TLogDocumentsAll;
   public
-    constructor Create(AOwner: TComponent); override;
       //** Финализация программы (конфигурации, логирование)
     procedure Done(); virtual; deprecated; // Use Finalize()
       //** Финализация программы (конфигурации, логирование)
     function Finalize(): WordBool; virtual;
+    function GetExePath(): APascalString;
       //** Инициализация программы (конфигурации, логирование)
     procedure Init(); virtual;
       //** Initialize config
     procedure InitConfig(); virtual;
       //** Initialize log
     procedure InitLog(); virtual;
+  public
+    constructor Create(AOwner: TComponent); override;
   published
     property ALog: TALogDocuments read FLogDocuments write FLogDocuments;
       //** Имя файла конфигураций (с путем или без него)
@@ -119,9 +121,16 @@ begin
   end;
 end;
 
+function TProfFormMain.GetExePath(): APascalString;
+begin
+  if (FExePath = '') then
+    FExePath := ExtractFilePath(ParamStr(0));
+  Result := FExePath;
+end;
+
 procedure TProfFormMain.Init();
 begin
-  FExePath := ExtractFilePath(ParamStr(0));
+  GetExePath();
   InitConfig();
   ConfigureLoad();
   InitLog();
@@ -176,18 +185,21 @@ begin
 end;
 
 procedure TProfFormMain.InitLog();
-//var
+var
+  ExePath: APascalString;
   //LogConfig: IXmlNode;
 begin
   if (Length(FLogFilePath) = 0) then
   begin
+    ExePath := GetExePath();
     if (Length(FLogDir) > 0) then
-      FLogFilePath := FExePath + FLogDir
+      FLogFilePath := ExePath + FLogDir
     else
-      FLogFilePath := FExePath;
+      FLogFilePath := ExePath;
   end;
   FLogFilePath := ExpandFileName(FLogFilePath);
-  if (FLogFilePath[Length(FLogFilePath)] <> '/') and (FLogFilePath[Length(FLogFilePath)] <> '\') then
+  if (Length(FLogFilePath) > 0) and (FLogFilePath[Length(FLogFilePath)] <> '/')
+  and (FLogFilePath[Length(FLogFilePath)] <> '\') then
     FLogFilePath := FLogFilePath + '\';
 
   if not(Assigned(FLogDocuments)) then

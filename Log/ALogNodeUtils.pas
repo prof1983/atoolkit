@@ -2,7 +2,7 @@
 @Abstract(ALogNode functions)
 @Author(Prof1983 <prof1983@ya.ru>)
 @Created(06.07.2012)
-@LastMod(13.07.2012)
+@LastMod(18.07.2012)
 }
 unit ALogNodeUtils;
 
@@ -71,9 +71,13 @@ end;
 
 function ALogNode_Free(LogNode: ALogNode): AError;
 begin
-  if (TObject(LogNode) is TALogNode) then
-    IInterface(TALogNode(LogNode))._Release();
-  Result := 0;
+  try
+    if (TObject(LogNode) is TALogNode) then
+      IInterface(TALogNode(LogNode))._Release();
+    Result := 0;
+  except
+    Result := -1;
+  end;
 end;
 
 function ALogNode_New(LogDoc: ALogDocument; ParentNodeId: AInt;

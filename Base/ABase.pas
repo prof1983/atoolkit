@@ -2,7 +2,7 @@
 @Abstract(Base types and consts)
 @Author(Prof1983 <prof1983@ya.ru>)
 @Created(06.03.2008)
-@LastMod(11.07.2012)
+@LastMod(18.07.2012)
 }
 unit ABase;
 
@@ -178,16 +178,20 @@ type
     MsgData: Pointer;
   end;
 
+  ADocument = type AInt;
+  ANode = type AInt; // =TANode
+  ANodeList = type AInt; // =TProfNodes3
+
   AXmlNodeCollection = type AInt; // TProfXmlCollection
-  AXmlDocument = type AInt; // AXmlDocumentImpl.TProfXmlDocument or TProfXmlDocument1
+  AXmlDocument = ADocument; // AXmlDocumentImpl.TProfXmlDocument or TProfXmlDocument1
   AProfXmlDocument = type AXmlDocument; // AXmlDocumentImpl.TProfXmlDocument
   AProfXmlDocument1 = type Integer; // TProfXmlDocument1
-  AXmlNode = type AInt; // AXmlNodeImpl.TProfXmlNode TProfXmlNode1 or TProfXmlNode2
+  AXmlNode = ANode; // TProfXmlNode or TProfXmlNode1 or TProfXmlNode2 or TANode
   AProfXmlNode = type AXmlNode; // AXmlNodeImpl.TProfXmlNode or TProfXmlNode2
   AProfXmlNode1 = type AProfXmlNode; // TProfXmlNode1
   AProfXmlNode2 = type AProfXmlNode; // TProfXmlNode2
   AProfXmlNodeA = type AInt; // IProfXmlNodeA
-  AXmlNodeList = type AInt; // =AXmlNodeList_Type.Id (TProfXmlNodeList) or TProfNodes3
+  AXmlNodeList = ANodeList; // =AXmlNodeList_Type.Id (TProfXmlNodeList) or TProfNodes3
   AConfigNode = AXmlNode; // =AXmlNode or AConfig
 
 implementation

@@ -1,9 +1,8 @@
 {**
 @Abstract(AXmlNodeList functions)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(29.06.2012)
-@LastMod(04.07.2012)
-@Version(0.5)
+@LastMod(18.07.2012)
 }
 unit AXmlNodeListUtils;
 

@@ -2,7 +2,7 @@
 @Abstract(Interface IProfNode implementation)
 @Author(Prof1983 <prof1983@ya.ru>)
 @Created(11.04.2007)
-@LastMod(13.07.2012)
+@LastMod(18.07.2012)
 
 Uses
   @link AAttributesIntf
@@ -23,15 +23,16 @@ type
   TANode = class(TANamedEntity, IProfNode)
   protected
     FAttributes: IProfAttributes;
-    FChildNodes: AXmlNodeList{IProfNodes};
-  protected
-    function GetAttributes(): IProfAttributes; safecall;
-    function GetChildNodes(): AXmlNodeList;
+    FChildNodes: ANodeList;
   public
-    procedure AfterConstruction(); override;
+    function GetAttributes(): IProfAttributes; safecall;
+    function GetChildNodes(): ANodeList;
+    function Initialize(): AError; virtual;
+  public
+    constructor Create();
   public
     property Attributes: IProfAttributes read GetAttributes;
-    property ChildNodes: AXmlNodeList read GetChildNodes;
+    property ChildNodes: ANodeList read GetChildNodes;
   end;
   TProfNode = TANode;
 
@@ -42,9 +43,9 @@ uses
 
 { TProfNode }
 
-procedure TANode.AfterConstruction();
+constructor TANode.Create();
 begin
-  inherited;
+  inherited Create();
   FAttributes := nil;
   FChildNodes := 0;
 end;
@@ -56,11 +57,18 @@ begin
   Result := FAttributes;
 end;
 
-function TANode.GetChildNodes(): AXmlNodeList;
+function TANode.GetChildNodes(): ANodeList;
 begin
   if (FChildNodes = 0) then
-    FChildNodes := AXmlNodeList(TProfNodes3.Create());
+    FChildNodes := AXmlNodeList(TANodeList.Create());
   Result := FChildNodes;
+end;
+
+function TANode.Initialize(): AError;
+begin
+  GetChildNodes();
+  GetAttributes();
+  Result := 0;
 end;
 
 end.

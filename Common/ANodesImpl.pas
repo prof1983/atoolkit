@@ -2,17 +2,17 @@
 @Abstract(Узлы)
 @Author(Prof1983 <prof1983@ya.ru>)
 @Created(15.04.2007)
-@LastMod(13.07.2012)
+@LastMod(18.07.2012)
 }
 unit ANodesImpl;
 
 interface
 
 uses
-  AEntityImpl, ANodeIntf, ANodeImpl;
+  ABase, AEntityImpl, ANodeIntf, ANodeImpl;
 
 type //** Узлы (Ноды)
-  TProfNodes3 = class(TANamedEntity, IProfNodes)
+  TANodeList = class(TANamedEntity, IProfNodes)
   private
     FNodes: array of IProfNode;
   private
@@ -24,7 +24,9 @@ type //** Узлы (Ноды)
     function Add(Node: IProfNode): Integer; virtual; safecall;
     function Delete(Index: Integer): Integer; virtual; safecall;
     function Insert(Index: Integer; Node: IProfNode): Integer; virtual; safecall;
+    function LoadFromXml(const FileName: WideString): AError; deprecated;
     function New(const Name: WideString): IProfNode; virtual; safecall;
+    function SaveToXml(const FileName: WideString): AError; deprecated;
   public
     property NodeById[Id: Int64]: IProfNode read GetNodeById;
     property NodeByIndex[Index: Integer]: IProfNode read GetNodeByIndex;
@@ -32,18 +34,20 @@ type //** Узлы (Ноды)
     property NodeCount: Integer read GetNodeCount;
   end;
 
+  TProfNodes3 = TANodeList;
+
 implementation
 
 { TProfNodes3 }
 
-function TProfNodes3.Add(Node: IProfNode): Integer;
+function TANodeList.Add(Node: IProfNode): Integer;
 begin
   Result := Length(FNodes);
   SetLength(FNodes, Result + 1);
   FNodes[Result] := Node;
 end;
 
-function TProfNodes3.Delete(Index: Integer): Integer;
+function TANodeList.Delete(Index: Integer): Integer;
 var
   i: Integer;
 begin
@@ -58,7 +62,7 @@ begin
   SetLength(FNodes, High(FNodes));
 end;
 
-function TProfNodes3.GetNodeById(Id: Int64): IProfNode;
+function TANodeList.GetNodeById(Id: Int64): IProfNode;
 var
   i: Integer;
 begin
@@ -71,14 +75,14 @@ begin
     end;
 end;
 
-function TProfNodes3.GetNodeByIndex(Index: Integer): IProfNode;
+function TANodeList.GetNodeByIndex(Index: Integer): IProfNode;
 begin
   Result := nil;
   if (Index >= 0) and (Index < Length(FNodes)) then
     Result := FNodes[Index];
 end;
 
-function TProfNodes3.GetNodeByName(const Name: WideString): IProfNode;
+function TANodeList.GetNodeByName(const Name: WideString): IProfNode;
 var
   i: Integer;
 begin
@@ -91,12 +95,12 @@ begin
     end;
 end;
 
-function TProfNodes3.GetNodeCount(): Integer;
+function TANodeList.GetNodeCount(): Integer;
 begin
   Result := Length(FNodes);
 end;
 
-function TProfNodes3.Insert(Index: Integer; Node: IProfNode): Integer;
+function TANodeList.Insert(Index: Integer; Node: IProfNode): Integer;
 var
   i: Integer;
 begin
@@ -107,11 +111,23 @@ begin
   FNodes[Index] := Node;
 end;
 
-function TProfNodes3.New(const Name: WideString): IProfNode;
+function TANodeList.LoadFromXml(const FileName: WideString): AError;
+begin
+  Result := -1;
+  // ...
+end;
+
+function TANodeList.New(const Name: WideString): IProfNode;
 begin
   Result := TANode.Create();
   Result.Name := Name;
   Self.Add(Result);
+end;
+
+function TANodeList.SaveToXml(const FileName: WideString): AError;
+begin
+  Result := -1;
+  // ...
 end;
 
 end.

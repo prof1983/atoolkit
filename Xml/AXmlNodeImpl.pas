@@ -1,9 +1,8 @@
 ﻿{**
 @Abstract(Класс работы с XML нодами)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(07.03.2007)
-@LastMod(12.07.2012)
-@Version(0.5)
+@LastMod(18.07.2012)
 }
 unit AXmlNodeImpl;
 
@@ -13,12 +12,12 @@ interface
 
 uses
   Classes, SysUtils, Variants, XmlDom, XmlIntf,
-  AAttributesIntf, ABase, ABaseUtils2, AConsts2, AEntityImpl, ANodeIntf, ATypes,
+  AAttributesIntf, ABase, ABaseUtils2, AConsts2, AEntityImpl, ANodeImpl, ATypes,
   AXmlAttributesImpl, AXmlAttributesUtils, AXmlNodeCollectionUtils, AXmlDocumentImpl,
   AXmlNodeIntf, AXmlNodeListUtils, AXmlNodeUtils, AXmlUtils;
 
 type //** Класс работы с XML нодами
-  TProfXmlNode = class(TANamedEntity, IProfNode)
+  TProfXmlNode = class(TANode)
   protected
     //** Объект работы с атрибутами
     FAttributes: TProfXmlAttributes;

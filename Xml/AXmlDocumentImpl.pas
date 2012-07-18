@@ -73,10 +73,8 @@ type
     procedure CreateDocument();
     function Initialize(): WordBool; virtual;
   public
-    constructor Create(const AFileName: WideString = ''; AAddToLog: TAddToLogProc = nil);
-    constructor Create1(const AFileName: WideString = '';
-        const AElementName: WideString = 'Config'; AToLog: TAddToLogProc = nil);
-    constructor Create2(const AFileName: WideString = ''; AAddToLog: TAddToLogProc = nil);
+    constructor Create(const FileName: WideString = ''; const ElementName: WideString = 'Config';
+        AddToLog: TAddToLogProc = nil);
     procedure Free();
   public
       //** XML документ (не рекомендуется использовать)
@@ -133,64 +131,13 @@ begin
   end;
 end;
 
-constructor TProfXmlDocument.Create(const AFileName: WideString = ''; AAddToLog: TAddToLogProc = nil);
-begin
-  Create2(AFileName, AAddToLog);
-  {inherited Create;
-  FDocumentElementName := 'Config';
-  FOnAddToLog := AAddToLog;
-  FEncoding := 'Windows-1251';
-  FStandAlone := '';
-  FVersion := '1.0';
-  FFileName := AFileName;
-
-  FDocumentElement := AXmlNode1_New(Self.GetSelf());
-  AXmlNode_SetName(FDocumentElement, 'Config');
-
-  // Если указано имя файла - загружаем
-  if (FFileName <> '') then
-    LoadFromFile(FFileName);}
-end;
-
-constructor TProfXmlDocument.Create1(const AFileName: WideString = '';
-    const AElementName: WideString = 'Config'; AToLog: TAddToLogProc = nil);
+constructor TProfXmlDocument.Create(const FileName, ElementName: WideString;
+    AddToLog: TAddToLogProc);
 begin
   inherited Create();
-  FOnAddToLog := AToLog;
-  FDefFileName := AFileName;
-  FDefElementName := AElementName;
-end;
-
-constructor TProfXmlDocument.Create2(const AFileName: WideString = ''; AAddToLog: TAddToLogProc = nil);
-begin
-  inherited Create;
-  //Self.FDefElementName := 'Config';
-  FOnAddToLog := AAddToLog;
-  try
-    // Открываем документ
-    FDocument := TXmlDocument.Create(AFileName);
-    if (AFileName = '') then
-      FDocument.Active := True;
-  except
-    on E: Exception do
-    begin
-      // Произошла ошибка при открытиии файла
-      AddToLog(lgGeneral, ltError, 'Произошла ошибка при открытиии файла конфигураций "%s"', [AFileName]);
-      AddToLog(lgGeneral, ltInformation, 'Создаем документ', []);
-      FDocument := TXmlDocument.Create(nil);
-
-      // Создаем документ
-      CreateDocument();
-
-      // Сохраняем документ
-      AddToLog(lgGeneral, ltInformation, 'Сохраняем документ', []);
-      FDocument.FileName := AFileName;
-      FDocument.SaveToFile('');
-    end;
-  end;
-
-  // DocumentElement
-  FDocumentElement := AXmlNode2_New(FDocument.DocumentElement);
+  FOnAddToLog := AddToLog;
+  FDefFileName := FileName;
+  FDefElementName := ElementName;
 end;
 
 procedure TProfXmlDocument.CreateDocument();
@@ -320,6 +267,7 @@ begin
       // Произошла ошибка при открытиии файла
       AddToLog(lgGeneral, ltError, 'Произошла ошибка при открытиии файла конфигураций "%s"', [FDefFileName]);
 
+      // Создаем документ
       CreateDocument();
 
       // Сохраняем документ
@@ -328,6 +276,10 @@ begin
       FDocument.SaveToFile('');
     end;
   end;
+
+  // DocumentElement
+  FDocumentElement := AXmlNode2_New(FDocument.DocumentElement);
+
   FInitialized := True;
 end;
 

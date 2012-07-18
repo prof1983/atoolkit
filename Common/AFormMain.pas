@@ -1,9 +1,8 @@
 ﻿{**
 @Abstract(Класс главной форма - оболочка для TForm)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(16.11.2005)
-@LastMod(12.07.2012)
-@Version(0.5)
+@LastMod(18.07.2012)
 }
 unit AFormMain;
 

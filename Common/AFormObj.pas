@@ -1,9 +1,8 @@
 {**
 @Abstract(TForm with Logging and Configurations)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(06.10.2005)
-@LastMod(11.07.2012)
-@Version(0.5)
+@LastMod(18.07.2012)
 }
 unit AFormObj;
 
@@ -195,6 +194,7 @@ begin
   AConfig_WriteInt32(FConfig, 'WindowState', Integer(WindowState));
   AConfig_WriteString(FConfig, 'Caption', Caption);
   AConfig_WriteBool(FConfig, 'Visible', Self.Visible);
+  Result := True;
 end;
 
 function TAFormObject.ConfigureSave1(): WordBool;

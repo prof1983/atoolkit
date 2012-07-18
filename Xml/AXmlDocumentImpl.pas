@@ -1,12 +1,8 @@
 ﻿{**
 @Abstract(Класс работы с XML документом)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(07.03.2007)
-@LastMod(11.07.2012)
-@Version(0.5)
-
-История версий:
-0.0.2.0 - 01.06.2007 - CreateDocument() сделал public
+@LastMod(18.07.2012)
 }
 unit AXmlDocumentImpl;
 
@@ -65,7 +61,7 @@ type
       //** Загрузить из строки (Не рекомендуется использовать)
     function LoadFromString(const Value1: WideString): WordBool;
       //** Сохранить в файл
-    function SaveToFile(const AFileName: WideString = ''): WordBool; deprecated; // Use XmlDocument_SaveToFile()
+    function SaveToFile(const FileName: WideString = ''): WordBool; deprecated; // Use XmlDocument_SaveToFile()
     function SaveToString(var Value: WideString): Boolean;
       //** Открыть документ
     function OpenDocument(): AError; safecall;
@@ -531,21 +527,26 @@ begin
   GetDocumentElement();
 end;
 
-function TProfXmlDocument.SaveToFile(const AFileName: WideString): WordBool;
+function TProfXmlDocument.SaveToFile(const FileName: WideString): WordBool;
 var
   F: TextFile;
-  FileName: WideString;
+  TmpFileName: WideString;
   S: WideString;
 begin
+  if (FileName = '') then
+    TmpFileName := FFileName
+  else
+    TmpFileName := FileName;
+
   if Assigned(FDocument) and FDocument.Active then
   begin
     try
-      FDocument.SaveToFile(AFileName);
+      FDocument.SaveToFile(TmpFileName);
       Result := True;
     except
       on E: Exception do
       begin
-        AddToLog(lgGeneral, ltError, err_SaveToFile, [AFileName, E.Message]);
+        AddToLog(lgGeneral, ltError, err_SaveToFile, [TmpFileName, E.Message]);
         Result := False;
       end;
     end;
@@ -554,12 +555,7 @@ begin
 
   SaveToString(S);
 
-  if AFileName = '' then
-    FileName := FFileName
-  else
-    FileName := AFileName;
-
-  AssignFile(F, FileName);
+  AssignFile(F, TmpFileName);
   {$I-}
   Rewrite(F);
   WriteLn(F, String(S));

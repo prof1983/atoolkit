@@ -3,18 +3,8 @@
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.09.2009
 @LastMod 19.07.2012
-
-0.3.2
-[+] TrimP, ExpandFileNameP, DirectoryExistsP (05.09.2011)
-[+] String_ToUpperP (19.09.2011)
-[*] FormatStrP (19.09.2011)
-09.11.2011
-[+] DateToStrWS()
 }
 unit AUtils;
-
-{$IFDEF A02}{$DEFINE A0}{$ENDIF}
-{$IFDEF A03}{$DEFINE A0}{$ENDIF}
 
 {$IFDEF AOLD}
   {$DEFINE AUTILSOLD}
@@ -1412,9 +1402,9 @@ end;
 
 function StrToFloatDefP(const S: APascalString; DefValue: AFloat): AFloat; stdcall;
 var
-  Value: Real;
+  Value: AFloat64;
 begin
-  if TryStrToFloat32P(S, Value) then
+  if TryStrToFloat64P(S, Value) then
     Result := Value
   else
     Result := DefValue;
@@ -1422,9 +1412,9 @@ end;
 
 function StrToFloatDefWS(const S: AWideString; DefValue: AFloat): AFloat; stdcall;
 var
-  Value: Real;
+  Value: AFloat64;
 begin
-  if TryStrToFloat32P(S, Value) then
+  if TryStrToFloat64P(S, Value) then
     Result := Value
   else
     Result := DefValue;
@@ -1806,13 +1796,11 @@ end;
 
 function Utils_Init(): AError;
 begin
-  {$IFDEF A03}
   if (ASystem.Init() < 0) then
   begin
     Result := -2;
     Exit;
   end;
-  {$ENDIF A03}
 
   Result := 0;
 end;
@@ -1853,7 +1841,7 @@ end;
 
 procedure Utils_Sleep(Milliseconds: AUInt); stdcall;
 begin
-  {$IFDEF A03}ASystem.ProcessMessages();{$ENDIF}
+  ASystem.ProcessMessages();
   SysUtils.Sleep(Milliseconds);
 end;
 

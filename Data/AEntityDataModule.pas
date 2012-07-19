@@ -1,13 +1,15 @@
 ﻿{**
-@Abstract(Модуль данных сущностей)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(19.03.2008)
-@LastMod(04.07.2012)
-@Version(0.5)
+@abstract Entity list
+@author Prof1983 <prof1983@ya.ru>
+@created 19.03.2008
+@lastmod 19.07.2012
 
 Элементарной (атомарной) единицей данных является сущность (Entity).
 }
 unit AEntityDataModule;
+
+// TODO: Rename to AEntityList.pas
+// TODO: Move to At/Common
 
 interface
 
@@ -15,8 +17,8 @@ uses
   ABase, AEntityObj, AIteratorIntf;
 
 type
-  //** @abstract(Модуль данных сущностей)
-  TAEntityDataModule = class
+    //** @abstract Entity list
+  TAEntityList = class
   private
     FEntities: array of TAEntityObject;
   public
@@ -35,33 +37,19 @@ type
     //** Создает новую сущность
     function NewEntity(EntityType: AId): AId;
     //** Возвращяет итератор сущностей с помощью которого можно сделать выборку сущностей определенного типа.
-    function Select(EntityType: AId): IAIterator;
+    function Select(EntityType: AId): AIterator;
   end;
+
+  TAEntityDataModule = TAEntityList;
 
 implementation
 
-type
-  TAEntityIterator = class(TInterfacedObject, IAIterator)
-  private
-    FDataModule: TAEntityDataModule;
-    FEntityType: AId;
-    FNextId: AId;
-  public // IAIterator
-    function HasNext(): ABoolean;
-    function Insert(Element: AId): ABoolean;
-    function IsEmpty(): ABoolean;
-    function Next(): AId;
-    function Remove(): ABoolean;
-  public
-    constructor Create();
-  public
-    property EntityType: AId read FEntityType write FEntityType;
-    property DataModule: TAEntityDataModule read FDataModule write FDataModule;
-  end;
+uses
+  AIteratorUtils;
 
-{ TARDataModule }
+{ TAEntityList }
 
-{function TADataModule.AddEntity(Entity: TAEntity): AId;
+{function TAEntityList.AddEntity(Entity: TAEntity): AId;
 begin
   Result := Length(FEntities);
   SetLength(FEntities, Result + 1);
@@ -70,12 +58,12 @@ begin
   Entity.EntityID := Result;
 end;}
 
-function TAEntityDataModule.GetEntityByID(Id: AId): TAEntityObject;
+function TAEntityList.GetEntityByID(Id: AId): TAEntityObject;
 begin
   Result := GetEntityByIndex(ID - 65536);
 end;
 
-function TAEntityDataModule.GetEntityByIndex(Index: Integer): TAEntityObject;
+function TAEntityList.GetEntityByIndex(Index: Integer): TAEntityObject;
 begin
   if (Index >= 0) and (Index < Length(FEntities)) then
     Result := FEntities[Index]
@@ -83,7 +71,7 @@ begin
     Result := nil;
 end;
 
-function TAEntityDataModule.GetEntityType(Id: AId): AId;
+function TAEntityList.GetEntityType(Id: AId): AId;
 var
   e: TAEntityObject;
 begin
@@ -94,7 +82,7 @@ begin
     Result := 0;
 end;
 
-function TAEntityDataModule.IsFree(Id: AId): Boolean;
+function TAEntityList.IsFree(Id: AId): Boolean;
 begin
   // Идентификаторы 0..65535 зарезервированы под системные
   if (ID < 65536) then
@@ -105,7 +93,7 @@ begin
   Result := not(Assigned(GetEntityByID(Id)));
 end;
 
-function TAEntityDataModule.NewEntity(EntityType: AId): AId;
+function TAEntityList.NewEntity(EntityType: AId): AId;
 var
   index: Integer;
 begin
@@ -115,61 +103,9 @@ begin
   FEntities[index] := TAEntityObject.Create(Result, EntityType);
 end;
 
-function TAEntityDataModule.Select(EntityType: AId): IAIterator;
-var
-  iterator: TAEntityIterator;
+function TAEntityList.Select(EntityType: AId): AIterator;
 begin
-  iterator := TAEntityIterator.Create();
-  iterator.EntityType := EntityType;
-  iterator.DataModule := Self;
-  Result := iterator;
-end;
-
-{ TAEntityIterator }
-
-constructor TAEntityIterator.Create();
-begin
-  inherited;
-  FNextId := 1;
-end;
-
-function TAEntityIterator.HasNext(): ABoolean;
-begin
-  Result := False;
-end;
-
-function TAEntityIterator.Insert(Element: AId): ABoolean;
-begin
-  Result := False;
-end;
-
-function TAEntityIterator.IsEmpty(): ABoolean;
-begin
-  Result := True;
-end;
-
-function TAEntityIterator.Next(): AId;
-begin
-  while True do
-  begin
-    if FDataModule.IsFree(FNextID) then
-    begin
-      Result := 0;
-      Exit;
-    end;
-    if (FDataModule.GetEntityType(FNextID) = FEntityType) then
-    begin
-      Result := FNextID;
-      Inc(FNextID);
-      Exit;
-    end;
-    Inc(FNextID);
-  end;
-end;
-
-function TAEntityIterator.Remove(): ABoolean;
-begin
-  Result := False;
+  Result := AIterator_New(Self, EntityType);
 end;
 
 end.

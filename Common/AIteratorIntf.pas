@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Итератор)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(10.05.2007)
-@LastMod(25.06.2012)
-@Version(0.5)
+@Abstract Iterator
+@Author Prof1983 <prof1983@ya.ru>
+@Created 10.05.2007
+@LastMod 19.07.2012
 
 Prototype: java.util.Iterator.java 1.24 01/17/04
 }
@@ -38,13 +37,13 @@ type
 
       @return(true if the iterator has more elements)
     }
-    function HasNext(): Boolean;
+    function HasNext(): ABoolean;
 
       //** Вставить элемент в коллекцию
-    function Insert(Element: TAId): Boolean;
+    function Insert(Element: AId): ABoolean;
 
       //** Пусто?
-    function IsEmpty(): Boolean;
+    function IsEmpty(): ABoolean;
 
     {**
       Returns the next element in the iteration.
@@ -55,8 +54,6 @@ type
       @exception NoSuchElementException iteration has no more elements.
     }
     function Next(): AId;
-    //function Next(): TObject;
-    //function Next(): IUnknown;
 
     {**
       Удаляет текущий элемент из коллекции
@@ -74,10 +71,8 @@ type
      		  yet been called, or the <tt>remove</tt> method has already
      		  been called after the last call to the <tt>next</tt> method.
     }
-    function Remove(): Boolean;
+    function Remove(): ABoolean;
   end;
-
-  //IJavaIterator = IAIterator;
 
 implementation
 

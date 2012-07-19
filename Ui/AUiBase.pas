@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(User Interface Base types and consts)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.10.2008)
-@LastMod(04.07.2012)
-@Version(0.5)
+@Abstract User Interface base types and consts
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.10.2008
+@LastMod 19.07.2012
 
 [+] 10.08.2011 - Добавил тип AFont.
 [*] 28.06.2011 - Описание процедур и функций перенес в AUI0Procs.
@@ -76,6 +75,7 @@ type
   AFont = type AInteger; // TFont
   AMenu = type AInteger;
   AMenuItem = type AControl;
+  AToolMenu = type AInteger;
   ATrayIcon = type AInteger;
   ATreeNode = type AControl;
   AWindow = type AControl;

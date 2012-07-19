@@ -1,8 +1,8 @@
 {**
-@Abstract(Base types and consts)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(06.03.2008)
-@LastMod(18.07.2012)
+@abstract Base types and consts
+@author Prof1983 <prof1983@ya.ru>
+@created 06.03.2008
+@lastmod 19.07.2012
 }
 unit ABase;
 
@@ -181,6 +181,8 @@ type
   ADocument = type AInt;
   ANode = type AInt; // =TANode
   ANodeList = type AInt; // =TProfNodes3
+
+  AIterator = type AInt; // =TAEntityIterator (=IAIterator)
 
   AXmlNodeCollection = type AInt; // TProfXmlCollection
   AXmlDocument = ADocument; // AXmlDocumentImpl.TProfXmlDocument or TProfXmlDocument1

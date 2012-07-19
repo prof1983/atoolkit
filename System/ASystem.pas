@@ -1,8 +1,8 @@
 ﻿{**
-@Abstract(ASystem function)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(19.08.2009)
-@LastMod(18.07.2012)
+@abstract ASystem function
+@author Prof1983 <prof1983@ya.ru>
+@created 19.08.2009
+@lastmod 19.07.2012
 }
 unit ASystem;
 
@@ -483,9 +483,9 @@ function GetExePath(): APascalString; stdcall; deprecated; // Use Info_GetDirect
 
 function GetExePathWS(): AWideString; stdcall;
 
-function GetProductName(): APascalString; stdcall; deprecated;
+function GetProductName(): APascalString; stdcall; //deprecated;
 
-function GetProductVersion(): APascalString; stdcall; deprecated;
+function GetProductVersion(): APascalString; stdcall; //deprecated;
 
 function GetExeName(): APascalString; stdcall;
 

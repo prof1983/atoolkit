@@ -1,9 +1,8 @@
 {**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(29.05.2011)
-@LastMod(22.05.2012)
-@Version(0.5)
+@Abstract ASystem config
+@Author Prof1983 <prof1983@ya.ru>
+@Created 29.05.2011
+@LastMod 19.07.2012
 }
 unit ASystemConfig;
 
@@ -42,9 +41,7 @@ function System_InitConfig: AInteger;
 var
   S: APascalString;
 begin
-  // Prof1983: 02.08.2011
   FConfig := ASettings.IniConfig_NewP(FConfigPath+FProgramName+'.ini');
-  //FConfig := ASettings.IniConfig_NewP(FExePath+FProgramName+'.ini');
 
   S := ASettings.Config_ReadStringDefP(FConfig, 'App', 'DataPath', '');
   if (S <> '') then

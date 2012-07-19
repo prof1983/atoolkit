@@ -1,9 +1,8 @@
 {**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.08.2008)
-@LastMod(03.05.2011)
-@Version(0.5)
+@Abstract AUi calendar form
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.08.2008
+@LastMod 19.07.2012
 }
 unit fCalendar;
 
@@ -22,6 +21,8 @@ type
   end;
 
 function ShowCalendarWin(var Date: TDateTime; CenterX, CenterY: Integer): Boolean;
+
+function ShowCalendarWin2(CalendarLeft, CalendarTop: Integer; var CalendarDate: TDateTime; var RGItemIndex: Integer): Boolean;
 
 implementation
 
@@ -44,6 +45,27 @@ begin
       Date := Form.MonthCalendar1.Date;
   finally
     Form.Free;
+  end;
+end;
+
+function ShowCalendarWin2(CalendarLeft, CalendarTop: Integer; var CalendarDate: TDateTime; var RGItemIndex: Integer): Boolean;
+var
+  Form: TCalendarForm;
+begin
+  Form := TCalendarForm.Create(nil);
+  try
+    Form.Left := CalendarLeft;
+    Form.Top := CalendarTop;
+    Form.RG.ItemIndex := RGItemIndex;
+    Form.MonthCalendar1.Date := CalendarDate;
+    Result := (Form.ShowModal() = mrOk);
+    if Result then
+    begin
+      RGItemIndex := Form.RG.ItemIndex;
+      CalendarDate := Form.MonthCalendar1.Date;
+    end;
+  finally
+    Form.Free();
   end;
 end;
 

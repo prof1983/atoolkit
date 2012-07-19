@@ -1,9 +1,8 @@
-п»ї{**
-@Abstract(AUtils functions)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(28.09.2011)
-@LastMod(26.10.2011)
-@Version(0.5)
+{**
+@Abstract AUtils - Main
+@Author Prof1983 <prof1983@ya.ru>
+@Created 28.09.2011
+@LastMod 19.07.2012
 }
 unit AUtilsMain;
 
@@ -12,51 +11,111 @@ interface
 uses
   SysUtils, ABase;
 
-// РџСЂРµРѕР±СЂР°Р·СѓРµС‚ С‡РёСЃР»Рѕ РІ СЃС‚СЂРѕРєСѓ РґР»СЏ Р·Р°РїРёСЃРё РІ Р‘Р” (SQL). Р”Р»СЏ SQL РЅРµРѕР±С…РѕРґРёРј СЂР°Р·РґРµР»РёС‚РµР»СЊ - С‚РѕС‡РєР°.
-function Utils_FloatToStrB(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall;
+function Utils_ExtractFileExt(const FileName: APascalString): APascalString;
 
-function Utils_FloatToStrC(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall;
+function Utils_ExtractFilePath(const FileName: APascalString): APascalString;
 
-function Utils_FormatFloat(Value: AFloat; DigitsBeforeComma, DigitsAfterComma: AInteger): APascalString; stdcall;
+function Utils_FileExists(const FileName: APascalString): ABoolean;
+
+//** Преобразует число в строку.
+function Utils_FloatToStr(Value: AFloat): APascalString;
+
+//** Преобразует число в строку.
+function Utils_FloatToStr2(Value: AFloat; DigitsAfterComma: Integer; ReplaceComma, Delimer: ABoolean): APascalString;
+
+//** Преобразует число в строку c двумя знаками после запятой
+function Utils_FloatToStrA(Value: AFloat; DigitsAfterComma: AInteger = 2): APascalString;
+
+//** Преобразует число в строку для записи в БД (SQL). Для SQL необходим разделитель - точка.
+function Utils_FloatToStrB(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString;
+
+function Utils_FloatToStrC(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString;
+
+function Utils_FloatToStrD(Value: AFloat): APascalString;
+
+function Utils_FormatFloat(Value: AFloat; DigitsBeforeComma, DigitsAfterComma: AInteger): APascalString;
+
+//** Преобразует число в строку.
+function Utils_IntToStr(Value: AInteger): APascalString;
 
 function Utils_NormalizeStrSpace(const Value: APascalString): APascalString;
 
-{ Р—Р°РјРµРЅСЏРµС‚ РІСЃРµ С‚РѕС‡РєРё РЅР° Р·Р°РїСЏС‚С‹Рµ РёР»Рё РІСЃРµ Р·Р°РїСЏС‚С‹Рµ РЅР° С‚РѕС‡РєРё РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЂРµРіРёРѕРЅР°Р»СЊРЅС‹С… РЅР°СЃС‚СЂРѕРµРє.
-  Р•СЃР»Рё РїР°СЂР°РјРµС‚СЂ DecimalSeparator СѓРєР°Р·Р°РЅ, С‚Рѕ СЂРµРіРёРѕРЅР°Р»СЊРЅС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё РёРіРЅРѕСЂРёСЂСѓСЋС‚СЃСЏ. }
-function Utils_ReplaceComma(const S: APascalString; DecimalSeparator: AChar = #0; ClearSpace: ABoolean = True): APascalString; stdcall;
+{ Заменяет все точки на запятые или все запятые на точки в зависимости от региональных настроек.
+  Если параметр DecimalSeparator указан, то региональные настройки игнорируются. }
+function Utils_ReplaceComma(const S: APascalString; DecimalSeparator: AChar = #0; ClearSpace: ABoolean = True): APascalString;
+
+{ Округляет значение до указанного кол-ва значащих цифр и обрезает до указанного кол-ва знаков после запятой.
+  Digits1 - кол-во значащих цифр (Meaning numbers)
+  DigitsAfterComma - максимально необходимое кол-во знаков после запятой (Numbers after a comma) }
+function Utils_Round2(Value: Real; Digits1, DigitsAfterComma: Integer): Real;
 
 function Utils_String_ToLower(const S: APascalString): APascalString;
 
 function Utils_String_ToUpper(const S: APascalString): APascalString;
 
 { Trims leading and trailing spaces and control characters from a string.
-  РЈРґР°Р»СЏРµС‚ РїРµСЂРІС‹Рµ Рё РїРѕСЃР»РµРґРЅРёРµ РїСЂРѕР±РµР»С‹ }
+  Удаляет первые и последние пробелы }
 function Utils_Trim(const S: APascalString): APascalString;
 
-function Utils_TryStrToDate(const S: APascalString; var Value: TDateTime): ABoolean; stdcall;
+function Utils_TryStrToDate(const S: APascalString; var Value: TDateTime): ABoolean;
 
-{ РџСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃС‚СЂРѕРєСѓ РІ Float. Р Р°Р·РґРµР»РёС‚РµР»РµРј РјРѕР¶РµС‚ Р±С‹С‚СЊ РєР°Рє С‚РѕС‡РєР°, С‚Р°Рє Рё Р·Р°РїСЏС‚Р°СЏ.
-  Р’ РёСЃС…РѕРґРЅРѕР№ СЃС‚СЂРѕРєРµ РјРѕРіСѓС‚ РїСЂРёСЃСѓС‚СЃС‚РІРѕРІР°С‚СЊ РЅР°С‡Р°Р»СЊРЅС‹Рµ Рё РєРѕРЅРµС‡РЅС‹Рµ РїСЂРѕР±РµР»С‹. }
-function Utils_TryStrToFloat(const S: APascalString; var Value: AFloat): ABoolean; stdcall;
+{ Преобразует строку в Float. Разделителем может быть как точка, так и запятая.
+  В исходной строке могут присутствовать начальные и конечные пробелы. }
+function Utils_TryStrToFloat(const S: APascalString; var Value: AFloat): ABoolean;
 
-{ РџСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃС‚СЂРѕРєСѓ РІ Float32. Р Р°Р·РґРµР»РёС‚РµР»РµРј РјРѕР¶РµС‚ Р±С‹С‚СЊ РєР°Рє С‚РѕС‡РєР°, С‚Р°Рє Рё Р·Р°РїСЏС‚Р°СЏ.
-  Р’ РёСЃС…РѕРґРЅРѕР№ СЃС‚СЂРѕРєРµ РјРѕРіСѓС‚ РїСЂРёСЃСѓС‚СЃС‚РІРѕРІР°С‚СЊ РЅР°С‡Р°Р»СЊРЅС‹Рµ Рё РєРѕРЅРµС‡РЅС‹Рµ РїСЂРѕР±РµР»С‹. }
-function Utils_TryStrToFloat32(const S: APascalString; var Value: AFloat32): ABoolean; stdcall;
+{ Преобразует строку в Float32. Разделителем может быть как точка, так и запятая.
+  В исходной строке могут присутствовать начальные и конечные пробелы. }
+function Utils_TryStrToFloat32(const S: APascalString; var Value: AFloat32): ABoolean;
 
-{ РџСЂРµРѕР±СЂР°Р·СѓРµС‚ СЃС‚СЂРѕРєСѓ РІ Float64. Р Р°Р·РґРµР»РёС‚РµР»РµРј РјРѕР¶РµС‚ Р±С‹С‚СЊ РєР°Рє С‚РѕС‡РєР°, С‚Р°Рє Рё Р·Р°РїСЏС‚Р°СЏ.
-  Р’ РёСЃС…РѕРґРЅРѕР№ СЃС‚СЂРѕРєРµ РјРѕРіСѓС‚ РїСЂРёСЃСѓС‚СЃС‚РІРѕРІР°С‚СЊ РЅР°С‡Р°Р»СЊРЅС‹Рµ Рё РєРѕРЅРµС‡РЅС‹Рµ РїСЂРѕР±РµР»С‹. }
-function Utils_TryStrToFloat64(const S: APascalString; var Value: AFloat64): ABoolean; stdcall;
+{ Преобразует строку в Float64. Разделителем может быть как точка, так и запятая.
+  В исходной строке могут присутствовать начальные и конечные пробелы. }
+function Utils_TryStrToFloat64(const S: APascalString; var Value: AFloat64): ABoolean;
 
-function Utils_TryStrToInt(const S: APascalString; var Value: AInteger): ABoolean; stdcall;
+function Utils_TryStrToInt(const S: APascalString; var Value: AInteger): ABoolean;
 
 implementation
 
-function Utils_FloatToStrB(Value: AFloat; DigitsAfterComma: AInteger): APascalString; stdcall;
+function Utils_ExtractFileExt(const FileName: APascalString): APascalString;
 begin
-  Result := AUtilsMain.Utils_ReplaceComma(SysUtils.FloatToStrF(Value, ffFixed, 10, DigitsAfterComma), '.');
+  Result := SysUtils.ExtractFileExt(FileName);
 end;
 
-function Utils_FloatToStrC(Value: AFloat; DigitsAfterComma: AInteger): APascalString; stdcall;
+function Utils_ExtractFilePath(const FileName: APascalString): APascalString;
+begin
+  Result := SysUtils.ExtractFilePath(FileName);
+end;
+
+function Utils_FileExists(const FileName: APascalString): ABoolean;
+begin
+  Result := SysUtils.FileExists(FileName);
+end;
+
+function Utils_FloatToStr(Value: AFloat): APascalString;
+begin
+  Result := SysUtils.FloatToStr(Value);
+end;
+
+function Utils_FloatToStr2(Value: AFloat; DigitsAfterComma: Integer; ReplaceComma, Delimer: ABoolean): APascalString;
+begin
+  if Delimer then
+    Result := Utils_FloatToStrC(Value, DigitsAfterComma)
+  else
+    Result := Utils_FloatToStrA(Value, DigitsAfterComma);
+  if ReplaceComma then
+    Result := Utils_ReplaceComma(Result);
+end;
+
+function Utils_FloatToStrA(Value: AFloat; DigitsAfterComma: AInteger = 2): APascalString;
+begin
+  Result := SysUtils.FloatToStrF(Value, ffFixed, 10, DigitsAfterComma);
+end;
+
+function Utils_FloatToStrB(Value: AFloat; DigitsAfterComma: AInteger): APascalString;
+begin
+  Result := AUtilsMain.Utils_ReplaceComma(Utils_FloatToStrA(Value, DigitsAfterComma), '.');
+end;
+
+function Utils_FloatToStrC(Value: AFloat; DigitsAfterComma: AInteger): APascalString;
 begin
   case DigitsAfterComma of
     0: Result := SysUtils.FormatFloat('### ### ### ##0', Value);
@@ -70,7 +129,12 @@ begin
   end;
 end;
 
-function Utils_FormatFloat(Value: AFloat; DigitsBeforeComma, DigitsAfterComma: AInteger): APascalString; stdcall;
+function Utils_FloatToStrD(Value: AFloat): APascalString;
+begin
+  Result := SysUtils.FormatFloat(',0.00', Value);
+end;
+
+function Utils_FormatFloat(Value: AFloat; DigitsBeforeComma, DigitsAfterComma: AInteger): APascalString;
 var
   FormatS: string;
 begin
@@ -81,6 +145,11 @@ begin
   end
   else
     Result := Utils_FloatToStrB(Value, DigitsAfterComma);
+end;
+
+function Utils_IntToStr(Value: AInteger): APascalString;
+begin
+  Result := SysUtils.IntToStr(Value);
 end;
 
 function Utils_NormalizeStrSpace(const Value: APascalString): APascalString;
@@ -100,7 +169,7 @@ begin
       Result[J] := ' ';
       Inc(I);
     end
-    else if (Ord(Result[I]) < 31) then // РїСЂРѕР±РµР»
+    else if (Ord(Result[I]) < 31) then // пробел
       Result[J] := ' '
     else
       Result[J] := Value[I];
@@ -108,7 +177,7 @@ begin
   SetLength(Result, J);
 end;
 
-function Utils_ReplaceComma(const S: APascalString; DecimalSeparator: AChar; ClearSpace: ABoolean): APascalString; stdcall;
+function Utils_ReplaceComma(const S: APascalString; DecimalSeparator: AChar; ClearSpace: ABoolean): APascalString;
 var
   ic: Integer;
   SS: APascalString;
@@ -122,9 +191,9 @@ begin
     {$ENDIF}
   end;
   if (DecimalSeparator <> '.') and (DecimalSeparator <> ',') then
-    raise Exception.Create('РћС€РёР±РєР° РІ ReplaceComma(). Р—РЅР°С‡РµРЅРёРµ DecimalSeparator РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ С‚РѕС‡РєР° РёР»Рё Р·Р°РїСЏС‚Р°СЏ.');
+    raise Exception.Create('Ошибка в ReplaceComma(). Значение DecimalSeparator должно быть точка или запятая.');
 
-  // 44 - Р·Р°РїСЏС‚Р°СЏ; 46 - С‚РѕС‡РєР°
+  // 44 - запятая; 46 - точка
   ic := 1;
   SS := '';
   while (ic <= (Length(S))) do
@@ -154,6 +223,101 @@ end;
 function Utils_String_ToLower(const S: APascalString): APascalString;
 begin
   Result := SysUtils.LowerCase(S);
+end;
+
+function Utils_Round2(Value: Real; Digits1, DigitsAfterComma: Integer): Real;
+
+  function DigitToValue(Digits: Integer): Integer;
+  begin
+    case Digits of
+      1: Result := 1;
+      2: Result := 10;
+      3: Result := 100;
+      4: Result := 1000;
+      5: Result := 10000;
+      6: Result := 100000;
+      7: Result := 1000000;
+      8: Result := 10000000;
+      9: Result := 100000000;
+    else
+      Result := 1000000000;
+    end;
+  end;
+
+  // Округляем до указанного кол-ва значащих цифр
+  function Round2(Value: Real): Real;
+  var
+    E: Real;
+  begin
+    if (Value < 0.000000001) then
+    begin
+      Result := 0;
+      Exit;
+    end
+    else if (Value < 0.00000001) then
+      E := 1000000000
+    else if (Value < 0.0000001) then
+      E := 100000000
+    else if (Value < 0.000001) then
+      E := 10000000
+    else if (Value < 0.00001) then
+      E := 1000000
+    else if (Value < 0.0001) then
+      E := 100000
+    else if (Value < 0.001) then
+      E := 10000
+    else if (Value < 0.01) then
+      E := 1000
+    else if (Value < 0.1) then
+      E := 100
+    else
+      E := 10;
+
+    E := E*DigitToValue(Digits1);
+
+    Result := Round(Value*E) / E;
+  end;
+
+var
+  E: Real;
+  IsOtr: Boolean;
+begin
+  if (Digits1 < 0) then
+    Digits1 := 0;
+  if (DigitsAfterComma < 0) then
+    DigitsAfterComma := 0;
+
+  if (Value < 0) then
+  begin
+    IsOtr := True;
+    Value := -Value;
+  end
+  else
+    IsOtr := False;
+
+  // Обрезаем необходимое кол-во знаков после запятой
+  if (DigitsAfterComma = 0) then
+    Value := Round(Value)
+  else
+  begin
+    E := DigitToValue(DigitsAfterComma+1);
+    Value := Round(Value*E) / E;
+  end;
+
+  // Округляем до указанного кол-ва значащих цифр
+  if (Value < 1) then
+    Result := Round2(Value)
+  else if (Value < 10000) then
+    Result := Round2(Value/10000)*10000
+  else if (Value < 100000000) then
+    Result := Round2(Value/100000000)*100000000
+  else if (Value < 1000000000000) then
+    Result := Round2(Value/1000000000000)*1000000000000
+  else //if (Value < 10000000000000000) then
+    Result := Round2(Value/10000000000000000)*10000000000000000;
+
+  if IsOtr then
+    Result := -Result;
 end;
 
 function Utils_String_ToUpper(const S: APascalString): APascalString;

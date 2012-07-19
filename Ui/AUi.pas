@@ -1,12 +1,8 @@
-п»ї{**
-@Abstract(User Interface)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.10.2008)
-@LastMod(24.05.2012)
-@Version(0.5)
-
-0.3.2
-[+] WaitWin (08.09.2011)
+{**
+@Abstract User Interface
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.10.2008
+@LastMod 19.07.2012
 }
 unit AUi;
 
@@ -24,19 +20,31 @@ interface
 
 uses
   ABase, ABaseTypes,
-  ARuntime, //{$IFDEF A0}ARuntime0{$ELSE}ARuntime{$ENDIF},
-  AStrings,
-  ASystem, //{$IFDEF A0}ASystem0{$ELSE}ASystem{$ENDIF},
+  AEvents, ARuntime, AStrings, ASystem,
   AUiBase, AUiBox, AUiButton, AUiControls, AUiControlsA, AUiData, AUiEvents,
-  AUiMain, AUiMainWindow, AUiMainWindow2, AUiReports, AUiToolBar, AUiWindows;
+  AUiMain, AUiMainWindow, AUiMainWindow2, AUiPageControl, AUiReports,
+  AUiToolBar, AUiToolMenu, AUiTreeView, AUiWindows;
 
 // --- Procs ---
 
-{ РЎРѕР·РґР°РµС‚ РЅРѕРІСѓСЋ РїР°РЅРµР»СЊ.
+function Init(): AError; stdcall;
+function Done(): AError; stdcall;
+
+function InitMainTrayIcon(): AError; stdcall;
+
+function InitMenus(): AError; stdcall;
+
+procedure InitMenus02(); stdcall;
+
+{ Box }
+
+{**
+  Создает новую панель.
   BoxType
     0 - Simple
     1 - HBox
-    2 - VBox }
+    2 - VBox
+}
 function Box_New(Parent: AControl; BoxType: AInteger): AControl; stdcall;
 
 function Button_New(Parent: AControl): AButton; stdcall;
@@ -46,24 +54,47 @@ function Calendar_New(Parent: AControl): AControl; stdcall;
 function Calendar_GetDate(Calendar: AControl): TDateTime; stdcall;
 function Calendar_SetMonth(Calendar: AControl; Value: AInteger): AError; stdcall;
 
+//** Освобождает память занятую элементом.
 function Control_Free(Control: AControl): AError; stdcall;
+
 function Control_GetColor(Control: AControl): AColor; stdcall;
 function Control_GetEnabled(Control: AControl): ABoolean; stdcall;
 function Control_GetHeight(Control: AControl): AInteger; stdcall;
 function Control_GetHintP(Control: AControl): APascalString; stdcall;
 function Control_GetHintWS(Control: AControl): AWideString; stdcall;
+
+function Control_GetMenu(Control: AControl): AMenu; stdcall;
+
 function Control_GetNameP(Control: AControl): APascalString; stdcall;
 function Control_GetNameWS(Control: AControl): AWideString; stdcall;
 function Control_GetTextP(Control: AControl): APascalString; stdcall;
 function Control_GetVisible(Control: AControl): ABoolean; stdcall;
 function Control_GetWidth(Control: AControl): AInteger; stdcall;
+
+//** Задает присоединение элемента.
 function Control_SetAlign(Control: AControl; Align: TUIAlign): AError; stdcall;
+
+//** Задает присоединение элемента.
 procedure Control_SetAlign02(Control: AControl; Align: TUIAlign); stdcall;
+
+//** Задает внутренний размер элемента.
 function Control_SetClientSize(Control: AControl; ClientWidth, ClientHeight: AInteger): AError; stdcall;
+
+//** Задает цвет элемента.
 function Control_SetColor(Control: AControl; Color: AColor): AError; stdcall;
+
+//** Задает цвет элемента.
+procedure Control_SetColor02(Control: AControl; Color: AColor); stdcall;
+
 function Control_SetEnabled(Control: AControl; Value: ABoolean): AError; stdcall;
 function Control_SetFocus(Control: AControl): ABoolean; stdcall;
+
+//** Задает шрифт.
+function Control_SetFont1A(Control: AControl; {const} FontName: PAnsiChar; FontSize: AInteger): AError; stdcall;
+
+//** Задает шрифт.
 function Control_SetFont1P(Control: AControl; const FontName: APascalString; FontSize: AInteger): AError; stdcall;
+
 function Control_SetFont2P(Control: AControl; const FontName: APascalString; FontSize: AInteger; FontColor: AColor): AError; stdcall;
 function Control_SetHeight(Control: AControl; Value: AInteger): AInteger; stdcall;
 procedure Control_SetHint02(Control: AControl; const Value: APascalString); stdcall;
@@ -77,21 +108,41 @@ procedure Control_SetOnChange02(Control: AControl; OnChange: ACallbackProc02); s
 function Control_SetOnChangeEx(Control: AControl; OnChange: ACallbackProc03; Obj: AInteger): AError; stdcall;
 function Control_SetOnClick(Control: AControl; Value: ACallbackProc): AError; stdcall;
 procedure Control_SetOnClick02(Control: AControl; Value: ACallbackProc02); stdcall;
+
+//** Задает расположение элемента.
 function Control_SetPosition(Control: AControl; Left, Top: AInteger): AError; stdcall;
+
 procedure Control_SetPosition02(Control: AControl; Left, Top: Integer); stdcall;
+
+//** Задает внешний размер элемента.
 function Control_SetSize(Control: AControl; Width, Height: Integer): AError; stdcall;
+
 procedure Control_SetSize02(Control: AControl; Width, Height: Integer); stdcall;
+
+//** Задает текст элемента.
 procedure Control_SetText02(Control: AControl; const Value: AWideString); stdcall;
+
+//** Задает текст элемента.
 function Control_SetTextP(Control: AControl; const Value: APascalString): AError; stdcall;
+
+//** Задает текст элемента.
 function Control_SetTextWS(Control: AControl; const Value: AWideString): AError; stdcall;
+
+//** Задает видимость элемента.
 function Control_SetVisible(Control: AControl; Value: ABoolean): AError; stdcall;
+
+//** Задает видимость элемента.
 procedure Control_SetVisible02(Control: AControl; Value: ABoolean); stdcall;
+
 function Control_SetWidth(Control: AControl; Value: AInteger): AInteger; stdcall;
 
 function DataSource_New(): PADataSource; stdcall;
 procedure DataSource_SetOnDataChange02(DataSource: PADataSource; OnDataChange: ACallbackProc02); stdcall;
 
+{ Dialog }
+
 function Dialog_About: AError; stdcall;
+
 function Dialog_About_New: AWindow; stdcall;
 
 function Dialog_AddButtonP(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
@@ -101,24 +152,50 @@ function Dialog_AddButtonWS(Win: AWindow; Left, Width: AInteger; const Text: AWi
     OnClick: ACallbackProc): AControl; stdcall;
 
 function Dialog_Calendar(var Date: TDateTime; CenterX, CenterY: AInteger): ABoolean; stdcall;
+
 function Dialog_Color(var Color: AColor): ABoolean; stdcall;
+
 function Dialog_DateFilter(var Group: Integer; var DateBegin, DateEnd: TDateTime): Boolean; stdcall;
+
 function Dialog_ErrorP(const Caption, UserMessage, ExceptMessage: APascalString): AError; stdcall;
+
 function Dialog_ErrorWS(const Caption, UserMessage, ExceptMessage: AWideString): AError; stdcall;
+
 function Dialog_FontP(var FontName: APascalString; var FontSize: AInteger; FontColor: AColor): ABoolean; stdcall;
+
+//** Возвращает окно.
 function Dialog_GetWindow(Dialog: ADialog): AWindow; stdcall;
+
 function Dialog_InputBox1P(const Text: APascalString; var Value: APascalString): Boolean; stdcall;
+
 function Dialog_InputBox1WS(const Text: AWideString; var Value: AWideString): ABoolean; stdcall;
+
 function Dialog_InputBox2P(const Caption, Text1, Text2: APascalString; var Value1, Value2: APascalString): ABoolean; stdcall;
+
 function Dialog_InputBox2WS(const Caption, Text1, Text2: AWideString; var Value1, Value2: AWideString): ABoolean; stdcall;
+
 function Dialog_InputBox3P(const Caption, Text: APascalString; var Value: APascalString): Boolean; stdcall;
+
 function Dialog_InputBox3WS(const Caption, Text: AWideString; var Value: AWideString): ABoolean; stdcall;
+
 function Dialog_LoginP(var UserName, Password: APascalString; IsSave: ABoolean): ABoolean; stdcall;
+
 function Dialog_LoginWS(var UserName, Password: AWideString; IsSave: ABoolean): ABoolean; stdcall;
+
+function Dialog_MessageDlgWS(const Msg: AWideString; MsgDlgType: AInteger; Flags: AMessageBoxFlags): AInteger; stdcall;
+
 function Dialog_MessageP(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+
 function Dialog_MessageWS(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+
+//** Создает новый диалог.
 function Dialog_New(Buttons: AUIWindowButtons): ADialog; stdcall;
+
 function Dialog_OpenFileWS(const InitialDir, Filter, Title: AWideString; var FileName: AWideString): ABoolean; stdcall;
+
+// Отображает окно выбора и настройки печати.
+function Dialog_PrinterSetup(): AError; stdcall;
+
 function Dialog_SelectDirectoryP(var Directory: APascalString): ABoolean; stdcall;
 
 { Edit }
@@ -131,70 +208,206 @@ function Edit_CheckFloat32(Edit: AControl; out Value: AFloat32): ABoolean;
 
 function Edit_CheckFloat64(Edit: AControl; out Value: AFloat64): ABoolean;
 
-// РџРµСЂРµРІРѕРґРёС‚ С‚РµРєСЃС‚ РІ Int. Р•СЃР»Рё РѕС€РёР±РєР°, С‚Рѕ РїРµСЂРµС…РѕРґРёС‚ РЅР° СЌС‚РѕС‚ РєРѕРјРїРѕРЅРµРЅС‚ Рё РІРѕР·РІСЂР°С‰Р°РµС‚ False.
+// Переводит текст в Int. Если ошибка, то переходит на этот компонент и возвращает False.
 function Edit_CheckInt(Edit: AControl; out Value: AInteger): ABoolean; stdcall;
 
-// РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ СЌР»РµРјРµРЅС‚ TEdit.
+// Создает новый элемент TEdit.
 function Edit_New(Parent: AControl): AControl; stdcall;
 
-{ РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ СЌР»РµРјРµРЅС‚ TEdit.
+{**
+  Создает новый элемент TEdit.
   EditType
     0 - TEdit
     1 - TEdit + Button
-    3 - TSpinEdit }
+    3 - TSpinEdit
+}
 function Edit_New02(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc02;
     Left, Top, Width: AInteger): AControl; stdcall;
 
-{ РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ СЌР»РµРјРµРЅС‚ TEdit.
+{**
+  Создает новый элемент TEdit.
   EditType
     0 - TEdit
     1 - TEdit + Button
-    3 - TSpinEdit }
+    3 - TSpinEdit
+}
 function Edit_NewA(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc;
     Left, Top, Width: AInteger): AControl; stdcall;
 
 { Grid }
 
-// РџСЂРѕРёР·РІРѕРґРёС‚ РѕС‡РёСЃС‚РєСѓ С‚Р°Р±Р»РёС†С‹. РџРѕРєР° СЂР°Р±РѕС‚Р°РµС‚ С‚РѕР»СЊРєРѕ РґР»СЏ TStringGrid.
+// Производит очистку таблицы. Пока работает только для TStringGrid.
 function Grid_Clear(Grid: AControl): AError; stdcall;
 
-// РЈРґР°Р»СЏРµС‚ СЃС‚СЂРѕС‡РєСѓ. Р Р°Р±РѕС‚Р°РµС‚ РїРѕРєР° С‚РѕР»СЊРєРѕ РґР»СЏ TStringGrid.
+// Производит очистку таблицы. Пока работает только для TStringGrid.
+function Grid_ClearA(Grid: AControl; FixedRows: AInteger): AError; stdcall;
+
+//** Удаляет указанную строку.
+function Grid_DeleteRow2(Grid: AControl; Row: AInteger): AError; stdcall;
+
+function Grid_SetColumnWidth(Grid: AControl; ColumnIndex, Width, Persent, MinWidth: AInteger): AError; stdcall;
+
+procedure Grid_SetColumnWidth02(Grid: AControl; ColumnIndex, Width, Persent, MinWidth: AInteger); stdcall;
+
+function Grid_SetColumnWidth2(Grid: AControl; ColumnIndex, Width, Persent, MinWidth, MaxWidth: AInteger): AError; stdcall;
+
+procedure Grid_SetColumnWidthA(Grid: AControl; ColumnIndex, Width, Persent, MinWidth, MaxWidth: AInteger); stdcall;
+
+// Производит поиск значения в заданной колонке. Работает пока только для TStringGrid.
+function Grid_FindInt(Grid: AControl; Col, Value: AInteger): AInteger; stdcall;
+
+{ GridType
+    0 - StringGrid
+    1 - DBGrid }
+function Grid_New(Parent: AControl; GridType: AInteger): AControl; stdcall;
+
+// Восстанавливает колоноки DBGrid или StringGrid.
+function Grid_RestoreColPropsWS(Grid: AControl; Config: AConfig; const Key: AWideString; Delimer: AWideChar = '\'): AError; stdcall;
+
+// Восстанавливает колоноки DBGrid или StringGrid.
+procedure Grid_RestoreColPropsWS02(Grid: AControl; Config: AConfig; const Key: AWideString; Delimer: AWideChar = '\'); stdcall;
+
+// Удаляет строчку. Работает пока только для TStringGrid.
 function Grid_RowDelete(Grid: AControl): AError; stdcall;
 
-// РџРµСЂРµРјРµС‰Р°РµС‚ СЃС‚СЂРѕС‡РєСѓ РЅРёР¶Рµ. Р Р°Р±РѕС‚Р°РµС‚ РїРѕРєР° С‚РѕР»СЊРєРѕ РґР»СЏ TStringGrid.
+// Перемещает строчку ниже. Работает пока только для TStringGrid.
 function Grid_RowDown(Grid: AControl): AError; stdcall;
 
-// РџРµСЂРµРјРµС‰Р°РµС‚ СЃС‚СЂРѕС‡РєСѓ РІС‹С€Рµ. Р Р°Р±РѕС‚Р°РµС‚ РїРѕРєР° С‚РѕР»СЊРєРѕ РґР»СЏ TStringGrid.
+// Перемещает строчку выше. Работает пока только для TStringGrid.
 function Grid_RowUp(Grid: AControl): AError; stdcall;
 
-// Р—Р°РґР°РµС‚ РєРѕР»-РІРѕ СЃС‚СЂРѕРє РІ С‚Р°Р±Р»РёС†Рµ. Р Р°Р±РѕС‚Р°РµС‚ РїРѕРєР° С‚РѕР»СЊРєРѕ РґР»СЏ TStringGrid.
+// Сохраняет колоноки DBGrid или StringGrid.
+function Grid_SaveColPropsWS(Grid: AControl; Config: AConfig; const Key: AWideString; Delimer: AWideChar = '\'): AError; stdcall;
+
+// Сохраняет колоноки DBGrid или StringGrid.
+procedure Grid_SaveColPropsWS02(Grid: AControl; Config: AConfig; const Key: AWideString; Delimer: AWideChar = '\'); stdcall;
+
+function Grid_SetDataSource(Grid: AControl; Value: PADataSource): AError; stdcall;
+
+procedure Grid_SetDataSource02(Grid: AControl; Value: PADataSource); stdcall;
+
+// Задает кол-во строк в таблице. Работает пока только для TStringGrid.
 function Grid_SetRowCount(Grid: AControl; Count: AInteger): AError; stdcall;
+
+{ Image }
+
+//** Загружает изображение из файла.
+function Image_LoadFromFileWS(Image: AControl; const FileName: AWideString): AError; stdcall;
+
+//** Создает новый элемент-изображение.
+function Image_New(Parent: AControl): AControl; stdcall;
 
 { Label }
 
+//** Создает новый элемент тестового вывода.
 function Label_New(Parent: AControl): AControl; stdcall;
+
+// --- ListBox ---
+
+//** Добавляет строку в список.
+function ListBox_AddP(ListBox: AControl; const Text: APascalString): AInteger; stdcall;
+
+//** Добавляет строку в список.
+function ListBox_AddWS(ListBox: AControl; const Text: AWideString): AInteger; stdcall;
+
+//** Создает новый элемент ListBox.
+function ListBox_New(Parent: AControl): AControl; stdcall;
+
+{ MainToolBar }
+
+function MainToolBar(): AControl; stdcall;
+
+procedure MainToolBar_Set(ToolBar: AControl); stdcall;
 
 { MainWindow }
 
-// Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіР»Р°РІРЅРѕРіРѕ РѕРєРЅР° РїСЂРѕРіСЂР°РјРјС‹.
-function MainWindow: AWindow; stdcall;
+//** Возвращает идентификатор главного окна программы.
+function MainWindow(): AWindow; stdcall;
 
+//** Добавляет пункт меню в главное окно.
 function MainWindow_AddMenuItem(const ParentItemName, Name, Text: APascalString;
     OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem; stdcall;
-function MainWindow_AddMenuItem2(const ParentItemName, Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem; stdcall;
+
+//** Добавляет пункт меню в главное окно.
+function MainWindow_AddMenuItem02(const ParentItemName, Name, Text: APascalString;
+    OnClick: ACallbackProc02; ImageID, Weight: AInteger): AMenuItem; stdcall;
+
+//** Добавляет пункт меню в главное окно.
+function MainWindow_AddMenuItem03WS(const ParentItemName, Name, Text: AWideString;
+    OnClick: ACallbackProc03; ImageId, Weight: AInteger): AMenuItem; stdcall;
+
+//** Добавляет пункт меню в главное окно.
+function MainWindow_AddMenuItem2(const ParentItemName, Name, Text: AString_Type;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
+
+//** Добавляет пункт меню в главное окно.
+function MainWindow_AddMenuItem2WS(const ParentItemName, Name, Text: AWideString;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
+
+//** Добавляет пункт меню в главное окно.
+function MainWindow_AddMenuItem2WS02(const ParentItemName, Name, Text: AWideString;
+    OnClick: ACallbackProc02; ImageId, Weight: AInteger): AMenuItem; stdcall;
+
+function MainWindow_GetLeftContainer(): AControl; stdcall;
+
+//** Возврящает основной контейнер UI.
+function MainWindow_GetMainContainer(): AControl; stdcall;
+
+function MainWindow_GetRightContainer(): AControl; stdcall;
+
 procedure MainWindow_Set(Value: AWindow); stdcall;
+
 procedure MainWindow_SetA(Value: AWindow; ToolBar, StatusBar: AControl; Config: AConfig); stdcall;
 
 { Menu }
 
-function Menu_AddItem1P(Menu: AMenu; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem; stdcall;
+function MenuItem_Clear(MenuItem: AMenuItem): AError; stdcall;
 
+function MenuItem_FindByName(MenuItem: AMenuItem; const Name: APascalString): AMenuItem; stdcall;
+
+function MenuItem_SetChecked(MenuItem: AMenuItem; Checked: ABoolean): AError; stdcall;
+
+//** Добавляет пункт меню.
+function Menu_AddItem0(Parent: AMenuItem; MenuItem: AMenuItem; Weight: AInteger): AMenuItem; stdcall;
+
+//** Добавляет пункт меню.
+function Menu_AddItem1(Menu: AMenu; const Name, Text: AString_Type;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
+
+//** Добавляет пункт меню.
+function Menu_AddItem1P(Menu: AMenu; const Name, Text: APascalString;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
+
+//** Добавляет пункт меню.
+function Menu_AddItem2(Parent: AMenuItem; const Name, Text: AString_Type;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
+
+//** Добавляет пункт меню.
 function Menu_AddItem2P(Parent: AMenuItem; const Name, Text: APascalString;
     OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem; stdcall;
 
-function Menu_AddItem3P(Parent: AMenuItem; MenuItem: AMenuItem; Weight: Integer): AMenuItem; stdcall;
+//** Добавляет пункт меню.
+function Menu_AddItem2WS(Parent: AMenuItem; const Name, Text: AWideString;
+    OnClick: ACallbackProc; ImageId, Weight: Integer): AMenuItem; stdcall;
+
+//** Добавляет пункт меню.
+function Menu_AddItem2WS02(Parent: AMenuItem; const Name, Text: AWideString;
+    OnClick: ACallbackProc02; ImageID, Weight: Integer): AMenuItem; stdcall;
+
+//** Добавляет пункт меню.
+function Menu_AddItem2WS03(Parent: AMenuItem; const Name, Text: AWideString;
+    OnClick: ACallbackProc03; ImageID, Weight: AInteger): AMenuItem; stdcall;
+
+//** Добавляет пункт меню.
+function Menu_AddItem3(Parent: AMenuItem; MenuItem: AMenuItem; Weight: AInteger): AMenuItem; stdcall; deprecated; { Use Menu_AddItem0() }
+
+//** Добавляет пункт меню.
+function Menu_AddItem3WS(Parent: AMenuItem; const Name, Text: AWideString;
+    OnClick: ACallbackProc; ImageID, Weight, Tag: Integer): AMenuItem; stdcall;
+
+//** Добавляет пункт меню.
+function Menu_AddItem3WS03(Parent: AMenuItem; const Name, Text: AWideString;
+    OnClick: ACallbackProc03; ImageID, Weight, Tag: Integer): AMenuItem; stdcall;
 
 function Menu_GetItems(Menu: AMenu): AMenuItem; stdcall;
 
@@ -202,28 +415,143 @@ function Menu_New(MenuType: AInteger): AMenu; stdcall;
 
 { PageControl }
 
-{ РЎРѕР·РґР°РµС‚ РЅРѕРІСѓСЋ РІРєР»Р°РґРєСѓ. Р’РѕР·РІСЂР°С€Р°РµС‚:
-  0 - РµСЃР»Рё РїСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°, РёРЅР°С‡Рµ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РЅРѕРІРѕР№ РІРєР»Р°РґРєРё (РµСЃР»Рё РѕРїРµСЂР°С†РёСЏ РїСЂРѕС€Р»Р° СѓСЃРїРµС€РЅРѕ) }
+{ Создает новую вкладку. Возврашает:
+  0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
 function PageControl_AddPage(PageControl: AControl; const Name, Text: APascalString): AControl; stdcall;
 
-{ РЎРѕР·РґР°РµС‚ РЅРѕРІСѓСЋ РІРєР»Р°РґРєСѓ. Р’РѕР·РІСЂР°С€Р°РµС‚:
-  0 - РµСЃР»Рё РїСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°, РёРЅР°С‡Рµ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РЅРѕРІРѕР№ РІРєР»Р°РґРєРё (РµСЃР»Рё РѕРїРµСЂР°С†РёСЏ РїСЂРѕС€Р»Р° СѓСЃРїРµС€РЅРѕ) }
+{ Создает новую вкладку. Возврашает:
+  0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
 function PageControl_AddPageWS(PageControl: AControl; const Name, Text: AWideString): AControl; stdcall;
 
 function PageControl_New(Parent: AControl): AControl; stdcall;
 
+{ ProgressBar }
+
+//** Создает новый элемент отображения процесса.
+function ProgressBar_New(Parent: AControl; Max: AInteger): AControl; stdcall;
+
+//** Увеличивает значение прогресса на один шаг.
+function ProgressBar_StepIt(ProgressBar: AControl): AInteger; stdcall;
+
+{ Report }
+
+function Report_New(Parent: AControl): AReport; stdcall;
+
 { ReportWin }
 
-{ РЎРѕР·РґР°РµС‚ РЅРѕРІРѕРµ РѕРєРЅРѕ РѕС‚С‡РµС‚Р°.
-  ReportWinType - РўРёРї РѕРєРЅР° РѕС‚С‡РµС‚Р°: 0-TReportForm; 1-SimpleReport }
+function ReportWin_New(): AWindow; stdcall;
+
+{ Создает новое окно отчета.
+  ReportWinType - Тип окна отчета: 0-TReportForm; 1-SimpleReport }
 function ReportWin_New2P(ReportWinType: AInteger; const Text: APascalString): AWindow; stdcall;
 
-{ РЎРѕР·РґР°РµС‚ РЅРѕРІРѕРµ РѕРєРЅРѕ РѕС‚С‡РµС‚Р°.
-  ReportWinType - РўРёРї РѕРєРЅР° РѕС‚С‡РµС‚Р°: 0-TReportForm; 1-SimpleReport }
+{ Создает новое окно отчета.
+  ReportWinType - Тип окна отчета: 0-TReportForm; 1-SimpleReport }
+function ReportWin_New2WS(ReportWinType: AInteger; const Text: AWideString): AWindow; stdcall;
+
+{ Создает новое окно отчета.
+  ReportWinType - Тип окна отчета: 0-TReportForm; 1-SimpleReport }
 function ReportWin_NewWS(ReportWinType: AInteger; const Text: AWideString): AWindow; stdcall;
 
-// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РјРѕРґР°Р»СЊРЅРѕРµ РѕРєРЅРѕ СЃ РѕС‚С‡РµС‚РѕРј.
+// Отображает модальное окно с отчетом.
 function ReportWin_ShowReportP(const Text: APascalString; Font: AFont): AError; stdcall;
+
+{ --- TextView --- }
+
+//** Добавляет строку в элемент TextView.
+function TextView_AddLineWS(TextView: AControl; const Text: AWideString): AInteger; stdcall;
+
+{**
+  Создает новый элемент редактирования текста
+  ViewType
+    0 - TMemo
+    1 - RichEdit
+}
+function TextView_New(Parent: AControl; ViewType: AInteger): AControl; stdcall;
+
+//** Устанавливает значение параметра "Только чтение".
+function TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean): AError; stdcall;
+
+//** Устанавливает значение параметра "Только чтение".
+procedure TextView_SetReadOnly02(TextView: AControl; ReadOnly: ABoolean); stdcall;
+
+{**
+  Указывает какие ползунки отображать.
+  ScrollBars
+    0 - ssNone
+    1 - ssHorizontal
+    2 - ssVertical
+    3 - ssBoth
+}
+function TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger): AError; stdcall;
+
+{**
+  Указывает какие ползунки отображать.
+  ScrollBars
+    0 - ssNone
+    1 - ssHorizontal
+    2 - ssVertical
+    3 - ssBoth
+}
+procedure TextView_SetScrollBars02(TextView: AControl; ScrollBars: AInteger); stdcall;
+
+//** Задает параметр "переносить по словам".
+function TextView_SetWordWrap(TextView: AControl; Value: ABoolean): AError; stdcall;
+
+//** Задает параметр "переносить по словам".
+procedure TextView_SetWordWrap02(TextView: AControl; Value: ABoolean); stdcall;
+
+{ --- ToolBar --- }
+
+function ToolBar_AddButtonWS(ToolBar: AControl; const Name, Text, Hint: AWideString;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AButton; stdcall;
+
+function ToolBar_AddButtonWS02(ToolBar: AControl; const Name, Text, Hint: AWideString;
+    OnClick: ACallbackProc02; ImageId, Weight: AInteger): AButton; stdcall;
+
+function ToolBar_AddButtonWS03(ToolBar: AControl; const Name, Text, Hint: AWideString;
+    OnClick: ACallbackProc03; ImageId, Weight: AInteger): AButton; stdcall;
+
+function ToolBar_New(Parent: AControl): AControl; stdcall;
+
+// --- ToolMenu ---
+
+function ToolMenu_AddButtonWS(ToolMenu: AToolMenu; const Name, Text, Hint: AWideString;
+    OnClick: ACallbackProc03; ImageId, Weight: AInteger): AButton; stdcall;
+
+function ToolMenu_AddNewItemWS(Parent: AToolMenu; const Name, Text: AWideString;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu; stdcall;
+
+function ToolMenu_AddNewSubMenu(Parent: AToolMenu; const Name, Text: AString_Type;
+    ImageId, Weight: AInteger): AToolMenu; stdcall;
+
+function ToolMenu_AddNewSubMenuWS(Parent: AToolMenu; const Name, Text: AWideString;
+    ImageId, Weight: AInteger): AToolMenu; stdcall;
+
+function ToolMenu_GetSubMenuWS(Parent: AToolMenu; const Name, Text: AWideString;
+    ImageId, Weight: AInteger): AToolMenu; stdcall;
+
+function ToolMenu_New(Parent: AControl): AToolMenu; stdcall;
+
+// --- TreeView ---
+
+//** Добавляет элемент в TreeView.
+function TreeView_AddItemWS(TreeView: AControl; Parent: ATreeNode; Text: AWideString): ATreeNode; stdcall;
+
+//** Создает новый элемент TreeView.
+function TreeView_New(Parent: AControl): AControl; stdcall;
+
+// --- Splitter ---
+
+{**
+  Создает динамический разделитель.
+  SplitterType
+    0 - HSplitter (Align=alTop)
+    1 - VSplitter (Align=alLeft)
+    2 - HSplitter (Align=alBottom)
+    3 - VSplitter (Align=alRight)
+}
+function Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl; stdcall;
 
 { WaitWin }
 
@@ -235,32 +563,53 @@ function WaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger; stdcall;
 
 { Window }
 
-// Р”РѕР±Р°РІР»СЏРµС‚ РѕРєРЅРѕ (С‚РѕР»СЊРєРѕ VCL)
+// Добавляет окно (только VCL)
 function Window_Add(Window: AWindow): AError; stdcall;
 
+//** Освобождает окно.
 procedure Window_Free(Window: AWindow); stdcall;
 
-// Р’РѕР·РІСЂР°С‰Р°РµС‚ РіР»Р°РІРЅРѕРµ РјРµРЅСЋ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РѕРєРЅР°
+// Возвращает главное меню указанного окна
 function Window_GetMenu(Window: AWindow): AMenu; stdcall;
 
 function Window_LoadConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall;
+
+function Window_LoadConfig2WS(Window: AWindow; Config: AConfig; const ConfigKey: AWideString): ABoolean; stdcall;
+
+//** Создает новое окно.
 function Window_New(): AControl; stdcall;
+
 function Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall;
+
+function Window_SaveConfig2WS(Window: AWindow; Config: AConfig; const ConfigKey: AWideString): ABoolean; stdcall;
+
+//** Задает стиль окантовки окна.
+function Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger): AError; stdcall;
+
+//** Задает стить окантовки окна.
+procedure Window_SetBorderStyle02(Window: AWindow; BorderStyle: AInteger); stdcall;
+
+//** Задает стиль окна.
+function Window_SetFormStyle(Window: AWindow; FormStyle: AInteger): AError; stdcall;
+
+//** Задает позицию окна.
+function Window_SetPosition(Window: AWindow; Position: AInteger): AError; stdcall;
+
 { State = TWindowState
   0 - wsNormal
   1 - wsMinimized
   2 - wsMaximized }
 function Window_SetState(Window: AWindow; State: AInteger): AError; stdcall;
 
+//** Показывает окно модально.
 function Window_ShowModal(Window: AWindow): ABoolean; stdcall;
 
-{
-  BoxType
-    0 - Simple
-    1 - HBox
-    2 - VBox
-  Use Box_New() }
-function UI_Box_New(Parent: AControl; BoxType: AInteger): AControl; stdcall; deprecated;
+{ UI }
+
+// Заглушка. Реальная функция находится в .\Modules\AUI.pas.
+function UI_Boot(): AError;
+
+// --- UI_Button ---
 
 // Use Button_New()
 function UI_Button_New(Parent: AControl): AButton; stdcall; deprecated;
@@ -287,18 +636,24 @@ function UI_Control_GetName(Control: AControl): APascalString; stdcall; {depreca
 function UI_Control_GetText(Control: AControl): APascalString; stdcall; {deprecated;}
 function UI_Control_GetVisible(Control: AControl): ABoolean; stdcall; {deprecated;}
 function UI_Control_GetWidth(Control: AControl): AInteger; stdcall; {deprecated;}
-
-// Use Control_SetAlign() or UI_Control_SetAlign02()
-procedure UI_Control_SetAlign(Control: AControl; Align: TUIAlign); stdcall; deprecated;
-
 procedure UI_Control_SetClientSize(Control: AControl; ClientWidth, ClientHeight: AInteger); stdcall; {deprecated;}
-procedure UI_Control_SetColor(Control: AControl; Color: AColor); stdcall; {deprecated;}
+
+//** Задает цвет элемента.
+// Use Control_SetColor()
+procedure UI_Control_SetColor(Control: AControl; Color: AColor); stdcall; deprecated;
+
 procedure UI_Control_SetEnabled(Control: AControl; Value: ABoolean); stdcall; {deprecated;}
 function UI_Control_SetFocus(Control: AControl): ABoolean; stdcall; {deprecated;}
-procedure UI_Control_SetFont1(Control: AControl; const FontName: APascalString; FontSize: AInteger); stdcall; {deprecated;}
-// Р•СЃР»Рё FontColor = 1, С‚Рѕ С†РІРµС‚ РЅРµ РёР·РјРµРЅСЏРµС‚СЃСЏ
+
+// Use Control_SetFont1()
+procedure UI_Control_SetFont1(Control: AControl; const FontName: APascalString; FontSize: AInteger); stdcall; deprecated;
+
+// Если FontColor = 1, то цвет не изменяется
 procedure UI_Control_SetFont2(Control: AControl; const FontName: APascalString; FontSize: AInteger; FontColor: AColor); stdcall; {deprecated;}
-function UI_Control_SetHeight(Control: AControl; Value: AInteger): AInteger; stdcall; {deprecated;}
+
+// Use Control_SetHeight()
+function UI_Control_SetHeight(Control: AControl; Value: AInteger): AInteger; stdcall; deprecated;
+
 // Use Control_SetHint() or UI_Control_SetHint02()
 procedure UI_Control_SetHint(Control: AControl; const Value: APascalString); stdcall; deprecated;
 // Use Control_SetName() or UI_Control_SetName02()
@@ -335,11 +690,8 @@ function UI_Dialog_AddButton02(Win: AWindow; Left, Width: AInteger; const Text: 
     OnClick: ACallbackProc02): AControl; stdcall;
 
 function UI_Dialog_Calendar(var Date: TDateTime; CenterX, CenterY: AInteger): ABoolean; stdcall;
-
 function UI_Dialog_DateFilter(var Group: Integer; var DateBegin, DateEnd: TDateTime): Boolean; stdcall;
-
-procedure UI_Dialog_Error(const Caption, UserMessage, ExceptMessage: AWideString); stdcall;
-
+procedure UI_Dialog_Error(const Caption, UserMessage, ExceptMessage: APascalString); stdcall;
 function UI_Dialog_Font(var FontName: APascalString; var FontSize: AInteger; FontColor: AColor): ABoolean; stdcall;
 
 function UI_Dialog_InputBox(const Text: APascalString; var Value: APascalString): ABoolean; stdcall;
@@ -352,7 +704,7 @@ function UI_Dialog_InputBox3(const Caption, Text: APascalString; var Value: APas
 function UI_Dialog_InputBoxA(const Caption, Text: APascalString; var Value: APascalString): ABoolean; stdcall; deprecated;
 
 function UI_Dialog_Login(var UserName, Password: APascalString; IsSave: ABoolean): ABoolean; stdcall;
-function UI_Dialog_Message(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+function UI_Dialog_Message(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 // Use Dialog_New()
 function UI_Dialog_New(Buttons: AUIWindowButtons): ADialog; stdcall; deprecated;
 function UI_Dialog_OpenFile(const InitialDir, Filter, Title: APascalString; var FileName: APascalString): ABoolean; stdcall;
@@ -361,28 +713,48 @@ function UI_Dialog_SaveFile(const Dir, Ext, DefFileName: APascalString): APascal
 function UI_Dialog_SaveFileA(const InitialDir, DefExt, DefFileName, Filter: APascalString; var FilterIndex: AInteger): APascalString; stdcall;
 
 procedure UI_Grid_AddColumn(Grid: AControl; const FieldName, Title: APascalString; Width: Integer); stdcall;
+
 { GridType
     0 - StringGrid
     1 - DBGrid }
-function UI_Grid_New(Parent: AControl; GridType: AInteger): AControl; stdcall;
-// Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РєРѕР»РѕРЅРѕРєРё DBGrid
-procedure UI_Grid_RestoreColProps(Grid: AControl; Config: AConfig; const Key: APascalString; Delimer: AChar = '\'); stdcall;
-// РЎРѕС…СЂР°РЅСЏРµС‚ РєРѕР»РѕРЅРѕРєРё DBGrid
-procedure UI_Grid_SaveColProps(Grid: AControl; Config: AConfig; const Key: APascalString; Delimer: AChar = '\'); stdcall;
-// РР·РјРµРЅСЏРµС‚ С€РёСЂРёРЅСѓ РєРѕР»РѕРЅРєРё РІ DBGrid
+// Use Grid_New()
+function UI_Grid_New(Parent: AControl; GridType: AInteger): AControl; stdcall; deprecated;
+
+// Восстанавливает колоноки DBGrid
+// Use Grid_RestoreColPropsWS02()
+procedure UI_Grid_RestoreColProps(Grid: AControl; Config: AConfig; const Key: APascalString; Delimer: AChar = '\'); stdcall; deprecated;
+
+// Use Grid_SaveColPropsWS02()
+procedure UI_Grid_SaveColProps(Grid: AControl; Config: AConfig; const Key: APascalString; Delimer: AChar); stdcall;
+
+// Изменяет ширину колонки в DBGrid
 procedure UI_Grid_SetColumnWidth(Grid: AControl; ColumnIndex, Width, Persent, MinWidth: AInteger); stdcall;
 procedure UI_Grid_SetColumnWidthA(Grid: AControl; ColumnIndex, Width, Persent, MinWidth, MaxWidth: AInteger); stdcall;
 procedure UI_Grid_SetDataSource(Grid: AControl; Value: PADataSource); stdcall;
 
-function UI_Image_New(Parent: AControl): AControl; stdcall;
+{ UI_Image }
+
+//** Загружает изображение из файла.
 function UI_Image_LoadFromFile(Image: AControl; const FileName: APascalString): ABoolean; stdcall;
 
-function UI_Label_New(Parent: AControl): AControl; stdcall;
-procedure UI_Label_SetFont(TextLabel: AControl; const FontName: APascalString; FontSize: AInteger); stdcall; deprecated;
+//** Создает новый элемент-изображение.
+function UI_Image_New(Parent: AControl): AControl; stdcall;
 
+{ UI_Label }
+
+function UI_Label_New(Parent: AControl): AControl; stdcall;
+procedure UI_Label_SetFont(TextLabel: AControl; const FontName: APascalString; FontSize: AInteger); stdcall; {$IFNDEF A02}deprecated;{$ENDIF}
+
+// --- UI_ListBox ---
+
+//** Добавляет строку в список.
 function UI_ListBox_Add(ListBox: AControl; const Text: APascalString): Integer; stdcall;
+
 procedure UI_ListBox_Clear(ListBox: AControl); stdcall;
+
+//** Создает новый элемент ListBox.
 function UI_ListBox_New(Parent: AControl): AControl; stdcall;
+
 { Typ:
   0 - ListBox
   1 - RadioGroup }
@@ -395,9 +767,6 @@ procedure UI_ListBox_SetItemIndex(ListBox: AControl; Index: AInteger); stdcall;
 procedure UI_ListBox_DeleteItem(ListBox: AControl; Index: AInteger); stdcall;
 procedure UI_ListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: APascalString); stdcall;
 
-function MainToolBar: AControl; stdcall;
-procedure MainToolBar_Set(ToolBar: AControl); stdcall;
-
 function UI_MainTrayIcon: ATrayIcon; stdcall;
 
 // Use Menu_GetItems()
@@ -406,22 +775,15 @@ function UI_Menu_GetItems(Menu: AMenu): AMenuItem; stdcall; deprecated;
 // Use Menu_New()
 function UI_Menu_New(MenuType: AInteger): AMenu; stdcall; deprecated;
 
-// Use Menu_AddItem1P(), Menu_AddItem2P()
-function UI_MenuItem_Add(MenuItem: AMenuItem; const Name, Text: APascalString;
-    OnClick: ACallbackProc02; ImageID, Weight: Integer): AMenuItem; stdcall; {deprecated;}
+{ Создает новую вкладку. Возврашает:
+  0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
+// Use PageControl_AddPage()
+function UI_PageControl_AddPage(PageControl: AControl; const Name, Text: APascalString): AControl; stdcall; deprecated;
+// Use PageControl_New()
+function UI_PageControl_New(Parent: AControl): AControl; stdcall; deprecated;
 
-// Use UI_MenuItem_Add3P()
-function UI_MenuItem_Add2(Parent: AMenuItem; MenuItem: AMenuItem; Weight: AInteger): AMenuItem; stdcall; deprecated;
-
-function UI_MenuItem_FindByName(MenuItem: AMenuItem; const Name: APascalString): AMenuItem; stdcall;
-
-{ РЎРѕР·РґР°РµС‚ РЅРѕРІСѓСЋ РІРєР»Р°РґРєСѓ. Р’РѕР·РІСЂР°С€Р°РµС‚:
-  0 - РµСЃР»Рё РїСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°, РёРЅР°С‡Рµ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РЅРѕРІРѕР№ РІРєР»Р°РґРєРё (РµСЃР»Рё РѕРїРµСЂР°С†РёСЏ РїСЂРѕС€Р»Р° СѓСЃРїРµС€РЅРѕ) }
-function UI_PageControl_AddPage(PageControl: AControl; const Name, Text: APascalString): AControl; stdcall; {deprecated;}
-function UI_PageControl_New(Parent: AControl): AControl; stdcall; {deprecated;}
-
-function UI_ProgressBar_New(Parent: AControl; Max: AInteger): AControl; stdcall;
-function UI_ProgressBar_StepIt(ProgressBar: AControl): AInteger; stdcall;
+function UI_ProgressBar_New(Parent: AControl; Max: AInteger): AControl;
+function UI_ProgressBar_StepIt(ProgressBar: AControl): AInteger; 
 
 function UI_PropertyBox_Add(PropertyBox: AControl; const Caption: APascalString): Integer; stdcall;
 function UI_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: APascalString; EditWidth: AInteger): AInteger; stdcall;
@@ -441,96 +803,160 @@ function UI_SpinEdit_NewA(Parent: AControl; Value, MinValue, MaxValue: AInteger)
     3 - VSplitter (Align=alRight) }
 function UI_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl; stdcall;
 
+// Use ToolBar_AddButtonWS02()
 function UI_ToolBar_AddButton(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    OnClick: ACallbackProc02; ImageID, Weight: AInteger): AButton; stdcall;
-function UI_ToolBar_New(Parent: AControl): AControl; stdcall;
+    OnClick: ACallbackProc; ImageID, Weight: AInteger): AButton; stdcall; deprecated;
+
+// Use ToolBar_New()
+function UI_ToolBar_New(Parent: AControl): AControl; stdcall; deprecated;
 
 {$IFNDEF UNIX}
 function UI_TrayIcon_GetMenuItems(TrayIcon: ATrayIcon): AMenuItem; stdcall;
 {$ENDIF}
 
-function UI_TreeView_AddItem(TreeView: AControl; Parent: ATreeNode; Text: APascalString): ATreeNode; stdcall;
-function UI_TreeView_New(Parent: AControl): AControl; stdcall;
+// Use TreeView_AddItem()
+function UI_TreeView_AddItem(TreeView: AControl; Parent: ATreeNode; Text: APascalString): ATreeNode; stdcall; deprecated;
+
+// Use TreeView_New()
+function UI_TreeView_New(Parent: AControl): AControl; stdcall; deprecated;
+
+{ UI_Window }
 
 // Use Window_Free()
 procedure UI_Window_Free(Window: AWindow); stdcall; deprecated;
-{ Р’РѕР·РІСЂР°С‰Р°РµС‚ РіР»Р°РІРЅРѕРµ РјРµРЅСЋ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РѕРєРЅР°
+
+procedure UI_Window_FreeAndNil(var Window: AWindow); stdcall;
+
+{ Возвращает главное меню указанного окна
   Use Window_GetMenu() }
 function UI_Window_GetMenu(Window: AWindow): AMenu; stdcall; deprecated;
+
 // Use Window_LoadConfig()
 function UI_Window_LoadConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall; deprecated;
-function UI_Window_LoadConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean; stdcall;
+
+// Use Window_LoadConfig2()
+function UI_Window_LoadConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean; stdcall; deprecated;
+
 // Use Window_New
 function UI_Window_New: AControl; stdcall; deprecated;
+
 // Use Window_SaveConfig()
 function UI_Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall; deprecated;
-function UI_Window_SaveConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean; stdcall;
-procedure UI_Window_SetPosition(Window: AWindow; Position: AInteger); stdcall;
 
-// TODO: РџРѕСЃРјРѕС‚СЂРµС‚СЊ РєР°Рє СЂРµР°Р»РёР·РѕРІР°РЅРѕ РІ Qt
+function UI_Window_SaveConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean; stdcall;
+
+//** Задает стить окантовки окна.
+// Use Window_SetBorderStyle()
+procedure UI_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger); stdcall; deprecated;
+
+//** Задает стиль окна.
+// Use Window_SetFormStyle()
+procedure UI_Window_SetFormStyle(Window: AWindow; FormStyle: AInteger); stdcall; deprecated;
+
+//** Задает позицию окна.
+// Use Window_SetPosition()
+procedure UI_Window_SetPosition(Window: AWindow; Position: AInteger); stdcall; deprecated;
+
+// TODO: Посмотреть как реализовано в Qt
 // Use Window_ShowModal()
 function UI_Window_ShowModal(Window: AWindow): ABoolean; stdcall; deprecated;
 
-{ Reports }
+{ UI_Reports }
 
-function UI_Report_New(Parent: AControl): AReport; stdcall;
+function UI_Report_New(Parent: AControl): AReport;
+
 procedure UI_Report_SetText(Report: AReport; const Value: APascalString); stdcall;
 
-function UI_ReportWin_New: AWindow; stdcall;
-{ ReportWinType - РўРёРї РѕРєРЅР° РѕС‚С‡РµС‚Р°: 0-TReportForm; 1-SimpleReport
+{ ReportWin }
+
+function UI_ReportWin_New(): AWindow;
+
+{ ReportWinType - Тип окна отчета: 0-TReportForm; 1-SimpleReport
   Use ReportWin_New2P() }
-function UI_ReportWin_NewA(ReportWinType: AInteger; const Text: APascalString): AWindow; stdcall; deprecated;
+function UI_ReportWin_NewA(ReportWinType: AInteger; const Text: APascalString): AWindow; deprecated;
+
+{ WaitWin }
 
 function UI_WaitWin_New(const Caption, Text: APascalString; MaxPosition: Integer): AWindow; stdcall;
+
 function UI_WaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger; stdcall;
 
 { Testing }
 
 procedure SetOnMainFormCreate(Value: AProc); stdcall;
+procedure SetOnMainFormCreate02(Value: AProc02); stdcall;
 function SetProgramState(State: AInteger): AError; stdcall;
 
+//** Отображает справочную информацию.
 function ShowHelp(): AError; stdcall;
+
+//** Отображает справочную информацию.
+procedure ShowHelp02(); stdcall;
+
+//** Отображает справочную информацию.
+function ShowHelp2WS(const FileName: AWideString): AError; stdcall;
 
 function Shutdown(): AError; stdcall;
 
-procedure UI_SetHideOnClose(Value: ABoolean); stdcall;
-procedure UI_SetIsShowApp(Value: ABoolean); stdcall;
-function UI_GetIsShowApp: ABoolean; stdcall;
+procedure Shutdown02(); stdcall;
+
+{ UI }
+
+function UI_InitMainMenu(): AInteger; stdcall;
+
 function UI_InitMainTrayIcon: AInteger; stdcall;
+
 procedure UI_InitMenus; stdcall;
+
+function UI_MainMenuItem: AMenuItem; stdcall;
+
+function UI_GetIsShowApp: ABoolean; stdcall;
+
+procedure UI_SetHideOnClose(Value: ABoolean); stdcall;
+
+procedure UI_SetIsShowApp(Value: ABoolean); stdcall;
 
 // Use SetOnMainFormCreate()
 procedure UI_OnMainFormCreate_Set(Value: AProc); stdcall; deprecated;
 
 function UI_ProcessMessages: AInteger; stdcall;
-procedure UI_ProcessMessages02; stdcall;
-function UI_Run: AInteger; stdcall;
-procedure UI_Run02; stdcall;
-procedure UI_ShowHelp; stdcall;
-function UI_Shutdown: AInteger; stdcall;
-procedure UI_Shutdown02; stdcall;
-function UI_MainMenuItem: AMenuItem; stdcall;
 
-// Р”РѕР±Р°РІР»СЏРµС‚ СЃС‚СЂРѕРєСѓ РІ СЌР»РµРјРµРЅС‚ TextView
+procedure UI_ProcessMessages02(); stdcall;
+
+function UI_Run: AInteger; stdcall;
+
+procedure UI_Run02; stdcall;
+
+function UI_Shutdown: AInteger; stdcall;
+
+{ --- UI_TextView --- }
+
+//** Добавляет строку в элемент TextView.
 function UI_TextView_AddLine(TextView: AControl; const Text: APascalString): AInteger; stdcall;
-{ РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ СЌР»РµРјРµРЅС‚ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ С‚РµРєСЃС‚Р°
+
+{ Создает новый элемент редактирования текста
   ViewType
     0 - TMemo
     1 - RichEdit }
 function UI_TextView_New(Parent: AControl; ViewType: AInteger): AControl; stdcall;
+
 procedure UI_TextView_SetFont(TextView: AControl; const FontName: APascalString; FontSize: AInteger); stdcall;
+
+//** Устанавливает значение параметра "Только чтение".
 procedure UI_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean); stdcall;
-{ ScrollBars
+
+{**
+  Указывает какие ползунки отображать.
+  ScrollBars
     0 - ssNone
     1 - ssHorizontal
     2 - ssVertical
-    3 - ssBoth }
+    3 - ssBoth
+}
 procedure UI_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger); stdcall;
-procedure UI_TextView_SetWordWrap(TextView: AControl; Value: ABoolean); stdcall;
 
-procedure UI_Window_FreeAndNil(var Window: AWindow); stdcall;
-procedure UI_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger); stdcall;
-procedure UI_Window_SetFormStyle(Window: AWindow; FormStyle: AInteger); stdcall;
+//** Задает параметр "переносить по словам".
+procedure UI_TextView_SetWordWrap(TextView: AControl; Value: ABoolean); stdcall;
 
 function UI_ShellExecute(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
 function UI_Object_Add(Value: AInteger): AInteger; stdcall;
@@ -542,23 +968,19 @@ function UI_Dialog_SelectDirectory(var Directory: APascalString): ABoolean; stdc
 
 // Use Dialog_GetWindow()
 function UI_Dialog_GetWindow(Dialog: ADialog): AWindow; stdcall; deprecated;
-function UI_MainWindow: AWindow; stdcall;
-function UI_MainWindow_AddMenuItem(const ParentItemName, Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem; stdcall;
-function UI_MainWindow_GetLeftContainer: AControl; stdcall;
-function UI_MainWindow_GetMainContainer: AControl; stdcall;
-function UI_MainWindow_GetRightContainer: AControl; stdcall;
 
-function Init: AError; stdcall;
-function Done: AError; stdcall;
+function UI_Init(): AError; stdcall;
+function Done04(): AError; stdcall;
 
-function Init04(): AError; stdcall;
-
-function InitMenus: AError; stdcall;
-
+//** Присоединяет к событию OnDone.
 function OnDone_Connect(Proc: ACallbackProc): AInteger; stdcall;
 
+//** Отсоединяет от события OnDone.
+function OnDone_Disconnect(Proc: ACallbackProc): AInteger; stdcall;
+
 function ProcessMessages(): AError; stdcall;
+
+procedure ProcessMessages02(); stdcall;
 
 { Private }
 
@@ -579,13 +1001,13 @@ uses
   {$IFDEF FPC}Interfaces,{$ELSE}Mask,{$ENDIF}
   Buttons, Classes, Controls, ComCtrls, DB, DBGrids, ExtCtrls, Forms, Graphics, Grids, Menus, StdCtrls, SysUtils,
   {$IFDEF MSWINDOWS}ShellApi, Windows,{$ENDIF}
-  AUiCalendar, AUiEdit, AUiGrids, AUiForm, AUiMenus, AUiSpin, AUiTrayIcon,
+  AUICalendar, AUIEdit, AUIGrids, AUIForm, AUIMenus, AUISpin, AUITrayIcon,
   {$IFDEF MSWINDOWS}
   fError, fInputDialog, fLogin, fMessage, fPasswordDialog, fWait,
   {$ENDIF}
   {$IFNDEF FPC}fCalendar, fDateFilter,{$ENDIF}
   {$IFDEF OLDMAINFORM}fMain,{$ENDIF}
-  ASettings, AUiDialogs, AUiPropertyBox, fAbout;
+  ASettings, AUIDialogs, AUIPropertyBox, fAbout;
 
 { Types }
 
@@ -616,6 +1038,16 @@ begin
     MainForm.OnCloseQuery := UI_.MainFormCloseQuery;
   {$ENDIF}
   AddObject(MainForm.Menu);
+end;
+
+procedure DoShowError(const Caption, UserMessage, ExceptMessage: AWideString); stdcall;
+begin
+  Dialog_ErrorP(Caption, UserMessage, ExceptMessage);
+end;
+
+function DoShowMessage(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+begin
+  Result := UI_Dialog_Message(Text, Caption, Flags);
 end;
 
 function miAboutClick(Obj, Data: Integer): AError; stdcall;
@@ -650,6 +1082,8 @@ end;
 
 function Done: AError; stdcall;
 begin
+  AEvents.Event_Invoke(FOnDone, 0);
+
   try
     if (FMainTrayIcon <> 0) then
     begin
@@ -670,105 +1104,32 @@ begin
   ARuntime.SetOnShutdown(nil);
   ARuntime.SetOnRun(nil);
 
+  AEvents.Event_Free(FOnDone);
+  FOnDone := 0;
+
   Result := 0;
 end;
 
-function Init: AError; stdcall;
-var
-  S: string;
+function Done04(): AError; stdcall;
 begin
-  if (FMainWindow <> 0) then
-  begin
-    Result := 0;
-    Exit;
-  end;
+  Result := Done();
+end;
 
-  if (AStrings.Init() < 0) then
-  begin
-    Result := -2;
-    Exit;
-  end;
+function Init(): AError; stdcall;
+begin
+  Result := UI_Init();
+end;
 
-  if (ASystem.Init() < 0) then
-  begin
-    Result := -3;
-    Exit;
-  end;
-
-  FHideOnClose := False;
-  FIsShowApp := True;
-
-  (*
-  {$IFDEF A02}
-  Runtime_SetOnProcessMessages(UI_ProcessMessages);
-  Runtime_SetOnShowError(UI_Dialog_Error);
-  Runtime_SetOnShowMessage(UI_Dialog_Message);
-  {$ELSE}
-  ASystem.SetOnProcessMessages(UI_ProcessMessages);
-  ASystem.SetOnShowError(UI_Dialog_Error);
-  ASystem.SetOnShowMessage(UI_Dialog_Message);
-  {$ENDIF}
-  *)
-  {$IFDEF A02}
-  ASystem.SetOnProcessMessages(UI_ProcessMessages02);
-  {$ELSE}
-  ASystem.SetOnProcessMessages(UI_ProcessMessages);
-  {$ENDIF}
-  ASystem.SetOnShowError(UI_Dialog_Error);
-  ASystem.SetOnShowMessage(UI_Dialog_Message);
-
-  {$IFDEF A02}
-  ARuntime.OnShutdown_Set(UI_Shutdown02);
-  ARuntime.OnRun_Set(UI_Run02);
-  {$ELSE}
-  ARuntime.SetOnShutdown(UI_Shutdown);
-  ARuntime.OnRun_Set(UI_Run);
-  {$ENDIF}
-
-  {$IFNDEF FPC}
-  Application.CreateHandle;
-  {$ENDIF}
-
-  Application.Initialize();
-  Application.Title := ASystem.Info_GetTitleWS;
-  S := ASystem.Info_GetDataDirectoryPathP() + ASystem.Info_GetProgramNameWS() + '.ico';
-
-  if FileExists(S) then
+function InitMainTrayIcon(): AError; stdcall;
+begin
   try
-    Application.Icon.LoadFromFile(S);
-  except
-    {IFDEF A02}
-    //Runtime_ShowMessage('РћС€РёР±РєР° РїСЂРё Р·Р°РіСЂСѓР·РєРµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ '+S);
-    {ELSE}
-    ASystem.ShowMessageP('РћС€РёР±РєР° РїСЂРё Р·Р°РіСЂСѓР·РєРµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ '+S);
-    {ENDIF}
-  end;
-
-  try
-    if Assigned(FOnMainFormCreate) then
-      FOnMainFormCreate
+    if (UI_InitMainTrayIcon() <> 0) then
+      Result := 0
     else
-      DoMainFormCreate;
+      Result := -2;
   except
-    {IFDEF A02}
-    //Runtime_ShowMessage('РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° РїСЂРё СЃРѕР·РґР°РЅРёРё РіР»Р°РІРЅРѕРіРѕ РѕРєРЅР°');
-    {ELSE}
-    ASystem.ShowMessageP('РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° РїСЂРё СЃРѕР·РґР°РЅРёРё РіР»Р°РІРЅРѕРіРѕ РѕРєРЅР°');
-    {ENDIF}
-    Result := -100;
-    Exit;
+    Result := -1;
   end;
-  {
-  if (FMainWindow <> 0) then
-    miMain := AddObject(TForm(FMainWindow).Menu.Items);
-  }
-
-  Result := 0;
-end;
-
-function Init04(): AError; stdcall;
-begin
-  Result := Init();
 end;
 
 function InitMenus: AError; stdcall;
@@ -781,9 +1142,30 @@ begin
   end;
 end;
 
+procedure InitMenus02(); stdcall;
+begin
+  try
+    UI_InitMenus();
+  except
+  end;
+end;
+
 function OnDone_Connect(Proc: ACallbackProc): AInteger; stdcall;
 begin
-  Result := UI_OnDone_Connect(Proc);
+  try
+    Result := AUIMain.UI_OnDone_Connect(Proc);
+  except
+    Result := 0;
+  end;
+end;
+
+function OnDone_Disconnect(Proc: ACallbackProc): AInteger; stdcall;
+begin
+  try
+    Result := AUIMain.UI_OnDone_Disconnect(Proc);
+  except
+    Result := 0;
+  end;
 end;
 
 function ProcessMessages(): AError; stdcall;
@@ -795,9 +1177,24 @@ begin
   end;
 end;
 
+procedure ProcessMessages02(); stdcall;
+begin
+  try
+    UI_ProcessMessages();
+  except
+  end;
+end;
+
 procedure SetOnMainFormCreate(Value: AProc); stdcall;
 begin
   FOnMainFormCreate := Value;
+end;
+
+procedure SetOnMainFormCreate02(Value: AProc02); stdcall;
+begin
+  {$IFDEF A02}
+  FOnMainFormCreate := Value;
+  {$ENDIF A02}
 end;
 
 function SetProgramState(State: AInteger): AError; stdcall;
@@ -825,12 +1222,38 @@ begin
   end;
 end;
 
+procedure ShowHelp02(); stdcall;
+begin
+  try
+    UI_ShowHelp();
+  except
+  end;
+end;
+
+function ShowHelp2WS(const FileName: AWideString): AError; stdcall;
+begin
+  try
+    UI_ShowHelp2(FileName);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
 function Shutdown(): AError; stdcall;
 begin
   try
     Result := UI_Shutdown();
   except
     Result := -1;
+  end;
+end;
+
+procedure Shutdown02(); stdcall;
+begin
+  try
+    UI_Shutdown();
+  except
   end;
 end;
 
@@ -993,6 +1416,11 @@ begin
   Result := Control_GetHintP(Control);
 end;
 
+function Control_GetMenu(Control: AControl): AMenu; stdcall;
+begin
+  Result := UI_Control_GetMenu(Control);
+end;
+
 function Control_GetNameP(Control: AControl): APascalString; stdcall;
 begin
   if (TObject(Control) is TComponent) then
@@ -1036,7 +1464,8 @@ end;
 function Control_SetAlign(Control: AControl; Align: TUIAlign): AError; stdcall;
 begin
   try
-    Result := AUIControls.UI_Control_SetAlign(Control, Align);
+    AUIControls.UI_Control_SetAlign(Control, Align);
+    Result := 0;
   except
     Result := -1;
   end;
@@ -1056,21 +1485,20 @@ end;
 
 function Control_SetColor(Control: AControl; Color: AColor): AError; stdcall;
 begin
-  if (TObject(Control) is TComboBox) then
-    TComboBox(Control).Color := Color
-  else if (TObject(Control) is TLabel) then
-  begin
-    TLabel(Control).Color := Color;
-    (*if (Color = clBlack) then
-      TLabel(Control).Font.Color := clWhite //UI_Control_SetFont(ColorLineTipV, '', 0, $FFFFFF{clWhite})
-    else
-      TLabel(Control).Font.Color := clBlack; //UI_Control_SetFont(ColorLineTipV, '', 0, $000000{clBlack}); *)
-  end
-  else if (TObject(Control) is TPanel) then
-    TPanel(Control).Color := Color
-  else if (TObject(Control) is TForm) then
-    TForm(Control).Color := Color;
-  Result := 0;
+  try
+    AUIControls.UI_Control_SetColor(Control, Color);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+procedure Control_SetColor02(Control: AControl; Color: AColor); stdcall;
+begin
+  try
+    AUIControls.UI_Control_SetColor(Control, Color);
+  except
+  end;
 end;
 
 function Control_SetEnabled(Control: AControl; Value: ABoolean): AError; stdcall;
@@ -1095,16 +1523,24 @@ begin
   end;
 end;
 
+function Control_SetFont1A(Control: AControl; {const} FontName: PAnsiChar; FontSize: AInteger): AError; stdcall;
+begin
+  try
+    AUIControls.UI_Control_SetFont1(Control, FontName, FontSize);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
 function Control_SetFont1P(Control: AControl; const FontName: APascalString; FontSize: AInteger): AError; stdcall;
 begin
-  if (TObject(Control) is TLabel) then
-  begin
-    if (FontName <> '') then
-      TLabel(Control).Font.Name := FontName;
-    if (FontSize <> 0) then
-      TLabel(Control).Font.Size := FontSize;
+  try
+    AUIControls.UI_Control_SetFont1(Control, FontName, FontSize);
+    Result := 0;
+  except
+    Result := -1;
   end;
-  Result := 0;
 end;
 
 function Control_SetFont2P(Control: AControl; const FontName: APascalString; FontSize: AInteger; FontColor: AColor): AError; stdcall;
@@ -1124,7 +1560,7 @@ end;
 function Control_SetHeight(Control: AControl; Value: AInteger): AInteger; stdcall;
 begin
   try
-    TControl(Control).Height := Value;
+    AUIControls.UI_Control_SetHeight(Control, Value);
     Result := Value;
   except
     Result := -1;
@@ -1174,7 +1610,7 @@ end;
 function Control_SetOnChange(Control: AControl; OnChange: ACallbackProc): AError; stdcall;
 begin
   try
-    Result := AUIControlsA.UI_Control_SetOnChange03(Control, OnChange);
+    Result := AUIControlsA.UI_Control_SetOnChange(Control, OnChange);
   except
     Result := -1;
   end;
@@ -1200,7 +1636,7 @@ end;
 function Control_SetOnClick(Control: AControl; Value: ACallbackProc): AError; stdcall;
 begin
   try
-    Result := AUIControls.UI_Control_SetOnClick03(Control, Value);
+    Result := AUIControls.UI_Control_SetOnClick(Control, Value);
   except
     Result := -1;
   end;
@@ -1534,6 +1970,15 @@ begin
   end;
 end;
 
+function Dialog_MessageDlgWS(const Msg: AWideString; MsgDlgType: AInteger; Flags: AMessageBoxFlags): AInteger; stdcall;
+begin
+  try
+    Result := UI_Dialog_MessageDlg(Msg, MsgDlgType, Flags);
+  except
+    Result := -1;
+  end;
+end;
+
 function Dialog_MessageP(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
   try
@@ -1571,6 +2016,17 @@ begin
     FileName := S;
   except
     Result := False;
+  end;
+end;
+
+function Dialog_PrinterSetup(): AError; stdcall;
+begin
+  try
+    // Отображаем окно выбора и настройки печати
+    UI_Dialog_PrinterSetup();
+    Result := 0;
+  except
+    Result := -1;
   end;
 end;
 
@@ -1684,6 +2140,68 @@ begin
   end;
 end;
 
+function Grid_ClearA(Grid: AControl; FixedRows: AInteger): AError; stdcall;
+begin
+  try
+    StringGrid_ClearA(TStringGrid(Grid), FixedRows);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function Grid_DeleteRow2(Grid: AControl; Row: AInteger): AError; stdcall;
+begin
+  try
+    StringGrid_RowDeleteA(TStringGrid(Grid), Row);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function Grid_FindInt(Grid: AControl; Col, Value: AInteger): AInteger; stdcall;
+begin
+  if (Grid = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+
+  try
+    Result := UI_Grid_FindInt(TObject(Grid), Col, Value);
+  except
+    Result := -1;
+  end;
+end;
+
+function Grid_New(Parent: AControl; GridType: AInteger): AControl; stdcall;
+begin
+  try
+    Result := AUIGrids.UI_Grid_New(Parent, GridType);
+  except
+    Result := 0;
+  end;
+end;
+
+function Grid_RestoreColPropsWS(Grid: AControl; Config: AConfig; const Key: AWideString; Delimer: AWideChar): AError; stdcall;
+begin
+  try
+    AUIGrids.UI_Grid_RestoreColProps(TObject(Grid), Config, Key, Delimer);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+procedure Grid_RestoreColPropsWS02(Grid: AControl; Config: AConfig; const Key: AWideString; Delimer: AWideChar); stdcall;
+begin
+  try
+    AUIGrids.UI_Grid_RestoreColProps(TObject(Grid), Config, Key, Delimer);
+  except
+  end;
+end;
+
 function Grid_RowDelete(Grid: AControl): AError; stdcall;
 begin
   try
@@ -1713,6 +2231,86 @@ begin
   end;
 end;
 
+function Grid_SaveColPropsWS(Grid: AControl; Config: AConfig; const Key: AWideString; Delimer: AWideChar): AError; stdcall;
+begin
+  if (Grid = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+
+  try
+    AUIGrids.UI_Grid_SaveColProps(TObject(Grid), Config, Key, Delimer);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+procedure Grid_SaveColPropsWS02(Grid: AControl; Config: AConfig; const Key: AWideString; Delimer: AWideChar); stdcall;
+begin
+  if (Grid = 0) then Exit;
+
+  try
+    AUIGrids.UI_Grid_SaveColProps(TObject(Grid), Config, Key, Delimer);
+  except
+  end;
+end;
+
+function Grid_SetColumnWidth(Grid: AControl; ColumnIndex, Width, Persent, MinWidth: AInteger): AError; stdcall;
+begin
+  try
+    UI_Grid_SetColumnWidth(Grid, ColumnIndex, Width, Persent, MinWidth);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+procedure Grid_SetColumnWidth02(Grid: AControl; ColumnIndex, Width, Persent, MinWidth: AInteger); stdcall;
+begin
+  try
+    UI_Grid_SetColumnWidth(Grid, ColumnIndex, Width, Persent, MinWidth);
+  except
+  end;
+end;
+
+function Grid_SetColumnWidth2(Grid: AControl; ColumnIndex, Width, Persent, MinWidth, MaxWidth: AInteger): AError; stdcall;
+begin
+  try
+    UI_Grid_SetColumnWidthA(Grid, ColumnIndex, Width, Persent, MinWidth, MaxWidth);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+procedure Grid_SetColumnWidthA(Grid: AControl; ColumnIndex, Width, Persent, MinWidth, MaxWidth: AInteger); stdcall;
+begin
+  try
+    UI_Grid_SetColumnWidthA(Grid, ColumnIndex, Width, Persent, MinWidth, MaxWidth);
+  except
+  end;
+end;
+
+function Grid_SetDataSource(Grid: AControl; Value: PADataSource): AError; stdcall;
+begin
+  try
+    UI_Grid_SetDataSource(Grid, Value);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+procedure Grid_SetDataSource02(Grid: AControl; Value: PADataSource); stdcall;
+begin
+  try
+    UI_Grid_SetDataSource(Grid, Value);
+  except
+  end;
+end;
+
 function Grid_SetRowCount(Grid: AControl; Count: AInteger): AError; stdcall;
 begin
   try
@@ -1720,6 +2318,29 @@ begin
     Result := 0;
   except
     Result := -1;
+  end;
+end;
+
+{ Image }
+
+function Image_LoadFromFileWS(Image: AControl; const FileName: AWideString): AError; stdcall;
+begin
+  try
+    if UI_Image_LoadFromFile(Image, FileName) then
+      Result := 0
+    else
+      Result := -2;
+  except
+    Result := -1;
+  end;
+end;
+
+function Image_New(Parent: AControl): AControl; stdcall;
+begin
+  try
+    Result := UI_Image_New(Parent);
+  except
+    Result := 0;
   end;
 end;
 
@@ -1732,6 +2353,35 @@ begin
   L := TLabel.Create(TWinControl(Parent));
   L.Parent := TWinControl(Parent);
   Result := AddObject(L);
+end;
+
+// --- ListBox ---
+
+function ListBox_AddP(ListBox: AControl; const Text: APascalString): AInteger; stdcall;
+begin
+  try
+    Result := UI_ListBox_Add(ListBox, Text);
+  except
+    Result := -1;
+  end;
+end;
+
+function ListBox_AddWS(ListBox: AControl; const Text: AWideString): AInteger; stdcall;
+begin
+  try
+    Result := UI_ListBox_Add(ListBox, Text);
+  except
+    Result := -1;
+  end;
+end;
+
+function ListBox_New(Parent: AControl): AControl; stdcall;
+begin
+  try
+    Result := UI_ListBox_New(Parent);
+  except
+    Result := 0;
+  end;
 end;
 
 { MainToolBar }
@@ -1763,11 +2413,90 @@ begin
   end;
 end;
 
-function MainWindow_AddMenuItem2(const ParentItemName, Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem; stdcall;
+function MainWindow_AddMenuItem02(const ParentItemName, Name, Text: APascalString;
+    OnClick: ACallbackProc02; ImageID, Weight: AInteger): AMenuItem; stdcall;
 begin
   try
-    Result := UI_MainWindow_AddMenuItem2(ParentItemName, Name, Text, OnClick, ImageID, Weight);
+    Result := UI_MainWindow_AddMenuItem02(ParentItemName, Name, Text, OnClick, ImageID, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function MainWindow_AddMenuItem03WS(const ParentItemName, Name, Text: AWideString;
+    OnClick: ACallbackProc03; ImageId, Weight: AInteger): AMenuItem; stdcall;
+begin
+  try
+    Result := UI_MainWindow_AddMenuItem03(ParentItemName, Name, Text, OnClick, ImageId, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function MainWindow_AddMenuItem2(const ParentItemName, Name, Text: AString_Type;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
+begin
+  try
+    Result := MainWindow_AddMenuItem2WS(
+        AStrings.String_ToWideString(ParentItemName),
+        AStrings.String_ToWideString(Name),
+        AStrings.String_ToWideString(Text),
+        OnClick, ImageID, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function MainWindow_AddMenuItem2WS(const ParentItemName, Name, Text: AWideString;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
+begin
+  try
+    {$IFDEF A01}
+      Result := UI_MainWindow_AddMenuItem02(ParentItemName, Name, Text, OnClick, ImageID, Weight);
+    {$ELSE}
+      {$IFDEF A02}
+      Result := UI_MainWindow_AddMenuItem02(ParentItemName, Name, Text, OnClick, ImageID, Weight);
+      {$ELSE}
+      Result := UI_MainWindow_AddMenuItem03(ParentItemName, Name, Text, OnClick, ImageID, Weight);
+      {$ENDIF A02}
+    {$ENDIF A01}
+  except
+    Result := 0;
+  end;
+end;
+
+function MainWindow_AddMenuItem2WS02(const ParentItemName, Name, Text: AWideString;
+    OnClick: ACallbackProc02; ImageId, Weight: AInteger): AMenuItem; stdcall;
+begin
+  try
+    Result := UI_MainWindow_AddMenuItem02(ParentItemName, Name, Text, OnClick, ImageID, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function MainWindow_GetLeftContainer(): AControl; stdcall;
+begin
+  try
+    Result := _MainWindow_GetLeftContainer();
+  except
+    Result := 0;
+  end;
+end;
+
+function MainWindow_GetMainContainer(): AControl; stdcall;
+begin
+  try
+    Result := _MainWindow_GetMainContainer();
+  except
+    Result := 0;
+  end;
+end;
+
+function MainWindow_GetRightContainer(): AControl; stdcall;
+begin
+  try
+    Result := _MainWindow_GetRightContainer();
   except
     Result := 0;
   end;
@@ -1796,10 +2525,50 @@ begin
   end;
 end;
 
-{ Menu }
+// --- MenuItem ---
 
-function Menu_AddItem1P(Menu: AMenu; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem; stdcall;
+function MenuItem_Clear(MenuItem: AMenuItem): AError; stdcall;
+begin
+  try
+    TMenuItem(MenuItem).Clear();
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function MenuItem_FindByName(MenuItem: AMenuItem; const Name: APascalString): AMenuItem; stdcall;
+begin
+  try
+    Result := UI_MenuItem_FindByName(MenuItem, Name);
+  except
+    Result := 0;
+  end;
+end;
+
+function MenuItem_SetChecked(MenuItem: AMenuItem; Checked: ABoolean): AError; stdcall;
+begin
+  try
+    TMenuItem(MenuItem).Checked := Checked;
+    Result := -1;
+  except
+    Result := 0;
+  end;
+end;
+
+// --- Menu ---
+
+function Menu_AddItem0(Parent: AMenuItem; MenuItem: AMenuItem; Weight: AInteger): AMenuItem; stdcall;
+begin
+  try
+    Result := AUIMenus.UI_MenuItem_Add2(Parent, MenuItem, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function Menu_AddItem1(Menu: AMenu; const Name, Text: AString_Type;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
 var
   MenuItems: AMenuItem;
 begin
@@ -1812,7 +2581,29 @@ begin
       Exit;
     end;
 
-    Result := AUIMenus.UI_MenuItem_Add(MenuItems, Name, Text, OnClick, ImageID, Weight);
+    Result := AUIMenus.UI_MenuItem_Add(MenuItems,
+        String_ToWideString(Name), String_ToWideString(Text), OnClick, ImageId, Weight, 0);
+  except
+    Result := 0;
+  end;
+end;
+
+function Menu_AddItem1P(Menu: AMenu; const Name, Text: APascalString;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
+begin
+  try
+    Result := UI_Menu_AddItem(Menu, Name, Text, OnClick, ImageId, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function Menu_AddItem2(Parent: AMenuItem; const Name, Text: AString_Type;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
+begin
+  try
+    Result := AUIMenus.UI_MenuItem_Add(Parent, String_ToWideString(Name),
+        String_ToWideString(Text), OnClick, ImageId, Weight, 0);
   except
     Result := 0;
   end;
@@ -1822,16 +2613,66 @@ function Menu_AddItem2P(Parent: AMenuItem; const Name, Text: APascalString;
     OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem; stdcall;
 begin
   try
-    Result := AUIMenus.UI_MenuItem_Add(Parent, Name, Text, OnClick, ImageID, Weight);
+    Result := AUIMenus.UI_MenuItem_Add(Parent, Name, Text, OnClick, ImageID, Weight, 0);
   except
     Result := 0;
   end;
 end;
 
-function Menu_AddItem3P(Parent: AMenuItem; MenuItem: AMenuItem; Weight: Integer): AMenuItem; stdcall;
+function Menu_AddItem2WS(Parent: AMenuItem; const Name, Text: AWideString;
+    OnClick: ACallbackProc; ImageId, Weight: Integer): AMenuItem; stdcall;
+begin
+  try
+    Result := AUIMenus.UI_MenuItem_Add(Parent, Name, Text, OnClick, ImageID, Weight, 0);
+  except
+    Result := 0;
+  end;
+end;
+
+function Menu_AddItem2WS02(Parent: AMenuItem; const Name, Text: AWideString;
+    OnClick: ACallbackProc02; ImageID, Weight: Integer): AMenuItem; stdcall;
+begin
+  try
+    Result := AUIMenus.UI_MenuItem_Add02(Parent, Name, Text, OnClick, ImageID, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function Menu_AddItem2WS03(Parent: AMenuItem; const Name, Text: AWideString;
+    OnClick: ACallbackProc03; ImageID, Weight: AInteger): AMenuItem; stdcall;
+begin
+  try
+    Result := AUIMenus.UI_MenuItem_Add03(Parent, Name, Text, OnClick, ImageId, Weight, 0);
+  except
+    Result := 0;
+  end;
+end;
+
+function Menu_AddItem3(Parent: AMenuItem; MenuItem: AMenuItem; Weight: AInteger): AMenuItem; stdcall;
 begin
   try
     Result := AUIMenus.UI_MenuItem_Add2(Parent, MenuItem, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function Menu_AddItem3WS(Parent: AMenuItem; const Name, Text: AWideString;
+    OnClick: ACallbackProc; ImageID, Weight, Tag: Integer): AMenuItem; stdcall;
+begin
+  try
+    Result := AUIMenus.UI_MenuItem_Add(Parent, Name, Text, OnClick, ImageID, Weight, Tag);
+  except
+    Result := 0;
+  end;
+end;
+
+function Menu_AddItem3WS03(Parent: AMenuItem; const Name, Text: AWideString;
+    OnClick: ACallbackProc03; ImageID, Weight, Tag: Integer): AMenuItem; stdcall;
+begin
+  try
+    Result := AUIMenus.UI_MenuItem_Add03(Parent, Name, Text, OnClick, ImageID, Weight, Tag);
   except
     Result := 0;
   end;
@@ -1859,22 +2700,83 @@ end;
 
 function PageControl_AddPage(PageControl: AControl; const Name, Text: APascalString): AControl; stdcall;
 begin
-  Result := UI_PageControl_AddPage(PageControl, Name, Text);
+  try
+    Result := AUIPageControl.UI_PageControl_AddPage(PageControl, Name, Text);
+  except
+    Result := 0;
+  end;
 end;
 
 function PageControl_AddPageWS(PageControl: AControl; const Name, Text: AWideString): AControl; stdcall;
 begin
-  Result := UI_PageControl_AddPage(PageControl, Name, Text);
+  try
+    Result := AUIPageControl.UI_PageControl_AddPage(PageControl, Name, Text);
+  except
+    Result := 0;
+  end;
 end;
 
 function PageControl_New(Parent: AControl): AControl; stdcall;
 begin
-  Result := UI_PageControl_New(Parent);
+  try
+    Result := AUIPageControl.UI_PageControl_New(Parent);
+  except
+    Result := 0
+  end;
+end;
+
+{ ProgressBar }
+
+function ProgressBar_New(Parent: AControl; Max: AInteger): AControl; stdcall;
+begin
+  try
+    Result := UI_ProgressBar_New(Parent, Max);
+  except
+    Result := 0;
+  end;
+end;
+
+function ProgressBar_StepIt(ProgressBar: AControl): AInteger; stdcall;
+begin
+  try
+    Result := UI_ProgressBar_StepIt(ProgressBar);
+  except
+    Result := 0;
+  end;
+end;
+
+{ Report }
+
+function Report_New(Parent: AControl): AReport; stdcall;
+begin
+  try
+    Result := UI_Report_New(Parent);
+  except
+    Result := 0;
+  end;
 end;
 
 { ReportWin }
 
+function ReportWin_New(): AWindow; stdcall;
+begin
+  try
+    Result := UI_ReportWin_New();
+  except
+    Result := 0;
+  end;
+end;
+
 function ReportWin_New2P(ReportWinType: AInteger; const Text: APascalString): AWindow; stdcall;
+begin
+  try
+    Result := AUIReports.UI_ReportWin_NewA(ReportWinType, Text);
+  except
+    Result := 0;
+  end;
+end;
+
+function ReportWin_New2WS(ReportWinType: AInteger; const Text: AWideString): AWindow; stdcall;
 begin
   try
     Result := AUIReports.UI_ReportWin_NewA(ReportWinType, Text);
@@ -1902,11 +2804,360 @@ begin
   end;
 end;
 
+{ TextView }
+
+function TextView_AddLineWS(TextView: AControl; const Text: AWideString): AInteger; stdcall;
+begin
+  try
+    Result := UI_TextView_AddLine(TextView, Text);
+  except
+    Result := -1;
+  end;
+end;
+
+function TextView_New(Parent: AControl; ViewType: AInteger): AControl; stdcall;
+begin
+  try
+    Result := UI_TextView_New(Parent, ViewType);
+  except
+    Result := 0;
+  end;
+end;
+
+function TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean): AError; stdcall;
+begin
+  try
+    UI_TextView_SetReadOnly(TextView, ReadOnly);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+procedure TextView_SetReadOnly02(TextView: AControl; ReadOnly: ABoolean); stdcall;
+begin
+  try
+    UI_TextView_SetReadOnly(TextView, ReadOnly);
+  except
+  end;
+end;
+
+function TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger): AError; stdcall;
+begin
+  try
+    UI_TextView_SetScrollBars(TextView, ScrollBars);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+procedure TextView_SetScrollBars02(TextView: AControl; ScrollBars: AInteger); stdcall;
+begin
+  try
+    UI_TextView_SetScrollBars(TextView, ScrollBars);
+  except
+  end;
+end;
+
+function TextView_SetWordWrap(TextView: AControl; Value: ABoolean): AError; stdcall;
+begin
+  try
+    UI_TextView_SetWordWrap(TextView, Value);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+procedure TextView_SetWordWrap02(TextView: AControl; Value: ABoolean); stdcall;
+begin
+  try
+    UI_TextView_SetWordWrap(TextView, Value);
+  except
+  end;
+end;
+
+{ ToolBar }
+
+function ToolBar_AddButtonWS(ToolBar: AControl; const Name, Text, Hint: AWideString;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AButton; stdcall;
+begin
+  try
+    Result := AUIToolBar.UI_ToolBar_AddButton(ToolBar, Name, Text, Hint, OnClick, ImageId, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function ToolBar_AddButtonWS02(ToolBar: AControl; const Name, Text, Hint: AWideString;
+    OnClick: ACallbackProc02; ImageId, Weight: AInteger): AButton; stdcall;
+begin
+  try
+    Result := AUIToolBar.UI_ToolBar_AddButton02(ToolBar, Name, Text, Hint, OnClick, ImageId, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function ToolBar_AddButtonWS03(ToolBar: AControl; const Name, Text, Hint: AWideString;
+    OnClick: ACallbackProc03; ImageId, Weight: AInteger): AButton; stdcall;
+begin
+  try
+    Result := AUIToolBar.UI_ToolBar_AddButton03(ToolBar, Name, Text, Hint, OnClick, ImageId, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function ToolBar_New(Parent: AControl): AControl; stdcall;
+begin
+  try
+    Result := AUIToolBar.UI_ToolBar_New(Parent);
+  except
+    Result := 0;
+  end;
+end;
+
+// --- ToolMenu ---
+
+function ToolMenu_AddButtonWS(ToolMenu: AToolMenu; const Name, Text, Hint: AWideString;
+    OnClick: ACallbackProc03; ImageId, Weight: AInteger): AButton; stdcall;
+begin
+  try
+    Result := AUIToolBar.UI_ToolBar_AddButton03(ToolMenu, Name, Text, Hint, OnClick, ImageId, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function ToolMenu_AddNewItemWS(Parent: AToolMenu; const Name, Text: AWideString;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu; stdcall;
+begin
+  try
+    Result := UI_ToolMenu_AddNewItem(Parent, Name, Text, OnClick, ImageId, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function ToolMenu_AddNewSubMenu(Parent: AToolMenu; const Name, Text: AString_Type;
+    ImageId, Weight: AInteger): AToolMenu; stdcall;
+begin
+  try
+    Result := UI_ToolMenu_AddNewSubMenu(Parent,
+        AStrings.String_ToPascalString(Name),
+        AStrings.String_ToPascalString(Text),
+        ImageId, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function ToolMenu_AddNewSubMenuWS(Parent: AToolMenu; const Name, Text: AWideString;
+    ImageId, Weight: AInteger): AToolMenu; stdcall;
+begin
+  try
+    Result := UI_ToolMenu_AddNewSubMenu(Parent, Name, Text, ImageId, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function ToolMenu_GetSubMenuWS(Parent: AToolMenu; const Name, Text: AWideString;
+    ImageId, Weight: AInteger): AToolMenu; stdcall;
+begin
+  try
+    Result := UI_ToolMenu_GetSubMenu(Parent, Name, Text, ImageId, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function ToolMenu_New(Parent: AControl): AToolMenu; stdcall;
+var
+  PageControl: AControl;
+  I: Integer;
+begin
+  try
+    PageControl := AUIPageControl.UI_PageControl_New(Parent);
+    UI_Control_SetAlign(PageControl, uiAlignTop);
+    AUIControls.UI_Control_SetHeight(PageControl, 60);
+
+    I := Length(FToolMenus);
+    SetLength(FToolMenus, I + 1);
+    FToolMenus[I].PageControl := PageControl;
+
+    Result := PageControl;
+  except
+    Result := 0;
+  end;
+end;
+
+{function ToolMenu_New2A(Parent: AControl; const MainPageText: PAnsiChar): AToolMenu; stdcall;
+var
+  PageControl: AControl;
+  I: Integer;
+begin
+  try
+    PageControl := AUIPageControl.UI_PageControl_New(Parent);
+    UI_Control_SetAlign(PageControl, uiAlignTop);
+    AUIControls.UI_Control_SetHeight(PageControl, 50);
+
+    I := Length(FToolMenus);
+    SetLength(FToolMenus, I + 1);
+    FToolMenus[I].PageControl := PageControl;
+
+    Result := AUIPageControl.UI_PageControl_AddPage(PageControl, '', AnsiString(MainPageText));
+  except
+    Result := 0;
+  end;
+end;}
+
+{ TreeView }
+
+function TreeView_AddItemWS(TreeView: AControl; Parent: ATreeNode; Text: AWideString): ATreeNode; stdcall;
+begin
+  try
+    Result := AUITreeView.UI_TreeView_AddItem(TreeView, Parent, Text);
+  except
+    Result := 0;
+  end;
+end;
+
+function TreeView_New(Parent: AControl): AControl; stdcall;
+begin
+  try
+    Result := AUITreeView.UI_TreeView_New(Parent);
+  except
+    Result := 0;
+  end;
+end;
+
+{ Splitter }
+
+function Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl; stdcall;
+begin
+  try
+    Result := UI_Splitter_New(Parent, SplitterType);
+  except
+    Result := 0;
+  end;
+end;
+
 { UI Public }
+
+function UI_Boot(): AError;
+begin
+  Result := 0;
+end;
 
 function UI_GetIsShowApp: ABoolean; stdcall;
 begin
   Result := FIsShowApp;
+end;
+
+function UI_Init(): AError; stdcall;
+var
+  S: string;
+begin
+  if (FMainWindow <> 0) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+
+  if (AEvents.Init() < 0) then
+  begin
+    Result := -4;
+    Exit;
+  end;
+
+  ASettings.Init();
+
+  if (AStrings.Init() < 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+
+  if (ASystem.Init() < 0) then
+  begin
+    Result := -3;
+    Exit;
+  end;
+
+  FOnDone := AEvents.Event_NewW(0, nil);
+
+  FHideOnClose := False;
+  FIsShowApp := True;
+
+  (*
+  {$IFDEF A02}
+  Runtime_SetOnProcessMessages(UI_ProcessMessages);
+  Runtime_SetOnShowError(UI_Dialog_Error);
+  Runtime_SetOnShowMessage(UI_Dialog_Message);
+  {$ELSE}
+  ASystem.SetOnProcessMessages(UI_ProcessMessages);
+  ASystem.SetOnShowError(UI_Dialog_Error);
+  ASystem.SetOnShowMessage(UI_Dialog_Message);
+  {$ENDIF}
+  *)
+  {$IFDEF A02}
+  ASystem.SetOnProcessMessages02(UI_ProcessMessages02);
+  {$ELSE}
+  ASystem.SetOnProcessMessages(UI_ProcessMessages);
+  {$ENDIF A02}
+  ASystem.SetOnShowError(DoShowError);
+  ASystem.SetOnShowMessage(DoShowMessage);
+
+  ARuntime.SetOnShutdown(UI_Shutdown);
+  {$IFDEF A01}
+    ARuntime.OnRun_Set(UI_Run02);
+  {$ELSE}
+    {$IFDEF A02}
+    ARuntime.OnRun_Set(UI_Run02);
+    {$ELSE}
+    ARuntime.OnRun_Set(UI_Run);
+    {$ENDIF A02}
+  {$ENDIF A01}
+
+  {$IFNDEF FPC}
+  Application.CreateHandle;
+  {$ENDIF}
+
+  Application.Initialize();
+  Application.Title := ASystem.Info_GetTitleWS;
+  S := ASystem.Info_GetDataDirectoryPathP() + ASystem.Info_GetProgramNameWS() + '.ico';
+
+  if FileExists(S) then
+  try
+    Application.Icon.LoadFromFile(S);
+  except
+    ASystem.ShowMessageP('Ошибка при загрузке изображения '+S);
+  end;
+
+  try
+    if Assigned(FOnMainFormCreate) then
+      FOnMainFormCreate
+    else
+      DoMainFormCreate;
+  except
+    ASystem.ShowMessageP('Произошла ошибка при создании главного окна');
+    Result := -100;
+    Exit;
+  end;
+  {
+  if (FMainWindow <> 0) then
+    miMain := AddObject(TForm(FMainWindow).Menu.Items);
+  }
+
+  Result := 0;
+end;
+
+function UI_InitMainMenu(): AInteger; stdcall;
+begin
+  Result := 0;
 end;
 
 function UI_InitMainTrayIcon: AInteger; stdcall;
@@ -1926,21 +3177,29 @@ end;
 
 procedure UI_InitMenus; stdcall;
 begin
-  miFile := AUIMenus.UI_MenuItem_Add(miMain, 'File', miFileText, nil, 0, 100);
+  miFile := AUIMenus.UI_MenuItem_Add(miMain, 'File', miFileText, nil, 0, 100, 0);
 
-  {$IFDEF A02}
-    AUIMenus.UI_MenuItem_Add(miFile, 'Exit', miExitText, miExitClick02, 0, 10000);
+  {$IFDEF A01}
+    AUIMenus.UI_MenuItem_Add(miFile, 'Exit', miExitText, miExitClick02, 0, 10000, 0);
   {$ELSE}
-    AUIMenus.UI_MenuItem_Add(miFile, 'Exit', miExitText, miExitClick, 0, 10000);
-  {$ENDIF}
+    {$IFDEF A02}
+    AUIMenus.UI_MenuItem_Add(miFile, 'Exit', miExitText, miExitClick02, 0, 10000, 0);
+    {$ELSE}
+    AUIMenus.UI_MenuItem_Add(miFile, 'Exit', miExitText, miExitClick, 0, 10000, 0);
+    {$ENDIF A02}
+  {$ENDIF A01}
 
-  miHelp := AUIMenus.UI_MenuItem_Add(miMain, 'Help', miHelpText, nil, 0, 1000);
+  miHelp := AUIMenus.UI_MenuItem_Add(miMain, 'Help', miHelpText, nil, 0, 1000, 0);
 
-  {$IFDEF A02}
-    AUIMenus.UI_MenuItem_Add(miHelp, 'About', miAboutText, miAboutClick1, 0, 1000);
+  {$IFDEF A01}
+    AUIMenus.UI_MenuItem_Add(miHelp, 'About', miAboutText, miAboutClick1, 0, 1000, 0);
   {$ELSE}
-    AUIMenus.UI_MenuItem_Add(miHelp, 'About', miAboutText, miAboutClick, 0, 1000);
-  {$ENDIF}
+    {$IFDEF A02}
+    AUIMenus.UI_MenuItem_Add(miHelp, 'About', miAboutText, miAboutClick1, 0, 1000, 0);
+    {$ELSE}
+    AUIMenus.UI_MenuItem_Add(miHelp, 'About', miAboutText, miAboutClick, 0, 1000, 0);
+    {$ENDIF A02}
+  {$ENDIF A01}
 end;
 
 procedure UI_OnMainFormCreate_Set(Value: AProc); stdcall;
@@ -1950,13 +3209,20 @@ end;
 
 function UI_ProcessMessages: AInteger; stdcall;
 begin
-  Application.ProcessMessages;
-  Result := 0;
+  try
+    Application.ProcessMessages;
+    Result := 0;
+  except
+    Result := -1;
+  end;
 end;
 
-procedure UI_ProcessMessages02; stdcall;
+procedure UI_ProcessMessages02(); stdcall;
 begin
-  Application.ProcessMessages;
+  try
+    Application.ProcessMessages();
+  except
+  end;
 end;
 
 function UI_Run: AInteger; stdcall;
@@ -2012,30 +3278,10 @@ begin
   {$ENDIF}
 end;
 
-procedure UI_ShowHelp; stdcall;
-begin
-{$IFNDEF UNIX}
-  Application.HelpFile := ASystem.Info_GetDirectoryPathP + ChangeFileExt(ASystem.Info_GetProgramNameP, '.hlp');
-  Application.HelpCommand(HELP_FINDER, 1);
-{$ENDIF}
-end;
-
 function UI_Shutdown: AInteger; stdcall;
 begin
   _MainWindow_Shutdown;
   Result := 0;
-end;
-
-procedure UI_Shutdown02; stdcall;
-begin
-  _MainWindow_Shutdown;
-end;
-
-{ UI_Box }
-
-function UI_Box_New(Parent: AControl; BoxType: AInteger): AControl; stdcall;
-begin
-  Result := AUIBox.UI_Box_New(Parent, BoxType);
 end;
 
 { UI_Calendar }
@@ -2171,19 +3417,14 @@ begin
   Result := Control_GetWidth(Control);
 end;
 
-procedure UI_Control_SetAlign(Control: AControl; Align: TUIAlign); stdcall;
-begin
-  AUIControls.UI_Control_SetAlign(Control, Align);
-end;
-
 procedure UI_Control_SetClientSize(Control: AControl; ClientWidth, ClientHeight: AInteger); stdcall;
 begin
   Control_SetClientSize(Control, ClientWidth, ClientHeight);
 end;
 
-procedure UI_Control_SetColor(Control: AControl; Color: AColor); stdcall;
+procedure UI_Control_SetColor(Control: AControl; Color: AColor);
 begin
-  Control_SetColor(Control, Color);
+  AUIControls.UI_Control_SetColor(Control, Color);
 end;
 
 procedure UI_Control_SetEnabled(Control: AControl; Value: ABoolean); stdcall;
@@ -2198,7 +3439,7 @@ end;
 
 procedure UI_Control_SetFont1(Control: AControl; const FontName: APascalString; FontSize: AInteger); stdcall;
 begin
-  Control_SetFont1P(Control, FontName, FontSize);
+  AUIControls.UI_Control_SetFont1(Control, FontName, FontSize);
 end;
 
 procedure UI_Control_SetFont2(Control: AControl; const FontName: APascalString; FontSize: AInteger; FontColor: AColor); stdcall;
@@ -2208,7 +3449,8 @@ end;
 
 function UI_Control_SetHeight(Control: AControl; Value: AInteger): AInteger; stdcall;
 begin
-  Result := Control_SetHeight(Control, Value);
+  AUIControls.UI_Control_SetHeight(Control, Value);
+  Result := 0;
 end;
 
 procedure UI_Control_SetHint(Control: AControl; const Value: APascalString); stdcall;
@@ -2337,7 +3579,7 @@ begin
   Result := Dialog_DateFilter(Group, DateBegin, DateEnd);
 end;
 
-procedure UI_Dialog_Error(const Caption, UserMessage, ExceptMessage: AWideString); stdcall;
+procedure UI_Dialog_Error(const Caption, UserMessage, ExceptMessage: APascalString); stdcall;
 begin
   Dialog_ErrorP(Caption, UserMessage, ExceptMessage);
 end;
@@ -2398,7 +3640,7 @@ begin
   {$ENDIF}
 end;
 
-function UI_Dialog_Message(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+function UI_Dialog_Message(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 var
   PrevCursor: TCursor;
 begin
@@ -2460,38 +3702,17 @@ end;
 
 function UI_Grid_New(Parent: AControl; GridType: AInteger): AControl; stdcall;
 begin
-  if (GridType = 0) then
-    Result := AControl(StringGrid_New(TWinControl(Parent)))
-  else if (GridType = 1) then
-    Result := AControl(DBGrid_New(TWinControl(Parent)))
-  else
-    Result := 0;
+  Result := AUIGrids.UI_Grid_New(Parent, GridType);
 end;
 
 procedure UI_Grid_RestoreColProps(Grid: AControl; Config: AConfig; const Key: APascalString; Delimer: AChar); stdcall;
 begin
-  DBGrid_RestoreColProps(TDBGrid(Grid), Config, Key, Delimer);
+  AUIGrids.UI_Grid_RestoreColProps(TObject(Grid), Config, Key, Delimer);
 end;
 
 procedure UI_Grid_SaveColProps(Grid: AControl; Config: AConfig; const Key: APascalString; Delimer: AChar); stdcall;
-{var
-  I: Integer;
-  C: TColumn;
-  SectionName: string;
-  Grid1: TDBGrid;}
 begin
-  DBGrid_SaveColProps(TDBGrid(Grid), Config, Key, Delimer);
-
-  {$IFNDEF FPC}
-  {Grid1 := TDBGrid(Grid);
-  for I := 0 to Grid1.Columns.Count - 1 do
-  begin
-    C := Grid1.Columns.Items[I];
-    SectionName := Key+Delimer+Grid1.Name+Delimer+C.FieldName;
-    Settings_WriteInteger(Config, SectionName, 'Index', I);
-    Settings_WriteInteger(Config, SectionName, 'Width', C.Width);
-  end;}
-  {$ENDIF}
+  AUIGrids.DBGrid_SaveColProps(TDBGrid(Grid), Config, Key, Delimer);
 end;
 
 procedure UI_Grid_SetColumnWidth(Grid: AControl; ColumnIndex, Width, Persent, MinWidth: AInteger); stdcall;
@@ -2714,38 +3935,6 @@ begin
   Result := FMainTrayIcon;
 end;
 
-{ UI_MainWindow }
-
-function UI_MainWindow: AWindow; stdcall;
-begin
-  Result := FMainWindow;
-end;
-
-function UI_MainWindow_AddMenuItem(const ParentItemName, Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem; stdcall;
-begin
-  try
-    Result := AUIMainWindow2.UI_MainWindow_AddMenuItem(ParentItemName, Name, Text, OnClick, ImageID, Weight);
-  except
-    Result := 0;
-  end;
-end;
-
-function UI_MainWindow_GetLeftContainer: AControl; stdcall;
-begin
-  Result := _MainWindow_GetLeftContainer;
-end;
-
-function UI_MainWindow_GetMainContainer: AControl; stdcall;
-begin
-  Result := _MainWindow_GetMainContainer;
-end;
-
-function UI_MainWindow_GetRightContainer: AControl; stdcall;
-begin
-  Result := _MainWindow_GetRightContainer;
-end;
-
 { Menu }
 
 function UI_Menu_GetItems(Menu: AMenu): AMenuItem; stdcall;
@@ -2758,32 +3947,6 @@ begin
   Result := AUIMenus.UI_Menu_New(MenuType);
 end;
 
-{ MenuItem }
-
-function UI_MenuItem_Add(MenuItem: AMenuItem; const Name, Text: APascalString;
-    OnClick: ACallbackProc02; ImageID, Weight: Integer): AMenuItem; stdcall;
-begin
-  Result := AUIMenus.UI_MenuItem_Add02(MenuItem, Name, Text, OnClick, ImageID, Weight);
-end;
-
-function UI_MenuItem_Add2(Parent: AMenuItem; MenuItem: AMenuItem; Weight: Integer): AMenuItem; stdcall;
-begin
-  Result := AUIMenus.UI_MenuItem_Add2(Parent, MenuItem, Weight);
-end;
-
-function UI_MenuItem_FindByName(MenuItem: AMenuItem; const Name: APascalString): AMenuItem; stdcall;
-var
-  I: Integer;
-begin
-  for I := 0 to TMenuItem(MenuItem).Count - 1 do
-    if (TMenuItem(MenuItem).Items[I].Name = Name) then
-    begin
-      Result := AMenuItem(TMenuItem(MenuItem).Items[I]);
-      Exit;
-    end;
-  Result := 0;
-end;
-
 { Objects }
 
 function UI_Object_Add(Value: AInteger): AInteger; stdcall;
@@ -2794,50 +3957,18 @@ end;
 { PageControl }
 
 function UI_PageControl_AddPage(PageControl: AControl; const Name, Text: APascalString): AControl; stdcall;
-var
-  O: TObject;
-  TabSheet: TTabSheet;
 begin
-  O := AUIData.GetObject(PageControl);
-  if Assigned(O) and (O is TPageControl) then
-  begin
-    TabSheet := TTabSheet.Create(TPageControl(O));
-    TabSheet.PageControl := TPageControl(O);
-    TabSheet.Name := Name;
-    TabSheet.Caption := Text;
-    Result := AddObject(TabSheet);
-  end
-  else
-    Result := 0;
+  Result := AUIPageControl.UI_PageControl_AddPage(PageControl, Name, Text);
 end;
 
 function UI_PageControl_New(Parent: AControl): AControl; stdcall;
-var
-  O: TObject;
-  PageControl: TPageControl;
-  I: Integer;
 begin
-  O := AUIData.GetObject(Parent);
-  if Assigned(O) and (O is TWinControl) then
-  begin
-    PageControl := TPageControl.Create(TWinControl(O));
-    PageControl.Parent := TWinControl(O);
-    PageControl.Align := alClient;
-    Result := AddObject(PageControl);
-
-    I := Length(FPageControls);
-    SetLength(FPageControls, I+1);
-    FPageControls[I].PageControl := Result;
-    FPageControls[I].OnChange02 := nil;
-    FPageControls[I].OnChange03 := nil;
-  end
-  else
-    Result := 0;
+  Result := AUIPageControl.UI_PageControl_New(Parent);
 end;
 
 { ProgressBar }
 
-function UI_ProgressBar_New(Parent: AControl; Max: AInteger): AControl; stdcall;
+function UI_ProgressBar_New(Parent: AControl; Max: AInteger): AControl;
 var
   ProgressBar: TProgressBar;
 begin
@@ -2847,7 +3978,7 @@ begin
   Result := AddObject(ProgressBar);
 end;
 
-function UI_ProgressBar_StepIt(ProgressBar: AControl): AInteger; stdcall;
+function UI_ProgressBar_StepIt(ProgressBar: AControl): AInteger;
 begin
   TProgressBar(ProgressBar).StepIt;
   Result := TProgressBar(ProgressBar).Position;
@@ -2857,12 +3988,12 @@ end;
 
 function UI_PropertyBox_Add(PropertyBox: AControl; const Caption: APascalString): Integer; stdcall;
 begin
-  Result := TPropertyBox1(PropertyBox).Add(Caption);
+  Result := TPropertyBox1(PropertyBox).AddNew(Caption);
 end;
 
 function UI_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: APascalString; EditWidth: AInteger): AInteger; stdcall;
 begin
-  Result := TPropertyBox1(PropertyBox).AddA(Caption, Text, Hint, EditWidth);
+  Result := TPropertyBox1(PropertyBox).AddNew2(Caption, Text, Hint, EditWidth);
 end;
 
 function UI_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer): APascalString; stdcall;
@@ -2882,7 +4013,7 @@ end;
 
 { Report }
 
-function UI_Report_New(Parent: AControl): AReport; stdcall;
+function UI_Report_New(Parent: AControl): AReport;
 var
   I: Integer;
 begin
@@ -2907,20 +4038,15 @@ end;
 
 { ReportWin }
 
-function UI_ReportWin_New: AWindow; stdcall;
+function UI_ReportWin_New: AWindow;
 begin
   Result := AUIReports.UI_ReportWin_NewA(0, '');
 end;
 
-function UI_ReportWin_NewA(ReportWinType: AInteger; const Text: APascalString): AWindow; stdcall;
+function UI_ReportWin_NewA(ReportWinType: AInteger; const Text: APascalString): AWindow;
 begin
   Result := AUIReports.UI_ReportWin_NewA(ReportWinType, Text);
 end;
-
-{function UI_ReportWin_Simple_New: AWindow; stdcall;
-begin
-  Result := UI_ReportWin_NewA(1);
-end;}
 
 { SpinButton }
 
@@ -3072,9 +4198,13 @@ end;
 { ToolBar }
 
 function UI_ToolBar_AddButton(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    OnClick: ACallbackProc02; ImageID, Weight: AInteger): AButton; stdcall;
+    OnClick: ACallbackProc; ImageID, Weight: AInteger): AButton; stdcall;
 begin
+  {$IFDEF A02}
   Result := AUIToolBar.UI_ToolBar_AddButton02(ToolBar, Name, Text, Hint, OnClick, ImageID, Weight);
+  {$ELSE}
+  Result := AUIToolBar.UI_ToolBar_AddButton03(ToolBar, Name, Text, Hint, OnClick, ImageID, Weight);
+  {$ENDIF A02}
 end;
 
 function UI_ToolBar_New(Parent: AControl): AControl; stdcall;
@@ -3101,31 +4231,16 @@ begin
 end;
 {$ENDIF}
 
-{ TreeView }
+{ UI_TreeView }
 
 function UI_TreeView_AddItem(TreeView: AControl; Parent: ATreeNode; Text: APascalString): ATreeNode; stdcall;
-var
-  tmpTreeView: TTreeView;
 begin
-  tmpTreeView := TTreeView(TreeView);
-  Result := ATreeNode(tmpTreeView.Items.AddChild(TTreeNode(Parent), Text));
+  Result := AUITreeView.UI_TreeView_AddItem(TreeView, Parent, Text);
 end;
 
 function UI_TreeView_New(Parent: AControl): AControl; stdcall;
-var
-  O: TObject;
-  TreeView: TTreeView;
 begin
-  O := AUIData.GetObject(Parent);
-  if Assigned(O) and (O is TWinControl) then
-  begin
-    TreeView := TTreeView.Create(TWinControl(O));
-    TreeView.Parent := TWinControl(O);
-    TreeView.Align := alLeft;
-    Result := AddObject(TreeView);
-  end
-  else
-    Result := 0;
+  Result := AUITreeView.UI_TreeView_New(Parent);
 end;
 
 { UI_WaitWin }
@@ -3171,17 +4286,8 @@ begin
 end;
 
 function UI_Window_GetMenu(Window: AWindow): AMenu; stdcall;
-{var
-  O: TObject;}
 begin
   Result := AUIWindows.UI_Window_GetMenu(Window);
-  {O := AUIData.GetObject(Window);
-  if Assigned(O) and (O is TForm) then
-  begin
-    Result := Integer(TForm(O).Menu);
-  end
-  else
-    Result := 0;}
 end;
 
 function UI_Window_LoadConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall;
@@ -3211,17 +4317,17 @@ end;
 
 procedure UI_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger); stdcall;
 begin
-  TForm(Window).BorderStyle := TBorderStyle(BorderStyle);
+  AUIWindows.UI_Window_SetBorderStyle(Window, BorderStyle);
 end;
 
 procedure UI_Window_SetFormStyle(Window: AWindow; FormStyle: AInteger); stdcall;
 begin
-  TForm(Window).FormStyle := TFormStyle(FormStyle);
+  AUIWindows.UI_Window_SetFormStyle(Window, FormStyle);
 end;
 
 procedure UI_Window_SetPosition(Window: AWindow; Position: AInteger); stdcall;
 begin
-  TForm(Window).Position := TPosition(poScreenCenter);
+  AUIWindows.UI_Window_SetPosition(Window, Position);
 end;
 
 function UI_Window_ShowModal(Window: AWindow): ABoolean; stdcall;
@@ -3338,6 +4444,15 @@ begin
   end;
 end;
 
+function Window_LoadConfig2WS(Window: AWindow; Config: AConfig; const ConfigKey: AWideString): ABoolean; stdcall;
+begin
+  try
+    Result := Form_LoadConfig2(TForm(Window), Config, ConfigKey);
+  except
+    Result := False;
+  end;
+end;
+
 function Window_New(): AControl; stdcall;
 begin
   try
@@ -3353,6 +4468,54 @@ begin
     Result := AUIForm.Form_SaveConfig(TForm(Window), Config);
   except
     Result := False;
+  end;
+end;
+
+function Window_SaveConfig2WS(Window: AWindow; Config: AConfig; const ConfigKey: AWideString): ABoolean; stdcall;
+begin
+  try
+    Result := AUIForm.Form_SaveConfig2(TForm(Window), Config, ConfigKey);
+  except
+    Result := False;
+  end;
+end;
+
+function Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger): AError; stdcall;
+begin
+  try
+    AUIWindows.UI_Window_SetBorderStyle(Window, BorderStyle);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+procedure Window_SetBorderStyle02(Window: AWindow; BorderStyle: AInteger); stdcall;
+begin
+  try
+    AUIWindows.UI_Window_SetBorderStyle(Window, BorderStyle);
+  except
+  end;
+end;
+
+function Window_SetFormStyle(Window: AWindow; FormStyle: AInteger): AError; stdcall;
+begin
+  try
+    AUIWindows.UI_Window_SetFormStyle(Window, FormStyle);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+//** Задает позицию окна.
+function Window_SetPosition(Window: AWindow; Position: AInteger): AError; stdcall;
+begin
+  try
+    AUIWindows.UI_Window_SetPosition(Window, Position);
+    Result := 0;
+  except
+    Result := -1;
   end;
 end;
 

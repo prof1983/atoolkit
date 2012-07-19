@@ -1,9 +1,8 @@
 {**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.10.2011)
-@LastMod(25.10.2011)
-@Version(0.5)
+@Abstract Дополнительные фукнкции AUiControls
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.10.2011
+@LastMod 19.07.2012
 }
 unit AUiControlsA;
 
@@ -13,14 +12,28 @@ uses
   ComCtrls,
   ABase, AUiBase, AUiCalendar, AUiData, AUiEvents;
 
-function UI_Control_SetOnChange02(Control: AControl; OnChange: ACallbackProc02): AError; stdcall;
-function UI_Control_SetOnChange03(Control: AControl; OnChange: ACallbackProc03): AError; stdcall;
-function UI_Control_SetOnChangeEx02(Control: AControl; OnChange: ACallbackProc02; Obj: AInteger): AError; stdcall;
-function UI_Control_SetOnChangeEx03(Control: AControl; OnChange: ACallbackProc03; Obj: AInteger): AError; stdcall;
+function UI_Control_SetOnChange(Control: AControl; OnChange: ACallbackProc): AError;
+function UI_Control_SetOnChange02(Control: AControl; OnChange: ACallbackProc02): AError;
+function UI_Control_SetOnChange03(Control: AControl; OnChange: ACallbackProc03): AError;
+function UI_Control_SetOnChangeEx02(Control: AControl; OnChange: ACallbackProc02; Obj: AInteger): AError;
+function UI_Control_SetOnChangeEx03(Control: AControl; OnChange: ACallbackProc03; Obj: AInteger): AError;
 
 implementation
 
-function UI_Control_SetOnChange02(Control: AControl; OnChange: ACallbackProc02): AError; stdcall;
+function UI_Control_SetOnChange(Control: AControl; OnChange: ACallbackProc): AError;
+begin
+  {$IFDEF A01}
+    Result := UI_Control_SetOnChange02(Control, OnChange);
+  {$ELSE}
+    {$IFDEF A02}
+    Result := UI_Control_SetOnChange02(Control, OnChange);
+    {$ELSE}
+    Result := UI_Control_SetOnChange03(Control, OnChange);
+    {$ENDIF A02}
+  {$ENDIF A01}
+end;
+
+function UI_Control_SetOnChange02(Control: AControl; OnChange: ACallbackProc02): AError;
 var
   I: Integer;
 begin
@@ -51,7 +64,7 @@ begin
   Result := 0;
 end;
 
-function UI_Control_SetOnChange03(Control: AControl; OnChange: ACallbackProc03): AError; stdcall;
+function UI_Control_SetOnChange03(Control: AControl; OnChange: ACallbackProc03): AError;
 var
   I: Integer;
 begin
@@ -82,7 +95,7 @@ begin
   Result := 0;
 end;
 
-function UI_Control_SetOnChangeEx02(Control: AControl; OnChange: ACallbackProc02; Obj: AInteger): AError; stdcall;
+function UI_Control_SetOnChangeEx02(Control: AControl; OnChange: ACallbackProc02; Obj: AInteger): AError;
 var
   I: Integer;
 begin
@@ -104,7 +117,7 @@ begin
   Result := 0;
 end;
 
-function UI_Control_SetOnChangeEx03(Control: AControl; OnChange: ACallbackProc03; Obj: AInteger): AError; stdcall;
+function UI_Control_SetOnChangeEx03(Control: AControl; OnChange: ACallbackProc03; Obj: AInteger): AError;
 var
   I: Integer;
 begin

@@ -1,31 +1,16 @@
-﻿{**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(04.05.2008)
-@LastMod(21.10.2011)
-@Version(0.5)
+{**
+@Abstract ASettings
+@Author Prof1983 <prof1983@ya.ru>
+@Created 04.05.2008
+@LastMod 19.07.2012
 }
 unit ARegistrySettings;
-
-{$IFDEF A02}
-  {$DEFINE A0}
-{$ENDIF A02}
-
-{$IFDEF A03}
-  {$DEFINE A0}
-{$ENDIF A03}
-
-{$IFNDEF A0}
-  {$DEFINE ALOCAL}
-{$ENDIF}
 
 interface
 
 uses
   Classes, Registry, Windows,
-  ABase,
-  {$IFDEF ALOCAL}ACollections{$ELSE}ACollections0{$ENDIF}, ACollectionsBase,
-  {$IFDEF ALOCAL}AUtils{$ELSE}AUtils0{$ENDIF},
+  ABase, ACollections, ACollectionsBase, AUtils,
   AAbstractSettings;
 
 type
@@ -204,4 +189,4 @@ begin
 end;
 
 end.
- 
+

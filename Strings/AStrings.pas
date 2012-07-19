@@ -1,9 +1,8 @@
-п»ї{**
-@Abstract(AStrings)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(24.05.2011)
-@LastMod(28.10.2011)
-@Version(0.5)
+{**
+@Abstract AStrings
+@Author Prof1983 <prof1983@ya.ru>
+@Created 24.05.2011
+@LastMod 19.07.2012
 
 0.0.5
 [+] String_ToPascalString (01.08.2011)
@@ -41,7 +40,7 @@ StrRScan       Returns a pointer to the last occurrence of a given character wit
 StrScan        Returns a pointer to the first occurrence of a given character within a string.
 StrUpper       Converts a string to uppercase.
 
-Р“Р»Р°РІР° 14. РЎС‚СЂРѕРєРѕРІС‹Рµ Рё СЃРёРјРІРѕР»СЊРЅС‹Рµ С„СѓРЅРєС†РёРё
+Глава 14. Строковые и символьные функции
     isalnum
     isalpha
     isblank
@@ -63,7 +62,7 @@ StrUpper       Converts a string to uppercase.
     strchr
     strcmp
     strcoll
-    strcpy - Р¤СѓРЅРєС†РёСЏ strcpy() РєРѕРїРёСЂСѓРµС‚ СЃРѕРґРµСЂР¶РёРјРѕРµ СЃС‚СЂРѕРєРё str2 РІ СЃС‚СЂРѕРєСѓ str1. РџР°СЂР°РјРµС‚СЂ str2 РґРѕР»Р¶РµРЅ СѓРєР°Р·С‹РІР°С‚СЊ РЅР° СЃС‚СЂРѕРєСѓ СЃ Р·Р°РІРµСЂС€Р°СЋС‰РёРј РЅСѓР»РµРІС‹Рј СЃРёРјРІРѕР»РѕРј. Р¤СѓРЅРєС†РёСЏ strcpy() РІРѕР·РІСЂР°С‰Р°РµС‚ Р·РЅР°С‡РµРЅРёРµ СѓРєР°Р·Р°С‚РµР»СЏ str1. 
+    strcpy - Функция strcpy() копирует содержимое строки str2 в строку str1. Параметр str2 должен указывать на строку с завершающим нулевым символом. Функция strcpy() возвращает значение указателя str1. 
     strcspn
     strerror
     strlen
@@ -85,8 +84,17 @@ interface
 uses
   ABase;
 
+{$IFDEF A01}
+type
+  AString = ^AString_Type;
+{$ENDIF A01}
+
 function Init(): AError; stdcall;
 function Done(): AError; stdcall;
+
+function AString_Assign(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
+function AString_AssignAnsi(var S: AString_Type; Value: PAnsiChar): ASize; stdcall;
+function AString_ToPascalString(const S: AString_Type): APascalString; stdcall;
 
 function String_Assign(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
 function String_AssignA(var S: AString_Type; Value: PAnsiChar): ASize; stdcall;
@@ -205,6 +213,23 @@ end;
 function Init(): AError; stdcall;
 begin
   Result := 0;
+end;
+
+// --- AString ---
+
+function AString_Assign(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
+begin
+  Result := String_Assign(S, Value);
+end;
+
+function AString_AssignAnsi(var S: AString_Type; Value: PAnsiChar): ASize; stdcall;
+begin
+  Result := String_AssignA(S, Value);
+end;
+
+function AString_ToPascalString(const S: AString_Type): APascalString; stdcall;
+begin
+  Result := String_ToPascalString(S);
 end;
 
 { String }

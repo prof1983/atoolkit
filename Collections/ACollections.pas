@@ -1,9 +1,8 @@
-п»ї{**
-Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(29.06.2011)
-@LastMod(18.11.2011)
-@Version(0.5)
+{**
+@Abstract ACollections
+@Author Prof1983 <prof1983@ya.ru>
+@Created 29.06.2011
+@LastMod 19.07.2012
 }
 unit ACollections;
 
@@ -17,47 +16,82 @@ uses
   ABase, ACollectionsBase, ACollectionsStringList,
   {$IFDEF ALOCAL}AStrings{$ELSE}AStrings0{$ENDIF};
 
-// Р”РѕР±Р°РІР»СЏРµС‚ СЃС‚СЂРѕРєСѓ РІ СЃРїРёСЃРѕРє. Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅРґРµРєСЃ, РїРѕ РєРѕС‚РѕСЂРѕРјСѓ СЌС‚Р° СЃС‚СЂРѕРєР° СЃРѕС…СЂР°РЅРµРЅР°.
+function Init(): AError; stdcall;
+function Done(): AError; stdcall;
+
+//** Добавляет строку в список. Возвращает индекс, по которому эта строка сохранена.
 function StringList_Add(StringList: AStringList; const Value: AString_Type): AInteger; stdcall;
 
-// Р”РѕР±Р°РІР»СЏРµС‚ СЃС‚СЂРѕРєСѓ РІ СЃРїРёСЃРѕРє. Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅРґРµРєСЃ, РїРѕ РєРѕС‚РѕСЂРѕРјСѓ СЌС‚Р° СЃС‚СЂРѕРєР° СЃРѕС…СЂР°РЅРµРЅР°.
+//** Добавляет строку в список. Возвращает индекс, по которому эта строка сохранена.
+function StringList_AddA(StringList: AStringList; Value: PAnsiChar): AInteger; stdcall;
+
+//** Добавляет строку в список. Возвращает индекс, по которому эта строка сохранена.
 function StringList_AddP(StringList: AStringList; const Value: APascalString): AInteger; stdcall;
 
-// Р”РѕР±Р°РІР»СЏРµС‚ СЃС‚СЂРѕРєСѓ РІ СЃРїРёСЃРѕРє. Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅРґРµРєСЃ, РїРѕ РєРѕС‚РѕСЂРѕРјСѓ СЌС‚Р° СЃС‚СЂРѕРєР° СЃРѕС…СЂР°РЅРµРЅР°.
-function StringList_AddPS(StringList: AStringList; const Value: APascalString): AInteger; stdcall;
+//** Добавляет строку в список. Возвращает индекс, по которому эта строка сохранена.
+// Use StringList_AddP()
+function StringList_AddPS(StringList: AStringList; const Value: APascalString): AInteger; stdcall; deprecated;
 
-// Р”РѕР±Р°РІР»СЏРµС‚ СЃС‚СЂРѕРєСѓ РІ СЃРїРёСЃРѕРє. Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅРґРµРєСЃ, РїРѕ РєРѕС‚РѕСЂРѕРјСѓ СЌС‚Р° СЃС‚СЂРѕРєР° СЃРѕС…СЂР°РЅРµРЅР°.
+//** Добавляет строку в список. Возвращает индекс, по которому эта строка сохранена.
 function StringList_AddWS(StringList: AStringList; const Value: AWideString): AInteger; stdcall;
 
-// РЈРґР°Р»СЏРµС‚ РІСЃРµ СЌР»РµРјРµРЅС‚С‹.
+//** Удаляет все элементы.
 function StringList_Clear(StringList: AStringList): AError; stdcall;
 
 function StringList_Count(StringList: AStringList): AInteger; stdcall;
 
 function StringList_Delete(StringList: AStringList; Index: AInteger): AError; stdcall;
 
-{ Р’СЃС‚Р°РІР»СЏРµС‚ РІ СЃРїРёСЃРѕРє СЃС‚СЂРѕРєСѓ РїРѕ СѓРєР°Р·Р°РЅРЅРѕРјСѓ РёРЅРґРµРєСЃСѓ.
-  Р­Р»РµРјРµРЅС‚С‹, РЅР°С…РѕРґРёРІС€РёРµСЃСЏ РґРѕ СЌС‚РѕРіРѕ РїРѕ РёРЅРґРµРєСЃСѓ Index Рё РґР°Р»РµРµ, СЃРјРµС‰Р°СЋС‚СЃСЏ РІРїРµСЂРµРґ, С‡С‚РѕР±С‹ РѕСЃРІРѕР±РѕРґРёС‚СЊ
-  РјРµСЃС‚Рѕ РґР»СЏ РІСЃС‚Р°РІР»СЏРµРјРѕРіРѕ РѕР±СЉРµРєС‚Р°. }
+{**
+  Вставляет в список строку по указанному индексу.
+  Элементы, находившиеся до этого по индексу Index и далее, смещаются вперед, чтобы освободить
+  место для вставляемого объекта.
+}
 function StringList_Insert(StringList: AStringList; Index: AInteger;
     Value: AString_Type): AInteger; stdcall;
 
+{**
+  Вставляет в список строку по указанному индексу.
+  Элементы, находившиеся до этого по индексу Index и далее, смещаются вперед, чтобы освободить
+  место для вставляемого объекта.
+}
 function StringList_InsertP(StringList: AStringList; Index: AInteger;
     const Value: APascalString): AError; stdcall;
 
-// РЎРѕР·РґР°РµС‚ РєРѕР»Р»РµРєС†РёСЋ-СЃРїРёСЃРѕРє СЃС‚СЂРѕРє.
+//** Создает коллекцию-список строк.
 function StringList_New(): AStringList; stdcall;
 
-{ РЈРґР°Р»СЏРµС‚ РёР· СЃРїРёСЃРєР° СЃС‚СЂРѕРєСѓ, СЂР°СЃРїРѕР»РѕР¶РµРЅРЅСѓСЋ РїРѕ СѓРєР°Р·Р°РЅРЅРѕРјСѓ РёРЅРґРµРєСЃСѓ.
-  Р­Р»РµРјРµРЅС‚С‹, РЅР°С…РѕРґСЏС‰РёРµСЃСЏ Р·Р° СѓРґР°Р»СЏРµРјС‹Рј СЃРјРµС‰Р°СЋС‚СЃСЏ РЅР°Р·Р°Рґ, С‡С‚РѕР±С‹ Р»РёРєРІРёРґРёСЂРѕРІР°С‚СЊ РѕР±СЂР°Р·РѕРІР°РІС€СѓСЋСЃСЏ Р±СЂРµС€СЊ. }
+{**
+  Удаляет из списка строку, расположенную по указанному индексу.
+  Элементы, находящиеся за удаляемым смещаются назад, чтобы ликвидировать образовавшуюся брешь.
+}
 function StringList_RemoveAt(StringList: AStringList; Index: AInteger): AInteger; stdcall;
 
 implementation
+
+function Done(): AError; stdcall;
+begin
+  Result := 0;
+end;
+
+function Init(): AError; stdcall;
+begin
+  Result := 0;
+end;
 
 function StringList_Add(StringList: AStringList; const Value: AString_Type): AInteger; stdcall;
 begin
   try
     Result := Collections_StringList_AddP(StringList, AStrings.String_ToWideString(Value));
+  except
+    Result := -1;
+  end;
+end;
+
+function StringList_AddA(StringList: AStringList; Value: PAnsiChar): AInteger; stdcall;
+begin
+  try
+    Result := Collections_StringList_AddP(StringList, Value);
   except
     Result := -1;
   end;

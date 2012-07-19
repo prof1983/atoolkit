@@ -1,9 +1,8 @@
 {**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(24.08.2009)
-@LastMod(29.06.2011)
-@Version(0.5)
+@abstract AUi PropertyBox
+@author Prof1983 <prof1983@ya.ru>
+@created 24.08.2009
+@lastmod 19.07.2012
 }
 unit AUiPropertyBox;
 
@@ -14,7 +13,8 @@ unit AUiPropertyBox;
 interface
 
 uses
-  Controls, ExtCtrls, Forms, Graphics, StdCtrls, AUIBase;
+  Controls, ExtCtrls, Forms, Graphics, StdCtrls, 
+  AUiBase;
 
 type
   TPropertyBoxChangeProc = function(Sender: AControl; ItemIndex: Integer; const Value: string): Boolean;
@@ -41,8 +41,10 @@ type
     procedure SetText(Index: Integer; const Value: string);
     procedure SetUseBigFont(Value: Boolean);
   public
-    function Add(const Caption1: string): Integer;
-    function AddA(const Caption1, Text1, Hint1: string; EditWidth: Integer; ReadOnly: Boolean = False): Integer;
+    function AddItem(EditBox: TEdit; TextBox: TLabel): Integer;
+    function AddItem2(EditBox: TEdit; TextBox: TLabel; EditWidth: Integer): Integer;
+    function AddNew(const Caption1: string): Integer;
+    function AddNew2(const Caption1, Text1, Hint1: string; EditWidth: Integer; ReadOnly: Boolean = False): Integer;
     constructor Create(Parent1: TWinControl);
   public
     property IsAddPoints: Boolean read FIsAddPoints write FIsAddPoints;
@@ -59,27 +61,128 @@ type
     constructor Create(Parent1: TWinControl);
   end;
 
+
+type
+  TPropertyBoxControl = class
+  private
+    FParent: TWinControl; // TScrollBox
+    FItems: array of record
+      Edit: TEdit;
+      EditLabel: TLabel;
+    end;
+    FIsAddPoints: Boolean;
+    FOnChange: TPropertyBoxChangeProc;
+    FTempValue: string;
+    FUseBigFont: Boolean;
+    procedure DoEditEnter(Sender: TObject);
+    procedure DoEditExit(Sender: TObject);
+    function GetItemIndex(Edit: TEdit): Integer;
+  public
+    function GetText(Index: Integer): string;
+    function GetUseBigFont: Boolean;
+    procedure SetText(Index: Integer; const Value: string);
+    procedure SetUseBigFont(Value: Boolean);
+  public
+    function AddItem(EditBox: TEdit; TextBox: TLabel): Integer;
+    function AddItem2(EditBox: TEdit; TextBox: TLabel; EditWidth: Integer): Integer;
+    function AddNew(const Caption1: string): Integer;
+    function AddNew2(const Caption1, Text1, Hint1: string; EditWidth: Integer; ReadOnly: Boolean = False): Integer;
+    constructor Create(Parent: TWinControl);
+    procedure Resizing();
+  public
+    property IsAddPoints: Boolean read FIsAddPoints write FIsAddPoints;
+    property OnChange: TPropertyBoxChangeProc read FOnChange write FOnChange;
+  end;
+
 implementation
 
-{ TPropertyBox }
+{ TPropertyBox1 }
 
-function TPropertyBox1.Add(const Caption1: string): Integer;
+function TPropertyBox1.AddItem(EditBox: TEdit; TextBox: TLabel): Integer;
 begin
-  Result := AddA(Caption1, '', '', 100);
+  Result := AddItem2(EditBox, TextBox, 100);
 end;
 
-function TPropertyBox1.AddA(const Caption1, Text1, Hint1: string; EditWidth: Integer; ReadOnly: Boolean = False): Integer;
+function TPropertyBox1.AddItem2(EditBox: TEdit; TextBox: TLabel; EditWidth: Integer): Integer;
+var
+  NextIndex: Integer;
+begin
+  if (EditBox.Parent <> Self) or (TextBox.Parent <> Self) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+
+  NextIndex := Length(FItems);
+
+  EditBox.Left := Self.Width - EditWidth - 10;
+  if FUseBigFont then
+  begin
+    EditBox.Top := NextIndex * 28 + 4;
+    EditBox.Height := 20;
+    EditBox.Font.Name := 'System';
+    EditBox.Font.Size := 10;
+  end
+  else
+  begin
+    EditBox.Top := NextIndex * 16 + 4;
+    EditBox.Height := 14;
+    EditBox.Font.Name := 'System';
+    EditBox.Font.Size := 10;
+  end;
+  EditBox.Width := EditWidth;
+  EditBox.BorderStyle := bsNone;
+  EditBox.Font.Style := [fsBold];
+  //EditBox.Text := Text1;
+  EditBox.Anchors := [akRight, akTop];
+  EditBox.OnEnter := DoEditEnter;
+  EditBox.OnExit := DoEditExit;
+  //EditBox.ReadOnly := ReadOnly;
+  if EditBox.ReadOnly then
+    EditBox.Color := clBtnFace
+  else
+    EditBox.Color := clWindow;
+
+  if FIsAddPoints then
+  begin
+    TextBox.Caption := TextBox.Caption +
+        '..........................................................................................'+
+        '..........................................................................................';
+  end;
+
+  TextBox.Left := 4;
+  if FUseBigFont then
+  begin
+    TextBox.Top := NextIndex * 28 + 4;
+    TextBox.Height := 20;
+  end
+  else
+  begin
+    TextBox.Top := NextIndex * 16 + 4;
+    TextBox.Height := 16;
+  end;
+  //TextBox.Hint := Hint1;
+  //TextBox.ShowHint := (Hint1 <> '');
+
+  SetLength(FItems, NextIndex + 1);
+
+  FItems[NextIndex].Edit := EditBox;
+  FItems[NextIndex].EditLabel := TextBox;
+  Result := NextIndex;
+end;
+
+function TPropertyBox1.AddNew(const Caption1: string): Integer;
+begin
+  Result := AddNew2(Caption1, '', '', 100);
+end;
+
+function TPropertyBox1.AddNew2(const Caption1, Text1, Hint1: string; EditWidth: Integer; ReadOnly: Boolean = False): Integer;
 var
   Edit: TEdit;
   EditLabel: TLabel;
   NextIndex: Integer;
 begin
-  // Prof1983: 28.04.2011
   NextIndex := Length(FItems);
-
-  // Prof1983: 19.04.2011
-  {Result := Length(FItems);
-  SetLength(FItems, Result + 1);}
 
   Edit := TEdit.Create(Self);
   Edit.Parent := Self;
@@ -134,10 +237,7 @@ begin
   EditLabel.Hint := Hint1;
   EditLabel.ShowHint := (Hint1 <> '');
 
-  // Prof1983: 28.04.2011
   SetLength(FItems, NextIndex + 1);
-  {Result := Length(FItems);
-  SetLength(FItems, Result + 1);}
 
   FItems[NextIndex].Edit := Edit;
   FItems[NextIndex].EditLabel := EditLabel;
@@ -206,14 +306,55 @@ begin
   inherited;
   for I := 0 to High(FItems) do
     FItems[I].EditLabel.Width := Self.Width - FItems[I].Edit.Width - 25;
-  // ...
 end;
-{$ENDIF UNIX}
+{$ENDIF FPC}
 
 procedure TPropertyBox1.SetText(Index: Integer; const Value: string);
 begin
   if (Index >= 0) and (Index < Length(FItems)) then
     FItems[Index].Edit.Text := Value;
+end;
+
+procedure TPropertyBox1.SetUseBigFont(Value: Boolean);
+var
+  i: Integer;
+  Edit: TEdit;
+  EditLabel: TLabel;
+begin
+  if (FUseBigFont <> Value) then
+  begin
+    FUseBigFont := Value;
+    for i := 0 to High(FItems) do
+    begin
+      Edit := FItems[i].Edit;
+      if FUseBigFont then
+      begin
+        Edit.Top := i * 28 + 4;
+        Edit.Height := 24;
+        Edit.Font.Name := 'System';
+        Edit.Font.Size := 10;
+      end
+      else
+      begin
+        Edit.Top := i * 16 + 4;
+        Edit.Height := 14;
+        Edit.Font.Name := 'System';
+        Edit.Font.Size := 10;
+      end;
+
+      EditLabel := FItems[i].EditLabel;
+      if FUseBigFont then
+      begin
+        EditLabel.Top := i * 28 + 4;
+        EditLabel.Height := 24;
+      end
+      else
+      begin
+        EditLabel.Top := i * 16 + 4;
+        EditLabel.Height := 16;
+      end;
+    end;
+  end;
 end;
 
 { TPropertyBox2 }
@@ -251,7 +392,222 @@ begin
   Self.Parent := Parent1;
 end;
 
-procedure TPropertyBox1.SetUseBigFont(Value: Boolean);
+{ TPropertyBoxControl }
+
+function TPropertyBoxControl.AddItem(EditBox: TEdit; TextBox: TLabel): Integer;
+begin
+  Result := AddItem2(EditBox, TextBox, EditBox.Width);
+end;
+
+function TPropertyBoxControl.AddItem2(EditBox: TEdit; TextBox: TLabel; EditWidth: Integer): Integer;
+var
+  NextIndex: Integer;
+begin
+  if (EditBox.Parent <> FParent) or (TextBox.Parent <> FParent) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+
+  NextIndex := Length(FItems);
+
+  EditBox.Left := FParent.Width - EditWidth - 10;
+  if FUseBigFont then
+  begin
+    EditBox.Top := NextIndex * 28 + 4;
+    EditBox.Height := 20;
+    EditBox.Font.Name := 'System';
+    EditBox.Font.Size := 10;
+  end
+  else
+  begin
+    EditBox.Top := NextIndex * 16 + 4;
+    EditBox.Height := 14;
+    EditBox.Font.Name := 'System';
+    EditBox.Font.Size := 10;
+  end;
+  EditBox.Width := EditWidth;
+  EditBox.BorderStyle := bsNone;
+  EditBox.Font.Style := [fsBold];
+  //EditBox.Text := Text1;
+  EditBox.Anchors := [akRight, akTop];
+  EditBox.OnEnter := DoEditEnter;
+  EditBox.OnExit := DoEditExit;
+  //EditBox.ReadOnly := ReadOnly;
+  if EditBox.ReadOnly then
+    EditBox.Color := clBtnFace
+  else
+    EditBox.Color := clWindow;
+
+  if FIsAddPoints then
+  begin
+    TextBox.Caption := TextBox.Caption +
+        '..........................................................................................'+
+        '..........................................................................................';
+  end;
+
+  TextBox.Left := 4;
+  if FUseBigFont then
+  begin
+    TextBox.Top := NextIndex * 28 + 4;
+    TextBox.Height := 20;
+  end
+  else
+  begin
+    TextBox.Top := NextIndex * 16 + 4;
+    TextBox.Height := 16;
+  end;
+  //TextBox.Hint := Hint1;
+  //TextBox.ShowHint := (Hint1 <> '');
+
+  SetLength(FItems, NextIndex + 1);
+
+  FItems[NextIndex].Edit := EditBox;
+  FItems[NextIndex].EditLabel := TextBox;
+  Result := NextIndex;
+end;
+
+function TPropertyBoxControl.AddNew(const Caption1: string): Integer;
+begin
+  Result := AddNew2(Caption1, '', '', 100);
+end;
+
+function TPropertyBoxControl.AddNew2(const Caption1, Text1, Hint1: string; EditWidth: Integer; ReadOnly: Boolean = False): Integer;
+var
+  Edit: TEdit;
+  EditLabel: TLabel;
+  NextIndex: Integer;
+begin
+  NextIndex := Length(FItems);
+
+  Edit := TEdit.Create(FParent);
+  Edit.Parent := FParent;
+  Edit.Left := FParent.Width - EditWidth - 10;
+  if FUseBigFont then
+  begin
+    Edit.Top := NextIndex * 28 + 4;
+    Edit.Height := 20;
+    Edit.Font.Name := 'System';
+    Edit.Font.Size := 10;
+  end
+  else
+  begin
+    Edit.Top := NextIndex * 16 + 4;
+    Edit.Height := 14;
+    Edit.Font.Name := 'System';
+    Edit.Font.Size := 10;
+  end;
+  Edit.Width := EditWidth;
+  Edit.BorderStyle := bsNone;
+  Edit.Font.Style := [fsBold];
+  Edit.Text := Text1;
+  Edit.Anchors := [akRight, akTop];
+  Edit.OnEnter := DoEditEnter;
+  Edit.OnExit := DoEditExit;
+  Edit.ReadOnly := ReadOnly;
+  if ReadOnly then
+    Edit.Color := clBtnFace
+  else
+    Edit.Color := clWindow;
+
+  EditLabel := TLabel.Create(FParent);
+  EditLabel.Parent := FParent;
+  if FIsAddPoints then
+    EditLabel.Caption := Caption1 +
+        '..........................................................................................'+
+        '..........................................................................................'
+  else
+    EditLabel.Caption := Caption1;
+
+  EditLabel.Left := 4;
+  if FUseBigFont then
+  begin
+    EditLabel.Top := NextIndex * 28 + 4;
+    EditLabel.Height := 20;
+  end
+  else
+  begin
+    EditLabel.Top := NextIndex * 16 + 4;
+    EditLabel.Height := 16;
+  end;
+  EditLabel.Hint := Hint1;
+  EditLabel.ShowHint := (Hint1 <> '');
+
+  SetLength(FItems, NextIndex + 1);
+
+  FItems[NextIndex].Edit := Edit;
+  FItems[NextIndex].EditLabel := EditLabel;
+  Result := NextIndex;
+end;
+
+constructor TPropertyBoxControl.Create(Parent: TWinControl);
+begin
+  FParent := Parent;
+end;
+
+procedure TPropertyBoxControl.DoEditEnter(Sender: TObject);
+begin
+  FTempValue := TEdit(Sender).Text;
+end;
+
+procedure TPropertyBoxControl.DoEditExit(Sender: TObject);
+begin
+  if (TEdit(Sender).Text <> FTempValue) then
+  begin
+    if Assigned(FOnChange) then
+    begin
+      if not(FOnChange(AControl(Self), Self.GetItemIndex(TEdit(Sender)), TEdit(Sender).Text)) then
+      begin
+        TEdit(Sender).SelectAll;
+        TEdit(Sender).SetFocus;
+      end;
+    end;
+  end;
+end;
+
+function TPropertyBoxControl.GetItemIndex(Edit: TEdit): Integer;
+var
+  I: Integer;
+begin
+  for I := 0 to High(FItems) do
+  begin
+    if (FItems[I].Edit = Edit) then
+    begin
+      Result := I;
+      Exit;
+    end;
+  end;
+  Result := -1;
+end;
+
+function TPropertyBoxControl.GetText(Index: Integer): string;
+begin
+  if (Index >= 0) and (Index < Length(FItems)) then
+    Result := FItems[Index].Edit.Text
+  else
+    Result := '';
+end;
+
+function TPropertyBoxControl.GetUseBigFont(): Boolean;
+begin
+  Result := FUseBigFont;
+end;
+
+procedure TPropertyBoxControl.Resizing();
+var
+  I: Integer;
+begin
+  for I := 0 to High(FItems) do
+    FItems[I].EditLabel.Width := FParent.Width - FItems[I].Edit.Width - 25;
+end;
+
+procedure TPropertyBoxControl.SetText(Index: Integer; const Value: string);
+begin
+  if (Index >= 0) and (Index < Length(FItems)) then
+    FItems[Index].Edit.Text := Value;
+end;
+
+procedure TPropertyBoxControl.SetUseBigFont(Value: Boolean);
 var
   i: Integer;
   Edit: TEdit;

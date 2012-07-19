@@ -1,57 +1,106 @@
-п»ї{**
-@Abstract(AUiWorkbench)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(26.08.2009)
-@LastMod(22.05.2012)
-@Version(0.5)
+{**
+@Abstract AUi Workbench
+@Author Prof1983 <prof1983@ya.ru>
+@Created 26.08.2009
+@LastMod 19.07.2012
 }
-unit AUiWorkbench;
+unit AUIWorkbench;
 
 interface
 
 uses
   ABase, ARuntime, AUi, AUiBase;
 
+//** Инициализирует модуль.
 function Init(): AError; stdcall;
+
 function Done(): AError; stdcall;
 
-function Init03(): AInteger; stdcall;
-function Done03(): AInteger; stdcall;
-
+{ Создает новую вкладку в главном окне программы. Возврашает:
+  0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
 function AddPageP(const Name, Text: APascalString): AControl; stdcall;
 
-{ РЎРѕР·РґР°РµС‚ РЅРѕРІСѓСЋ РІРєР»Р°РґРєСѓ РІ РіР»Р°РІРЅРѕРј РѕРєРЅРµ РїСЂРѕРіСЂР°РјРјС‹. Р’РѕР·РІСЂР°С€Р°РµС‚:
-  0 - РµСЃР»Рё РїСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР°, РёРЅР°С‡Рµ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РЅРѕРІРѕР№ РІРєР»Р°РґРєРё (РµСЃР»Рё РѕРїРµСЂР°С†РёСЏ РїСЂРѕС€Р»Р° СѓСЃРїРµС€РЅРѕ) }
-function UIWorkbench_AddPage(const Name, Text: APascalString): AControl; stdcall;
-procedure UIWorkbench_SetOnChange(OnChange: ACallbackProc); stdcall;
+{ Создает новую вкладку в главном окне программы. Возврашает:
+  0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
+function AddPageWS(const Name, Text: AWideString): AControl; stdcall;
 
-var
-  FInitialized: Boolean;
+
+{ Создает новую вкладку в главном окне программы. Возврашает:
+  0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
+function UIWorkbench_AddPage(const Name, Text: APascalString): AControl; stdcall;
+
+// Заглушка.
+function UIWorkbench_Boot(): AError;
+
+function UIWorkbench_Done(): AError; stdcall;
+
+function UIWorkbench_Init(): AError; stdcall;
+
+procedure UIWorkbench_SetOnChange(OnChange: ACallbackProc); stdcall;
 
 implementation
 
 var
+  FInitialized: Boolean;
   FPageControl: AControl;
 
 { Public }
 
 function AddPageP(const Name, Text: APascalString): AControl; stdcall;
 begin
-  Result := UIWorkbench_AddPage(Name, Text);
+  try
+    Result := UIWorkbench_AddPage(Name, Text);
+  except
+    Result := 0;
+  end;
+end;
+
+function AddPageWS(const Name, Text: AWideString): AControl; stdcall;
+begin
+  try
+    Result := UIWorkbench_AddPage(Name, Text);
+  except
+    Result := 0;
+  end;
 end;
 
 function Done(): AError; stdcall;
+begin
+  try
+    Result := UIWorkbench_Done();
+  except
+    Result := -1;
+  end;
+end;
+
+function Init(): AError; stdcall;
+begin
+  try
+    Result := UIWorkbench_Init();
+  except
+    Result := -1;
+  end;
+end;
+
+{ UIWorkbench }
+
+function UIWorkbench_AddPage(const Name, Text: APascalString): AControl; stdcall;
+begin
+  Result := AUI.PageControl_AddPageWS(FPageControl, Name, Text);
+end;
+
+function UIWorkbench_Boot(): AError;
+begin
+  Result := 0;
+end;
+
+function UIWorkbench_Done(): AError; stdcall;
 begin
   FInitialized := False;
   Result := 0;
 end;
 
-function Done03(): AInteger; stdcall;
-begin
-  Result := Done();
-end;
-
-function Init(): AError; stdcall;
+function UIWorkbench_Init(): AError; stdcall;
 begin
   if FInitialized then
   begin
@@ -65,21 +114,9 @@ begin
     Exit;
   end;
 
-  FPageControl := AUI.PageControl_New(UI_MainWindow_GetMainContainer);
+  FPageControl := AUI.PageControl_New(AUI.MainWindow_GetMainContainer());
   FInitialized := True;
   Result := 0;
-end;
-
-function Init03(): AInteger; stdcall;
-begin
-  Result := Init();
-end;
-
-{ UIWorkbench }
-
-function UIWorkbench_AddPage(const Name, Text: APascalString): AControl; stdcall;
-begin
-  Result := AUI.PageControl_AddPage(FPageControl, Name, Text);
 end;
 
 procedure UIWorkbench_SetOnChange(OnChange: ACallbackProc); stdcall;

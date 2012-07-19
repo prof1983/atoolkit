@@ -1,9 +1,8 @@
 {**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(31.05.2011)
-@LastMod(25.10.2011)
-@Version(0.5)
+@Abstract AUi data
+@Author Prof1983 <prof1983@ya.ru>
+@Created 31.05.2011
+@LastMod 19.07.2012
 }
 unit AUiData;
 
@@ -30,6 +29,12 @@ type
   end;
 
 type
+  TAUIFrame = record
+    Frame: AControl;
+    Menu: AMenu;
+  end;
+
+type
   TAUIListBox = record
     ListBox: AControl;
     OnClick02: ACallbackProc02;
@@ -46,10 +51,24 @@ type
   end;
 
 type
+  TAUIPageControl = record
+    PageControl: AControl;
+    OnChange02: ACallbackProc02;
+    OnChange03: ACallbackProc03;
+  end;
+
+type
   TAUIReport = record
     Parent: AControl;
     TextView: AControl;
     ToolsPanel: AControl;
+  end;
+
+type
+  TAUIToolMenu = record
+    PageControl: AControl;
+    Page: AControl; //TabSheet: TTabSheet;
+    //CoolBar: AControl; //TCoolBar;
   end;
 
 { Varriables }
@@ -62,17 +81,15 @@ var
   end;
   FCalendars: array of TAUICalendar;
   FDataSources: array of TAUIDataSource;
+  FFrames: array of TAUIFrame;
   FListBoxs: array of TAUIListBox;
   FMenuItems: array of TAUIMenuItem;
   FObjects: array of TObject;
   FOnDone: AEvent;
   FOnMainFormCreate: AProc;
-  FPageControls: array of record
-    PageControl: AControl;
-    OnChange02: ACallbackProc02;
-    OnChange03: ACallbackProc03;
-  end;
+  FPageControls: array of TAUIPageControl;
   FReports: array of TAUIReport;
+  FToolMenus: array of TAUIToolMenu;
   FIsShowApp: Boolean;
   FMainTrayIcon: AControl;
   FMainWindow: AWindow;
@@ -89,10 +106,13 @@ function GetObject(Value: Integer): TObject;
 function FindButton(Button: AControl): Integer;
 function FindCalendar(Calendar: AControl): Integer;
 function FindDataSource(DataSource: PADataSource): Integer;
+function FindFrame(Frame: AControl): Integer;
 function FindListBox(ListBox: AControl): Integer;
 function FindMenuItem(MenuItem: AMenuItem): Integer;
 function FindObject(Obj: TObject): Integer;
 function FindPageControl(PageControl: AControl): Integer;
+function FindToolMenu(ToolMenu: AToolMenu): Integer;
+//function FindToolMenuByName(Parent: AToolMenu: const Name: string): Integer;
 
 implementation
 
@@ -138,13 +158,28 @@ end;
 
 function FindDataSource(DataSource: PADataSource): Integer;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to High(FDataSources) do
+  for I := 0 to High(FDataSources) do
   begin
-    if (FDataSources[i].DataSource = DataSource) then
+    if (FDataSources[I].DataSource = DataSource) then
     begin
-      Result := i;
+      Result := I;
+      Exit;
+    end;
+  end;
+  Result := -1;
+end;
+
+function FindFrame(Frame: AControl): Integer;
+var
+  I: Integer;
+begin
+  for I := 0 to High(FFrames) do
+  begin
+    if (FFrames[I].Frame = Frame) then
+    begin
+      Result := I;
       Exit;
     end;
   end;
@@ -211,6 +246,21 @@ begin
   Result := -1;
 end;
 
+function FindToolMenu(ToolMenu: AToolMenu): Integer;
+var
+  I: Integer;
+begin
+  for I := 0 to High(FToolMenus) do
+  begin
+    if (FToolMenus[I].Page = ToolMenu) or (FToolMenus[I].PageControl = ToolMenu) then
+    begin
+      Result := I;
+      Exit;
+    end;
+  end;
+  Result := -1;
+end;
+
 function GetObject(Value: Integer): TObject;
 var
   I: Integer;
@@ -227,4 +277,3 @@ begin
 end;
 
 end.
- 

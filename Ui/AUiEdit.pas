@@ -1,9 +1,8 @@
-п»ї{**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(14.01.2010)
-@LastMod(26.10.2011)
-@Version(0.5)
+{**
+@Abstract AUiEdit
+@Author Prof1983 <prof1983@ya.ru>
+@Created 14.01.2010
+@LastMod 19.07.2012
 }
 unit AUiEdit;
 
@@ -16,6 +15,8 @@ unit AUiEdit;
 
 interface
 
+// TODO: Избавиться от stdcall
+
 uses
   Controls, StdCtrls,
   ABase, {$IFDEF A0}AUtils0{$ELSE}AUtils{$ENDIF},
@@ -24,15 +25,16 @@ uses
 {
 function A_UI_Edit_CheckDate(Edit: AControl; out Value: TDateTime): ABoolean; stdcall;
 function A_UI_Edit_CheckFloat(Edit: AControl; out Value: Double): ABoolean; stdcall;
-// РџРµСЂРµРІРѕРґРёС‚ С‚РµРєСЃС‚ РІ Int. Р•СЃР»Рё РѕС€РёР±РєР°, С‚Рѕ РїРµСЂРµС…РѕРґРёС‚ РЅР° СЌС‚РѕС‚ РєРѕРјРїРѕРЅРµРЅС‚ Рё РІРѕР·РІСЂР°С‰Р°РµС‚ false.
+// Переводит текст в Int. Если ошибка, то переходит на этот компонент и возвращает false.
 function A_UI_Edit_CheckInt(Edit: AControl; out Value: AInteger): ABoolean; stdcall;
 }
-// РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ СЌР»РµРјРµРЅС‚ TEdit
+// Создает новый элемент TEdit
 function A_UI_Edit_New(Parent: AControl): AControl; stdcall;
+
 { EditType
     0 - TEdit
     1 - TEdit + Button }
-function A_UI_Edit_NewA(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc; Left, Top, Width: AInteger): AControl; stdcall;
+//function A_UI_Edit_NewA(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc; Left, Top, Width: AInteger): AControl; stdcall;
 
 function Edit_CheckDate(Edit: TCustomEdit{TMaskEdit}; out Value: TDateTime): ABoolean;
 function Edit_CheckFloat(Edit: TCustomEdit; out Value: Double): ABoolean;
@@ -44,23 +46,24 @@ function UI_Edit_CheckDate(Edit: AControl; out Value: TDateTime): ABoolean; stdc
 function UI_Edit_CheckFloat(Edit: AControl; out Value: Double): ABoolean; stdcall;
 function UI_Edit_CheckFloat32(Edit: AControl; out Value: AFloat32): ABoolean;
 function UI_Edit_CheckFloat64(Edit: AControl; out Value: AFloat64): ABoolean;
-// РџРµСЂРµРІРѕРґРёС‚ С‚РµРєСЃС‚ РІ Int. Р•СЃР»Рё РѕС€РёР±РєР°, С‚Рѕ РїРµСЂРµС…РѕРґРёС‚ РЅР° СЌС‚РѕС‚ РєРѕРјРїРѕРЅРµРЅС‚ Рё РІРѕР·РІСЂР°С‰Р°РµС‚ false.
+// Переводит текст в Int. Если ошибка, то переходит на этот компонент и возвращает false.
 function UI_Edit_CheckInt(Edit: AControl; out Value: AInteger): ABoolean; stdcall;
-// РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ СЌР»РµРјРµРЅС‚ TEdit.
+// Создает новый элемент TEdit.
 function UI_Edit_New(Parent: AControl): AControl; stdcall;
 
-{ РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ СЌР»РµРјРµРЅС‚ TEdit.
+{ Создает новый элемент TEdit.
   EditType
     0 - TEdit
     1 - TEdit + Button }
 function UI_Edit_New02(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc02;
     Left, Top, Width: AInteger): AControl; stdcall;
 
-{ РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ СЌР»РµРјРµРЅС‚ TEdit.
+{ Создает новый элемент TEdit.
   EditType
     0 - TEdit
     1 - TEdit + Button }
-function UI_Edit_NewA(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc; Left, Top, Width: AInteger): AControl; stdcall;
+function UI_Edit_NewA(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc;
+    Left, Top, Width: AInteger): AControl; stdcall;
 
 implementation
 
@@ -91,7 +94,9 @@ begin
   Result := UI_Edit_NewA(Parent, 0, nil, 0, 0, 100);
 end;
 
-function A_UI_Edit_NewA(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc; Left, Top, Width: AInteger): AControl; stdcall;
+{
+function A_UI_Edit_NewA(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc;
+    Left, Top, Width: AInteger): AControl; stdcall;
 var
   //ComboBox: TComboBox;
   Edit: TEdit;
@@ -126,6 +131,7 @@ begin
     Result := 0;
   end;
 end;
+}
 
 { Edit }
 
@@ -260,7 +266,8 @@ begin
   end;
 end;
 
-function UI_Edit_NewA(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc; Left, Top, Width: AInteger): AControl; stdcall;
+function UI_Edit_NewA(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc;
+    Left, Top, Width: AInteger): AControl; stdcall;
 var
   Edit: TEdit;
   Button: AControl;
@@ -288,7 +295,7 @@ begin
         UI_Control_SetPosition(Button, Left + Width - 20, Top + 2);
         UI_Control_SetSize(Button, 18, 18);
         UI_Control_SetTextP(Button, '...');
-        UI_Control_SetOnClick03(Button, OnClick);
+        UI_Control_SetOnClick(Button, OnClick);
       end;
   else
     Result := 0;

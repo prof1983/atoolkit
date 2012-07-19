@@ -1,9 +1,8 @@
-п»ї{**
-@Abstract(Р¤РѕСЂРјР° "Рћ РїСЂРѕРіСЂР°РјРјРµ")
-@Author(Prof1983 prof1983@ya.ru)
-@Created(04.04.2006)
-@LastMod(25.10.2011)
-@Version(0.5)
+{**
+@Abstract AUi about form
+@Author Prof1983 <prof1983@ya.ru>
+@Created 04.04.2006
+@LastMod 19.07.2012
 }
 unit fAbout;
 
@@ -17,9 +16,14 @@ uses
   {$IFDEF FPC}LResources,{$ENDIF}
   {$IFDEF MSWINDOWS}ShellAPI, Windows,{$ENDIF}
   Buttons, Classes, Controls, Dialogs, ExtCtrls, Graphics, Forms, Messages, StdCtrls, SysUtils,
-  ABase, ABaseUtils,
-  {$IFDEF A0}ASystem0{$ELSE}ASystem{$ENDIF},
+  ABase, ABaseUtils, ASystem, 
   AUiBase, AUiButton, AUiControls;
+
+type
+  AUIAboutFlags = type AInteger;
+const
+  AUIAboutFlags_NoShowComment = $00010000;
+  AUIAboutFlags_ShowAll = $0000FFFF;
 
 type
   TAboutForm = class(TForm)
@@ -45,13 +49,15 @@ type
     function AddButton(Left, Width: Integer; const Text: APascalString; OnClick: ACallbackProc): AControl;
     function AddButton02(Left, Width: Integer; const Text: APascalString; OnClick: ACallbackProc02): AControl;
     procedure Init;
+    procedure Init1(Flags: AUIAboutFlags);
+    procedure Init2(Flags: AUIAboutFlags; MemoWidth, MemoHeight: Integer);
     procedure InitA(MemoWidth, MemoHeight: Integer);
     procedure LoadApplicationIcon;
-    // РљР°СЂС‚РёРЅРєР° РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ
+    // Картинка для отображения
     property Picture: TPicture read GetPicture;
-    // РќР°Р·РІР°РЅРёРµ РїСЂРѕРіСЂР°РјРјС‹
+    // Название программы
     property ProgramName: APascalString read GetProgramName write SetProgramName;
-    // РЎСЃС‹Р»РєР° РЅР° СЃР°Р№С‚ РїСЂРѕРіСЂР°РјРјС‹
+    // Ссылка на сайт программы
     property Reference: APascalString read GetReference write SetReference;
   end;
 
@@ -61,7 +67,7 @@ procedure ShowAboutWinA(MemoWidth, MemoHeight: Integer);
 implementation
 
 uses
-  AUi;
+  AUI;
 
 {$IFNDEF FPC}
   {$R *.dfm}
@@ -76,12 +82,12 @@ const
   cProgramVersion = 'Version: ';
   cProductVersion = 'Product version: ';
   {$ELSE}
-  cCaption = 'Рћ РїСЂРѕРіСЂР°РјРјРµ';
-  cCompanyName = 'РљРѕРјРїР°РЅРёСЏ: ';
-  cDesctiption = 'РћРїРёСЃР°РЅРёРµ: ';
-  cProgramName = 'РРјСЏ С„Р°Р№Р»Р°: ';
-  cProgramVersion = 'Р’РµСЂСЃРёСЏ: ';
-  cProductVersion = 'Р’РµСЂСЃРёСЏ РїСЂРѕРґСѓРєС‚Р°: ';
+  cCaption = 'О программе';
+  cCompanyName = 'Компания: ';
+  cDesctiption = 'Описание: ';
+  cProgramName = 'Имя файла: ';
+  cProgramVersion = 'Версия: ';
+  cProductVersion = 'Версия продукта: ';
   {$ENDIF}
 
 { Public procs }
@@ -101,7 +107,8 @@ end;
 
 { TAboutForm }
 
-function TAboutForm.AddButton(Left, Width: Integer; const Text: APascalString; OnClick: ACallbackProc): AControl;
+function TAboutForm.AddButton(Left, Width: Integer; const Text: APascalString;
+    OnClick: ACallbackProc): AControl;
 var
   Button: AControl;
 begin
@@ -111,7 +118,7 @@ begin
     AUIControls.UI_Control_SetPosition(Button, Left, 4);
     AUIControls.UI_Control_SetSize(Button, Width, 25);
     AUIControls.UI_Control_SetTextP(Button, Text);
-    AUIControls.UI_Control_SetOnClick03(Button, OnClick);
+    AUIControls.UI_Control_SetOnClick(Button, OnClick);
     {$IFNDEF FPC}TBitBtn(Button).Anchors := [akRight, akBottom];{$ENDIF}
   end;
   Result := Button;
@@ -180,10 +187,15 @@ end;
 
 procedure TAboutForm.Init();
 begin
-  InitA(0, 115);
+  Init2(AUIAboutFlags_ShowAll+AUIAboutFlags_NoShowComment, 0, 115);
 end;
 
-procedure TAboutForm.InitA(MemoWidth, MemoHeight: Integer);
+procedure TAboutForm.Init1(Flags: AUIAboutFlags);
+begin
+  Init2(0, 115, Flags);
+end;
+
+procedure TAboutForm.Init2(Flags: AUIAboutFlags; MemoWidth, MemoHeight: Integer);
 var
   S: string;
 begin
@@ -203,8 +215,12 @@ begin
   if (S <> '') then Memo.Lines.Add(cCompanyName+S);
   S := ASystem.Info_GetDescriptionWS();
   if (S <> '') then Memo.Lines.Add(S);
-  S := ASystem.Info_GetCommentsWS();
-  if (S <> '') then Memo.Lines.Add(S);
+
+  if (Flags and AUIAboutFlags_NoShowComment = 0) then
+  begin
+    S := ASystem.Info_GetCommentsWS();
+    if (S <> '') then Memo.Lines.Add(S);
+  end;
 
   Caption := cCaption;
 
@@ -227,6 +243,11 @@ begin
 
   Self.ClientWidth := Memo.Left + Memo.Width + 8;
   Self.ClientHeight := Memo.Top + Memo.Height + UrlText.Height + ButtonsPanel.Height + 8;
+end;
+
+procedure TAboutForm.InitA(MemoWidth, MemoHeight: Integer);
+begin
+  Init2(AUIAboutFlags_ShowAll+AUIAboutFlags_NoShowComment, MemoWidth, MemoHeight);
 end;
 
 procedure TAboutForm.LoadApplicationIcon();

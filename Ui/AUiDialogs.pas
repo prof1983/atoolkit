@@ -1,9 +1,8 @@
 {**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(16.02.2009)
-@LastMod(25.10.2011)
-@Version(0.5)
+@Abstract AUiDialogs
+@Author Prof1983 <prof1983@ya.ru>
+@Created 16.02.2009
+@LastMod 19.07.2012
 }
 unit AUiDialogs;
 
@@ -13,20 +12,31 @@ interface
 
 uses
   {$IFDEF USE_JEDI}JvBaseDlg, JvSelectDirectory,{$ENDIF}
-  Dialogs, ABase, ABaseTypes,
+  Dialogs, ABase, ABaseTypes, 
   AUiBase, AUiBox, AUiButton, AUiControls, AUiWindows;
 
-function ExecuteColorDialog(var Color: AColor): ABoolean; stdcall;
-function ExecuteFontDialog(var FontName: APascalString; var FontSize: AInteger; var FontColor: AColor): ABoolean; stdcall;
-function ExecuteOpenDialogA(const InitialDir, Filter, DefaultExt, Title: APascalString; var FileName: APascalString; var FilterIndex: AInteger): ABoolean; stdcall;
-function ExecuteSaveFileDialog(const InitialDir, DefExt, DefFileName: APascalString): APascalString; stdcall;
-//function ExecuteSaveFileDialogA(const InitialDir, DefExt, DefFileName, Filter: AString_Type; var FilterIndex: AInteger; out Value: AString_Type): AInteger;
-function ExecuteSaveFileDialogA(const InitialDir, DefExt, DefFileName, Filter: APascalString; var FilterIndex: AInteger): APascalString; stdcall;
-//function ExecuteSelectDirectoryDialog(var Directory: AString): ABoolean;
-function ExecuteSelectDirectoryDialog(var Directory: APascalString): ABoolean; stdcall;
+// TODO: Убрать stdcall
+
+function ExecuteColorDialog(var Color: AColor): ABoolean;
+function ExecuteFontDialog(var FontName: APascalString; var FontSize: AInteger; var FontColor: AColor): ABoolean;
+function ExecuteOpenDialogA(const InitialDir, Filter, DefaultExt, Title: APascalString; var FileName: APascalString; var FilterIndex: AInteger): ABoolean;
+function ExecuteSaveFileDialog(const InitialDir, DefExt, DefFileName: APascalString): APascalString;
+function ExecuteSaveFileDialogA(const InitialDir, DefExt, DefFileName, Filter: APascalString; var FilterIndex: AInteger): APascalString;
+function ExecuteSelectDirectoryDialog(var Directory: APascalString): ABoolean;
 
 function UI_Dialog_GetWindow(Dialog: ADialog): AWindow;
+
+function UI_Dialog_MessageDlg(const Msg: string; MsgDlgTypeFlag: AMessageBoxFlags; Flags: AMessageBoxFlags): AInteger;
+
 function UI_Dialog_New(Buttons: AUIWindowButtons): ADialog;
+
+function UI_Dialogs_InputBox(const Caption, Prompt, Default: APascalString): APascalString;
+
+function UI_Dialogs_InputQuery(const Caption, Prompt: APascalString;
+    var Value: APascalString): ABoolean;
+
+// Отображает окно выбора и настройки печати.
+procedure UI_Dialog_PrinterSetup();
 
 implementation
 
@@ -67,7 +77,7 @@ end;
 
 { Public }
 
-function ExecuteColorDialog(var Color: AColor): ABoolean; stdcall;
+function ExecuteColorDialog(var Color: AColor): ABoolean;
 var
   ColorDialog: TColorDialog;
 begin
@@ -82,7 +92,7 @@ begin
   end;
 end;
 
-function ExecuteFontDialog(var FontName: APascalString; var FontSize: AInteger; var FontColor: AColor): ABoolean; stdcall;
+function ExecuteFontDialog(var FontName: APascalString; var FontSize: AInteger; var FontColor: AColor): ABoolean;
 var
   FontDialog: TFontDialog;
 begin
@@ -103,7 +113,8 @@ begin
   end;
 end;
 
-function ExecuteOpenDialogA(const InitialDir, Filter, DefaultExt, Title: APascalString; var FileName: APascalString; var FilterIndex: AInteger): ABoolean; stdcall;
+function ExecuteOpenDialogA(const InitialDir, Filter, DefaultExt, Title: APascalString;
+    var FileName: APascalString; var FilterIndex: AInteger): ABoolean;
 var
   Open: TOpenDialog;
 begin
@@ -114,7 +125,7 @@ begin
     Open.Filter := Filter;
     Open.DefaultExt := DefaultExt;
     if (Length(Title) = 0) then
-      Open.Title := 'РћС‚РєСЂС‹С‚СЊ'
+      Open.Title := 'Открыть'
     else
       Open.Title := Title;
     Open.FilterIndex := FilterIndex;
@@ -129,7 +140,7 @@ begin
   end;
 end;
 
-function ExecuteSaveFileDialog(const InitialDir, DefExt, DefFileName: APascalString): APascalString; stdcall;
+function ExecuteSaveFileDialog(const InitialDir, DefExt, DefFileName: APascalString): APascalString;
 var
   FilterIndex: Integer;
 begin
@@ -137,19 +148,8 @@ begin
   Result := ExecuteSaveFileDialogA(InitialDir, DefExt, DefFileName, '', FilterIndex);
 end;
 
-{
-function ExecuteSaveFileDialogA(const InitialDir, DefExt, DefFileName, Filter: AString_Type; var FilterIndex: AInteger; out Value: AString_Type): AInteger;
-begin
-  Result := String_AssignW(Value, ExecuteSaveFileDialogAW(
-      String_ToWideString(InitialDir),
-      String_ToWideString(DefExt),
-      String_ToWideString(DefFileName),
-      String_ToWideString(Filter),
-      FilterIndex));
-end;
-}
-
-function ExecuteSaveFileDialogA(const InitialDir, DefExt, DefFileName, Filter: APascalString; var FilterIndex: AInteger): APascalString; stdcall;
+function ExecuteSaveFileDialogA(const InitialDir, DefExt, DefFileName, Filter: APascalString;
+    var FilterIndex: AInteger): APascalString;
 var
   Dialog: TSaveDialog;
 begin
@@ -174,7 +174,7 @@ begin
   end;
 end;
 
-function ExecuteSelectDirectoryDialog(var Directory: APascalString): ABoolean; stdcall;
+function ExecuteSelectDirectoryDialog(var Directory: APascalString): ABoolean;
 {$IFDEF USE_JEDI}
 var
   Dialog: TJvSelectDirectory;
@@ -201,9 +201,54 @@ end;
 
 { UI_Dialog }
 
+function UI_Dialogs_InputBox(const Caption, Prompt, Default: APascalString): APascalString;
+begin
+  Result := Dialogs.InputBox(Caption, Prompt, Default);
+end;
+
+function UI_Dialogs_InputQuery(const Caption, Prompt: APascalString;
+    var Value: APascalString): ABoolean;
+var
+  TmpValue: string;
+begin
+  TmpValue := Value;
+  if not(Dialogs.InputQuery(Caption, Prompt, TmpValue)) then
+  begin
+    Result := False;
+    Exit;
+  end;
+  Value := TmpValue;
+  Result := True;
+end;
+
 function UI_Dialog_GetWindow(Dialog: ADialog): AWindow;
 begin
   Result := TAUIDialog(Dialog).GetWindow;
+end;
+
+function UI_Dialog_MessageDlg(const Msg: string; MsgDlgTypeFlag: AMessageBoxFlags; Flags: AMessageBoxFlags): AInteger;
+//TMsgDlgType = (mtWarning, mtError, mtInformation, mtConfirmation, mtCustom);
+//TMsgDlgBtn = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry, mbIgnore, mbAll, mbNoToAll, mbYesToAll, mbHelp);
+//TMsgDlgButtons = set of TMsgDlgBtn;
+var
+  MsgDlgType: TMsgDlgType;
+  MsgDlgButtons: TMsgDlgButtons;
+begin
+  case MsgDlgTypeFlag of
+    AMessageBoxFlags_IconError: MsgDlgType := mtError;
+    AMessageBoxFlags_IconQuestion: MsgDlgType := mtConfirmation;
+    AMessageBoxFlags_IconWarning: MsgDlgType := mtWarning;
+    AMessageBoxFlags_IconInformation: MsgDlgType := mtInformation;
+    //AMessageBoxFlags_UserIcon: MsgDlgType := mtCustom
+  else
+    MsgDlgType := mtCustom;
+  end;
+
+  if (Flags = AMessageBoxFlags_1) then
+    MsgDlgButtons := [mbYes, mbYesToAll, mbNo, mbCancel]
+  else
+    MsgDlgButtons := [mbYes, mbNo, mbCancel];
+  Result := MessageDlg(Msg, MsgDlgType, MsgDlgButtons, 0);
 end;
 
 function UI_Dialog_New(Buttons: AUIWindowButtons): ADialog;
@@ -252,6 +297,18 @@ begin
     AUIControls.UI_Control_SetTextP(Button, cCancelText);
   end;
   Result := ADialog(Dialog);
+end;
+
+procedure UI_Dialog_PrinterSetup();
+var
+  PrinterSetupDialog: TPrinterSetupDialog;
+begin
+  PrinterSetupDialog := TPrinterSetupDialog.Create(nil);
+  try
+    PrinterSetupDialog.Execute();
+  finally
+    PrinterSetupDialog.Free();
+  end;
 end;
 
 end.

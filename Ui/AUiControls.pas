@@ -1,31 +1,74 @@
 {**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(10.08.2011)
-@LastMod(25.10.2011)
-@Version(0.5)
+@Abstract AUi controls
+@Author Prof1983 <prof1983@ya.ru>
+@Created 10.08.2011
+@LastMod 19.07.2012
 }
 unit AUiControls;
 
 interface
 
 uses
-  Buttons, {$IFNDEF FPC}ComCtrls,{$ENDIF} Controls, Forms, Menus, StdCtrls,
+  Buttons, {$IFNDEF FPC}ComCtrls,{$ENDIF} Controls, ExtCtrls, Forms, Menus, StdCtrls,
   ABase, AUiBase, AUiData;
 
+function UI_Control_GetMenu(Control: AControl): AMenu;
+
 function UI_Control_GetPosition(Control: AControl; out Left, Top: AInteger): AError;
-function UI_Control_SetAlign(Control: AControl; Align: TUIAlign): AError;
+
+//** Задает присоединение элемента.
+procedure UI_Control_SetAlign(Control: AControl; Align: TUIAlign);
+
+//** Задает цвет элемента.
+procedure UI_Control_SetColor(Control: AControl; Color: AColor);
+
+//** Задает шрифт.
+procedure UI_Control_SetFont1(Control: AControl; const FontName: APascalString; FontSize: AInteger);
+
+procedure UI_Control_SetHeight(Control: AControl; Value: AInteger);
 procedure UI_Control_SetHint(Control: AControl; const Value: APascalString);
 procedure UI_Control_SetName(Control: AControl; const Value: APascalString);
+
+function UI_Control_SetOnClick(Control: AControl; Value: ACallbackProc): AError;
 function UI_Control_SetOnClick02(Control: AControl; Value: ACallbackProc02): AError;
 function UI_Control_SetOnClick03(Control: AControl; Value: ACallbackProc03): AError;
+
+//** Задает расположение элемента.
 function UI_Control_SetPosition(Control: AControl; Left, Top: AInteger): AError;
+
+//** Задает внешний размер элемента.
 function UI_Control_SetSize(Control: AControl; Width, Height: Integer): AError;
+
+//** Задает текст элемента.
 function UI_Control_SetTextP(Control: AControl; const Value: APascalString): AError;
+
 procedure UI_Control_SetVisible(Control: AControl; Value: ABoolean);
 function UI_Control_SetWidth(Control: AControl; Value: AInteger): AInteger;
 
 implementation
+
+function UI_Control_GetMenu(Control: AControl): AMenu;
+var
+  C: TControl;
+begin
+  C := TControl(Control);
+  if not(Assigned(C)) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+  if (C is TFrame) then
+  begin
+    Result := 0;
+    Exit;
+  end
+  else if (C is TForm) then
+  begin
+    Result := AMenu(TForm(C).Menu);
+    Exit;
+  end;
+  Result := 0;
+end;
 
 function UI_Control_GetPosition(Control: AControl; out Left, Top: AInteger): AError;
 var
@@ -45,11 +88,44 @@ begin
   Result := 0;
 end;
 
-function UI_Control_SetAlign(Control: AControl; Align: TUIAlign): AError;
+procedure UI_Control_SetAlign(Control: AControl; Align: TUIAlign);
 begin
   if (TObject(Control) is TControl) then
     TControl(Control).Align := TAlign(Align);
-  Result := 0;
+end;
+
+procedure UI_Control_SetColor(Control: AControl; Color: AColor);
+begin
+  if (TObject(Control) is TComboBox) then
+    TComboBox(Control).Color := Color
+  else if (TObject(Control) is TLabel) then
+  begin
+    TLabel(Control).Color := Color;
+    (*if (Color = clBlack) then
+      TLabel(Control).Font.Color := clWhite //UI_Control_SetFont(ColorLineTipV, '', 0, $FFFFFF{clWhite})
+    else
+      TLabel(Control).Font.Color := clBlack; //UI_Control_SetFont(ColorLineTipV, '', 0, $000000{clBlack}); *)
+  end
+  else if (TObject(Control) is TPanel) then
+    TPanel(Control).Color := Color
+  else if (TObject(Control) is TForm) then
+    TForm(Control).Color := Color;
+end;
+
+procedure UI_Control_SetFont1(Control: AControl; const FontName: APascalString; FontSize: AInteger);
+begin
+  if (TObject(Control) is TLabel) then
+  begin
+    if (FontName <> '') then
+      TLabel(Control).Font.Name := FontName;
+    if (FontSize <> 0) then
+      TLabel(Control).Font.Size := FontSize;
+  end;
+end;
+
+procedure UI_Control_SetHeight(Control: AControl; Value: AInteger);
+begin
+  TControl(Control).Height := Value;
 end;
 
 procedure UI_Control_SetHint(Control: AControl; const Value: APascalString);
@@ -66,6 +142,19 @@ begin
     TControl(Control).Name := Value
   else if (TObject(Control) is TMenuItem) then
     TMenuItem(Control).Name := Value;
+end;
+
+function UI_Control_SetOnClick(Control: AControl; Value: ACallbackProc): AError;
+begin
+  {$IFDEF A01}
+    Result := UI_Control_SetOnClick02(Control, Value);
+  {$ELSE}
+    {$IFDEF A02}
+    Result := UI_Control_SetOnClick02(Control, Value);
+    {$ELSE}
+    Result := UI_Control_SetOnClick03(Control, Value);
+    {$ENDIF A02}
+  {$ENDIF}
 end;
 
 function UI_Control_SetOnClick02(Control: AControl; Value: ACallbackProc02): AError;

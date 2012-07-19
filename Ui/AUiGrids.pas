@@ -1,11 +1,10 @@
-п»ї{**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(11.01.2010)
-@LastMod(24.10.2011)
-@Version(0.5)
+{**
+@Abstract AUi grids
+@Author Prof1983 <prof1983@ya.ru>
+@Created 11.01.2010
+@LastMod 19.07.2012
 }
-unit AUiGrids;
+unit AUIGrids;
 
 interface
 
@@ -13,62 +12,96 @@ uses
   Classes, Controls, DBGrids, Grids, SysUtils,
   ABase, {$IFDEF A0}ASettings0{$ELSE}ASettings{$ENDIF}, AUiBase;
 
+{ DBGrid }
+
 function DBGrid_New(Parent: TWinControl): TDBGrid;
-// Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РєРѕР»РѕРЅРѕРєРё DBGrid
+// Восстанавливает колоноки DBGrid
 procedure DBGrid_RestoreColProps(Grid: TDBGrid; Config: AConfig; const Key: APascalString; Delimer: AChar = '\');
-// РЎРѕС…СЂР°РЅСЏРµС‚ РєРѕР»РѕРЅРѕРєРё DBGrid
+// Сохраняет колоноки DBGrid
 procedure DBGrid_SaveColProps(Grid1: TDBGrid; Config: AConfig; const Key: APascalString; Delimer: AChar = '\');
-// РР·РјРµРЅСЏРµС‚ С€РёСЂРёРЅСѓ РєРѕР»РѕРЅРєРё РІ DBGrid
+// Изменяет ширину колонки в DBGrid
 procedure DBGrid_SetColumnWidth(Grid1: TDBGrid; ColumnIndex, Width, Persent, MinWidth: AInteger);
 procedure DBGrid_SetColumnWidthA(Grid1: TDBGrid; ColumnIndex, Width, Persent, MinWidth, MaxWidth: AInteger);
+
+{ StringGrid }
 
 procedure StringGrid_Clear(Grid: TStringGrid);
 procedure StringGrid_ClearA(Grid: TStringGrid; FixedRows: Integer);
 procedure StringGrid_ClearCol(Grid: TStringGrid; Col: Integer);
 procedure StringGrid_DeleteRowByValue(Grid: TStringGrid; Col: Integer; const Value: string);
+
+// Возвращает номер строки с указанным значением в указанной ячейке.
 function StringGrid_Find(Grid: TStringGrid; Col: Integer; const Value: string): Integer;
+
+// Возвращает номер строки с указанным значением в указанной ячейке.
 function StringGrid_FindInt(Grid: TStringGrid; Col, Value: Integer): Integer;
+
+// Возвращает номер строки с указанным значением в указанной ячейке.
 function StringGrid_FindInt_Trim(Grid: TStringGrid; Col, Value: Integer): Integer;
+
 function StringGrid_New(Parent: TWinControl): TStringGrid;
 function StringGrid_RowAdd(Grid: TStringGrid): Integer;
 function StringGrid_RowAddA(Grid: TStringGrid): Integer;
 procedure StringGrid_RowClear(Grid: TStringGrid);
 procedure StringGrid_RowClearA(Grid: TStringGrid; Row: Integer);
-// РЈРґР°Р»СЏРµС‚ СЃС‚СЂРѕС‡РєСѓ.
+
+// Удаляет текущую строку.
 procedure StringGrid_RowDelete(Grid: TStringGrid);
-// РЈРґР°Р»СЏРµС‚ СѓРєР°Р·Р°РЅРЅСѓСЋ СЃС‚СЂРѕС‡РєСѓ.
+
+// Удаляет указанную строку.
 procedure StringGrid_RowDeleteA(Grid: TStringGrid; Row: Integer);
-{ РџРµСЂРµРјРµС‰Р°РµС‚ СЃС‚СЂРѕС‡РєСѓ РЅРёР¶Рµ.
+
+{ Перемещает строчку ниже.
   Use UI_Grid_RowDown() }
 procedure StringGrid_RowDown(Grid: TStringGrid); deprecated;
-// РџРµСЂРµРјРµС‰Р°РµС‚ СѓРєР°Р·Р°РЅРЅСѓСЋ СЃС‚СЂРѕС‡РєСѓ РЅРёР¶Рµ.
+// Перемещает указанную строчку ниже.
 procedure StringGrid_RowDownA(Grid: TStringGrid; Row: Integer);
 procedure StringGrid_RowInsert(Grid: TStringGrid);
-// РџРµСЂРµРјРµС‰Р°РµС‚ СЃС‚СЂРѕС‡РєСѓ РІС‹С€Рµ.
+// Перемещает строчку выше.
 procedure StringGrid_RowUp(Grid: TStringGrid);
 procedure StringGrid_RowSelect(Grid: TStringGrid; Row: Integer);
-// Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РєРѕР»РѕРЅРѕРєРё StringGrid
+// Восстанавливает колоноки StringGrid
 procedure StringGrid_RestoreColProps(Grid: TStringGrid; Config: AConfig; const Key: APascalString; Delimer: AChar = '\');
-// Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РєРѕР»РѕРЅРѕРєРё StringGrid
+// Восстанавливает колоноки StringGrid
 procedure StringGrid_RestoreColPropsA(Grid: TStringGrid; Config: AConfig; const Parent, Name: APascalString; Delimer: AChar = '\');
-// РЎРѕС…СЂР°РЅСЏРµС‚ РєРѕР»РѕРЅРѕРєРё StringGrid
+// Сохраняет колоноки StringGrid
 procedure StringGrid_SaveColProps(Grid: TStringGrid; Config: AConfig; const Key: APascalString; Delimer: AChar = '\');
-// РЎРѕС…СЂР°РЅСЏРµС‚ РєРѕР»РѕРЅРѕРєРё StringGrid
+// Сохраняет колоноки StringGrid
 procedure StringGrid_SaveColPropsA(Grid: TStringGrid; Config: AConfig; const Parent, Name: APascalString; Delimer: AChar = '\');
-// Р—Р°РґР°РµС‚ РєРѕР»-РІРѕ СЃС‚СЂРѕРє РІ С‚Р°Р±Р»РёС†Рµ.
+// Задает кол-во строк в таблице.
 procedure StringGrid_SetRowCount(Grid: TStringGrid; Count: Integer);
 procedure StringGrid_Sort_Float(Grid: TStringGrid);
 procedure StringGrid_Sort_Int(Grid: TStringGrid);
 
-// РџСЂРѕРёР·РІРѕРґРёС‚ РѕС‡РёСЃС‚РєСѓ С‚Р°Р±Р»РёС†С‹. РџРѕРєР° СЂР°Р±РѕС‚Р°РµС‚ С‚РѕР»СЊРєРѕ РґР»СЏ TStringGrid.
+{ UI_Grid }
+
+// Производит очистку таблицы. Пока работает только для TStringGrid.
 function UI_Grid_Clear(Grid: AControl): AError;
-// РЈРґР°Р»СЏРµС‚ СЃС‚СЂРѕС‡РєСѓ. Р Р°Р±РѕС‚Р°РµС‚ РїРѕРєР° С‚РѕР»СЊРєРѕ РґР»СЏ TStringGrid.
+
+// Производит поиск значения в заданной колонке. Работает пока только для TStringGrid.
+function UI_Grid_FindInt(Grid: TObject; Col, Value: Integer): Integer;
+
+{ GridType
+    0 - StringGrid
+    1 - DBGrid }
+function UI_Grid_New(Parent: AControl; GridType: AInteger): AControl;
+
+// Восстанавливает колоноки DBGrid или StringGrid.
+procedure UI_Grid_RestoreColProps(Grid: TObject; Config: AConfig; const Key: APascalString; Delimer: AChar);
+
+// Удаляет строчку. Работает пока только для TStringGrid.
 function UI_Grid_RowDelete(Grid: AControl): AError;
-// РџРµСЂРµРјРµС‰Р°РµС‚ СЃС‚СЂРѕС‡РєСѓ РЅРёР¶Рµ. Р Р°Р±РѕС‚Р°РµС‚ РїРѕРєР° С‚РѕР»СЊРєРѕ РґР»СЏ TStringGrid.
+
+// Перемещает строчку ниже. Работает пока только для TStringGrid.
 procedure UI_Grid_RowDown(Grid: AControl);
-// РџРµСЂРµРјРµС‰Р°РµС‚ СЃС‚СЂРѕС‡РєСѓ РІС‹С€Рµ. Р Р°Р±РѕС‚Р°РµС‚ РїРѕРєР° С‚РѕР»СЊРєРѕ РґР»СЏ TStringGrid.
+
+// Перемещает строчку выше. Работает пока только для TStringGrid.
 procedure UI_Grid_RowUp(Grid: AControl);
-// Р—Р°РґР°РµС‚ РєРѕР»-РІРѕ СЃС‚СЂРѕРє РІ С‚Р°Р±Р»РёС†Рµ. Р Р°Р±РѕС‚Р°РµС‚ РїРѕРєР° С‚РѕР»СЊРєРѕ РґР»СЏ TStringGrid.
+
+// Сохраняет колоноки DBGrid или StringGrid.
+procedure UI_Grid_SaveColProps(Grid: TObject; Config: AConfig; const Key: APascalString; Delimer: AChar);
+
+// Задает кол-во строк в таблице. Работает пока только для TStringGrid.
 procedure UI_Grid_SetRowCount(Grid: AControl; Count: AInteger);
 
 implementation
@@ -307,7 +340,7 @@ begin
   SGrid.RowCount := 2;
   SGrid.FixedCols := 1;
   SGrid.FixedRows := 1;
-  SGrid.Cells[0,0] := 'в„–';
+  SGrid.Cells[0,0] := '№';
   SGrid.Cells[1,0] := 'Subject';
   SGrid.Cells[2,0] := 'Property';
   SGrid.Cells[3,0] := 'Object';
@@ -551,6 +584,35 @@ begin
     Result := -1;
 end;
 
+function UI_Grid_FindInt(Grid: TObject; Col, Value: Integer): Integer;
+begin
+  if not(Assigned(Grid)) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  Result := StringGrid_FindInt(TStringGrid(Grid), Col, Value);
+end;
+
+function UI_Grid_New(Parent: AControl; GridType: AInteger): AControl;
+begin
+  if (GridType = 0) then
+    Result := AControl(StringGrid_New(TWinControl(Parent)))
+  else if (GridType = 1) then
+    Result := AControl(DBGrid_New(TWinControl(Parent)))
+  else
+    Result := 0;
+end;
+
+procedure UI_Grid_RestoreColProps(Grid: TObject; Config: AConfig; const Key: APascalString; Delimer: AChar);
+begin
+  if not(Assigned(Grid)) then Exit;
+  if (Grid is TDBGrid) then
+    DBGrid_RestoreColProps(TDBGrid(Grid), Config, Key, Delimer)
+  else if (Grid is TStringGrid) then
+    StringGrid_RestoreColProps(TStringGrid(Grid), Config, Key, Delimer);
+end;
+
 function UI_Grid_RowDelete(Grid: AControl): AError;
 begin
   if (TObject(Grid) is TStringGrid) then
@@ -570,6 +632,15 @@ end;
 procedure UI_Grid_RowUp(Grid: AControl);
 begin
   StringGrid_RowUp(TObject(Grid) as TStringGrid);
+end;
+
+procedure UI_Grid_SaveColProps(Grid: TObject; Config: AConfig; const Key: APascalString; Delimer: AChar);
+begin
+  if not(Assigned(Grid)) then Exit;
+  if (Grid is TDBGrid) then
+    DBGrid_SaveColProps(TDBGrid(Grid), Config, Key, Delimer)
+  else if (Grid is TStringGrid) then
+    StringGrid_SaveColProps(TStringGrid(Grid), Config, Key, Delimer);
 end;
 
 procedure UI_Grid_SetRowCount(Grid: AControl; Count: AInteger);

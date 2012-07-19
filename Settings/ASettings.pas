@@ -1,9 +1,8 @@
-п»ї{**
-@Abstract(РњРѕРґСѓР»СЊ РґР»СЏ СЂР°Р±РѕС‚Р° СЃ РЅР°СЃС‚СЂРѕР№РєР°РјРё)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(06.03.2008)
-@LastMod(01.03.2012)
-@Version(0.5)
+{**
+@Abstract Модуль для работа с настройками
+@Author Prof1983 <prof1983@ya.ru>
+@Created 06.03.2008
+@LastMod 19.07.2012
 
 0.3.2 - 29.08.2011
 [*] Config_DeleteKey -> Config_DeleteKeyS
@@ -16,13 +15,8 @@
 }
 unit ASettings;
 
-{$IFDEF A02}
-  {$DEFINE A0}
-{$ENDIF A02}
-
-{$IFDEF A03}
-  {$DEFINE A0}
-{$ENDIF A03}
+{$IFDEF A02} {$DEFINE A0} {$ENDIF A02}
+{$IFDEF A03} {$DEFINE A0} {$ENDIF A03}
 
 {$IFNDEF A0}
   {$DEFINE ALOCAL}
@@ -38,18 +32,36 @@ function Done(): AError; stdcall;
 
 function Config_Close(Config: AConfig): AError; stdcall;
 procedure Config_Close02(Config: AConfig); stdcall;
+
 function Config_DeleteKey(Config: AConfig; const Section, Name: AString_Type): AError; stdcall;
+
+function Config_DeleteKey02(Config: AConfig; const Section, Name: AWideString): ABoolean; stdcall;
+
 function Config_DeleteKeyA(Config: AConfig; {const} Section, Name: PAnsiChar): AError; stdcall;
-function Config_DeleteKeyP(Config: AConfig; const Section, Name: WideString): AError; stdcall;
+
+function Config_DeleteKeyP(Config: AConfig; const Section, Name: APascalString): AError; stdcall;
+
 function Config_DeleteKeyS(Config: AConfig; {const} Section, Name: AString): AError; stdcall;
+
 function Config_DeleteKeyW(Config: AConfig; {const} Section, Name: PWideChar): AError; stdcall;
+
+function Config_DeleteKeyWS(Config: AConfig; const Section, Name: AWideString): AError; stdcall;
+
 function Config_DeleteSection(Config: AConfig; const Section: AString_Type): AError; stdcall;
+
+function Config_DeleteSection02(Config: AConfig; const Section: AWideString): ABoolean; stdcall;
+
 function Config_DeleteSectionA(Config: AConfig; {const} Section: PAnsiChar): AError; stdcall;
+
 function Config_DeleteSectionP(Config: AConfig; const Section: APascalString): AError; stdcall;
+
 function Config_DeleteSectionS(Config: AConfig; {const} Section: AString): AError; stdcall;
+
 function Config_DeleteSectionW(Config: AConfig; {const} Section: PWideChar): AError; stdcall;
+
 function Config_ReadBoolDef(Config: AConfig; const Section, Name: AString_Type; DefValue: ABoolean): ABoolean; stdcall;
 function Config_ReadBoolDefA(Config: AConfig; {const} Section, Name: PAnsiChar; DefValue: ABoolean): ABoolean; stdcall;
+//** Считывает параметр из конфигурации.
 function Config_ReadBoolDefP(Config: AConfig; const Section, Name: APascalString; DefValue: ABoolean): ABoolean; stdcall;
 function Config_ReadBoolDefS(Config: AConfig; {const} Section, Name: AString; DefValue: ABoolean): ABoolean; stdcall;
 function Config_ReadBoolDefW(Config: AConfig; {const} Section, Name: PWideChar; DefValue: ABoolean): ABoolean; stdcall;
@@ -80,18 +92,18 @@ function Config_ReadStringS(Config: AConfig; {const} Section, Name: AString; {ou
 function Config_ReadStringW(Config: AConfig; {const} Section, Name: PWideChar; {out} Value: PWideChar; MaxLen: AInteger): AInteger; stdcall;
 function Config_ReadStringWS(Config: AConfig; const Section, Name: AWideString; out Value: AWideString): AInteger; stdcall;
 
-// Р’РѕР·РІСЂР°С‰Р°РµС‚: РµСЃР»Рё СѓР»Р°С‡РЅРѕ - РґР»РёРЅСѓ СЃС‚СЂРѕРєРё, РµСЃР»Рё РЅРµ СѓРґР°С‡РЅРѕ - РєРѕРґ РѕС€РёР±РєРё
+// Возвращает: если улачно - длину строки, если не удачно - код ошибки
 function Config_ReadStringDef(Config: AConfig; const Section, Name, DefValue: AString_Type;
     out Value: AString_Type): AInteger; stdcall;
-// Р’РѕР·РІСЂР°С‰Р°РµС‚: РµСЃР»Рё СѓР»Р°С‡РЅРѕ - РґР»РёРЅСѓ СЃС‚СЂРѕРєРё, РµСЃР»Рё РЅРµ СѓРґР°С‡РЅРѕ - РєРѕРґ РѕС€РёР±РєРё
+// Возвращает: если улачно - длину строки, если не удачно - код ошибки
 function Config_ReadStringDefA(Config: AConfig; {const} Section, Name, DefValue: PAnsiChar;
     {out} Value: PAnsiChar; MaxLen: AInteger): AInteger; stdcall;
-// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃС‚СЂРѕРєСѓ
+// Возвращает строку
 function Config_ReadStringDefP(Config: AConfig; const Section, Name, DefValue: APascalString): APascalString; stdcall;
-// Р’РѕР·РІСЂР°С‰Р°РµС‚: РµСЃР»Рё СѓР»Р°С‡РЅРѕ - РґР»РёРЅСѓ СЃС‚СЂРѕРєРё, РµСЃР»Рё РЅРµ СѓРґР°С‡РЅРѕ - РєРѕРґ РѕС€РёР±РєРё
+// Возвращает: если улачно - длину строки, если не удачно - код ошибки
 function Config_ReadStringDefS(Config: AConfig; {const} Section, Name, DefValue: AString;
     {out} Value: AString): AInteger; stdcall;
-// Р’РѕР·РІСЂР°С‰Р°РµС‚: РµСЃР»Рё СѓР»Р°С‡РЅРѕ - РґР»РёРЅСѓ СЃС‚СЂРѕРєРё, РµСЃР»Рё РЅРµ СѓРґР°С‡РЅРѕ - РєРѕРґ РѕС€РёР±РєРё
+// Возвращает: если улачно - длину строки, если не удачно - код ошибки
 function Config_ReadStringDefW(Config: AConfig; {const} Section, Name, DefValue: PWideChar;
     {out} Value: PWideChar; MaxLen: AInteger): AInteger; stdcall;
 function Config_ReadStringDefWS(Config: AConfig; const Section, Name, DefValue: AWideString): AWideString; stdcall;
@@ -138,19 +150,24 @@ function IniConfig_NewA({const} FileName: PAnsiChar): AConfig; stdcall;
 function IniConfig_NewP(const FileName: APascalString): AConfig; stdcall;
 function IniConfig_NewS({const} FileName: AString): AConfig; stdcall;
 function IniConfig_NewW({const} FileName: PWideChar): AConfig; stdcall;
+function IniConfig_NewWS(const FileName: AWideString): AConfig; stdcall;
+
 function RegConfig_New(const Prefix: AString_Type): AConfig; stdcall;
 function RegConfig_NewA({const} Prefix: PAnsiChar): AConfig; stdcall;
 function RegConfig_NewP(const Prefix: APascalString): AConfig; stdcall;
 function RegConfig_NewS({const} Prefix: AString): AConfig; stdcall;
 function RegConfig_NewW({const} Prefix: PWideChar): AConfig; stdcall;
+function RegConfig_NewWS(const Prefix: AWideString): AConfig; stdcall;
+
 function RegConfig_New2(const Prefix: AString_Type; HKEY: Integer): AConfig; stdcall;
-function RegConfig_New2P(const Prefix: AWideString; HKEY: Integer): AConfig; stdcall;
+function RegConfig_New2P(const Prefix: APascalString; HKEY: Integer): AConfig; stdcall;
+function RegConfig_New2WS(const Prefix: AWideString; HKEY: Integer): AConfig; stdcall;
 
 function A_Settings_IniConfig_New(const FileName: AString_Type): AConfig; stdcall; deprecated;
 function A_Settings_RegConfig_New(const Prefix: AString_Type): AConfig; stdcall; deprecated;
 function A_Settings_RegConfig_NewA(const Prefix: AString_Type; HKEY: Integer): AConfig; stdcall; deprecated;
 
-procedure A_Settings_Config_Close(Config: AConfig); stdcall; deprecated;
+//procedure A_Settings_Config_Close(Config: AConfig); stdcall; deprecated;
 function A_Settings_Config_DeleteKey(Config: AConfig; const Section, Name: AString_Type): ABoolean; stdcall; deprecated;
 function A_Settings_Config_DeleteSection(Config: AConfig; const Section: AString_Type): ABoolean; stdcall; deprecated;
 function A_Settings_Config_ReadBool(Config: AConfig; const Section, Name: AString_Type; DefValue: ABoolean): ABoolean; stdcall; deprecated;
@@ -170,11 +187,11 @@ function A_Settings_Config_WriteDateTime(Config: AConfig; const Section, Name: A
 // Use Config_ReadBoolP()
 function ReadBool(Config: AConfig; const Section, Name: APascalString; DefValue: ABoolean): ABoolean; stdcall; deprecated;
 // Use Config_ReadFloatP()
-function ReadFloat(Config: AConfig; const Section, Name: APascalString; DefValue: AFloat): AFloat; stdcall;
+//function ReadFloat(Config: AConfig; const Section, Name: APascalString; DefValue: AFloat): AFloat; stdcall; deprecated;
 // Use Config_ReadIntegerP()
 function ReadInteger(Config: AConfig; const Section, Name: APascalString; DefValue: AInteger): AInteger; stdcall; deprecated;
 // Use Config_ReadStringP()
-function ReadString(Config: AConfig; const Section, Name, DefValue: APascalString): APascalString; stdcall;
+function ReadString(Config: AConfig; const Section, Name, DefValue: APascalString): APascalString; stdcall; deprecated;
 // Use Config_WriteBoolP()
 function WriteBool(Config: AConfig; const Section, Name: APascalString; Value: ABoolean): AError; stdcall; deprecated;
 // Use Config_WriteIntegerP()
@@ -183,19 +200,28 @@ function WriteInteger(Config: AConfig; const Section, Name: APascalString; Value
 function WriteString(Config: AConfig; const Section, Name, Value: APascalString): AError; stdcall; deprecated;
 
 procedure Settings_Close02(Config: AConfig); stdcall;
+
+//function Settings_DeleteKey(Config: AConfig; const Section, Name: APascalString): ABoolean; stdcall; deprecated;
+
 function Settings_DeleteKey02(Config: AConfig; const Section, Name: APascalString): ABoolean; stdcall;
+
 function Settings_DeleteSection02(Config: AConfig; const Section: APascalString): ABoolean; stdcall;
+
 function Settings_ReadBool02(Config: AConfig; const Section, Name: APascalString; DefValue: ABoolean): ABoolean; stdcall;
+function Settings_ReadInteger(Config: AConfig; const Section, Name: APascalString; DefValue: AInteger): AInteger; stdcall; deprecated;
 function Settings_ReadInteger02(Config: AConfig; const Section, Name: APascalString; DefValue: AInteger): AInteger; stdcall;
 function Settings_ReadFloat02(Config: AConfig; const Section, Name: APascalString; DefValue: AFloat): AFloat; stdcall;
 function Settings_ReadSection02(Config: AConfig; const Section: APascalString; Strings: AStringList): ABoolean; stdcall;
+function Settings_ReadString(Config: AConfig; const Section, Name, DefValue: APascalString): APascalString; stdcall;
 {function Settings_ReadString(Config: AConfig; const Section, Name: APascalString; out Value: APascalString): AInteger; stdcall;
 function Settings_ReadStringA(Config: AConfig; const Section, Name, DefValue: APascalString; out Value: APascalString): AInteger; stdcall;
 function Settings_ReadStringDef(Config: AConfig; const Section, Name, DefValue: APascalString): APascalString; stdcall;
 function Settings_ReadDateTime(Config: AConfig; const Section, Name: APascalString; DefValue: TDateTime): TDateTime; stdcall;}
 function Settings_WriteBool02(Config: AConfig; const Section, Name: APascalString; Value: Boolean): ABoolean; stdcall;
+function Settings_WriteInteger(Config: AConfig; const Section, Name: APascalString; Value: Integer): ABoolean; stdcall; deprecated;
 function Settings_WriteInteger02(Config: AConfig; const Section, Name: APascalString; Value: Integer): ABoolean; stdcall;
 function Settings_WriteFloat02(Config: AConfig; const Section, Name: APascalString; Value: AFloat): ABoolean; stdcall;
+function Settings_WriteString(Config: AConfig; const Section, Name, Value: APascalString): ABoolean; stdcall; deprecated;
 function Settings_WriteString02(Config: AConfig; const Section, Name, Value: APascalString): ABoolean; stdcall;
 function Settings_WriteDateTime02(Config: AConfig; const Section, Name: APascalString; Value: TDateTime): ABoolean; stdcall;
 
@@ -206,13 +232,14 @@ uses
 
 { A_Settings }
 
+{ Use Config_Close02().
 procedure A_Settings_Config_Close(Config: AConfig); stdcall;
 begin
   try
     Settings_Close(Config);
   except
   end;
-end;
+end;}
 
 function A_Settings_Config_DeleteKey(Config: AConfig; const Section, Name: AString_Type): ABoolean; stdcall;
 begin
@@ -404,19 +431,28 @@ end;
 function Config_DeleteKey(Config: AConfig; const Section, Name: AString_Type): AError; stdcall;
 begin
   try
-    if Settings_DeleteKey(Config, AStrings.String_ToWideString(Section), AStrings.String_ToWideString(Name)) then
+    if ASettingsConfig.Settings_DeleteKey(Config, AStrings.String_ToWideString(Section), AStrings.String_ToWideString(Name)) then
       Result := 0
     else
       Result := -1;
   except
     Result := -1;
+  end;
+end;
+
+function Config_DeleteKey02(Config: AConfig; const Section, Name: AWideString): ABoolean; stdcall;
+begin
+  try
+    Result := Settings_DeleteKey(Config, Section, Name);
+  except
+    Result := False;
   end;
 end;
 
 function Config_DeleteKeyA(Config: AConfig; {const} Section, Name: PAnsiChar): AError; stdcall;
 begin
   try
-    if Settings_DeleteKey(Config, AnsiString(Section), AnsiString(Name)) then
+    if ASettingsConfig.Settings_DeleteKey(Config, AnsiString(Section), AnsiString(Name)) then
       Result := 0
     else
       Result := -1;
@@ -425,10 +461,10 @@ begin
   end;
 end;
 
-function Config_DeleteKeyP(Config: AConfig; const Section, Name: WideString): AError; stdcall;
+function Config_DeleteKeyP(Config: AConfig; const Section, Name: APascalString): AError; stdcall;
 begin
   try
-    if Settings_DeleteKey(Config, Section, Name) then
+    if ASettingsConfig.Settings_DeleteKey(Config, Section, Name) then
       Result := 0
     else
       Result := -1;
@@ -447,6 +483,18 @@ begin
   Result := Config_DeleteKeyP(Config, WideString(Section), WideString(Name));
 end;
 
+function Config_DeleteKeyWS(Config: AConfig; const Section, Name: AWideString): AError; stdcall;
+begin
+  try
+    if ASettingsConfig.Settings_DeleteKey(Config, Section, Name) then
+      Result := 0
+    else
+      Result := -1;
+  except
+    Result := -1;
+  end;
+end;
+
 function Config_DeleteSection(Config: AConfig; const Section: AString_Type): AError; stdcall;
 begin
   try
@@ -456,6 +504,15 @@ begin
       Result := -1;
   except
     Result := -1;
+  end;
+end;
+
+function Config_DeleteSection02(Config: AConfig; const Section: AWideString): ABoolean; stdcall;
+begin
+  try
+    Result := Settings_DeleteSection(Config, Section);
+  except
+    Result := False;
   end;
 end;
 
@@ -556,7 +613,7 @@ end;
 function Config_ReadIntegerDef(Config: AConfig; const Section, Name: AString_Type; DefValue: AInteger): AInteger; stdcall;
 begin
   try
-    Result := Settings_ReadInteger(Config,
+    Result := ASettingsConfig.Settings_ReadInteger(Config,
         AStrings.String_ToWideString(Section),
         AStrings.String_ToWideString(Name),
         DefValue);
@@ -568,7 +625,7 @@ end;
 function Config_ReadIntegerDefA(Config: AConfig; {const} Section, Name: PAnsiChar; DefValue: AInteger): AInteger; stdcall;
 begin
   try
-    Result := Settings_ReadInteger(Config, AnsiString(Section), AnsiString(Name), DefValue);
+    Result := ASettingsConfig.Settings_ReadInteger(Config, AnsiString(Section), AnsiString(Name), DefValue);
   except
     Result := DefValue;
   end;
@@ -577,7 +634,7 @@ end;
 function Config_ReadIntegerDefP(Config: AConfig; const Section, Name: APascalString; DefValue: AInteger): AInteger; stdcall;
 begin
   try
-    Result := Settings_ReadInteger(Config, Section, Name, DefValue);
+    Result := ASettingsConfig.Settings_ReadInteger(Config, Section, Name, DefValue);
   except
     Result := DefValue;
   end;
@@ -591,7 +648,7 @@ end;
 function Config_ReadIntegerDefW(Config: AConfig; {const} Section, Name: PWideChar; DefValue: AInteger): AInteger; stdcall;
 begin
   try
-    Result := Settings_ReadInteger(Config, WideString(Section), WideString(Name), DefValue);
+    Result := ASettingsConfig.Settings_ReadInteger(Config, WideString(Section), WideString(Name), DefValue);
   except
     Result := DefValue;
   end;
@@ -600,7 +657,7 @@ end;
 function Config_ReadIntegerDefWS(Config: AConfig; const Section, Name: AWideString; DefValue: AInteger): AInteger; stdcall;
 begin
   try
-    Result := Settings_ReadInteger(Config, Section, Name, DefValue);
+    Result := ASettingsConfig.Settings_ReadInteger(Config, Section, Name, DefValue);
   except
     Result := DefValue;
   end;
@@ -729,7 +786,7 @@ var
   S: APascalString;
 begin
   try
-    Result := Settings_ReadString(Config,
+    Result := ASettingsConfig.Settings_ReadString(Config,
         AStrings.String_ToWideString(Section),
         AStrings.String_ToWideString(Name),
         S);
@@ -745,7 +802,7 @@ var
   S: APascalString;
 begin
   try
-    Result := Settings_ReadString(Config, AnsiString(Section), AnsiString(Name), S);
+    Result := ASettingsConfig.Settings_ReadString(Config, AnsiString(Section), AnsiString(Name), S);
     if (Result > 0) then
       AStrings.StrPLCopy(Value, AnsiString(S), MaxLen);
   except
@@ -826,7 +883,7 @@ end;
 function Config_ReadStringP(Config: AConfig; const Section, Name: APascalString; out Value: APascalString): AInteger; stdcall;
 begin
   try
-    Result := Settings_ReadString(Config, Section, Name, Value);
+    Result := ASettingsConfig.Settings_ReadString(Config, Section, Name, Value);
   except
     Result := -1;
   end;
@@ -846,7 +903,7 @@ var
   S: APascalString;
 begin
   try
-    Result := Settings_ReadString(Config, WideString(Section), WideString(Name), S);
+    Result := ASettingsConfig.Settings_ReadString(Config, WideString(Section), WideString(Name), S);
     if (Result > 0) then
       AStrings.StrCopyLWP(Value, S, MaxLen);
   except
@@ -860,7 +917,7 @@ var
 begin
   try
     S := Value;
-    Result := Settings_ReadString(Config, Section, Name, S);
+    Result := ASettingsConfig.Settings_ReadString(Config, Section, Name, S);
     Value := S;
   except
     Result := -1;
@@ -997,7 +1054,7 @@ end;
 function Config_WriteInteger(Config: AConfig; const Section, Name: AString_Type; Value: AInteger): AError; stdcall;
 begin
   try
-    if Settings_WriteInteger(Config, AStrings.String_ToPascalString(Section), AStrings.String_ToPascalString(Name), Value) then
+    if ASettingsConfig.Settings_WriteInteger(Config, AStrings.String_ToPascalString(Section), AStrings.String_ToPascalString(Name), Value) then
       Result := 0
     else
       Result := -1;
@@ -1009,7 +1066,7 @@ end;
 function Config_WriteIntegerA(Config: AConfig; {const} Section, Name: PAnsiChar; Value: AInteger): AError; stdcall;
 begin
   try
-    if Settings_WriteInteger(Config, AnsiString(Section), AnsiString(Name), Value) then
+    if ASettingsConfig.Settings_WriteInteger(Config, AnsiString(Section), AnsiString(Name), Value) then
       Result := 0
     else
       Result := -1;
@@ -1021,7 +1078,7 @@ end;
 function Config_WriteIntegerP(Config: AConfig; const Section, Name: APascalString; Value: AInteger): AError; stdcall;
 begin
   try
-    if Settings_WriteInteger(Config, Section, Name, Value) then
+    if ASettingsConfig.Settings_WriteInteger(Config, Section, Name, Value) then
       Result := 0
     else
       Result := -1;
@@ -1041,7 +1098,7 @@ end;
 function Config_WriteIntegerW(Config: AConfig; {const} Section, Name: PWideChar; Value: AInteger): AError; stdcall;
 begin
   try
-    if Settings_WriteInteger(Config, WideString(Section), WideString(Name), Value) then
+    if ASettingsConfig.Settings_WriteInteger(Config, WideString(Section), WideString(Name), Value) then
       Result := 0
     else
       Result := -1;
@@ -1053,7 +1110,7 @@ end;
 function Config_WriteIntegerWS(Config: AConfig; const Section, Name: AWideString; Value: AInteger): AError; stdcall;
 begin
   try
-    if Settings_WriteInteger(Config, Section, Name, Value) then
+    if ASettingsConfig.Settings_WriteInteger(Config, Section, Name, Value) then
       Result := 0
     else
       Result := -1;
@@ -1133,7 +1190,7 @@ end;
 function Config_WriteString(Config: AConfig; const Section, Name, Value: AString_Type): AError; stdcall;
 begin
   try
-    if Settings_WriteString(Config,
+    if ASettingsConfig.Settings_WriteString(Config,
         AStrings.String_ToPascalString(Section),
         AStrings.String_ToPascalString(Name),
         AStrings.String_ToPascalString(Value)) then
@@ -1148,7 +1205,7 @@ end;
 function Config_WriteStringA(Config: AConfig; {const} Section, Name, Value: PAnsiChar): AError; stdcall;
 begin
   try
-    if Settings_WriteString(Config, AnsiString(Section), AnsiString(Name), AnsiString(Value)) then
+    if ASettingsConfig.Settings_WriteString(Config, AnsiString(Section), AnsiString(Name), AnsiString(Value)) then
       Result := 0
     else
       Result := -1;
@@ -1160,7 +1217,7 @@ end;
 function Config_WriteStringP(Config: AConfig; const Section, Name, Value: APascalString): AError; stdcall;
 begin
   try
-    if Settings_WriteString(Config, Section, Name, Value) then
+    if ASettingsConfig.Settings_WriteString(Config, Section, Name, Value) then
       Result := 0
     else
       Result := -1;
@@ -1180,7 +1237,7 @@ end;
 function Config_WriteStringW(Config: AConfig; {const} Section, Name, Value: PWideChar): AError; stdcall;
 begin
   try
-    if Settings_WriteString(Config, WideString(Section), WideString(Name), WideString(Value)) then
+    if ASettingsConfig.Settings_WriteString(Config, WideString(Section), WideString(Name), WideString(Value)) then
       Result := 0
     else
       Result := -1;
@@ -1192,7 +1249,7 @@ end;
 function Config_WriteStringWS(Config: AConfig; const Section, Name, Value: AWideString): AError; stdcall;
 begin
   try
-    if Settings_WriteString(Config, Section, Name, Value) then
+    if ASettingsConfig.Settings_WriteString(Config, Section, Name, Value) then
       Result := 0
     else
       Result := -1;
@@ -1321,6 +1378,15 @@ begin
   end;
 end;
 
+function IniConfig_NewWS(const FileName: AWideString): AConfig; stdcall;
+begin
+  try
+    Result := Settings_IniConfig_New(FileName);
+  except
+    Result := 0;
+  end;
+end;
+
 function Init(): AError; stdcall;
 begin
   Result := 0;
@@ -1368,7 +1434,16 @@ begin
   end;
 end;
 
-function RegConfig_New2P(const Prefix: AWideString; HKEY: Integer): AConfig; stdcall;
+function RegConfig_New2P(const Prefix: APascalString; HKEY: Integer): AConfig; stdcall;
+begin
+  try
+    Result := Settings_RegConfig_NewA(Prefix, HKEY);
+  except
+    Result := 0;
+  end;
+end;
+
+function RegConfig_New2WS(const Prefix: AWideString; HKEY: Integer): AConfig; stdcall;
 begin
   try
     Result := Settings_RegConfig_NewA(Prefix, HKEY);
@@ -1412,12 +1487,31 @@ begin
   end;
 end;
 
+function RegConfig_NewWS(const Prefix: AWideString): AConfig; stdcall;
+begin
+  try
+    Result := Settings_RegConfig_New(Prefix);
+  except
+    Result := 0;
+  end;
+end;
+
 { Settings }
 
 procedure Settings_Close02(Config: AConfig); stdcall;
 begin
   Config_Close(Config);
 end;
+
+{
+function Settings_DeleteKey(Config: AConfig; const Section, Name: APascalString): ABoolean; stdcall;
+begin
+  if (Config_DeleteKeyP(Config, Section, Name) >= 0) then
+    Result := True
+  else
+    Result := False;
+end;
+}
 
 function Settings_DeleteKey02(Config: AConfig; const Section, Name: APascalString): ABoolean; stdcall;
 begin
@@ -1445,6 +1539,11 @@ begin
   Result := Config_ReadBoolDefP(Config, Section, Name, DefValue);
 end;
 
+function Settings_ReadInteger(Config: AConfig; const Section, Name: APascalString; DefValue: AInteger): AInteger; stdcall;
+begin
+  Result := Config_ReadIntegerDefP(Config, Section, Name, DefValue);
+end;
+
 function Settings_ReadInteger02(Config: AConfig; const Section, Name: APascalString; DefValue: AInteger): AInteger; stdcall;
 begin
   Result := Config_ReadIntegerDefP(Config, Section, Name, DefValue);
@@ -1461,6 +1560,15 @@ begin
     Result := True
   else
     Result := False;
+end;
+
+function Settings_ReadString(Config: AConfig; const Section, Name, DefValue: APascalString): APascalString; stdcall;
+begin
+  try
+    Result := ASettingsConfig.Settings_ReadStringDef(Config, Section, Name, DefValue);
+  except
+    Result := '';
+  end;
 end;
 
 {function Settings_ReadString(Config: AConfig; const Section, Name: APascalString; out Value: APascalString): AInteger; stdcall;
@@ -1503,6 +1611,14 @@ begin
     Result := False;
 end;
 
+function Settings_WriteInteger(Config: AConfig; const Section, Name: APascalString; Value: Integer): ABoolean; stdcall;
+begin
+  if (Config_WriteIntegerP(Config, Section, Name, Value) >= 0) then
+    Result := True
+  else
+    Result := False;
+end;
+
 function Settings_WriteInteger02(Config: AConfig; const Section, Name: APascalString; Value: Integer): ABoolean; stdcall;
 begin
   if (Config_WriteIntegerP(Config, Section, Name, Value) >= 0) then
@@ -1514,6 +1630,14 @@ end;
 function Settings_WriteFloat02(Config: AConfig; const Section, Name: APascalString; Value: AFloat): ABoolean; stdcall;
 begin
   if (Config_WriteFloatP(Config, Section, Name, Value) >= 0) then
+    Result := True
+  else
+    Result := False;
+end;
+
+function Settings_WriteString(Config: AConfig; const Section, Name, Value: APascalString): ABoolean; stdcall;
+begin
+  if (Config_WriteStringP(Config, Section, Name, Value) >= 0) then
     Result := True
   else
     Result := False;

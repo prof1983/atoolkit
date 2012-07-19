@@ -1,8 +1,8 @@
 {**
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.08.2011)
-@LastMod(25.10.2011)
-@Version(0.5)
+@Abstract AUi ToolBar
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.08.2011
+@LastMod 19.07.2012
 }
 unit AUiToolBar;
 
@@ -13,10 +13,13 @@ uses
   ABase, AUiBase, AUiButton, AUiControls, AUiData;
 
 function UI_ToolBar_AddButton(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    OnClick: ACallbackProc03; ImageID, Weight: AInteger): AButton;
+    OnClick: ACallbackProc; ImageID, Weight: AInteger): AButton;
 
 function UI_ToolBar_AddButton02(ToolBar: AControl; const Name, Text, Hint: APascalString;
     OnClick: ACallbackProc02; ImageID, Weight: AInteger): AButton;
+
+function UI_ToolBar_AddButton03(ToolBar: AControl; const Name, Text, Hint: APascalString;
+    OnClick: ACallbackProc03; ImageID, Weight: AInteger): AButton;
 
 function UI_ToolBar_AddButton1(ToolBar: AControl; const Name, Text, Hint: APascalString;
     ImageID, Weight: AInteger): AButton;
@@ -71,12 +74,12 @@ end;
 { ToolBar }
 
 function UI_ToolBar_AddButton(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    OnClick: ACallbackProc03; ImageID, Weight: AInteger): AButton;
+    OnClick: ACallbackProc; ImageID, Weight: AInteger): AButton;
 var
   Button: AButton;
 begin
   Button := UI_ToolBar_AddButton1(ToolBar, Name, Text, Hint, ImageID, Weight);
-  AUIControls.UI_Control_SetOnClick03(Button, OnClick);
+  AUIControls.UI_Control_SetOnClick(Button, OnClick);
   Result := Button;
 end;
 
@@ -87,6 +90,16 @@ var
 begin
   Button := UI_ToolBar_AddButton1(ToolBar, Name, Text, Hint, ImageID, Weight);
   AUIControls.UI_Control_SetOnClick02(Button, OnClick);
+  Result := Button;
+end;
+
+function UI_ToolBar_AddButton03(ToolBar: AControl; const Name, Text, Hint: APascalString;
+    OnClick: ACallbackProc03; ImageID, Weight: AInteger): AButton;
+var
+  Button: AButton;
+begin
+  Button := UI_ToolBar_AddButton1(ToolBar, Name, Text, Hint, ImageID, Weight);
+  AUIControls.UI_Control_SetOnClick03(Button, OnClick);
   Result := Button;
 end;
 
@@ -106,7 +119,7 @@ begin
   {if Assigned(Image) then
     IAUIclImage(Image).GetBitmap(Button.Glyph);}
 
-  // Ð Ð°ÑÐ¿Ð¾Ð»Ð°Ð³Ð°ÐµÐ¼ Ð² Ð½ÑƒÐ¶Ð½Ð¾Ð¼ Ð¼ÐµÑÑ‚Ðµ Ð² Ð·Ð°Ð²Ð¸ÑÐ¸Ð¼Ð¾ÑÑ‚Ð¸ Ð¾Ñ‚ Ð²ÐµÑÐ°
+  // Ðàñïîëàãàåì â íóæíîì ìåñòå â çàâèñèìîñòè îò âåñà
   I := ToolBar_GetButtonIndexByWeight(ToolBar, Weight);
   if (I >= 0) then
   begin

@@ -1,16 +1,15 @@
-п»ї{**
-@Abstract(РЎРѕР±С‹С‚РёРµ)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(20.10.2005)
-@LastMod(19.11.2011)
-@Version(0.5)
+{**
+@Abstract Событие
+@Author Prof1983 <prof1983@ya.ru>
+@Created 20.10.2005
+@LastMod 19.07.2012
 }
 unit AEvents;
 
 interface
 
 uses
-  ABase;
+  ABase, AStrings;
 
 function Init(): AError; stdcall;
 function Done(): AError; stdcall;
@@ -34,9 +33,13 @@ function Event_GetNameS(Event: AEvent; Value: AString): AInteger; stdcall;
 // MaxLen = (SizeOf div 2) - 1
 function Event_GetNameW(Event: AEvent; {out} Value: PWideChar; MaxLen: AInteger): AInteger; stdcall;
 
+//** Присоединяет к событию.
 function Event_Connect(Event: AEvent; Callback: ACallbackProc; Weight: AInteger = High(AInteger)): AInteger; stdcall;
+
+//** Отсоединяет от события.
 function Event_Disconnect(Event: AEvent; Callback: ACallbackProc): AInteger; stdcall;
-// Р’С‹Р·С‹РІР°РµС‚ СЃРѕР±С‹С‚РёРµ. Р’РѕР·РІСЂСЏС‰Р°РµС‚ РєРѕР»-РІРѕ СѓСЃРїРµС€РЅРѕ РІС‹РїРѕР»РЅРµРЅРЅС‹С… РІС‹Р·РѕРІРѕРІ (>0) РёР»Рё РѕС€РёР±РєСѓ (<0).
+
+//** Вызывает событие. Возврящает кол-во успешно выполненных вызовов (>0) или ошибку (<0).
 function Event_Invoke(Event: AEvent; Data: Integer): AInteger; stdcall;
 
 implementation
@@ -101,9 +104,17 @@ begin
 end;
 
 function Event_GetName(Event: AEvent; out Value: AString_Type): AInteger; stdcall;
+var
+  S: APascalString;
 begin
+  if (Event = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
   try
-    Result := _Event_GetName(Event, Value);
+    S := TAEvent(Event).GetName;
+    Result := AStrings.String_AssignP(Value, S);
   except
     Result := -1;
   end;
@@ -120,6 +131,11 @@ end;
 
 function Event_GetNameP(Event: AEvent): APascalString; stdcall;
 begin
+  if (Event = 0) then
+  begin
+    Result := '';
+    Exit;
+  end;
   try
     Result := TAEvent(Event).GetName;
   except

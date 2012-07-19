@@ -1,30 +1,40 @@
 {**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(16.08.2011)
-@LastMod(25.10.2011)
-@Version(0.5)
+@abstract AUi Menus
+@author Prof1983 <prof1983@ya.ru>
+@created 16.08.2011
+@lastmod 19.07.2012
 }
-unit AUiMenus;
+unit AUIMenus;
 
 interface
 
 uses
   Menus, ABase, AUiBase, AUiData, AUiEvents;
 
+// --- Menu ---
+
+function UI_Menu_AddItem(Menu: AMenu; const Name, Text: APascalString;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem;
+
 function UI_Menu_GetItems(Menu: AMenu): AMenuItem;
+
 function UI_Menu_New(MenuType: AInteger): AMenu;
 
+// --- MenuItem ---
+
 function UI_MenuItem_Add(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem;
+    OnClick: ACallbackProc; ImageID, Weight, Tag: Integer): AMenuItem;
 
 function UI_MenuItem_Add02(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
     OnClick: ACallbackProc02; ImageID, Weight: Integer): AMenuItem;
 
+function UI_MenuItem_Add03(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
+    OnClick: ACallbackProc03; ImageID, Weight, Tag: Integer): AMenuItem;
+
 function UI_MenuItem_Add2(Parent: AMenuItem; MenuItem: AMenuItem; Weight: AInteger): AMenuItem;
 
 function UI_MenuItem_AddEx(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
-    ImageID, Weight: AInteger; out ResIndex: AInteger): AError;
+    ImageID, Weight, Tag: AInteger; out ResIndex: AInteger): AError;
 
 function UI_MenuItem_FindByName(MenuItem: AMenuItem; const Name: APascalString): AMenuItem;
 
@@ -61,6 +71,22 @@ end;
 
 { Menu }
 
+function UI_Menu_AddItem(Menu: AMenu; const Name, Text: APascalString;
+    OnClick: ACallbackProc; ImageId, Weight: Integer): AMenuItem;
+var
+  MenuItems: AMenuItem;
+begin
+  MenuItems := AUIMenus.UI_Menu_GetItems(Menu);
+
+  if (MenuItems = 0) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+
+  Result := AUIMenus.UI_MenuItem_Add(MenuItems, Name, Text, OnClick, ImageId, Weight, 0);
+end;
+
 function UI_Menu_GetItems(Menu: AMenu): AMenuItem;
 var
   O: TObject;
@@ -82,19 +108,29 @@ end;
 { MenuItem }
 
 function UI_MenuItem_Add(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem;
+    OnClick: ACallbackProc; ImageID, Weight, Tag: Integer): AMenuItem;
 var
   Res: AError;
   ResIndex: AInteger;
 begin
-  Res := UI_MenuItem_AddEx(ParentMenuItem, Name, Text, ImageID, Weight, ResIndex);
+  Res := UI_MenuItem_AddEx(ParentMenuItem, Name, Text, ImageID, Weight, Tag, ResIndex);
   if (Res < 0) then
   begin
     Result := 0;
     Exit;
   end;
   if (Res = 0) then
-    FMenuItems[ResIndex].OnClick03 := OnClick;
+  begin
+    {$IFDEF A01}
+      FMenuItems[ResIndex].OnClick02 := OnClick;
+    {$ELSE}
+      {$IFDEF A02}
+      FMenuItems[ResIndex].OnClick02 := OnClick;
+      {$ELSE}
+      FMenuItems[ResIndex].OnClick03 := OnClick;
+      {$ENDIF A02}
+    {$ENDIF A01}
+  end;
   Result := FMenuItems[ResIndex].MenuItem;
 end;
 
@@ -104,7 +140,7 @@ var
   Res: AError;
   ResIndex: AInteger;
 begin
-  Res := UI_MenuItem_AddEx(ParentMenuItem, Name, Text, ImageID, Weight, ResIndex);
+  Res := UI_MenuItem_AddEx(ParentMenuItem, Name, Text, ImageID, Weight, 0, ResIndex);
   if (Res < 0) then
   begin
     Result := 0;
@@ -112,6 +148,23 @@ begin
   end;
   if (Res = 0) then
     FMenuItems[ResIndex].OnClick02 := OnClick;
+  Result := FMenuItems[ResIndex].MenuItem;
+end;
+
+function UI_MenuItem_Add03(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
+    OnClick: ACallbackProc03; ImageID, Weight, Tag: Integer): AMenuItem;
+var
+  Res: AError;
+  ResIndex: AInteger;
+begin
+  Res := UI_MenuItem_AddEx(ParentMenuItem, Name, Text, ImageID, Weight, 0, ResIndex);
+  if (Res < 0) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+  if (Res = 0) then
+    FMenuItems[ResIndex].OnClick03 := OnClick;
   Result := FMenuItems[ResIndex].MenuItem;
 end;
 
@@ -129,7 +182,7 @@ begin
 end;
 
 function UI_MenuItem_AddEx(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
-    ImageID, Weight: AInteger; out ResIndex: AInteger): AError;
+    ImageID, Weight, Tag: AInteger; out ResIndex: AInteger): AError;
 var
   I: Integer;
   Index: Integer;
@@ -158,7 +211,7 @@ begin
     Exit;
   end;
 
-  // Ð£Ð·Ð½Ð°ÐµÐ¼ Ð¸Ð½Ð´ÐµÐºÑ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚Ð° Ð´Ð»Ñ Ð²ÑÑ‚Ð°Ð²ÐºÐ¸
+  // Óçíàåì èíäåêñ ýëåìåíòà äëÿ âñòàâêè
   IndexMax := -1;
   WeightMax := High(Integer);
   for I := 0 to High(FMenuItems) do
@@ -175,6 +228,7 @@ begin
   mi.Name := 'mi'+Name;
   mi.Caption := Text;
   mi.OnClick := UI_.MenuItemClick;
+  mi.Tag := Tag;
 
   if (Index >= 0) then
     Item.Insert(TMenuItem(FMenuItems[Index].MenuItem).MenuIndex, mi)

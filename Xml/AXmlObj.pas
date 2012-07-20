@@ -1,9 +1,8 @@
 {**
 @Abstract(Xml)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(03.05.2012)
-@LastMod(17.05.2012)
-@Version(0.5)
+@LastMod(20.07.2012)
 }
 unit AXmlObj;
 
@@ -11,7 +10,7 @@ interface
 
 uses
   SysUtils,
-  ABase, ABaseUtils3, AStreamObj, ATypes;
+  ABase, ABaseUtils3, AStreamObj, ATypes, AXmlDocumentUtils, AXmlNodeUtils;
 
 type
   TParam = class
@@ -29,13 +28,14 @@ type // Recover 03.05.2012 from AConfigObject2.TConfigFileText
   TProfXml = class
   private
     FParams: array of TParam;
+    FXmlDocument: AXmlDocument;
+    FXmlNode: AXmlNode;
   public
     function Finalize(): TError; virtual;
     function Initialize(): TError; virtual;
   public
     function AddParam(Param: TParam): Int32;
     function Clear(): TError;
-    procedure Free();
     function Load(const FileName: String): TError;
     function LoadFromXml(Xml: TProfXml): TError;
     function NewParam(Name, Value: String): Int32;
@@ -55,7 +55,7 @@ type // Recover 03.05.2012 from AConfigObject2.TConfigFileText
     function GetParamValueByNameAsUInt64_(Name: String; var Value: UInt64): Boolean; virtual; deprecated; // Use ReadParamValueByNameAsUInt64()
   public
     function ReadBool(Section, Name: String; var Value: Boolean): TError; virtual;
-    function ReadInt32(Section, Name: String; var Value: Int32): Boolean; virtual;
+    function ReadInt32(const Section, Name: APascalString; var Value: AInt32): ABoolean; virtual;
     function ReadInt64(const Section, Name: APascalString; var Value: AInt64): ABoolean; virtual;
     function ReadStr(Name: String; var Value: String): Boolean; deprecated; // Use ReadString()
     function ReadString(Section, Name: String; var Value: String): Boolean; virtual;
@@ -80,6 +80,10 @@ type // Recover 03.05.2012 from AConfigObject2.TConfigFileText
     function WriteString(Section, Name, Value: String): TError; virtual;
     function WriteUInt32(Name: String; Value: UInt32): TError; virtual;
     function WriteUInt64(Section, Name: String; Value: UInt64): Boolean; virtual;
+  public
+    constructor Create1(XmlNode: AXmlNode);
+    constructor Create2(XmlDocument: AXmlDocument);
+    procedure Free();
   end;
 
 implementation
@@ -121,9 +125,23 @@ function TProfXml.Clear(): TError;
 var
   I: Int32;
 begin
-  for I := 0 to High(FParams) do FParams[I].Free;
+  for I := 0 to High(FParams) do
+    FParams[I].Free();
   SetLength(FParams, 0);
   Result := 0;
+end;
+
+constructor TProfXml.Create1(XmlNode: AXmlNode);
+begin
+  inherited Create();
+  FXmlNode := XmlNode;
+end;
+
+constructor TProfXml.Create2(XmlDocument: AXmlDocument);
+begin
+  inherited Create();
+  FXmlDocument := XmlDocument;
+  FXmlNode := AXmlDocument_GetDocumentElement(FXmlDocument);
 end;
 
 function TProfXml.Finalize(): TError;
@@ -133,8 +151,10 @@ end;
 
 procedure TProfXml.Free();
 begin
-  Clear;
-  inherited Free;
+  Clear();
+  AXmlNode_Free(FXmlNode);
+  FXmlNode := 0;
+  inherited Free();
 end;
 
 function TProfXml.GetCountParams(): UInt32;
@@ -154,8 +174,10 @@ function TProfXml.GetParamByName(Name: String): TParam;
 var
   I: Int32;
 begin
-  for I := 0 to High(FParams) do begin
-    if FParams[I].GetName = Name then begin
+  for I := 0 to High(FParams) do
+  begin
+    if (FParams[I].GetName = Name) then
+    begin
       Result := FParams[I];
       Exit;
     end;
@@ -170,7 +192,7 @@ end;
 
 function TProfXml.GetParamValueByName_(Name: String; var Value: String): Boolean;
 begin
-  Result := False;
+  Result := ReadParamValueByName(Name, Value);
 end;
 
 function TProfXml.GetParamValueByNameAsBoolean(const Name: String): Boolean;
@@ -180,7 +202,7 @@ end;
 
 function TProfXml.GetParamValueByNameAsBoolean_(Name: String; var Value: Boolean): Boolean;
 begin
-  Result := False;
+  Result := ReadParamValueByNameAsBoolean(Name, Value);
 end;
 
 function TProfXml.GetParamValueByNameAsInt32(const Name: String): Int32;
@@ -190,7 +212,7 @@ end;
 
 function TProfXml.GetParamValueByNameAsInt32_(Name: String; var Value: Int32): Boolean;
 begin
-  Result := False;
+  Result := ReadParamValueByNameAsInt32(Name, Value);
 end;
 
 function TProfXml.GetParamValueByNameAsUInt08(const Name: APascalString; var Value: UInt08): Boolean;
@@ -219,16 +241,29 @@ var
   Name: String;
   Value: String;
 begin
-  F := TProfFileText.Create();
-  Result := F.Open(FileName);
-  if Result <> 0 then Exit;
-  while not(F.Eof) do begin
-    F.ReadLn(Name);
-    Name := Copy(Name, 2, Length(Name) - 2);
-    F.ReadLn(Value);
-    NewParam(Name, Value);
+  if (FXmlNode <> 0) then
+    Result := -1 //AXmlDocument_LoadFromFile(FXmlDocument, FileName)
+  else
+  begin
+    F := TProfFileText.Create();
+    try
+      Result := F.Open(FileName);
+      if (Result <> 0) then
+      begin
+        F.Free();
+        Exit;
+      end;
+      while not(F.Eof) do
+      begin
+        F.ReadLn(Name);
+        Name := Copy(Name, 2, Length(Name) - 2);
+        F.ReadLn(Value);
+        NewParam(Name, Value);
+      end;
+    finally
+      F.Free();
+    end;
   end;
-  F.Free;
 end;
 
 function TProfXml.LoadFromXml(Xml: TProfXml): TError;
@@ -251,7 +286,7 @@ begin
   Result := -1;
 end;
 
-function TProfXml.ReadInt32(Section, Name: String; var Value: Int32): Boolean;
+function TProfXml.ReadInt32(const Section, Name: APascalString; var Value: AInt32): ABoolean;
 begin
   Result := False;
 end;

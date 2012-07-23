@@ -2,7 +2,7 @@
 @abstract Base types and consts
 @author Prof1983 <prof1983@ya.ru>
 @created 06.03.2008
-@lastmod 19.07.2012
+@lastmod 23.07.2012
 }
 unit ABase;
 
@@ -13,7 +13,7 @@ unit ABase;
 interface
 
 type // Simple types
-  AFloat32 = Single;
+  AFloat32 = {$IFDEF ABaseOld}Real{$ELSE}Single{$ENDIF};
   AFloat64 = Double;
   AInt08 = ShortInt;
   AInt16 = SmallInt;
@@ -27,7 +27,7 @@ type // Simple types
 
 type // Simple types
   ABool = Boolean;
-  AChar = Char; // or UTF-32 (UCS4Char)
+  AChar = {$IFDEF ABaseOld}WideChar{$ELSE}Char{$ENDIF}; // or UTF-32 (UCS4Char)
   AInt = Integer;
   ASize = LongWord;
 

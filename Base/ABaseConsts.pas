@@ -1,14 +1,8 @@
-﻿{**
+{**
 @Abstract(Base consts)
-@Author(Prof1983 prof1983@ya.ru)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(06.03.2008)
-@LastMod(12.12.2011)
-@Version(0.5)
-
-Базовые константы
-
-16.08.2011
-[+] Добавил STR_BOOL_INT
+@LastMod(23.07.2012)
 }
 unit ABaseConsts;
 
@@ -19,25 +13,20 @@ const
   STR_BOOL_FIB: array [Boolean] of string = ('''0''', '''1''');
   STR_BOOL_INT: array [Boolean] of string = ('0', '1');
 
-const // Константы приведения типов
+const
   STR_BOOL_ENG: array [Boolean] of string = ('false', 'true');
-  STR_BOOL_RUS: array [Boolean] of string = ('нет', 'да');
-  STR_BOOL_RUS2: array [Boolean] of string = ('Нет', 'Да');
-const // Текстовых описания глобальных типов
   STR_MONTH_2: array [0..12] of string = ('00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
-  STR_MONTH_RUS: array [0..12] of string =
-    ('неизвестен', 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль',
-     'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь');
-  STR_MONTH_RUS_H: array [0..12] of string =
-    ('Неизвестен', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль',
-     'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь');
   STR_MONTH_ENG: array [0..12] of string =
     ('none', 'January', 'February', 'March', 'April', 'May', 'June', 'July',
      'August', 'September', 'October', 'November', 'December');
-  STR_DAYOFWEEK_RUS: array [0..7] of string =
-    ('неизвестно', 'воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота');
   STR_DAYOFWEEK_ENG: array [0..7] of string =
     ('none', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
+
+{$IFDEF DELPHI_XE_UP}
+{$I ABaseConsts.ru.utf8.inc}
+{$ELSE}
+{$I ABaseConsts.ru.win1251.inc}
+{$ENDIF DELPHI_XE_UP}
 
 implementation
 

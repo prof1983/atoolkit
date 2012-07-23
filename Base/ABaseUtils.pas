@@ -1,9 +1,8 @@
-﻿{**
-@Abstract(Дополнительные фунции)
-@Author(Prof1983 prof1983@ya.ru)
+{**
+@Abstract(ABaseUtils)
+@Author(Prof1983 <prof1983@ya.ru>)
 @Created(05.03.2008)
-@LastMod(12.12.2011)
-@Version(0.5)
+@LastMod(23.07.2012)
 }
 unit ABaseUtils;
 
@@ -54,7 +53,6 @@ begin
   Result := a(I shr 4) + a(I and $0F);
 end;
 
-// Prof1983: 06.04.2011 - исправил
 function ByteToStr(Value: Byte): string;
 var
   A: Byte;

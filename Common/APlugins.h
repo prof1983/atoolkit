@@ -8,6 +8,8 @@ Version(0.0.0)
 
 #include "ABase2.h"
 
+AError
 func Plugins_Find(const AAnsiString Path);
 
+AError
 func FindC(const AAnsiString Path);

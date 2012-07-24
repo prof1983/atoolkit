@@ -1,8 +1,8 @@
-﻿{**
+{**
 @abstract ASystem function
 @author Prof1983 <prof1983@ya.ru>
 @created 19.08.2009
-@lastmod 19.07.2012
+@lastmod 24.07.2012
 }
 unit ASystem;
 
@@ -56,233 +56,187 @@ function ASystem_GetExePath(): APascalString; stdcall;
 
 // --- Info functions ---
 
-{ Gets the company name associated with the application.
-  Возвращает наименование компании.
-  Prototype: System.Application.Info.CompanyName }
+{** Gets the company name associated with the application.
+    Prototype: System.Application.Info.CompanyName }
 function Info_GetCompanyName(out Value: AString_Type): AInteger; stdcall;
 
-{ Gets the company name associated with the application.
-  Возвращает наименование компании.
-  Prototype: System.Application.Info.CompanyName }
+{** Gets the company name associated with the application.
+    Prototype: System.Application.Info.CompanyName }
 function Info_GetCompanyNameP: APascalString; stdcall;
 
-{ Gets the company name associated with the application.
-  Возвращает наименование компании.
-  Prototype: System.Application.Info.CompanyName }
+{** Gets the company name associated with the application.
+    Prototype: System.Application.Info.CompanyName }
 function Info_GetCompanyNameWS(): AWideString; stdcall;
 
-{ Возвращает комментарий к программе. }
 function Info_GetCommentsWS(): AWideString; stdcall;
 
-{ Gets the copyright notice associated with the application.
-  Возвращает информацию о правах.
-  Prototype: System.Application.Info.Copyright }
+{** Gets the copyright notice associated with the application.
+    Prototype: System.Application.Info.Copyright }
 function Info_GetCopyright(out Value: AString_Type): AInteger; stdcall;
 
-{ Gets the copyright notice associated with the application.
-  Возвращает информацию о правах.
-  Prototype: System.Application.Info.Copyright }
+{** Gets the copyright notice associated with the application.
+    Prototype: System.Application.Info.Copyright }
 function Info_GetCopyrightP: APascalString; stdcall;
 
-{ Gets the copyright notice associated with the application.
-  Возвращает информацию о правах.
-  Prototype: System.Application.Info.Copyright }
+{** Gets the copyright notice associated with the application.
+    Prototype: System.Application.Info.Copyright }
 function Info_GetCopyrightWS(): AWideString; stdcall;
 
-//** Возвращает полный путь к директории с данными.
 function Info_GetDataDirectoryPathP: APascalString; stdcall;
 
-//** Возвращает полный путь к директории с данными.
 function Info_GetDataDirectoryPathWS(): AWideString; stdcall;
 
-{ Gets the description associated with the application.
-  Возвращает описание программы (Runtime_GetDescription).
-  Prototype: System.Application.Info.Description }
+{** Gets the description associated with the application.
+    Prototype: System.Application.Info.Description }
 function Info_GetDescription(out Value: AString_Type): AInteger; stdcall;
 
-{ Gets the description associated with the application.
-  Возвращает описание программы.
-  Prototype: System.Application.Info.Description }
+{** Gets the description associated with the application.
+    Prototype: System.Application.Info.Description }
 function Info_GetDescriptionP: APascalString; stdcall;
 
-{ Gets the description associated with the application.
-  Возвращает описание программы.
-  Prototype: System.Application.Info.Description }
+{** Gets the description associated with the application.
+    Prototype: System.Application.Info.Description }
 function Info_GetDescriptionWS(): AWideString; stdcall;
 
-{ Gets the directory where the application is stored.
-  Prototype: System.Application.Info.DirectoryPath }
+{** Gets the directory where the application is stored.
+    Prototype: System.Application.Info.DirectoryPath }
 function Info_GetDirectoryPath(out Value: AString_Type): AInteger; stdcall;
 
-{ Gets the directory where the application is stored.
-  Prototype: System.Application.Info.DirectoryPath }
+{** Gets the directory where the application is stored.
+    Prototype: System.Application.Info.DirectoryPath }
 function Info_GetDirectoryPathP: APascalString; stdcall;
 
-{ Gets the directory where the application is stored.
-  Prototype: System.Application.Info.DirectoryPath }
+{** Gets the directory where the application is stored.
+    Prototype: System.Application.Info.DirectoryPath }
 function Info_GetDirectoryPathWS(): AWideString; stdcall;
 
-{ Gets the product name associated with the application.
-  Возвращает наименование продукта (Runtime_GetProductName).
-  Prototype: System.Application.Info.ProductName }
+{** Gets the product name associated with the application.
+    Prototype: System.Application.Info.ProductName }
 function Info_GetProductName(out Value: AString_Type): AInteger; stdcall;
 
-{ Gets the product name associated with the application.
-  Возвращает наименование продукта (Runtime_GetProductName).
-  Prototype: System.Application.Info.ProductName }
+{** Gets the product name associated with the application.
+    Prototype: System.Application.Info.ProductName }
 function Info_GetProductNameP: APascalString; stdcall;
 
-{ Gets the product name associated with the application.
-  Возвращает наименование продукта (Runtime_GetProductName).
-  Prototype: System.Application.Info.ProductName }
+{** Gets the product name associated with the application.
+    Prototype: System.Application.Info.ProductName }
 function Info_GetProductNameWS(): AWideString; stdcall;
 
-{ Возвращает версию продукта.
-  Prototype: System.Application.Info.ProductVersion }
+{** Get product version
+    Prototype: System.Application.Info.ProductVersion }
 function Info_GetProductVersion(): AVersion; stdcall;
 
-{ Возвращает версию продукта.
-  Prototype: System.Application.Info.ProductVersion }
+{** Get product version as string
+    Prototype: System.Application.Info.ProductVersion }
 function Info_GetProductVersionStrP: APascalString; stdcall; deprecated;
 
-{ Возвращает версию продукта.
-  Prototype: System.Application.Info.ProductVersion }
+{** Get product version as WideString
+    Prototype: System.Application.Info.ProductVersion }
 function Info_GetProductVersionStrWS(): AWideString; stdcall;
 
-{ Gets the name, without the extension, of the assembly file for the application.
-  Возвращает наименование программы (Runtime_GetProgramName).
-  Prototype: System.Application.Info.AssemblyName }
+{** Gets the name, without the extension, of the assembly file for the application.
+    Prototype: System.Application.Info.AssemblyName }
 function Info_GetProgramName(out Value: AString_Type): AInteger; stdcall;
 
-{ Gets the name, without the extension, of the assembly file for the application.
-  Возвращает наименование программы (Runtime_GetProgramName).
-  Prototype: System.Application.Info.AssemblyName }
+{** Gets the name, without the extension, of the assembly file for the application.
+    Prototype: System.Application.Info.AssemblyName }
 function Info_GetProgramNameP: APascalString; stdcall;
 
-{ Gets the name, without the extension, of the assembly file for the application.
-  Возвращает наименование программы (Runtime_GetProgramName).
-  Prototype: System.Application.Info.AssemblyName }
+{** Gets the name, without the extension, of the assembly file for the application.
+    Prototype: System.Application.Info.AssemblyName }
 function Info_GetProgramNameWS(): AWideString; stdcall;
 
-{ Gets the version number of the application.
-  Возвращает версию программы.
-  Prototype: System.Application.Info.Version }
+{** Gets the version number of the application.
+    Prototype: System.Application.Info.Version }
 function Info_GetProgramVersion(): AVersion; stdcall;
 
-{ Gets the version number of the application.
-  Возвращает версию программы.
-  Prototype: System.Application.Info.Version }
+{** Gets the version number of the application.
+    Prototype: System.Application.Info.Version }
 function Info_GetProgramVersionStrP: APascalString; stdcall;
 
-{ Gets the version number of the application.
-  Возвращает версию программы.
-  Prototype: System.Application.Info.Version }
+{** Gets the version number of the application.
+    Prototype: System.Application.Info.Version }
 function Info_GetProgramVersionStrWS(): AWideString; stdcall;
 
-{ Gets the title associated with the application.
-  Возвращает заголовок (краткое наименование) программы.
-  Prototype: System.Application.Info.Title }
+{** Gets the title associated with the application.
+    Prototype: System.Application.Info.Title }
 function Info_GetTitle(out Value: AString_Type): AInteger; stdcall;
 
-{ Gets the title associated with the application.
-  Возвращает заголовок (краткое наименование) программы.
-  Prototype: System.Application.Info.Title }
+{** Gets the title associated with the application.
+    Prototype: System.Application.Info.Title }
 function Info_GetTitleP: APascalString; stdcall;
 
-{ Gets the title associated with the application.
-  Возвращает заголовок (краткое наименование) программы.
-  Prototype: System.Application.Info.Title }
+{** Gets the title associated with the application.
+    Prototype: System.Application.Info.Title }
 function Info_GetTitleWS(): AWideString; stdcall;
 
-{ Возвращает адрес сайта программы в интернете (Runtime_GetUrl).
-  Prototype: System.Application.Info.Url }
+{** Get program about page url
+    Prototype: System.Application.Info.Url }
 function Info_GetUrl(out Value: AString_Type): AInteger; stdcall;
 
-{ Возвращает адрес сайта программы в интернете (Runtime_GetUrl).
-  Prototype: System.Application.Info.Url }
+{** Get program about page url
+    Prototype: System.Application.Info.Url }
 function Info_GetUrlP: APascalString; stdcall;
 
-{ Возвращает адрес сайта программы в интернете (Runtime_GetUrl).
-  Prototype: System.Application.Info.Url }
+{** Get program about page url
+    Prototype: System.Application.Info.Url }
 function Info_GetUrlWS(): AWideString; stdcall;
 
-{ Gets the company name associated with the application.
-  Возвращает наименование компании (Runtime_GetCompanyName).
-  Use Info_GetCompanyNameP()
-  Prototype: System.Application.Info.CompanyName }
-function Info_CompanyName: APascalString; stdcall; deprecated;
+{** Gets the company name associated with the application.
+    Prototype: System.Application.Info.CompanyName }
+function Info_CompanyName: APascalString; stdcall; deprecated; // Use Info_GetCompanyNameP()
 
-{ Gets the copyright notice associated with the application.
-  Возвращает информацию о правах.
-  Use Info_GetCopyrightP()
-  Prototype: System.Application.Info.Copyright }
-function Info_Copyright: APascalString; stdcall; deprecated;
+{** Gets the copyright notice associated with the application.
+    Prototype: System.Application.Info.Copyright }
+function Info_Copyright: APascalString; stdcall; deprecated; // Use Info_GetCopyrightP()
 
-{ Gets the description associated with the application.
-  Возвращает описание программы.
-  Use Info_GetDesctiprionP()
-  Prototype: System.Application.Info.Description }
-function Info_Description: APascalString; stdcall; deprecated;
+{** Gets the description associated with the application.
+    Prototype: System.Application.Info.Description }
+function Info_Description: APascalString; stdcall; deprecated; // Use Info_GetDesctiprionP()
 
-{ Gets the directory where the application is stored.
-  Use Info_GetDirectoryPathP()
-  Prototype: System.Application.Info.DirectoryPath }
-function Info_DirectoryPath: APascalString; stdcall; deprecated;
+{** Gets the directory where the application is stored.
+    Prototype: System.Application.Info.DirectoryPath }
+function Info_DirectoryPath: APascalString; stdcall; deprecated; // Use Info_GetDirectoryPathP()
 
-{ Gets the product name associated with the application.
-  Возвращает наименование продукта (Runtime_GetProductName).
-  Use Info_GetProductNameP()
-  Prototype: System.Application.Info.ProductName }
-function Info_ProductName: APascalString; stdcall; deprecated;
+{** Gets the product name associated with the application.
+    Prototype: System.Application.Info.ProductName }
+function Info_ProductName: APascalString; stdcall; deprecated; // Use Info_GetProductNameP()
 
-{ Возвращает версию продукта (Runtime_GetProductVersion).
-  Prototype: System.Application.Info.ProductVersion }
+{** Get product version
+    Prototype: System.Application.Info.ProductVersion }
 function Info_ProductVersion: AVersion; stdcall;
-//function Application_Info_ProductVersion: AVersion; stdcall;
 
-{ Возвращает версию продукта.
-  Use Info_GetProductVersionStr()
-  Prototype: System.Application.Info.ProductVersion }
-function Info_ProductVersionStr: APascalString; stdcall; deprecated;
+{** Get product version as string
+    Prototype: System.Application.Info.ProductVersion }
+function Info_ProductVersionStr: APascalString; stdcall; deprecated; // Use Info_GetProductVersionStr()
 
-{ Gets the name, without the extension, of the assembly file for the application.
-  Возвращает наименование программы (Runtime_GetProgramName).
-  Use Info_GetProgramNameP()
-  Prototype: System.Application.Info.AssemblyName }
-function Info_ProgramName: APascalString; stdcall; deprecated;
+{** Gets the name, without the extension, of the assembly file for the application.
+    Prototype: System.Application.Info.AssemblyName }
+function Info_ProgramName: APascalString; stdcall; deprecated; // Use Info_GetProgramNameP()
 
-{ Gets the version number of the application.
-  Возвращает версию программы (Runtime_GetProgramVersion).
-  Prototype: System.Application.Info.Version }
+{** Gets the version number of the application.
+    Prototype: System.Application.Info.Version }
 function Info_ProgramVersion: AVersion; stdcall;
-//function Application_Info_Version: AVersion; stdcall;
 
-{ Gets the version number of the application.
-  Возвращает версию программы.
-  Use Info_GetProgramVersionStrP
-  Prototype: System.Application.Info.Version }
-function Info_ProgramVersionStr: APascalString; stdcall; deprecated;
+{** Gets the version number of the application.
+    Prototype: System.Application.Info.Version }
+function Info_ProgramVersionStr: APascalString; stdcall; deprecated; // Use Info_GetProgramVersionStrP
 
 function Info_SetDataDirectoryPathP(const DataDir: string): AError; stdcall;
 
-{ Gets the title associated with the application.
-  Возвращает заголовок (краткое наименование) программы.
-  Use Info_GetTitleP()
-  Prototype: System.Application.Info.Title }
-function Info_Title: APascalString; stdcall; deprecated;
+{** Gets the title associated with the application.
+    Prototype: System.Application.Info.Title }
+function Info_Title: APascalString; stdcall; deprecated; // Use Info_GetTitleP()
 
-{ Возвращает адрес сайта программы в интернете (Runtime_GetUrl).
-  Use Info_GetUrlP()
-  Prototype: System.Application.Info.Url }
-function Info_Url: APascalString; stdcall; deprecated;
+{** Get program about page url
+    Prototype: System.Application.Info.Url }
+function Info_Url: APascalString; stdcall; deprecated; // Use Info_GetUrlP()
 
-// Use Info_GetDataDirectoryPathP()
-function Info_DataDirectoryPath: APascalString; stdcall; deprecated;
+function Info_DataDirectoryPath(): APascalString; stdcall; deprecated; // Use Info_GetDataDirectoryPathP()
 
-function Info_ConfigDirectoryPath: APascalString; stdcall;
+function Info_ConfigDirectoryPath(): APascalString; stdcall;
 
-// Use GetConfig()
-function Config: AConfig; stdcall; deprecated;
+function Config(): AConfig; stdcall; deprecated; // Use GetConfig()
 
 // --- File ---
 
@@ -293,50 +247,35 @@ function FileTextReadLnAnsi(FileID: AInteger; var Stroka: AnsiString): AError; s
 
 // ---
 
-//** Возвращает параметр.
 function ParamStr(Index: AInteger; out Value: AString_Type): AInteger; stdcall;
 
-//** Возвращает параметр.
 function ParamStrP(Index: AInteger): APascalString; stdcall;
 
-//** Возвращает параметр.
 function ParamStrWS(Index: AInteger): AWideString; stdcall;
 
-//** Обрабатывает сообщения от ОС.
 function ProcessMessages(): AError; stdcall;
 
-//** Обрабатывает сообщения от ОС.
 procedure ProcessMessages02(); stdcall;
 
-//** Выводит сообщение и ждет потверджения.
 function ShowMessage(const Msg: AString_Type): ADialogBoxCommands; stdcall;
 
-//** Выводит сообщение и ждет потверджения.
 function ShowMessage02(const Msg: AWideString): ADialogBoxCommands; stdcall;
 
-//** Выводит сообщение и ждет потверджения.
 function ShowMessage2P(const Text, Caption: APascalString; Flags: AMessageBoxFlags
     ): ADialogBoxCommands; stdcall; deprecated; // Use ShowMessageExP()
 
-//** Выводит сообщение и ждет потверджения.
 function ShowMessageA(const Msg: PAnsiChar): ADialogBoxCommands; stdcall;
 
-//** Выводит сообщение и ждет потверджения.
 function ShowMessageEx(const Text, Caption: AString_Type; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 
-//** Выводит сообщение и ждет потверджения.
 function ShowMessageExA(const Text, Caption: PAnsiChar; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 
-//** Выводит сообщение и ждет потверджения.
 function ShowMessageExP(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 
-//** Выводит сообщение и ждет потверджения.
 function ShowMessageExWS(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 
-//** Выводит сообщение и ждет потверджения.
 function ShowMessageP(const Msg: APascalString): ADialogBoxCommands; stdcall;
 
-//** Выводит сообщение и ждет потверджения.
 function ShowMessageWS(const Msg: AWideString): ADialogBoxCommands; stdcall;
 
 function SetDataDirectoryPathP(const DataDir: APascalString): AError; stdcall;
@@ -354,10 +293,8 @@ function OnAfterRun: AEvent; stdcall;
 function OnBeforeRun: AEvent; stdcall;
 function OnAfterRun_Connect(Callback: ACallbackProc; Weight: AInteger = High(AInteger)): Integer; stdcall;
 function OnAfterRun_Disconnect(Callback: ACallbackProc): AInteger; stdcall;
-//** Подключает к событию.
 function OnBeforeRun_Connect(Callback: ACallbackProc; Weight: AInteger = High(AInteger)): AInteger; stdcall;
 {$IFDEF A02}function OnBeforeRun_Connect02(Callback: ACallbackProc02; Weight: AInteger = High(AInteger)): AInteger; stdcall;{$ENDIF}
-//** Отключает от события.
 function OnBeforeRun_Disconnect(Callback: ACallbackProc): AInteger; stdcall;
 {$ENDIF USE_EVENTS}
 
@@ -420,19 +357,14 @@ function InitConfig(): AInteger; stdcall;
 // Finalize Core
 function DoneConfig: AInteger; stdcall;
 
-// Открывает модуль (библиотеку). Возвращяет идентификатор.
 function Library_Open(const FileName: AString_Type; Flags: ALibraryFlags): ALibrary; stdcall;
 
-// Открывает модуль (библиотеку). Возвращяет идентификатор.
 function Library_OpenP(const FileName: APascalString; Flags: ALibraryFlags): ALibrary; stdcall;
 
-// Открывает модуль (библиотеку). Возвращяет идентификатор.
 function Library_OpenS({const} FileName: AString; Flags: ALibraryFlags): ALibrary; stdcall;
 
-// Открывает модуль (библиотеку). Возвращяет идентификатор.
 function Library_OpenWS(const FileName: AWideString; Flags: ALibraryFlags): ALibrary; stdcall;
 
-// Закрывает модуль (библиотеку)
 function Library_Close(Lib: ALibrary): ABoolean; stdcall;
 function Library_BuildPath({const} Directory, LibraryName: AString; {out} Value: AString): AInteger; stdcall;
 function Library_BuildPathP(const Directory, LibraryName: APascalString): APascalString; stdcall;
@@ -441,23 +373,18 @@ function Library_GetName(Lib: ALibrary; {out} Value: AString): AInteger; stdcall
 function Library_GetNameP(Lib: ALibrary): APascalString; stdcall;
 function Library_GetNameS(Lib: ALibrary; out Value: AString_Type): AInteger; stdcall;
 
-// Возвращает адрес функции.
 function Library_GetProcAddress(Lib: ALibrary; const Name: AString_Type): Pointer; stdcall;
 
-// Возвращает адрес функции.
 function Library_GetProcAddressP(Lib: ALibrary; const Name: APascalString): Pointer; stdcall;
 
-// Возвращает адрес функции.
 function Library_GetProcAddressS(Lib: ALibrary; {const} Name: AString): Pointer; stdcall;
 
-// Возвращает адрес функции.
 function Library_GetProcAddressWS(Lib: ALibrary; const Name: AWideString): Pointer; stdcall;
 
-// Возвращает адрес функции
 function Library_GetSymbol(Lib: ALibrary; {const} SymbolName: AString; {var} Symbol: PPointer): ABoolean; stdcall;
-// Возвращает адрес функции
+
 function Library_GetSymbolP(Lib: ALibrary; const SymbolName: APascalString; var Symbol: Pointer): ABoolean; stdcall;
-// Возвращает адрес функции
+
 function Library_GetSymbolS(Lib: ALibrary; const SymbolName: AString_Type; var Symbol: Pointer): ABoolean; stdcall;
 
 { Old }
@@ -491,18 +418,12 @@ function GetExeName(): APascalString; stdcall;
 
 function GetExeNameWS(): AWideString; stdcall;
 
-{**
-  Gets the name, without the extension, of the assembly file for the application.
-  Возвращает наименование программы.
-  Prototype: System.Application.Info.AssemblyName
-}
+{** Gets the name, without the extension, of the assembly file for the application.
+    Prototype: System.Application.Info.AssemblyName }
 function GetProgramName(): APascalString; stdcall; deprecated; // Use GetProgramNameWS
 
-{**
-  Gets the name, without the extension, of the assembly file for the application.
-  Возвращает наименование программы.
-  Prototype: System.Application.Info.AssemblyName
-}
+{** Gets the name, without the extension, of the assembly file for the application.
+    Prototype: System.Application.Info.AssemblyName }
 function GetProgramNameWS(): AWideString; stdcall;
 
 function GetProgramVersion(): APascalString; stdcall; deprecated;
@@ -511,22 +432,17 @@ function GetProgramVersionWS(): AWideString; stdcall;
 
 function GetTitle(): APascalString; stdcall; deprecated; // Use Info_GetTitleWS()
 
-//** Возвращает наименование программы.
 function GetTitleWS(): AWideString; stdcall;
 
 function GetUrl(): APascalString; stdcall; deprecated;
 
-//** Возвращает полный путь к директории с данными.
 function GetDataDirectoryPathWS(): APascalString; stdcall;
 
-//** Возвращает полный путь к директории с данными.
 function GetDataPath: APascalString; stdcall; //deprecated; // Use GetDataDirectoryPathWS()
 
-//** Возвращает ресурс в виде строки.
 function GetResourceString(const Section, Name, Default: AString_Type;
     out Value: AString_Type): AInteger; stdcall;
 
-//** Возвращает ресурс в виде строки.
 function GetResourceStringWS(const Section, Name, Default: AWideString): AWideString; stdcall;
 
 function Runtime_GetCompanyName(): APascalString; stdcall; deprecated;
@@ -542,10 +458,8 @@ function Runtime_GetTitle(): APascalString; stdcall; deprecated;
 function Runtime_GetUrl(): APascalString; stdcall; deprecated;
 function Runtime_GetDataPath: APascalString; stdcall; deprecated; // Use Info_GetDataDirectoryPathWS()
 
-// Возвращяет указатель на конфигурацию программы.
 function GetConfig(): AConfig; stdcall;
 
-// Возвращент True, если получена команда на завершение работы
 function GetIsShutdown(): ABoolean; stdcall;
 
 {$IFDEF AOLD}
@@ -561,7 +475,6 @@ function ShowError(const UserMessage, ExceptMessage: AString_Type): AError; stdc
 
 procedure ShowError02(const UserMessage, ExceptMessage: AWideString); stdcall;
 
-// Завершает работу программы.
 procedure Shutdown(); stdcall;
 
 implementation
@@ -630,7 +543,6 @@ begin
 end;
 {$ENDIF USE_EVENTS}
 
-// Обработчик по умолчанию
 function DoShowMessage(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
   if (Length(Caption) <= 0) then
@@ -1683,86 +1595,10 @@ begin
   end;
 end;
 
-(*
-{$IFDEF USE_EVENTS}
-function Runtime_OnAfterRun: AEvent; stdcall;
-begin
-  Result := FOnAfterRunEvent;
-end;
-{$ENDIF USE_EVENTS}
-
-{$IFDEF USE_EVENTS}
-function Runtime_OnAfterRun_Connect(Callback: ACallbackProc; Weight: AInteger): Integer; stdcall;
-begin
-  Result := Event_Connect(FOnAfterRunEvent, Callback, Weight);
-end;
-{$ENDIF USE_EVENTS}
-
-{$IFDEF USE_EVENTS}
-function Runtime_OnAfterRun_Disconnect(Callback: ACallbackProc): Integer; stdcall;
-begin
-  Result := Event_Disconnect(FOnAfterRunEvent, Callback);
-end;
-{$ENDIF USE_EVENTS}
-
-{$IFDEF USE_EVENTS}
-function Runtime_OnBeforeRun: AEvent; stdcall;
-begin
-  Result := FOnBeforeRunEvent;
-end;
-{$ENDIF USE_EVENTS}
-
-{$IFDEF USE_EVENTS}
-function Runtime_OnBeforeRun_Connect(Callback: ACallbackProc; Weight: AInteger = High(AInteger)): AInteger; stdcall;
-begin
-  Result := Event_Connect(FOnBeforeRunEvent, Callback, Weight);
-end;
-{$ENDIF USE_EVENTS}
-
-{$IFDEF USE_EVENTS}
-function Runtime_OnBeforeRun_Disconnect(Callback: ACallbackProc): Integer; stdcall;
-begin
-  Result := Event_Disconnect(FOnBeforeRunEvent, Callback);
-end;
-{$ENDIF USE_EVENTS}
-
-function Runtime_ParamCount: AInteger; stdcall;
-begin
-  Result := ParamCount;
-end;
-
-function Runtime_ParamStr(Index: AInteger): APascalString; stdcall;
-begin
-  Result := System.ParamStr(Index);
-end;
-
-procedure Runtime_ProcessMessages; stdcall;
-begin
-  ProcessMessages;
-end;
-*)
-
 procedure Runtime_SetConfig(Value: AConfig); stdcall;
 begin
   FConfig := Value;
 end;
-
-(*
-procedure Runtime_SetOnProcessMessages(Value: AProc); stdcall;
-begin
-  SetOnProcessMessages(Value); //FOnProcessMessages := Value;
-end;
-
-procedure Runtime_SetOnShowError(Value: TAShowErrorProc); stdcall;
-begin
-  SetOnShowError(Value); //FOnShowError := Value;
-end;
-
-procedure Runtime_SetOnShowMessage(Value: TAShowMessageProc); stdcall;
-begin
-  SetOnShowMessage(Value); //FOnShowMessage := Value;
-end;
-*)
 
 function Runtime_ShellExecute(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
 begin
@@ -1850,14 +1686,14 @@ end;
 
 function ShellExecuteWS(const Operation, FileName, Parameters, Directory: AWideString): AInteger; stdcall;
 begin
-  //{$IFNDEF UNIX}
+  {IFNDEF UNIX}
   Result := ShellExecuteA(0,
       PAnsiChar(AnsiString(Operation)),
       PAnsiChar(AnsiString(FileName)),
       PAnsiChar(AnsiString(Parameters)),
       PAnsiChar(AnsiString(Directory)),
       SW_SHOW);
-  //{$ENDIF}
+  {ENDIF}
 end;
 
 function ShowError(const UserMessage, ExceptMessage: AString_Type): AError; stdcall;

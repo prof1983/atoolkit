@@ -1,9 +1,8 @@
-﻿{**
-@Abstract(ASystem prepare function)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(01.08.2011)
-@LastMod(13.07.2012)
-@Version(0.5)
+{**
+@Abstract ASystem prepare function
+@Author Prof1983 <prof1983@ya.ru>
+@Created 01.08.2011
+@LastMod 24.07.2012
 }
 unit ASystemPrepare;
 
@@ -124,7 +123,7 @@ begin
         S := ReadVer('\StringFileInfo\041904E3\FileDescription');
         if (S <> '') then FDescription := S;
         //S := ReadVer('\StringFileInfo\041904E3\OriginalFilename');
-        //if (S <> '') then Memo.Lines.Add('Имя файла: '+S);
+        //if (S <> '') then Memo.Lines.Add('File name: '+S);
         S := ReadVer('\StringFileInfo\041904E3\Comments');
         if (S <> '') then FComments := S;
       end;

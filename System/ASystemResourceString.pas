@@ -1,11 +1,12 @@
-﻿{**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(29.05.2011)
-@LastMod(29.06.2011)
-@Version(0.5)
+{**
+@Abstract ASystem resource
+@Author Prof1983 <prof1983@ya.ru>
+@Created 29.05.2011
+@LastMod 24.07.2012
 }
 unit ASystemResourceString;
+
+{$I A.inc}
 
 interface
 
@@ -16,16 +17,14 @@ function Runtime_GetResourceString(const Section, Name, Default: APascalString):
 
 implementation
 
+{$IFDEF DELPHI_XE_UP}
+  {$I ASystemResourceString.ru.utf8.inc}
+{$ELSE}
 const
-  {$IFDEF FPC}
   cAbout = 'About...';
   cSettings = 'Options...';
   cModules = 'Modules';
-  {$ELSE}
-  cAbout = 'О программе...';
-  cSettings = 'Настройки...';
-  cModules = 'Модули';
-  {$ENDIF}
+{$ENDIF}
 
 function Runtime_GetResourceString(const Section, Name, Default: APascalString): APascalString; stdcall;
 begin

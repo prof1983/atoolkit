@@ -1,21 +1,16 @@
-﻿{**
-@Abstract(ASettingsConfig)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(06.03.2008)
-@LastMod(30.08.2011)
-@Version(0.5)
+{**
+@Abstract ASettingsConfig
+@Author Prof1983 <prof1983@ya.ru>
+@Created 06.03.2008
+@LastMod 24.07.2012
 }
 unit ASettingsConfig;
-
-// TODO: Убрать stdcall
-// TODO: Переименовать в ASettingsMain.pas
 
 interface
 
 uses
   {$IFDEF MSWINDOWS}Windows, ARegistrySettings,{$ENDIF}
-  ABase, {$IFDEF A0}ACollections0{$ELSE}ACollections{$ENDIF}, ACollectionsBase,
-  {$IFDEF A0}AStrings0{$ELSE}AStrings{$ENDIF},
+  ABase, ACollections, ACollectionsBase, AStrings,
   AAbstractSettings, AIniSettings;
 
 {deprecated}

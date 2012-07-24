@@ -1,9 +1,8 @@
-﻿{**
-@Abstract(Класс для работа с настройками)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(06.03.2008)
-@LastMod(06.04.2012)
-@Version(0.5)
+{**
+@Abstract AAbstractSettings
+@Author Prof1983 <prof1983@ya.ru>
+@Created 06.03.2008
+@LastMod 24.07.2012
 }
 unit AAbstractSettings;
 
@@ -12,16 +11,10 @@ unit AAbstractSettings;
 interface
 
 uses
-  SysUtils, ABase, ABaseConsts, ACollectionsBase;
+  {$IFDEF USE_AUTILS}AUtils{$ELSE}SysUtils{$ENDIF},
+  ABase, ABaseConsts, ACollectionsBase;
 
 type
-  {
-    @abstract(Абстрактный класс для работы с настройками)
-    Реализует конвертацию типов Boolean, DateTime, Float, Integer к строковому.
-    Таким образом достаточно в классе-наследнике реализовать только ReadString и WriteString
-    для чтения и записи параметров из источника.
-    Для примера смотрите реализацию TSettings и TIniSettings.
-  }
   TAbstractSettings = class
   private
     FFormatSettings: TFormatSettings;
@@ -46,14 +39,8 @@ type
 
 (*
 type
-  {
-    @abstract(Класс для работы с настройками)
-    Настройки хранятся внутри этого класса в памяти в виде строк (WideString).
-    Для загрузки и сохранения настроек применяйте классы TSettingsLoader и TSettingsSaver.
-  }
   TSettings = class(TAbstractSettings)
   private
-    // Корневой узел хранения настроек
     FRoot: TANode;
   protected
     function GetRoot(): IANode; override;
@@ -65,7 +52,6 @@ type
   public
     constructor Create();
   public
-    // Корневой узел хранения настроек
     property Root: TANode read FRoot;
   end;
 *)
@@ -82,7 +68,6 @@ constructor TAbstractSettings.Create;
 begin
   inherited;
   {IFNDEF UNIX}
-  // Задаем настройки форматирования
   {$IFDEF FPC}
   GetFormatSettings;
   FFormatSettings := DefaultFormatSettings;

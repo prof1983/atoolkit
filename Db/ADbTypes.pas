@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Глобальные типы и константы для DB)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.04.2006)
-@LastMod(02.05.2012)
-@Version(0.5)
+@Abstract Глобальные типы и константы для DB
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.04.2006
+@LastMod 24.07.2012
 }
 unit ADbTypes;
 
@@ -12,6 +11,7 @@ interface
 uses
   AdoInt, SysUtils, Windows;
 
+{
 const // Стандартные константы для работы с БД Access --------------------------
   //** Имя пользователя
   DB_USERNAME = 'AR';
@@ -24,6 +24,7 @@ const // Стандартные константы для работы с БД A
   DB_DESCR_NAME = 'descr_db.mdb';
   //** Имя базы для хранения описаний отчетов
   DB_REPORT_NAME = 'report_db.mdb';
+}
 
 type
   //** Описание структур для автосоздания БД

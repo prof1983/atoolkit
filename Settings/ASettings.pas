@@ -2,7 +2,7 @@
 @Abstract Модуль для работа с настройками
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 19.07.2012
+@LastMod 24.07.2012
 
 0.3.2 - 29.08.2011
 [*] Config_DeleteKey -> Config_DeleteKeyS
@@ -14,13 +14,6 @@
 [*] Config_ReadString -> Config_ReadStringS
 }
 unit ASettings;
-
-{$IFDEF A02} {$DEFINE A0} {$ENDIF A02}
-{$IFDEF A03} {$DEFINE A0} {$ENDIF A03}
-
-{$IFNDEF A0}
-  {$DEFINE ALOCAL}
-{$ENDIF}
 
 interface
 

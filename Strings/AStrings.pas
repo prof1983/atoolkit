@@ -388,7 +388,7 @@ end;
 
 function Str_Assign({var} S: AString; {const} Value: AString): ASize; stdcall;
 begin
-  Result := String_Assign(S^, Value^);
+  Result := AString_Assign(S^, Value^);
 end;
 
 function Str_AssignA({var} S: AString; Value: PAnsiChar): ASize; stdcall;

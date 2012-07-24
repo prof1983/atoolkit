@@ -1,14 +1,8 @@
-﻿{**
-@Abstract(ARuntime)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(20.08.2007)
-@LastMod(30.03.2012)
-@Version(0.5)
-
-0.3.2
-[+] SetOnRun02 (01.09.2011)
-[*] Shutdown -> Shutdown02 (05.09.2011)
-[+] Shutdown
+{**
+@Abstract ARuntime
+@Author Prof1983 <prof1983@ya.ru>
+@Created 20.08.2007
+@LastMod 24.07.2012
 }
 unit ARuntime;
 
@@ -21,14 +15,13 @@ uses
 
 function Done(): AError; stdcall;
 
-// Завершает работу программы
-function A_Runtime_IsShutdown: ABoolean; stdcall;
-function A_Runtime_OnAfterRun_Get: AProc; stdcall;
-function A_Runtime_OnAfterRun_Set(Value: AProc): AError; stdcall;
-function A_Runtime_OnBeforeRun_Get: AProc; stdcall;
-function A_Runtime_OnBeforeRun_Set(Value: AProc): AError; stdcall;
-function A_Runtime_OnRun_Set(Value: AProc): AError; stdcall;
-function A_Runtime_Shutdown: AError; stdcall;
+function ARuntime_IsShutdown(): ABoolean; stdcall;
+function ARuntime_OnAfterRun_Get(): AProc; stdcall;
+function ARuntime_OnAfterRun_Set(Value: AProc): AError; stdcall;
+function ARuntime_OnBeforeRun_Get(): AProc; stdcall;
+function ARuntime_OnBeforeRun_Set(Value: AProc): AError; stdcall;
+function ARuntime_OnRun_Set(Value: AProc): AError; stdcall;
+function ARuntime_Shutdown(): AError; stdcall;
 
 function GetIsShutdown: ABoolean; stdcall;
 function GetOnAfterRun: AProc; stdcall;
@@ -42,11 +35,9 @@ procedure SetOnShutdown02(Value: AProc02); stdcall;
 
 function Run(): AError; stdcall;
 
-// Завершает работу программы
 function Shutdown(): AError; stdcall;
 procedure Shutdown02(); stdcall;
 
-// Возвращент True, если получена команда на завершение работы
 function IsShutdown: ABoolean; stdcall;
 
 // --- Set event functions ---
@@ -98,9 +89,7 @@ function Runtime_Modules_FindByUid(Uid: AModuleUid): AInteger; stdcall;
 function Runtime_Modules_GetByName(Name: PChar; out Module: AModule03_Type): AInteger; stdcall;
 function Runtime_Modules_GetByNameP(Name: PChar; Module: AModule): AInteger; stdcall; //deprecated;
 function Runtime_Modules_GetByName02(const Name: AWideString; out Module: AModule02_Type): ABoolean; stdcall; //deprecated;
-// Возвращает индекс модуля в массиве или -1 если не найден.
 function Runtime_Modules_GetByUid(Uid: AModuleUid; out Module: AModule03_Type): AInteger; stdcall;
-// Возвращает индекс модуля в массиве или -1 если не найден.
 function Runtime_Modules_GetByUidP(Uid: AModuleUid; Module: AModule): AInteger; stdcall; //deprecated;
 function Runtime_Modules_GetNameByIndex(Index: AInteger; Name: PChar; MaxLen: AInteger): AInteger; stdcall;
 function Runtime_Modules_GetNameByIndex02(Index: AInteger): AWideString; stdcall; //deprecated;
@@ -154,9 +143,9 @@ begin
 end;
 {$ENDIF A03}
 
-{ A_Runtime }
+// --- ARuntime ---
 
-function A_Runtime_IsShutdown: ABoolean; stdcall;
+function ARuntime_IsShutdown(): ABoolean;
 begin
   try
     Result := IsShutdown;
@@ -165,7 +154,7 @@ begin
   end;
 end;
 
-function A_Runtime_OnAfterRun_Get: AProc; stdcall;
+function ARuntime_OnAfterRun_Get(): AProc;
 begin
   try
     Result := FOnAfterRun;
@@ -174,7 +163,7 @@ begin
   end;
 end;
 
-function A_Runtime_OnAfterRun_Set(Value: AProc): AError; stdcall;
+function ARuntime_OnAfterRun_Set(Value: AProc): AError;
 begin
   try
     OnAfterRun_Set(Value);
@@ -184,7 +173,7 @@ begin
   end;
 end;
 
-function A_Runtime_OnBeforeRun_Get: AProc; stdcall;
+function ARuntime_OnBeforeRun_Get(): AProc;
 begin
   try
     Result := FOnBeforeRun;
@@ -193,7 +182,7 @@ begin
   end;
 end;
 
-function A_Runtime_OnBeforeRun_Set(Value: AProc): AError; stdcall;
+function ARuntime_OnBeforeRun_Set(Value: AProc): AError;
 begin
   try
     OnBeforeRun_Set(Value);
@@ -203,7 +192,7 @@ begin
   end;
 end;
 
-function A_Runtime_OnRun_Set(Value: AProc): AError; stdcall;
+function ARuntime_OnRun_Set(Value: AProc): AError;
 begin
   try
     OnRun_Set(Value);
@@ -213,7 +202,7 @@ begin
   end;
 end;
 
-function A_Runtime_Shutdown: AError; stdcall;
+function ARuntime_Shutdown(): AError;
 begin
   try
     Shutdown;
@@ -235,7 +224,7 @@ begin
   {$IFDEF A03}
   while (Length(FModules) > 0) do
   begin
-    // Удаляем модули с конца списка. Если требуется удалять модули с начала списка, то заменить на: I := 0;
+    // Remove the modules from the end of the list. If you want to delete modules from the beginning of the list, then replace the: I := 0;
     I := High(FModules);
     Uid := FModules[I].Uid;
     if Assigned(FModules[I].Done) then
@@ -243,7 +232,7 @@ begin
       FModules[I].Done();
     except
     end;
-    // Проверяем, т.к. при выполнении Module.Done могло быть выполнено Runtime_Modules_DeleteByUid или Runtime_Modules_DeleteByName
+    // Check, because when performing Module.Done could be done Runtime_Modules_DeleteByUid or Runtime_Modules_DeleteByName
     if (Length(FModules) >= I) and (FModules[I].Uid = Uid) then
       Runtime_Modules_DeleteByIndex(I);
   end;

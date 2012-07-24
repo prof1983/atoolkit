@@ -1,9 +1,8 @@
-﻿{**
-@Abstract(ARuntime base consts and types)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(14.12.2011)
-@LastMod(09.04.2012)
-@Version(0.5)
+{**
+@Abstract ARuntime base consts and types
+@Author Prof1983 <prof1983@ya.ru>
+@Created 14.12.2011
+@LastMod 24.07.2012
 }
 unit ARuntimeBase;
 
@@ -25,8 +24,8 @@ type // Module description
   AModuleDescription = Pointer;
 
 type
-  { Уникальный идентификатор модуля.
-    Записывается в формате $YYMMDDxx, где YY - год, MM-месяц, DD-день, xx-порядковый номер }
+  {** The unique identifier of the module
+      Format: $YYMMDDxx, YY - Year, MM - Month, DD - Day, xx - Number }
   AModuleUid = type AInteger;
 
 type

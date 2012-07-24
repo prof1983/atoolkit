@@ -1,12 +1,8 @@
-﻿{**
-@Abstract(Глобальные переменные модуля ARuntime)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(13.07.2011)
-@LastMod(10.11.2011)
-@Version(0.5)
-
-0.3.2
-[+] FOnRun02, FOnShutdown02 (01.09.2011)
+{**
+@Abstract ARuntime global variables
+@Author Prof1983 <prof1983@ya.ru>
+@Created 13.07.2011
+@LastMod 24.07.2012
 }
 unit ARuntimeData;
 
@@ -17,8 +13,8 @@ uses
 
 var
   FIsShutdown: ABoolean;
-  FOnAfterRun: AProc;                   // После
-  FOnBeforeRun: AProc;                  // Перед
+  FOnAfterRun: AProc;
+  FOnBeforeRun: AProc;
   FOnRun: AProc;
   FOnRun02: AProc02;
   FOnShutdown: AProc03;

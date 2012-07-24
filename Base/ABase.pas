@@ -2,13 +2,15 @@
 @abstract Base types and consts
 @author Prof1983 <prof1983@ya.ru>
 @created 06.03.2008
-@lastmod 23.07.2012
+@lastmod 24.07.2012
 }
 unit ABase;
 
 {$I A.inc}
 
+{DEFINE A01}
 {DEFINE A02}
+{$IFDEF ABaseOld}{$DEFINE AFloat32}{$ENDIF}
 
 interface
 
@@ -33,7 +35,7 @@ type // Simple types
 
 type
   ABoolean = ABool;
-  AFloat = AFloat32;
+  AFloat = {$IFDEF AFloat32}AFloat32{$ELSE}AFloat64{$ENDIF};
   AInteger = AInt;
   AUInt = AUInt32;
 
@@ -75,7 +77,7 @@ type
 
 type
   AString_Type = packed record  // (4x4 = 16 bytes)
-    Str: WideString;
+    Str: {$IFDEF ABaseOld}WideString{$ELSE}AnsiString{$ENDIF};
     Reserved01: AInteger;
     Reserved02: AInteger;
     Reserved03: AInteger;
@@ -84,7 +86,7 @@ type
     // (4x4 = 16 bytes)
   AString_Type_4 = packed record
       //** UTF-8. Analog GString Points to the string's current \0-terminated value (gchar).
-    Str: PChar;
+    Str: PAnsiChar;
       //** Length (count chars). Analog GString Current length (gsize)
     Len: AInteger;
       //** Allocated size in bytes. Analog GString allocated_len (gsize).

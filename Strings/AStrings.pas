@@ -2,7 +2,7 @@
 @Abstract AStrings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.05.2011
-@LastMod 19.07.2012
+@LastMod 24.07.2012
 
 0.0.5
 [+] String_ToPascalString (01.08.2011)
@@ -92,11 +92,14 @@ type
 function Init(): AError; stdcall;
 function Done(): AError; stdcall;
 
+function AnsiString_GetChar(const S: AnsiString; Index: AInt): AChar; stdcall;
+
 function AString_Assign(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
 function AString_AssignAnsi(var S: AString_Type; Value: PAnsiChar): ASize; stdcall;
+function AString_GetChar(const S: AString_Type; Index: AInt): AChar; stdcall;
 function AString_ToPascalString(const S: AString_Type): APascalString; stdcall;
 
-function String_Assign(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
+function String_Assign(var S: AString_Type; const Value: AString_Type): ASize; stdcall; deprecated; // Use AString_Assign()
 function String_AssignA(var S: AString_Type; Value: PAnsiChar): ASize; stdcall;
 function String_AssignP(var S: AString_Type; const Value: APascalString): ASize; stdcall;
 function String_AssignWS(var S: AString_Type; const Value: AWideString): ASize; stdcall;
@@ -215,16 +218,49 @@ begin
   Result := 0;
 end;
 
+// --- AnsiString ---
+
+function AnsiString_GetChar(const S: AnsiString; Index: AInt): AChar; stdcall;
+{$IFDEF ABaseOld}
+var
+  WS: WideString;
+{$ENDIF ABaseOld}
+begin
+  if (Index >= 1) and (Length(S) >= Index) then
+  begin
+    {$IFDEF ABaseOld}
+    WS := S;
+    Result := WS[Index];
+    {$ELSE}
+    Result := S[Index];
+    {$ENDIF ABaseOld}
+  end
+  else
+    Result := #0;
+end;
+
 // --- AString ---
 
 function AString_Assign(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
 begin
-  Result := String_Assign(S, Value);
+  try
+    S := Value;
+  except
+  end;
+  Result := 0;
 end;
 
 function AString_AssignAnsi(var S: AString_Type; Value: PAnsiChar): ASize; stdcall;
 begin
   Result := String_AssignA(S, Value);
+end;
+
+function AString_GetChar(const S: AString_Type; Index: AInt): AChar; stdcall;
+begin
+  if (Index >= 1) and (Length(S.Str) >= Index) then
+    Result := S.Str[Index]
+  else
+    Result := #0;
 end;
 
 function AString_ToPascalString(const S: AString_Type): APascalString; stdcall;
@@ -236,11 +272,7 @@ end;
 
 function String_Assign(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
 begin
-  try
-    S := Value;
-  except
-  end;
-  Result := 0;
+  Result := AString_Assign(S, Value);
 end;
 
 function String_AssignA(var S: AString_Type; Value: PAnsiChar): ASize; stdcall;

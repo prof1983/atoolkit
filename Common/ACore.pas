@@ -1,9 +1,8 @@
-﻿{**
-@Abstract(ACore)
-@Author(Prof1983 prof1983@yandex.ru)
-@Created(30.10.2009)
-@LastMod(12.04.2012)
-@Version(0.5)
+{**
+@Abstract ACore
+@Author Prof1983 <prof1983@ya.ru>
+@Created 30.10.2009
+@LastMod 24.07.2012
 }
 unit ACore;
 

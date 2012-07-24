@@ -1,9 +1,8 @@
-﻿{**
-@Abstract(AArrays)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(15.09.2011)
-@LastMod(16.11.2011)
-@Version(0.5)
+{**
+@Abstract AArrays
+@Author Prof1983 <prof1983@ya.ru>
+@Created 15.09.2011
+@LastMod 24.07.2012
 }
 unit AArrays;
 
@@ -12,28 +11,21 @@ interface
 uses
   ABase, ABaseTypes;
 
-// Добавляет значение AFloat32 в массив. В массиве все элементы должны быть одинакогового типа.
 function Array_AddFloat32(var Arr: AArray_Type; Value: AFloat32): AInteger;
 
 function Array_AddInt(var Arr: AArray_Type; Value: AInteger): AInteger;
 
-// Добавляет указатель в массив.
 function Array_AddPointer(var Arr: AArray_Type; Rec: Pointer): AInteger;
 
-// Обнуляет массив. При этом очистка занимаемой памяти не производится.
 procedure Array_Clear(var Arr: AArray_Type);
 
-// Освобождает память. Если элементами массива били указатели, то их нужно освобождать самостоятельно.
 // Analog: free() <stdlib.h>
 procedure Array_Free(var Arr: AArray_Type);
 
 function Array_GetPointer(var Arr: AArray_Type; Index: AInteger): Pointer;
 
-// Изменяет размер массива. Analog: realloc() <stdlib.h>
+// Analog: realloc() <stdlib.h>
 function Array_Reallocate(var Arr: AArray_Type; NewSize: AInteger): AInteger;
-
-// malloc() <stdlib.h>
-// calloc() <stdlib.h> - выделяет память, размер которой равен значению выражения num * size
 
 { IntArray }
 

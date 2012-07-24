@@ -1,0 +1,29 @@
+﻿@Abstract(Событие. Параметры имеют вид XML A - дочерние ноды, следующие друг за другом)
+
+{** Процедура - слушатель события 
+    Процедура должна возвращает True, если не произошло ошибок 
+    @param Sender - Объект, который вызвал событие
+    @param AParams - Параметры в виде XML }
+TEventProcA = function(Sender: TObject; Params: WideString): WordBool of object;
+
+{** Простая процедура - слушатель события }
+TEventProcSimple = procedure() of object;
+
+// --- TAEvent ---
+
+{** Вызывает событие. Возврящает кол-во успешно выполненных вызовов (>0) или ошибку (<0) }
+function Invoke(Data: AInteger): AInteger;
+
+// --- TEventShablon ---
+
+{** Описание полей данных для передачи параметров. Имеет вид XML Shema }
+property ParamsShema: WideString read FParamsShema write FParamsShema;
+
+// --- TEvent ---
+
+{** Подписаться на получение события }
+function Connect(Proc: TEventProcA): WordBool;
+{** Отписаться от события }
+function Disconnect(Proc: TEventProcA): WordBool;
+{** Выполнить при возникновении события }
+function Run(Sender: TObject; AParams: WideString): WordBool;

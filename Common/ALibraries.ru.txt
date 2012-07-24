@@ -1,0 +1,10 @@
+﻿{** @Abstract(Класс для работы с динамическими модулями (библиотеками .dll, .so)) }
+
+{** Открывает модуль (библиотеку). Возвращяет идентификатор }
+function Library_Open(const FileName: APascalString; Flags: ALibraryFlags): ALibrary; stdcall;
+
+{** Закрывает модуль (библиотеку) }
+function Library_Close(Lib: ALibrary): ABoolean; stdcall;
+
+{** Возвращает адрес функции }
+function Library_GetProcAddress(Lib: ALibrary; const Name: APascalString): Pointer; stdcall;

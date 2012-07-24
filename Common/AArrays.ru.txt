@@ -1,0 +1,16 @@
+﻿
+{** Добавляет значение AFloat32 в массив. В массиве все элементы должны быть одинакогового типа. }
+function Array_AddFloat32(var Arr: AArray_Type; Value: AFloat32): AInteger;
+
+{** Добавляет указатель в массив }
+function Array_AddPointer(var Arr: AArray_Type; Rec: Pointer): AInteger;
+
+{** Обнуляет массив. При этом очистка занимаемой памяти не производится. }
+procedure Array_Clear(var Arr: AArray_Type);
+
+{** Освобождает память. Если элементами массива били указатели, то их нужно освобождать самостоятельно.
+    Analog: free() <stdlib.h> }
+procedure Array_Free(var Arr: AArray_Type);
+
+{** Изменяет размер массива. Analog: realloc() <stdlib.h> }
+function Array_Reallocate(var Arr: AArray_Type; NewSize: AInteger): AInteger;

@@ -1,9 +1,8 @@
-﻿{**
-@Abstract(Событие. Параметры имеют вид XML A - дочерние ноды, следующие друг за другом)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(20.10.2005)
-@LastMod(22.05.2012)
-@Version(0.5)
+{**
+@Abstract Events
+@Author Prof1983 <prof1983@ya.ru>
+@Created 20.10.2005
+@LastMod 24.07.2012
 }
 unit AEventObj;
 
@@ -12,99 +11,65 @@ interface
 uses
   ABase;
 
-type //** Процедура - слушатель события
-  TEventProcA = function(
-    Sender: TObject;      // Объект, который вызвал событие
-    AParams: WideString   // Параметры в виде XML
-    ): WordBool of object; // Процедура должна возвращает True, если не произошло ошибок
+type
+  {** Event listener }
+  TEventProcA = function(Sender: TObject; AParams: WideString): WordBool of object;
 
-type //** Простая процедура - слушатель события
+  {** Simple event listener }
   TEventProcSimple = procedure() of object;
 
-type
   TAEvent = class
-  private
+  protected
     FListeners: array of record
       Proc: ACallbackProc;
+      ProcA: TEventProcA;
+      ProcSimple: TEventProcSimple;
       Weight: AInteger;
     end;
     FName: WideString;
     FObj: Integer;
-    procedure Delete(Index: Integer);
-  public
-    function GetCount: AInteger;
-    function GetName: WideString;
-  public
-    procedure Clear;
-    function Connect(CallBack: ACallbackProc; Weight: Integer): Integer;
-    function Disconnect(CallBack: ACallbackProc): Integer;
-    // Вызывает событие. Возврящает кол-во успешно выполненных вызовов (>0) или ошибку (<0).
-    function Invoke(Data: AInteger): AInteger;
-  public
-    constructor Create(Obj: Integer; const Name: WideString);
-  end;
-
-type
-  TEventShablon = class
-  private
+  protected
     FDescription: WideString;
-    FName: WideString;
     FParamsShema: WideString;
   protected
-    function GetCount(): Integer; virtual;
+    procedure Delete(Index: Integer);
   public
-    // Подписаться на получение события
-    //function Connect(Proc: Pointer): WordBool;
-    property Count: Integer read GetCount;
-    constructor Create(AName: WideString = '');
+    function GetCount(): AInt;
+    function GetName: WideString;
+  public
+    function Clear(): AError;
+    function Connect(CallBack: ACallbackProc; Weight: Integer): Integer;
+    function ConnectA(ProcA: TEventProcA): WordBool; deprecated; // Use ACallbackProc
+    function ConnectSimple(Proc: TEventProcSimple): WordBool;
+    function Disconnect(CallBack: ACallbackProc): Integer;
+    function DisconnectA(ProcA: TEventProcA): WordBool; deprecated; // Use ACallbackProc
+    function DisconnectSimple(Proc: TEventProcSimple): WordBool;
+    function Invoke(Data: AInteger): AInteger;
+    procedure Run(); overload; deprecated;
+    function Run(Sender: TObject; AParams: WideString): WordBool; overload; deprecated; // Use ACallbackProc
+  public
+    constructor Create(Obj: Integer; const Name: WideString);
+    //constructor Create(AName: WideString = ''); - Old
+  public
+    property Count: Integer read GetCount;
     property Description: WideString read FDescription write FDescription;
-    // Отписаться от события
-    //function Disconnect(Proc: Pointer): WordBool;
     property Name: WideString read FName write FName;
-    //** Описание полей данных для передачи параметров. Имеет вид XML Shema
     property ParamsShema: WideString read FParamsShema write FParamsShema;
-    //function Run(<параметры>): WordBool;
   end;
-
-type
-  //** @abstract(Класс - событие)
-  TEvent = class(TEventShablon)
-  private
-    FListeners: array of TEventProcA;
-  protected
-    function GetCount(): Integer; override;
-  public
-    //** Подписаться на получение события
-    function Connect(Proc: TEventProcA): WordBool;
-    //** Отписаться от события
-    function Disconnect(Proc: TEventProcA): WordBool;
-    //** Выполнить при возникновении события
-    function Run(Sender: TObject; AParams: WideString): WordBool;
-  end;
-  TProfEvent = TEvent;
-
-type
-  TEventSimple = class(TEventShablon)
-  private
-    FListeners: array of TEventProcSimple;
-  protected
-    function GetCount(): Integer; override;
-  public
-    //** Подписаться на получение события
-    function Connect(Proc: TEventProcSimple): WordBool;
-    //** Отписаться от события
-    function Disconnect(Proc: TEventProcSimple): WordBool;
-    //** Выполнить при возникновении события
-    procedure Run();
-  end;
+
+  //TEventShablon = TAEvent;
+  //TEvent = TAEvent;
+  //TProfEvent = TAEvent;
+  //TEventSimple = TAEvent;
 
 implementation
 
 { TAEvent }
 
-procedure TAEvent.Clear;
+function TAEvent.Clear(): AError;
 begin
   SetLength(FListeners, 0);
+  Result := 0;
 end;
 
 function TAEvent.Connect(CallBack: ACallbackProc; Weight: Integer): Integer;
@@ -129,6 +94,7 @@ begin
         for I := High(FListeners) - 1 downto Index do
           FListeners[I + 1] := FListeners[I];
         FListeners[Index].Proc := CallBack;
+        FListeners[Index].ProcA := nil;
         FListeners[Index].Weight := Weight;
         Result := Index;
         Exit;
@@ -142,6 +108,31 @@ begin
   FListeners[I].Proc := CallBack;
   FListeners[I].Weight := Weight;
   Result := I;
+end;
+
+function TAEvent.ConnectA(ProcA: TEventProcA): WordBool;
+var
+  I: Integer;
+begin
+  I := Length(FListeners);
+  SetLength(FListeners, I + 1);
+  FListeners[I].Proc := nil;
+  FListeners[I].ProcA := ProcA;
+  FListeners[I].Weight := High(AInteger);
+  Result := True;
+end;
+
+function TAEvent.ConnectSimple(Proc: TEventProcSimple): WordBool;
+var
+  I: Integer;
+begin
+  I := Length(FListeners);
+  SetLength(FListeners, I + 1);
+  FListeners[I].Proc := nil;
+  FListeners[I].ProcA := nil;
+  FListeners[I].ProcSimple := Proc;
+  FListeners[I].Weight := High(AInteger);
+  Result := True;
 end;
 
 constructor TAEvent.Create(Obj: Integer; const Name: WideString);
@@ -166,7 +157,7 @@ var
 begin
   for I := 0 to High(FListeners) do
   begin
-    if (Addr(FListeners[I]) = Addr(CallBack)) then
+    if (Addr(FListeners[I].Proc) = Addr(CallBack)) then
     begin
       Delete(I);
       Result := I;
@@ -176,7 +167,39 @@ begin
   Result := -1;
 end;
 
-function TAEvent.GetCount: AInteger;
+function TAEvent.DisconnectA(ProcA: TEventProcA): WordBool;
+var
+  I: Integer;
+begin
+  for I := 0 to High(FListeners) do
+  begin
+    if (Addr(FListeners[I].ProcA) = Addr(ProcA)) then
+    begin
+      Delete(I);
+      Result := True;
+      Exit;
+    end;
+  end;
+  Result := False;
+end;
+
+function TAEvent.DisconnectSimple(Proc: TEventProcSimple): WordBool;
+var
+  I: Integer;
+begin
+  for I := 0 to High(FListeners) do
+  begin
+    if (Addr(FListeners[I].ProcSimple) = Addr(Proc)) then
+    begin
+      Delete(I);
+      Result := True;
+      Exit;
+    end;
+  end;
+  Result := False;
+end;
+
+function TAEvent.GetCount(): AInt;
 begin
   Result := Length(FListeners);
 end;
@@ -193,110 +216,36 @@ begin
   Result := 0;
   for I := 0 to High(FListeners) do
   try
-    FListeners[I].Proc(FObj, Data);
+    if Assigned(FListeners[I].Proc) then
+      FListeners[I].Proc(FObj, Data);
     Inc(Result);
   except
   end;
 end;
 
-{ TEvent }
-
-function TEvent.Connect(Proc: TEventProcA): WordBool;
-var
-  I: Integer;
-begin
-  I := Length(FListeners);
-  SetLength(FListeners, I + 1);
-  FListeners[I] := Proc;
-  Result := True;
-end;
-
-function TEvent.Disconnect(Proc: TEventProcA): WordBool;
-var
-  I: Integer;
-begin
-  for I := 0 to High(FListeners) do
-    if Addr(FListeners[I]) = Addr(Proc) then
-    begin
-      FListeners[I] := FListeners[High(FListeners)];
-      SetLength(FListeners, High(FListeners));
-      Result := True;
-      Exit;
-    end;
-  Result := False;
-end;
-
-function TEvent.GetCount(): Integer;
-begin
-  Result := Length(FListeners);
-end;
-
-function TEvent.Run(Sender: TObject; AParams: WideString): WordBool;
+procedure TAEvent.Run();
 var
   I: Integer;
 begin
   for I := 0 to High(FListeners) do
   try
-    FListeners[I](Sender, AParams);
+    if Assigned(FListeners[I].ProcSimple) then
+      FListeners[I].ProcSimple();
   except
   end;
-  Result := True;
 end;
 
-{ TEventShablon }
-
-constructor TEventShablon.Create(AName: WideString = '');
-begin
-  inherited Create();
-  FName := AName;
-end;
-
-function TEventShablon.GetCount(): Integer;
-begin
-  Result := 0;
-end;
-
-{ TEventSimple }
-
-function TEventSimple.Connect(Proc: TEventProcSimple): WordBool;
-var
-  I: Integer;
-begin
-  I := Length(FListeners);
-  SetLength(FListeners, I + 1);
-  FListeners[I] := Proc;
-  Result := True;
-end;
-
-function TEventSimple.Disconnect(Proc: TEventProcSimple): WordBool;
-var
-  I: Integer;
-begin
-  for I := 0 to High(FListeners) do
-    if Addr(FListeners[I]) = Addr(Proc) then
-    begin
-      FListeners[I] := FListeners[High(FListeners)];
-      SetLength(FListeners, High(FListeners));
-      Result := True;
-      Exit;
-    end;
-  Result := False;
-end;
-
-function TEventSimple.GetCount(): Integer;
-begin
-  Result := Length(FListeners);
-end;
-
-procedure TEventSimple.Run();
+function TAEvent.Run(Sender: TObject; AParams: WideString): WordBool;
 var
   I: Integer;
 begin
   for I := 0 to High(FListeners) do
   try
-    FListeners[I]();
+    if Assigned(FListeners[I].ProcA) then
+      FListeners[I].ProcA(Sender, AParams);
   except
   end;
+  Result := True;
 end;
 
 end.

@@ -1,9 +1,8 @@
-﻿{**
-@Abstract(Класс для работы с динамическими модулями (библиотеками .dll, .so))
-@Author(Prof1983 prof1983@ya.ru)
-@Created(02.10.2005)
-@LastMod(05.06.2012)
-@Version(0.5)
+{**
+@Abstract ALibraries (.dll, .so)
+@Author Prof1983 <prof1983@ya.ru>
+@Created 02.10.2005
+@LastMod 24.07.2012
 }
 unit ALibraries;
 
@@ -15,14 +14,16 @@ uses
   {$IFNDEF NoSysUtils}SysUtils,{$ENDIF}
   ABase;
 
-// Открывает модуль (библиотеку). Возвращяет идентификатор.
 function Library_Open(const FileName: APascalString; Flags: ALibraryFlags): ALibrary; stdcall;
-// Закрывает модуль (библиотеку)
+
 function Library_Close(Lib: ALibrary): ABoolean; stdcall;
+
 function Library_BuildPath(const Directory, LibraryName: APascalString): APascalString; stdcall;
+
 function Library_GetName(Lib: ALibrary): APascalString; stdcall;
-// Возвращает адрес функции
+
 function Library_GetProcAddress(Lib: ALibrary; const Name: APascalString): Pointer; stdcall;
+
 function Library_GetSymbol(Lib: ALibrary; const SymbolName: APascalString; var Symbol: Pointer): ABoolean; stdcall;
 
 implementation
@@ -37,8 +38,8 @@ type
 
 type
   TALibraryRec = record
-    FileName: APascalString;        // Имя файла библиотеки (.dll, .so)
-    Handle: HMODULE;          // Идентификатор
+    FileName: APascalString;
+    Handle: HMODULE;
   end;
 
 var

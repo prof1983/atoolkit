@@ -2,7 +2,7 @@
 @Abstract AUi Workbench
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.08.2009
-@LastMod 19.07.2012
+@LastMod 25.07.2012
 }
 unit AUIWorkbench;
 
@@ -11,32 +11,36 @@ interface
 uses
   ABase, ARuntime, AUi, AUiBase;
 
-//** Инициализирует модуль.
-function Init(): AError; stdcall;
+{** Creates a new tab in the main window of the program
+    @return 0 - error, else identifier new page }
+function AUiWorkbench_AddPageP(const Name, Text: APascalString): AControl; stdcall;
 
-function Done(): AError; stdcall;
+{** Creates a new tab in the main window of the program
+    @return 0 - error, else identifier new page }
+function AUiWorkbench_AddPageWS(const Name, Text: AWideString): AControl; stdcall;
 
-{ Создает новую вкладку в главном окне программы. Возврашает:
-  0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
-function AddPageP(const Name, Text: APascalString): AControl; stdcall;
+{** Finalize workbench }
+function AUiWorkbench_Fin(): AError; stdcall;
 
-{ Создает новую вкладку в главном окне программы. Возврашает:
-  0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
-function AddPageWS(const Name, Text: AWideString): AControl; stdcall;
+{** Initialize workbench }
+function AUiWorkbench_Init(): AError; stdcall;
 
+{** Set OnChange event listener }
+function AUiWorkbench_SetOnChange(OnChange: ACallbackProc): AError; stdcall;
 
-{ Создает новую вкладку в главном окне программы. Возврашает:
-  0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
-function UIWorkbench_AddPage(const Name, Text: APascalString): AControl; stdcall;
+// ----
 
-// Заглушка.
-function UIWorkbench_Boot(): AError;
+function Init(): AError; stdcall; deprecated; // Use AUiWorkbench_Init()
 
-function UIWorkbench_Done(): AError; stdcall;
+function Done(): AError; stdcall; deprecated; // Use AUiWorkbench_Fin()
 
-function UIWorkbench_Init(): AError; stdcall;
+{** Creates a new tab in the main window of the program
+    @return 0 - error, else identifier new page }
+function AddPageP(const Name, Text: APascalString): AControl; stdcall; deprecated; // Use AUiWorkbench_AddPageP()
 
-procedure UIWorkbench_SetOnChange(OnChange: ACallbackProc); stdcall;
+{** Creates a new tab in the main window of the program
+    @return 0 - error, else identifier new page }
+function AddPageWS(const Name, Text: AWideString): AControl; stdcall; deprecated; // Use AUiWorkbench_AddPageWS()
 
 implementation
 
@@ -44,63 +48,29 @@ var
   FInitialized: Boolean;
   FPageControl: AControl;
 
-{ Public }
+// --- AUiWorkbench ---
 
-function AddPageP(const Name, Text: APascalString): AControl; stdcall;
-begin
-  try
-    Result := UIWorkbench_AddPage(Name, Text);
-  except
-    Result := 0;
-  end;
-end;
-
-function AddPageWS(const Name, Text: AWideString): AControl; stdcall;
-begin
-  try
-    Result := UIWorkbench_AddPage(Name, Text);
-  except
-    Result := 0;
-  end;
-end;
-
-function Done(): AError; stdcall;
-begin
-  try
-    Result := UIWorkbench_Done();
-  except
-    Result := -1;
-  end;
-end;
-
-function Init(): AError; stdcall;
-begin
-  try
-    Result := UIWorkbench_Init();
-  except
-    Result := -1;
-  end;
-end;
-
-{ UIWorkbench }
-
-function UIWorkbench_AddPage(const Name, Text: APascalString): AControl; stdcall;
+function AUiWorkbench_AddPageP(const Name, Text: APascalString): AControl;
 begin
   Result := AUI.PageControl_AddPageWS(FPageControl, Name, Text);
 end;
 
-function UIWorkbench_Boot(): AError;
+function AUiWorkbench_AddPageWS(const Name, Text: AWideString): AControl;
 begin
-  Result := 0;
+  try
+    Result := AUiWorkbench_AddPageP(Name, Text);
+  except
+    Result := 0;
+  end;
 end;
 
-function UIWorkbench_Done(): AError; stdcall;
+function AUiWorkbench_Fin(): AError;
 begin
   FInitialized := False;
   Result := 0;
 end;
 
-function UIWorkbench_Init(): AError; stdcall;
+function AUiWorkbench_Init(): AError;
 begin
   if FInitialized then
   begin
@@ -114,15 +84,58 @@ begin
     Exit;
   end;
 
-  FPageControl := AUI.PageControl_New(AUI.MainWindow_GetMainContainer());
-  FInitialized := True;
-  Result := 0;
+  try
+    FPageControl := AUI.PageControl_New(AUI.MainWindow_GetMainContainer());
+    FInitialized := True;
+    Result := 0;
+  except
+    Result := -1;
+  end;
 end;
 
-procedure UIWorkbench_SetOnChange(OnChange: ACallbackProc); stdcall;
+function AUiWorkbench_SetOnChange(OnChange: ACallbackProc): AError;
 begin
   if FInitialized then
     AUI.Control_SetOnChange(FPageControl, OnChange);
+  Result := 0;
+end;
+
+{ Public }
+
+function AddPageP(const Name, Text: APascalString): AControl; stdcall;
+begin
+  try
+    Result := AUiWorkbench_AddPageP(Name, Text);
+  except
+    Result := 0;
+  end;
+end;
+
+function AddPageWS(const Name, Text: AWideString): AControl; stdcall;
+begin
+  try
+    Result := AUiWorkbench_AddPageWS(Name, Text);
+  except
+    Result := 0;
+  end;
+end;
+
+function Done(): AError; stdcall;
+begin
+  try
+    Result := AUiWorkbench_Fin();
+  except
+    Result := -1;
+  end;
+end;
+
+function Init(): AError; stdcall;
+begin
+  try
+    Result := AUiWorkbench_Init();
+  except
+    Result := -1;
+  end;
 end;
 
 end.

@@ -2,7 +2,7 @@
 @Abstract AUiSettings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.03.2009
-@LastMod 19.07.2012
+@LastMod 25.07.2012
 }
 unit AUiSettings;
 
@@ -13,26 +13,50 @@ uses
   AUi, AUiBase,
   AUiSettingsBase;
 
-function Init(): AError; stdcall;
-function Done(): AError; stdcall;
+// --- AUiSettings ---
+
+function AUiSettings_Fin(): AError; stdcall;
+
+function AUiSettings_GetMainSettingsWin(): AWindow; stdcall;
+
+function AUiSettings_Init(): AError; stdcall;
+
+function AUiSettings_NewItemP(Parent: AUiSettingsItem;
+    const Text: APascalString): AUiSettingsItem; stdcall;
+
+function AUiSettings_NewItemWS(Parent: AUiSettingsItem;
+    const Text: AWideString): AUiSettingsItem; stdcall;
+
+function AUiSettings_NewSettingsWin(): AWindow; stdcall;
+
+function AUiSettings_ShowSettingsWin(): AError; stdcall;
+
+// --- AUiSettingsItem ---
+
+function AUiSettingsItem_GetPage(Item: AUiSettingsItem): AControl; stdcall;
+
+// ----
+
+function Init(): AError; stdcall; deprecated; // Use AUiSettings_Init()
+function Done(): AError; stdcall; deprecated; // Use AUiSettings_Fin()
 
 function Init03(): AInteger; stdcall;
 function Done03(): AInteger; stdcall;
 
-function MainSettingsWin(): AWindow; stdcall;
+function MainSettingsWin(): AWindow; stdcall; deprecated; // Use AUiSettings_GetMainSettingsWin()
 
-function NewItemWS(Parent: AUISettingsItem; const Text: APascalString): AUISettingsItem; stdcall;
+function NewItemWS(Parent: AUISettingsItem; const Text: APascalString): AUISettingsItem; stdcall; deprecated; // Use AUiSettings_NewItemWS()
 
-function SettingsWin_New(): AWindow; stdcall;
+function SettingsWin_New(): AWindow; stdcall; deprecated; // Use AUiSettings_NewSettingsWin()
 
-procedure ShowSettingsWin(); stdcall;
+procedure ShowSettingsWin(); stdcall; deprecated; // Use AUiSettings_ShowSettingsWin()
 
 
-function UISettings_MainSettingsWin: AWindow; stdcall;
-function UISettings_SettingsWin_New: AWindow; stdcall;
-procedure UISettings_ShowSettingsWin; stdcall;
-function UISettings_NewItem(Parent: AUISettingsItem; const Text: APascalString): AUISettingsItem; stdcall;
-function UISettings_Item_GetPage(Item: AUISettingsItem): AControl; stdcall;
+function UISettings_MainSettingsWin: AWindow; stdcall; deprecated; // Use AUiSettings_GetMainSettingsWin()
+function UISettings_SettingsWin_New: AWindow; stdcall; deprecated; // Use AUiSettings_NewSettingsWin()
+procedure UISettings_ShowSettingsWin; stdcall; deprecated; // Use AUiSettings_ShowSettingsWin()
+function UISettings_NewItem(Parent: AUISettingsItem; const Text: APascalString): AUISettingsItem; stdcall; deprecated; // Use AUiSettings_NewItemP()
+function UISettings_Item_GetPage(Item: AUISettingsItem): AControl; stdcall; deprecated; // Use AUiSettingsItem_GetPage()
 
 implementation
 
@@ -98,9 +122,16 @@ begin
   UISettings_ShowSettingsWin;
 end;
 
-{ Public }
+// --- AUiSettingsItem ---
 
-function Done(): AError; stdcall;
+function AUiSettingsItem_GetPage(Item: AUiSettingsItem): AControl;
+begin
+  Result := FItems[Item - 1].Page;
+end;
+
+// --- AUiSettings ---
+
+function AUiSettings_Fin(): AError;
 var
   I: Integer;
 begin
@@ -130,12 +161,12 @@ begin
   Result := 0;
 end;
 
-function Done03(): AInteger; stdcall;
+function AUiSettings_GetMainSettingsWin(): AWindow;
 begin
-  Result := Done();
+  Result := SettingsWin;
 end;
 
-function Init(): AError; stdcall;
+function AUiSettings_Init(): AError;
 begin
   if FInitialized then
   begin
@@ -151,37 +182,113 @@ begin
     Exit;
   end;
 
-  {$IFDEF A01}
-    AUI.OnDone_Connect(DoUIDone02);
-  {$ELSE}
-    {$IFDEF A02}
-    AUI.OnDone_Connect(DoUIDone02);
+  try
+    {$IFDEF A01}
+      AUI.OnDone_Connect(DoUIDone02);
     {$ELSE}
-    AUI.OnDone_Connect(DoUIDone);
-    {$ENDIF A02}
-  {$ENDIF A01}
+      {$IFDEF A02}
+      AUI.OnDone_Connect(DoUIDone02);
+      {$ELSE}
+      AUI.OnDone_Connect(DoUIDone);
+      {$ENDIF A02}
+    {$ENDIF A01}
 
-  AUI.MainWindow_AddMenuItem('', 'Tools', miToolsText, nil, 0, 900);
+    AUI.MainWindow_AddMenuItem('', 'Tools', miToolsText, nil, 0, 900);
 
-  {$IFDEF A01}
-    AUI.MainWindow_AddMenuItem('Tools', 'Settings', miSettingsText, miSettingsClick02, 0, 1000);
-  {$ELSE}
-    {$IFDEF A02}
-    AUI.MainWindow_AddMenuItem('Tools', 'Settings', miSettingsText, miSettingsClick02, 0, 1000);
+    {$IFDEF A01}
+      AUI.MainWindow_AddMenuItem('Tools', 'Settings', miSettingsText, miSettingsClick02, 0, 1000);
     {$ELSE}
-    AUI.MainWindow_AddMenuItem('Tools', 'Settings', miSettingsText, miSettingsClick, 0, 1000);
-    {$ENDIF A02}
-  {$ENDIF A01}
+      {$IFDEF A02}
+      AUI.MainWindow_AddMenuItem('Tools', 'Settings', miSettingsText, miSettingsClick02, 0, 1000);
+      {$ELSE}
+      AUI.MainWindow_AddMenuItem('Tools', 'Settings', miSettingsText, miSettingsClick, 0, 1000);
+      {$ENDIF A02}
+    {$ENDIF A01}
 
-  InitSettingsWin;
+    InitSettingsWin;
 
-  FInitialized := True;
-  Result := 0;
+    FInitialized := True;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiSettings_NewItemP(Parent: AUiSettingsItem;
+    const Text: APascalString): AUiSettingsItem;
+var
+  ParentTreeNode: ATreeNode;
+  TreeNode: ATreeNode;
+  Page: AControl;
+begin
+  if (Parent > 0) then
+    ParentTreeNode := FItems[Parent-1].TreeNode
+  else
+    ParentTreeNode := 0;
+
+  TreeNode := AUI.TreeView_AddItemWS(FTreeView, ParentTreeNode, Text);
+  Page := AUI.PageControl_AddPageWS(FPageControl, '', Text);
+
+  Result := AddSettingsItem(TreeNode, Page)+1;
+end;
+
+function AUiSettings_NewItemWS(Parent: AUiSettingsItem;
+    const Text: AWideString): AUiSettingsItem;
+begin
+  try
+    Result := AUiSettings_NewItemP(Parent, Text);
+  except
+    Result := 0;
+  end;
+end;
+
+function AUiSettings_NewSettingsWin(): AWindow;
+var
+  Dialog: ADialog;
+begin
+  Dialog := AUI.Dialog_New(MB_ApplyOkCancel);
+  Result := AUI.Dialog_GetWindow(Dialog);
+  if (Result <> 0) then
+  begin
+    AUI.Control_SetTextWS(Result, wndName);
+    AUI.Control_SetPosition(Result, 100, 100);
+    AUI.Control_SetSize(Result, 500, 400);
+
+    FTreeView := AUI.TreeView_New(Result);
+    AUI.Control_SetSize(FTreeView, 150, 400);
+
+    AUI.Splitter_New(Result, 1);
+
+    FPageControl := AUI.PageControl_New(Result);
+  end;
+end;
+
+function AUiSettings_ShowSettingsWin(): AError;
+begin
+  InitSettingsWin();
+  Result := AUI.Control_SetVisible(SettingsWin, True);
+end;
+
+{ Public }
+
+function Done(): AError; stdcall;
+begin
+  Result := AUiSettings_Fin();
+end;
+
+function Done03(): AInteger; stdcall;
+begin
+  Result := AUiSettings_Fin();
+end;
+
+function Init(): AError; stdcall;
+begin
+  Result := AUiSettings_Init();
 end;
 
 function Init03(): AInteger; stdcall;
 begin
-  Result := Init();
+  Result := AUiSettings_Init();
 end;
 
 function MainSettingsWin(): AWindow; stdcall;
@@ -219,7 +326,7 @@ end;
 
 function UISettings_Item_GetPage(Item: AUISettingsItem): AControl; stdcall;
 begin
-  Result := FItems[Item - 1].Page;
+  Result := AUiSettingsItem_GetPage(Item);
 end;
 
 {function UISettings_Item_New(Parent: AUISettingsItem; const Text: AString; ...): AUISettingsItem; stdcall;
@@ -241,51 +348,22 @@ end;}
 
 function UISettings_MainSettingsWin: AWindow; stdcall;
 begin
-  Result := SettingsWin;
+  Result := AUiSettings_GetMainSettingsWin();
 end;
 
 function UISettings_NewItem(Parent: AUISettingsItem; const Text: APascalString): AUISettingsItem; stdcall;
-var
-  ParentTreeNode: ATreeNode;
-  TreeNode: ATreeNode;
-  Page: AControl;
 begin
-  if (Parent > 0) then
-    ParentTreeNode := FItems[Parent-1].TreeNode
-  else
-    ParentTreeNode := 0;
-
-  TreeNode := AUI.TreeView_AddItemWS(FTreeView, ParentTreeNode, Text);
-  Page := AUI.PageControl_AddPageWS(FPageControl, '', Text);
-
-  Result := AddSettingsItem(TreeNode, Page)+1;
+  Result := AUiSettings_NewItemP(Parent, Text);
 end;
 
 function UISettings_SettingsWin_New(): AWindow; stdcall;
-var
-  Dialog: ADialog;
 begin
-  Dialog := AUI.Dialog_New(MB_ApplyOkCancel);
-  Result := AUI.Dialog_GetWindow(Dialog);
-  if (Result <> 0) then
-  begin
-    AUI.Control_SetTextWS(Result, wndName);
-    AUI.Control_SetPosition(Result, 100, 100);
-    AUI.Control_SetSize(Result, 500, 400);
-
-    FTreeView := AUI.TreeView_New(Result);
-    AUI.Control_SetSize(FTreeView, 150, 400);
-
-    AUI.Splitter_New(Result, 1);
-
-    FPageControl := AUI.PageControl_New(Result);
-  end;
+  Result := AUiSettings_NewSettingsWin();
 end;
 
 procedure UISettings_ShowSettingsWin(); stdcall;
 begin
-  InitSettingsWin();
-  AUI.Control_SetVisible(SettingsWin, True);
+  AUiSettings_ShowSettingsWin();
 end;
 
 end.

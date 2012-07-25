@@ -64,6 +64,14 @@ function AUtils_FloatToStr2P(Value: AFloat; DigitsAfterComma: AInteger;
 function AUtils_FloatToStr2WS(Value: AFloat; DigitsAfterComma: AInteger;
     ReplaceComma, Delimer: ABoolean): AWideString; stdcall;
 
+function AUtils_FloatToStrAP(Value: AFloat; DigitsAfterComma: AInteger = 2): APascalString; stdcall;
+
+function AUtils_FloatToStrBP(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall;
+
+function AUtils_FloatToStrCP(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall;
+
+function AUtils_FloatToStrDP(Value: AFloat): APascalString; stdcall;
+
 function AUtils_FloatToStrP(Value: AFloat): APascalString; stdcall;
 
 function AUtils_FloatToStrWS(Value: AFloat): AWideString; stdcall;
@@ -94,6 +102,41 @@ function AUtils_FormatStrStrWS(const FormatStr, S: AWideString): AWideString; st
 function AUtils_FormatStrWS(const Value: AWideString; Len: AInteger): AWideString; stdcall;
 
 function AUtils_Init(): AError; stdcall;
+
+function AUtils_IntToStr(Value: AInteger; out Res: AString_Type): AInteger; stdcall;
+
+function AUtils_IntToStrP(Value: AInteger): APascalString; stdcall;
+
+function AUtils_IntToStrWS(Value: AInteger): AWideString; stdcall;
+
+function AUtils_NormalizeFloat(Value: AFloat): AFloat; stdcall;
+
+function AUtils_NormalizeStr(const Value: AString_Type; out Res: AString_Type): AInteger; stdcall;
+
+function AUtils_NormalizeStrP(const Value: APascalString): APascalString; stdcall;
+
+function AUtils_NormalizeStrSpace(const Value: AString_Type; out Res: AString_Type): AInteger; stdcall;
+
+function AUtils_NormalizeStrSpaceP(const Value: APascalString): APascalString; stdcall;
+
+function AUtils_NormalizeStrSpaceWS(const Value: AWideString): AWideString; stdcall;
+
+function AUtils_NormalizeStrWS(const Value: AWideString): AWideString; stdcall;
+
+function AUtils_Power(Base, Exponent: AFloat): AFloat; stdcall;
+
+function AUtils_ReplaceComma(const S: AString_Type; DecimalSeparator: AChar;
+    ClearSpace: ABoolean; out Res: AString_Type): AInteger; stdcall;
+
+function AUtils_ReplaceCommaP(const S: APascalString; DecimalSeparator: AChar = #0;
+    ClearSpace: ABoolean = True): APascalString; stdcall;
+
+function AUtils_ReplaceCommaWS(const S: AWideString; DecimalSeparator: AChar = #0;
+    ClearSpace: ABoolean = True): AWideString; stdcall;
+
+function AUtils_Round2(Value: Real; Digits1, DigitsAfterComma: Integer): Real; stdcall;
+
+function AUtils_Sleep(Milliseconds: AUInt): AError; stdcall;
 
 // ----
 
@@ -806,11 +849,11 @@ function AUtils_FloatToStr2P(Value: AFloat; DigitsAfterComma: AInteger;
     ReplaceComma, Delimer: ABoolean): APascalString;
 begin
   if Delimer then
-    Result := Utils_FloatToStrC(Value, DigitsAfterComma)
+    Result := AUtils_FloatToStrCP(Value, DigitsAfterComma)
   else
-    Result := Utils_FloatToStrA(Value, DigitsAfterComma);
+    Result := AUtils_FloatToStrAP(Value, DigitsAfterComma);
   if ReplaceComma then
-    Result := Utils_ReplaceComma(Result);
+    Result := AUtils_ReplaceCommaP(Result);
 end;
 
 function AUtils_FloatToStr2WS(Value: AFloat; DigitsAfterComma: AInteger;
@@ -818,14 +861,34 @@ function AUtils_FloatToStr2WS(Value: AFloat; DigitsAfterComma: AInteger;
 begin
   try
     if Delimer then
-      Result := Utils_FloatToStrC(Value, DigitsAfterComma)
+      Result := AUtils_FloatToStrCP(Value, DigitsAfterComma)
     else
-      Result := Utils_FloatToStrA(Value, DigitsAfterComma);
+      Result := AUtils_FloatToStrAP(Value, DigitsAfterComma);
     if ReplaceComma then
-      Result := Utils_ReplaceComma(Result);
+      Result := AUtils_ReplaceCommaP(Result);
   except
     Result := '';
   end;
+end;
+
+function AUtils_FloatToStrAP(Value: AFloat; DigitsAfterComma: AInteger): APascalString;
+begin
+  Result := AUtilsMain.Utils_FloatToStrA(Value, DigitsAfterComma);
+end;
+
+function AUtils_FloatToStrBP(Value: AFloat; DigitsAfterComma: AInteger): APascalString; stdcall;
+begin
+  Result := AUtilsMain.Utils_FloatToStrB(Value, DigitsAfterComma);
+end;
+
+function AUtils_FloatToStrCP(Value: AFloat; DigitsAfterComma: AInteger): APascalString; stdcall;
+begin
+  Result := AUtilsMain.Utils_FloatToStrC(Value, DigitsAfterComma);
+end;
+
+function AUtils_FloatToStrDP(Value: AFloat): APascalString; stdcall;
+begin
+  Result := AUtilsMain.Utils_FloatToStrD(Value);
 end;
 
 function AUtils_FloatToStrP(Value: AFloat): APascalString;
@@ -886,7 +949,10 @@ end;
 function AUtils_FormatIntP(Value, Count: AInteger): APascalString;
 begin
   try
-    Result := Utils_FormatInt(Value, Count);
+    if (Count > 0) and (Count <= 9) then
+      Result := Format('%'+Chr(Ord('0')+Count)+'d',[Value])
+    else
+      Result := SysUtils.IntToStr(Value);
   except
     Result := '';
   end;
@@ -895,7 +961,7 @@ end;
 function AUtils_FormatIntWS(Value, Count: AInteger): AWideString; 
 begin
   try
-    Result := Utils_FormatInt(Value, Count);
+    Result := AUtils_FormatIntWS(Value, Count);
   except
     Result := '';
   end;
@@ -914,8 +980,29 @@ end;
 
 function AUtils_FormatStrAnsi(const Value: AnsiString; Len: AInteger): AnsiString;
 begin
+  if (Len = 0) then
+  begin
+    Result := '';
+    Exit;
+  end;
+
   try
-    Result := Utils_FormatStrAnsi(Value, Len);
+    if (Length(Value) = Abs(Len)) then
+      Result := Value
+    else if (Length(Value) > Abs(Len)) then
+      Result := Copy(Value, 1, Abs(Len))
+    else
+    begin
+      if (Len > 0) then
+        Result := Value
+      else
+      begin
+        Len := -Len;
+        SetLength(Result, Len);
+        FillChar(Result[1], Len, ' ');
+        Move(Value[1], Result[Len-Length(Value)+1], Length(Value));
+      end;
+    end;
   except
     Result := '';
   end;
@@ -966,6 +1053,160 @@ begin
   end;
 
   Result := 0;
+end;
+
+function AUtils_IntToStr(Value: AInteger; out Res: AString_Type): AInteger;
+begin
+  try
+    Result := AStrings.String_AssignWS(Res, Utils_IntToStr(Value));
+  except
+    Result := 0;
+  end;
+end;
+
+function AUtils_IntToStrP(Value: AInteger): APascalString;
+begin
+  try
+    Result := SysUtils.IntToStr(Value);
+  except
+    Result := '';
+  end;
+end;
+
+function AUtils_IntToStrWS(Value: AInteger): AWideString;
+begin
+  try
+    Result := SysUtils.IntToStr(Value);
+  except
+    Result := '';
+  end;
+end;
+
+function AUtils_NormalizeFloat(Value: AFloat): AFloat;
+begin
+  try
+    Result := Utils_NormalizeFloat(Value);
+  except
+    Result := 0;
+  end;
+end;
+
+function AUtils_NormalizeStr(const Value: AString_Type; out Res: AString_Type): AInteger;
+begin
+  try
+    Result := AStrings.String_AssignWS(Res,
+        Utils_NormalizeStr(AStrings.String_ToWideString(Value))
+        );
+  except
+    Result := 0;
+  end;
+end;
+
+function AUtils_NormalizeStrP(const Value: APascalString): APascalString;
+begin
+  try
+    Result := Utils_NormalizeStr(Value);
+  except
+    Result := '';
+  end;
+end;
+
+function AUtils_NormalizeStrSpace(const Value: AString_Type; out Res: AString_Type): AInteger;
+begin
+  try
+    Result := AStrings.String_AssignWS(Res,
+        AUtilsMain.Utils_NormalizeStrSpace(AStrings.String_ToWideString(Value))
+        );
+  except
+    Result := 0;
+  end;
+end;
+
+function AUtils_NormalizeStrSpaceP(const Value: APascalString): APascalString; stdcall;
+begin
+  try
+    Result := AUtilsMain.Utils_NormalizeStrSpace(Value);
+  except
+    Result := '';
+  end;
+end;
+
+function AUtils_NormalizeStrSpaceWS(const Value: AWideString): AWideString; 
+begin
+  try
+    Result := AUtilsMain.Utils_NormalizeStrSpace(Value);
+  except
+    Result := '';
+  end;
+end;
+
+function AUtils_NormalizeStrWS(const Value: AWideString): AWideString;
+begin
+  try
+    Result := Utils_NormalizeStr(Value);
+  except
+    Result := '';
+  end;
+end;
+
+function AUtils_Power(Base, Exponent: AFloat): AFloat;
+begin
+  try
+    Result := Utils_Power(Base, Exponent);
+  except
+    Result := 0;
+  end;
+end;
+
+function AUtils_ReplaceComma(const S: AString_Type; DecimalSeparator: AChar;
+    ClearSpace: ABoolean; out Res: AString_Type): AInteger;
+begin
+  try
+    Result := AStrings.String_AssignWS(Res,
+        AUtilsMain.Utils_ReplaceComma(AStrings.String_ToWideString(S), DecimalSeparator, ClearSpace)
+        );
+  except
+    Result := 0;
+  end;
+end;
+
+function AUtils_ReplaceCommaP(const S: APascalString; DecimalSeparator: AChar;
+    ClearSpace: ABoolean): APascalString;
+begin
+  try
+    Result := AUtilsMain.Utils_ReplaceComma(S, DecimalSeparator, ClearSpace);
+  except
+    Result := '';
+  end;
+end;
+
+function AUtils_ReplaceCommaWS(const S: AWideString; DecimalSeparator: AChar;
+    ClearSpace: ABoolean): AWideString;
+begin
+  try
+    Result := AUtilsMain.Utils_ReplaceComma(S, DecimalSeparator, ClearSpace);
+  except
+    Result := '';
+  end;
+end;
+
+function AUtils_Round2(Value: Real; Digits1, DigitsAfterComma: Integer): Real;
+begin
+  try
+    Result := Utils_Round2(Value, Digits1, DigitsAfterComma);
+  except
+    Result := 0;
+  end;
+end;
+
+function AUtils_Sleep(Milliseconds: AUInt): AError; 
+begin
+  try
+    Utils_Sleep(Milliseconds);
+    Result := 0;
+  except
+    Result := -1;
+  end;
 end;
 
 { Utils }
@@ -1325,48 +1566,28 @@ end;
 {$IFDEF AUTILSOLD}
 function IntToStr(Value: AInteger): AWideString; stdcall;
 begin
-  try
-    Result := SysUtils.IntToStr(Value);
-  except
-    Result := '';
-  end;
+  Result := AUtils_IntToStrWS(Value);
 end;
 {$ELSE}
 function IntToStr(Value: AInteger; out Res: AString_Type): AInteger; stdcall;
 begin
-  try
-    Result := AStrings.String_AssignWS(Res, Utils_IntToStr(Value));
-  except
-    Result := 0;
-  end;
+  Result := AUtils_IntToStr(Value, Res);
 end;
 {$ENDIF AUTILSOLD}
 
 function IntToStrP(Value: AInteger): APascalString; stdcall;
 begin
-  try
-    Result := SysUtils.IntToStr(Value);
-  except
-    Result := '';
-  end;
+  Result := AUtils_IntToStrP(Value);
 end;
 
 function IntToStrWS(Value: AInteger): AWideString; stdcall;
 begin
-  try
-    Result := SysUtils.IntToStr(Value);
-  except
-    Result := '';
-  end;
+  Result := AUtils_IntToStrWS(Value);
 end;
 
 function NormalizeFloat(Value: AFloat): AFloat; stdcall;
 begin
-  try
-    Result := Utils_NormalizeFloat(Value);
-  except
-    Result := 0;
-  end;
+  Result := AUtils_NormalizeFloat(Value);
 end;
 
 {$IFDEF AUTILSOLD}
@@ -1381,141 +1602,79 @@ end;
 {$ELSE}
 function NormalizeStr(const Value: AString_Type; out Res: AString_Type): AInteger; stdcall;
 begin
-  try
-    Result := AStrings.String_AssignWS(Res,
-        Utils_NormalizeStr(AStrings.String_ToWideString(Value))
-        );
-  except
-    Result := 0;
-  end;
+  Result := AUtils_NormalizeStr(Value, Res);
 end;
 {$ENDIF AUTILSOLD}
 
 function NormalizeStrP(const Value: APascalString): APascalString; stdcall;
 begin
-  try
-    Result := Utils_NormalizeStr(Value);
-  except
-    Result := '';
-  end;
-end;
-
-function NormalizeStrWS(const Value: AWideString): AWideString; stdcall;
-begin
-  try
-    Result := Utils_NormalizeStr(Value);
-  except
-    Result := '';
-  end;
+  Result := AUtils_NormalizeStrP(Value);
 end;
 
 function NormalizeStrSpace(const Value: AString_Type; out Res: AString_Type): AInteger; stdcall;
 begin
-  try
-    Result := AStrings.String_AssignWS(Res,
-        AUtilsMain.Utils_NormalizeStrSpace(AStrings.String_ToWideString(Value))
-        );
-  except
-    Result := 0;
-  end;
+  Result := AUtils_NormalizeStrSpace(Value, Res);
 end;
 
 function NormalizeStrSpaceP(const Value: APascalString): APascalString; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_NormalizeStrSpace(Value);
-  except
-    Result := '';
-  end;
+  Result := AUtils_NormalizeStrSpaceP(Value);
 end;
 
 function NormalizeStrSpaceWS(const Value: AWideString): AWideString; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_NormalizeStrSpace(Value);
-  except
-    Result := '';
-  end;
+  Result := AUtils_NormalizeStrSpaceWS(Value);
+end;
+
+function NormalizeStrWS(const Value: AWideString): AWideString; stdcall;
+begin
+  Result := AUtils_NormalizeStrWS(Value);
 end;
 
 function Power(Base, Exponent: AFloat): AFloat; stdcall;
 begin
-  try
-    Result := Utils_Power(Base, Exponent); 
-  except
-    Result := 0;
-  end;
+  Result := AUtils_Power(Base, Exponent);
 end;
 
 {$IFDEF AUTILSOLD}
 function ReplaceComma(const S: AWideString; DecimalSeparator: AChar = #0;
     ClearSpace: ABoolean = True): AWideString; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_ReplaceComma(S, DecimalSeparator, ClearSpace);
-  except
-    Result := '';
-  end;
+  Result := AUtils_ReplaceCommaWS(S, DecimalSeparator, ClearSpace);
 end;
 {$ELSE}
 function ReplaceComma(const S: AString_Type; DecimalSeparator: AChar;
     ClearSpace: ABoolean; out Res: AString_Type): AInteger; stdcall;
 begin
-  try
-    Result := AStrings.String_AssignWS(Res,
-        AUtilsMain.Utils_ReplaceComma(AStrings.String_ToWideString(S), DecimalSeparator, ClearSpace)
-        );
-  except
-    Result := 0;
-  end;
+  Result := AUtils_ReplaceComma(S, DecimalSeparator, ClearSpace, Res);
 end;
 {$ENDIF AUTILSOLD}
 
 function ReplaceCommaP(const S: APascalString; DecimalSeparator: AChar = #0;
     ClearSpace: ABoolean = True): APascalString; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_ReplaceComma(S, DecimalSeparator, ClearSpace);
-  except
-    Result := '';
-  end;
+  Result := AUtils_ReplaceCommaP(S, DecimalSeparator, ClearSpace);
 end;
 
 function ReplaceCommaWS(const S: AWideString; DecimalSeparator: AChar = #0;
     ClearSpace: ABoolean = True): AWideString; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_ReplaceComma(S, DecimalSeparator, ClearSpace);
-  except
-    Result := '';
-  end;
+  Result := AUtils_ReplaceCommaWS(S, DecimalSeparator, ClearSpace);
 end;
 
 function Round2(Value: Real; Digits1, DigitsAfterComma: Integer): Real; stdcall;
 begin
-  try
-    Result := Utils_Round2(Value, Digits1, DigitsAfterComma);
-  except
-    Result := 0;
-  end;
+  Result := AUtils_Round2(Value, Digits1, DigitsAfterComma);
 end;
 
 function Sleep(Milliseconds: AUInt): AError; stdcall;
 begin
-  try
-    Utils_Sleep(Milliseconds);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUtils_Sleep(Milliseconds);
 end;
 
 procedure Sleep02(Milliseconds: AUInt); stdcall;
 begin
-  try
-    Utils_Sleep(Milliseconds);
-  except
-  end;
+  AUtils_Sleep(Milliseconds);
 end;
 
 function String_ToLowerP(const S: APascalString): APascalString; stdcall;
@@ -1961,71 +2120,47 @@ end;
 
 function Utils_FloatToStr(Value: AFloat): APascalString; stdcall;
 begin
-  Result := AUtilsMain.Utils_FloatToStr(Value);
+  Result := AUtils_FloatToStrP(Value);
 end;
 
 function Utils_FloatToStrA(Value: AFloat; DigitsAfterComma: AInteger = 2): APascalString; stdcall;
 begin
-  Result := AUtilsMain.Utils_FloatToStrA(Value, DigitsAfterComma);
+  Result := AUtils_FloatToStrAP(Value, DigitsAfterComma);
 end;
 
 function Utils_FloatToStrB(Value: AFloat; DigitsAfterComma: AInteger): APascalString; stdcall;
 begin
-  Result := AUtilsMain.Utils_FloatToStrB(Value, DigitsAfterComma);
+  Result := AUtils_FloatToStrBP(Value, DigitsAfterComma);
 end;
 
 function Utils_FloatToStrC(Value: AFloat; DigitsAfterComma: AInteger): APascalString; stdcall;
 begin
-  Result := AUtilsMain.Utils_FloatToStrC(Value, DigitsAfterComma);
+  Result := AUtils_FloatToStrCP(Value, DigitsAfterComma);
 end;
 
 function Utils_FloatToStrD(Value: AFloat): APascalString; stdcall;
 begin
-  Result := AUtilsMain.Utils_FloatToStrD(Value);
+  Result := AUtils_FloatToStrDP(Value);
 end;
 
 function Utils_FormatFloat(Value: AFloat; Count, Digits: AInteger): APascalString; stdcall;
 begin
-  Result := AUtilsMain.Utils_FormatFloat(Value, Count, Digits);
+  Result := AUtils_FormatFloatP(Value, Count, Digits);
 end;
 
 function Utils_FormatInt(Value, Count: AInteger): APascalString; stdcall;
 begin
-  if (Count > 0) and (Count <= 9) then
-    Result := Format('%'+Chr(Ord('0')+Count)+'d',[Value])
-  else
-    Result := SysUtils.IntToStr(Value);
+  Result := AUtils_FormatIntP(Value, Count);
 end;
 
 function Utils_FormatStr(const Value: APascalString; Len: AInteger): APascalString; stdcall;
 begin
-  Result := Utils_FormatStrAnsi(Value, Len);
+  Result := AUtils_FormatStrP(Value, Len);
 end;
 
 function Utils_FormatStrAnsi(const Value: AnsiString; Len: AInteger): AnsiString; stdcall;
 begin
-  if (Len = 0) then
-  begin
-    Result := '';
-    Exit;
-  end;
-
-  if (Length(Value) = Abs(Len)) then
-    Result := Value
-  else if (Length(Value) > Abs(Len)) then
-    Result := Copy(Value, 1, Abs(Len))
-  else
-  begin
-    if (Len > 0) then
-      Result := Value
-    else
-    begin
-      Len := -Len;
-      SetLength(Result, Len);
-      FillChar(Result[1], Len, ' ');
-      Move(Value[1], Result[Len-Length(Value)+1], Length(Value));
-    end;
-  end;
+  Result := AUtils_FormatStrAnsi(Value, Len);
 end;
 
 function Utils_Init(): AError;

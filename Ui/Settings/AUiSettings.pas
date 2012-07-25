@@ -92,25 +92,25 @@ end;
 procedure InitSettingsWin();
 begin
   if (SettingsWin = 0) then
-    SettingsWin := UISettings_SettingsWin_New;
+    SettingsWin := AUiSettings_NewSettingsWin();
 end;
 
 { Events }
 
 function DoUIDone(Obj, Data: AInteger): AError; stdcall;
 begin
-  Result := Done();
+  Result := AUiSettings_Fin();
 end;
 
 procedure DoUIDone02(Obj, Data: AInteger); stdcall;
 begin
-  Done();
+  AUiSettings_Fin();
 end;
 
 function miSettingsClick(Obj, Data: AInteger): AError; stdcall;
 begin
   try
-    UISettings_ShowSettingsWin;
+    AUiSettings_ShowSettingsWin();
     Result := 0;
   except
     Result := -1;
@@ -119,7 +119,7 @@ end;
 
 procedure miSettingsClick02(Obj, Data: Integer); stdcall;
 begin
-  UISettings_ShowSettingsWin;
+  AUiSettings_ShowSettingsWin();
 end;
 
 // --- AUiSettingsItem ---

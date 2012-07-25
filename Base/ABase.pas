@@ -39,14 +39,18 @@ type
   AUInt = AUInt32;
 
 type
-  {**
-    Version type
-    Format: $AABBCCDD = AA.BB.CC.DD
-  }
-  AVersion = type Integer;
+  {** Version type }
+  AVersion = type AInt;
+  {** Version type
+      Format: $AABBCCDD = AA.BB.CC.DD }
+  AVersion32 = type AInt32;
+  {** Version type
+      Format: $AAAABBBBCCCCDDDD = AAAA.BBBB.CCCC.DDDD }
+  AVersion64 = type AInt64;
 const
     //** Version mask for checking
   AVersionMask = $FFFF0000;
+  AVersionMask64 = $FFFFFFFF00000000;
 
 type
   {**

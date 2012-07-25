@@ -2,7 +2,7 @@
 @Abstract AUtils - Main
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.09.2011
-@LastMod 19.07.2012
+@LastMod 25.07.2012
 }
 unit AUtilsMain;
 
@@ -75,6 +75,9 @@ function Utils_TryStrToInt(const S: APascalString; var Value: AInteger): ABoolea
 
 implementation
 
+uses
+  AUtils;
+
 function Utils_ExtractFileExt(const FileName: APascalString): APascalString;
 begin
   Result := SysUtils.ExtractFileExt(FileName);
@@ -92,17 +95,12 @@ end;
 
 function Utils_FloatToStr(Value: AFloat): APascalString;
 begin
-  Result := SysUtils.FloatToStr(Value);
+  Result := AUtils_FloatToStrP(Value);
 end;
 
 function Utils_FloatToStr2(Value: AFloat; DigitsAfterComma: Integer; ReplaceComma, Delimer: ABoolean): APascalString;
 begin
-  if Delimer then
-    Result := Utils_FloatToStrC(Value, DigitsAfterComma)
-  else
-    Result := Utils_FloatToStrA(Value, DigitsAfterComma);
-  if ReplaceComma then
-    Result := Utils_ReplaceComma(Result);
+  Result := AUtils_FloatToStr2P(Value, DigitsAfterComma, ReplaceComma, Delimer);
 end;
 
 function Utils_FloatToStrA(Value: AFloat; DigitsAfterComma: AInteger = 2): APascalString;
@@ -337,7 +335,11 @@ end;
 
 function Utils_TryStrToFloat(const S: APascalString; var Value: AFloat): ABoolean;
 begin
+  {$IFDEF AFloat32}
   Result := Utils_TryStrToFloat32(S, Value);
+  {$ELSE}
+  Result := Utils_TryStrToFloat64(S, Value);
+  {$ENDIF}
 end;
 
 function Utils_TryStrToFloat32(const S: APascalString; var Value: AFloat32): ABoolean;

@@ -2,7 +2,7 @@
 @Abstract AStrings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.05.2011
-@LastMod 24.07.2012
+@LastMod 25.07.2012
 
 0.0.5
 [+] String_ToPascalString (01.08.2011)
@@ -221,20 +221,9 @@ end;
 // --- AnsiString ---
 
 function AnsiString_GetChar(const S: AnsiString; Index: AInt): AChar; stdcall;
-{$IFDEF ABaseOld}
-var
-  WS: WideString;
-{$ENDIF ABaseOld}
 begin
   if (Index >= 1) and (Length(S) >= Index) then
-  begin
-    {$IFDEF ABaseOld}
-    WS := S;
-    Result := WS[Index];
-    {$ELSE}
-    Result := S[Index];
-    {$ENDIF ABaseOld}
-  end
+    Result := S[Index]
   else
     Result := #0;
 end;

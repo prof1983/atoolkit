@@ -2,7 +2,7 @@
 @abstract Base types and consts
 @author Prof1983 <prof1983@ya.ru>
 @created 06.03.2008
-@lastmod 24.07.2012
+@lastmod 25.07.2012
 }
 unit ABase;
 
@@ -10,12 +10,11 @@ unit ABase;
 
 {DEFINE A01}
 {DEFINE A02}
-{$IFDEF ABaseOld}{$DEFINE AFloat32}{$ENDIF}
 
 interface
 
 type // Simple types
-  AFloat32 = {$IFDEF ABaseOld}Real{$ELSE}Single{$ENDIF};
+  AFloat32 = Single;
   AFloat64 = Double;
   AInt08 = ShortInt;
   AInt16 = SmallInt;
@@ -29,7 +28,7 @@ type // Simple types
 
 type // Simple types
   ABool = Boolean;
-  AChar = {$IFDEF ABaseOld}WideChar{$ELSE}Char{$ENDIF}; // or UTF-32 (UCS4Char)
+  AChar = AnsiChar; // or UTF-32 (UCS4Char)
   AInt = Integer;
   ASize = LongWord;
 
@@ -77,10 +76,10 @@ type
 
 type
   AString_Type = packed record  // (4x4 = 16 bytes)
-    Str: {$IFDEF ABaseOld}WideString{$ELSE}AnsiString{$ENDIF};
+    Str: AnsiString;
     Reserved01: AInteger;
     Reserved02: AInteger;
-    Reserved03: AInteger;
+    Code: AInteger;
   end;
 
     // (4x4 = 16 bytes)
@@ -91,11 +90,12 @@ type
     Len: AInteger;
       //** Allocated size in bytes. Analog GString allocated_len (gsize).
     AllocSize: ASize;
-      //** Code: 0 - UTF-8; 1 - PAnsiChar
+      //** Code: 0 - Unknown or AnsiString; 1 - PAnsiChar; 2 - UTF-8
     Code: AInteger;
   end;
 
 type
+  AStr = PAnsiChar;
   {$IFDEF A01}
   AString = AWideString;
   {$ELSE}

@@ -4,7 +4,7 @@
 @Created 26.08.2009
 @LastMod 25.07.2012
 }
-unit AUIWorkbench;
+unit AUiWorkbench;
 
 interface
 

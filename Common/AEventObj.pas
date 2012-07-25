@@ -2,9 +2,11 @@
 @Abstract Events
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.10.2005
-@LastMod 24.07.2012
+@LastMod 25.07.2012
 }
 unit AEventObj;
+
+{DEFINE ADepr}
 
 interface
 
@@ -13,7 +15,9 @@ uses
 
 type
   {** Event listener }
+  {$IFDEF ADepr}
   TEventProcA = function(Sender: TObject; AParams: WideString): WordBool of object;
+  {$ENDIF}
 
   {** Simple event listener }
   TEventProcSimple = procedure() of object;
@@ -22,7 +26,9 @@ type
   protected
     FListeners: array of record
       Proc: ACallbackProc;
+      {$IFDEF ADepr}
       ProcA: TEventProcA;
+      {$ENDIF}
       ProcSimple: TEventProcSimple;
       Weight: AInteger;
     end;
@@ -39,14 +45,20 @@ type
   public
     function Clear(): AError;
     function Connect(CallBack: ACallbackProc; Weight: Integer): Integer;
+    {$IFDEF ADepr}
     function ConnectA(ProcA: TEventProcA): WordBool; deprecated; // Use ACallbackProc
+    {$ENDIF}
     function ConnectSimple(Proc: TEventProcSimple): WordBool;
     function Disconnect(CallBack: ACallbackProc): Integer;
+    {$IFDEF ADepr}
     function DisconnectA(ProcA: TEventProcA): WordBool; deprecated; // Use ACallbackProc
+    {$ENDIF}
     function DisconnectSimple(Proc: TEventProcSimple): WordBool;
     function Invoke(Data: AInteger): AInteger;
+    {$IFDEF ADepr}
     procedure Run(); overload; deprecated;
     function Run(Sender: TObject; AParams: WideString): WordBool; overload; deprecated; // Use ACallbackProc
+    {$ENDIF}
   public
     constructor Create(Obj: Integer; const Name: WideString);
     //constructor Create(AName: WideString = ''); - Old
@@ -94,7 +106,10 @@ begin
         for I := High(FListeners) - 1 downto Index do
           FListeners[I + 1] := FListeners[I];
         FListeners[Index].Proc := CallBack;
+        {$IFDEF ADepr}
         FListeners[Index].ProcA := nil;
+        {$ENDIF}
+        FListeners[Index].ProcSimple := nil;
         FListeners[Index].Weight := Weight;
         Result := Index;
         Exit;
@@ -110,6 +125,7 @@ begin
   Result := I;
 end;
 
+{$IFDEF ADepr}
 function TAEvent.ConnectA(ProcA: TEventProcA): WordBool;
 var
   I: Integer;
@@ -118,9 +134,11 @@ begin
   SetLength(FListeners, I + 1);
   FListeners[I].Proc := nil;
   FListeners[I].ProcA := ProcA;
+  FListeners[I].ProcSimple := nil;
   FListeners[I].Weight := High(AInteger);
   Result := True;
 end;
+{$ENDIF}
 
 function TAEvent.ConnectSimple(Proc: TEventProcSimple): WordBool;
 var
@@ -129,7 +147,9 @@ begin
   I := Length(FListeners);
   SetLength(FListeners, I + 1);
   FListeners[I].Proc := nil;
+  {$IFDEF ADepr}
   FListeners[I].ProcA := nil;
+  {$ENDIF}
   FListeners[I].ProcSimple := Proc;
   FListeners[I].Weight := High(AInteger);
   Result := True;
@@ -167,6 +187,7 @@ begin
   Result := -1;
 end;
 
+{$IFDEF ADepr}
 function TAEvent.DisconnectA(ProcA: TEventProcA): WordBool;
 var
   I: Integer;
@@ -182,6 +203,7 @@ begin
   end;
   Result := False;
 end;
+{$ENDIF}
 
 function TAEvent.DisconnectSimple(Proc: TEventProcSimple): WordBool;
 var
@@ -223,6 +245,7 @@ begin
   end;
 end;
 
+{$IFDEF ADepr}
 procedure TAEvent.Run();
 var
   I: Integer;
@@ -234,7 +257,9 @@ begin
   except
   end;
 end;
+{$ENDIF}
 
+{$IFDEF ADepr}
 function TAEvent.Run(Sender: TObject; AParams: WideString): WordBool;
 var
   I: Integer;
@@ -247,5 +272,6 @@ begin
   end;
   Result := True;
 end;
+{$ENDIF}
 
 end.

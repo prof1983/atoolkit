@@ -7,3 +7,6 @@ const
   cCancelText = 'Отмена';
   cApplyText = 'Применить';
 
+const
+  miAboutCaption = 'О программе...';
+  miHelpCaption = 'Справка';

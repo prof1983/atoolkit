@@ -1,9 +1,8 @@
-﻿{**
-@Abstract(User Interface box functions)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(11.08.2011)
-@LastMod(11.08.2011)
-@Version(0.5)
+{**
+@Abstract User Interface box functions
+@Author Prof1983 <prof1983@ya.ru>
+@Created 11.08.2011
+@LastMod 26.07.2012
 }
 unit AUiBox;
 
@@ -13,11 +12,8 @@ uses
   Controls, ExtCtrls,
   ABase, AUiBase, AUiData;
 
-{ Создает новую панель.
-  BoxType
-    0 - Simple
-    1 - HBox
-    2 - VBox }
+{** Creates a new panel
+    @param BoxType: 0 - Simple; 1 - HBox; 2 - VBox }
 function UI_Box_New(Parent: AControl; BoxType: AInteger): AControl;
 
 implementation

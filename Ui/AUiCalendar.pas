@@ -2,7 +2,7 @@
 @Abstract AUi calendar
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.12.2009
-@LastMod 19.07.2012
+@LastMod 26.07.2012
 }
 unit AUiCalendar;
 
@@ -171,7 +171,7 @@ var
   DayNum: Integer;
 begin
   if ARow = 0 then  { day names at tops of columns }
-    Result := FormatSettings.ShortDayNames[(StartOfWeek + ACol) mod 7 + 1]
+    Result := {$IFDEF DELPHI_XE_UP}FormatSettings.{$ENDIF}ShortDayNames[(StartOfWeek + ACol) mod 7 + 1]
   else
   begin
     DayNum := FMonthOffset + ACol + (ARow - 1) * 7;

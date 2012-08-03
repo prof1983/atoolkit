@@ -1,0 +1,36 @@
+{
+Object
+|- Control
+|   |- Box
+|   |- Button
+|   |- Calendar
+|   |- ComboBox
+|   |- Edit
+|   |- Grid
+|   |- Image
+|   |- Label
+|   |- ListBox
+|   |- PageControl
+|   |- ProgressBar
+|   |- PropertyBox
+|   |- Report
+|   |- SpinEdit
+|   |- Splitter
+|   |- TextView
+|   |- ToolBar
+|   |- TreeView
+|   \- Window
+|- DataSource
+|- MainWindow
+|- MenuItem
+|- Menu
+|- TrayIcon
+\- WaytWin
+
+A_UI_Box_Type = TPanel
+A_UI_Button_Type = TButton
+A_UI_Calendar_Type = TCalendar
+A_UI_ComboBox_Type = TComboBox
+A_UI_Control_Type = TControl
+A_UI_DataSource = TDataSource
+}

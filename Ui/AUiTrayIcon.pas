@@ -1,9 +1,8 @@
-﻿{**
-@Abstract(Иконка в трее)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(22.12.2007)
-@Lastmod(25.04.2012)
-@Version(0.5)
+{**
+@Abstract The icon in the system tray
+@Author Prof1983 <prof1983@ya.ru>
+@Created 22.12.2007
+@Lastmod 26.07.2012
 }
 unit AUiTrayIcon;
 
@@ -44,38 +43,6 @@ type
     dwInfoFlags: DWORD;
   end;
 
-  { Класс иконки в трее
-
-    Данный класс реализует основную функциональность, для работы с иконкой
-    в трее. Основным отличием от аналогичных компонентов является возможность
-    отображать всплывающие подсказки.
-
-    @member(Create          Конструктор объекта.
-                            @param(AOwner Владелец данного объекта))
-    @member(Destroy         Деструктор объекта. )
-    @member(ShowToolTip     Показывает всплывающую подсказку в трее около активной иконки.
-                            @param(ATimeOut Время в мс в течении которого подсказка
-                                            будет отображаться в трее.)
-                            @param(AType Тип иконки отображаемой слева в окне
-                                         подсказки unGlobals.TLogTypeMessage.)
-                            @param(ATitle Заголовок окна всплывающей подсказки.)
-                            @param(AInfo Сообщение всплывающей подсказки.))
-    @member(IsActive        Признак отображения иконки в трее.)
-    @member(IsShowDesigning Признак разрешающий показывать иконку в режиме разработки.)
-    @member(Icon            Иконка отображающаяся в трее.)
-    @member(IDMessage       Текстовый идентификатор оконного сообщения. Должен быть
-                            уникальным для каждого приложения.)
-    @member(IsShowApp       Признак отображения окна приложения.)
-    @member(Hint            Текст отображаемый при наведении курсора на иконку в трее.)
-    @member(PopupMenu       Указатель на всплывающее меню связанное с иконкой в трее.
-                            Отображается при возникновении события @link(OnDblClick).)
-    @member(OnLeftClick     Событие возникающее при щелчке левой кнопкой мыши по иконке в трее.)
-    @member(OnDblClick      Событие возникающее при двойном щелчке левой кнопкой мыши по иконке в трее.)
-    @member(OnRightClick    Событие возникающее при щелчке правой кнопкой мыши по иконке в трее.
-                            При этом если заданно всплывающее меню @link(PopupMenu)(), то сначала
-                            будет произведенно отображение меню, а потом передано управление
-                            в этот обработчик.)
-  }
   TAUITrayIcon = class
   private
     FWindowHandle: HWND;
@@ -107,21 +74,14 @@ type
   public
     procedure ShowToolTip(ATimeOut: LongWord; AType: TLogTypeMessage; const ATitle, AInfo: AnsiString);
   public //published
-    // Отображать иконку
     property IsActive: Boolean read FIsActive write SetIsActive;
     property IsShowDesigning: Boolean read FIsShowDesigning write SetIsShowDesigning;
-    // Изображение иконки
     property Icon: TIcon read FIcon write SetIcon;
     property IDMessage: string read FIDMessage write SetIDMessage;
-    // Всплывающая подсказка
     property Hint: AnsiString read FHint write SetHint;
-    // Контекстное меню
     property PopupMenu: TPopupMenu read FPopupMenu write FPopupMenu;
-    // Событие. Срабытывает при нажатии левой кнопкой.
     //property OnLeftClick: TAProc read FOnLeftClick write FOnLeftClick;
-    // Событие. Срабатывает при двойном нажатии.
     //property OnDblClick: TAProc read FOnDblClick write FOnDblClick;
-    // Событие. Срабатывает при нажатии правой кнопкой.
     //property OnRightClick: TAProc read FOnRightClick write FOnRightClick;
   end;
 
@@ -190,15 +150,7 @@ begin
   FIcon.OnChange := OnChangeIcon;
   FTrayIconMsg := RegisterWindowMessage(PChar(FIDMessage + '_TrayIcon'));
 
-  // Prof1983: 24.06.2011
   FWindowHandle := Classes.AllocateHWnd(WndProc);
-  (*
-  {$IFDEF COMPILER_12_UP}
-  FWindowHandle := Classes.AllocateHWnd(WndProc);
-  {$ELSE}
-  FWindowHandle := Forms.AllocateHWnd(WndProc);
-  {$ENDIF}
-  *)
 
   FIcon.Assign(Application.Icon);
   IsActive := True;
@@ -213,13 +165,10 @@ begin
   FOnRightClick := nil;
 
   if (IsActive) then
-    // Prof1983
     //if (not (csDesigning in ComponentState))or((csDesigning in ComponentState) and IsShowDesigning) then
       ModifyIcon(NIM_DELETE);
 
-  // Prof1983: 24.06.2011
   Classes.DeallocateHWnd(FWindowHandle);
-  //{$IFDEF VER130}Forms.DeallocateHWnd(FWindowHandle){$ELSE}Classes.DeallocateHWnd(FWindowHandle){$ENDIF};
 
   FreeAndNil(FIcon);
   inherited;
@@ -231,7 +180,6 @@ begin
   begin
     FIDMessage := AValue;
     FTrayIconMsg := RegisterWindowMessage(PChar(FIDMessage + '_TrayIcon'));
-    // Prof1983
     //if (not (csDesigning in ComponentState))or((csDesigning in ComponentState) and IsShowDesigning) then
       if (FIsActive) then
         ModifyIcon(NIM_MODIFY);
@@ -243,7 +191,6 @@ begin
   if (Value <> FIsActive) then
   begin
     FIsActive := Value;
-    // Prof1983
     //if (not (csDesigning in ComponentState))or((csDesigning in ComponentState) and IsShowDesigning) then
       if (FIsActive) then
         ModifyIcon(NIM_ADD)
@@ -256,7 +203,6 @@ procedure TAUITrayIcon.SetIsShowDesigning(Value: Boolean);
 begin
   if (Value <> FIsShowDesigning) then
   begin
-    // Prof1983
     //if ((csDesigning in ComponentState)and(IsActive)) then
     if (IsActive) then
     begin
@@ -358,7 +304,7 @@ begin
     PopupMenu.Popup(tmpMouseCo.X, tmpMouseCo.Y);
   end;
   if Assigned(FOnRightClick) then
-    FOnRightClick; //(Self, mbRight, [], tmpMouseCo.x, tmpMouseCo.y);
+    FOnRightClick();
 end;
 
 procedure TAUITrayIcon.ShowToolTip(ATimeOut: LongWord; AType: TLogTypeMessage; const ATitle, AInfo: AnsiString);

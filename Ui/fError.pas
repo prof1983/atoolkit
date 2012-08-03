@@ -1,9 +1,8 @@
-﻿{**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(21.07.2008)
-@LastMod(03.05.2011)
-@Version(0.5)
+{**
+@Abstract Error form
+@Author Prof1983 <prof1983@ya.ru>
+@Created 21.07.2008
+@LastMod 26.07.2012
 }
 unit fError;
 
@@ -77,7 +76,6 @@ begin
   inherited;
 
   {$IFDEF FPC}
-  //object ErrorForm: TErrorForm
   Self.Left := 204;
   Self.Top := 101;
   Self.BorderIcons := [biSystemMenu];
@@ -86,16 +84,13 @@ begin
   Self.ClientHeight := 97;
   Self.ClientWidth := 369;
   Self.Color := clBtnFace;
-  //Self.Font.Charset := DEFAULT_CHARSET;
   Self.Font.Color := clBlack;
   Self.Font.Height := -11;
   Self.Font.Name := 'MS Sans Serif';
   Self.Font.Style := [];
-  //Self.OldCreateOrder := True;
   Self.Position := poScreenCenter;
   Self.OnShow := FormShow;
   Self.PixelsPerInch := 96;
-  //Self.TextHeight := 13;
 
     SpeedButton1 := TSpeedButton.Create(Self);
     SpeedButton1.Parent := Self;
@@ -106,7 +101,6 @@ begin
     SpeedButton1.GroupIndex := 1;
     SpeedButton1.Caption := '&'#1050#1088#1072#1090#1082#1086;
     SpeedButton1.Flat := True;
-    //SpeedButton1.Font.Charset := DEFAULT_CHARSET;
     SpeedButton1.Font.Color := clBlack;
     SpeedButton1.Font.Height := -11;
     SpeedButton1.Font.Name := 'MS Sans Serif';
@@ -137,7 +131,6 @@ begin
     SpeedButton2.GroupIndex := 1;
     SpeedButton2.Caption := '&'#1055#1086#1076#1088#1086#1073#1085#1086;
     SpeedButton2.Flat := True;
-    //SpeedButton2.Font.Charset := DEFAULT_CHARSET;
     SpeedButton2.Font.Color := clBlack;
     SpeedButton2.Font.Height := -11;
     SpeedButton2.Font.Name := 'MS Sans Serif';
@@ -190,7 +183,6 @@ begin
       Memo.Alignment := taCenter;
       Memo.BorderStyle := bsNone;
       Memo.Color := clBtnFace;
-      //Memo.Font.Charset := DEFAULT_CHARSET;
       Memo.Font.Color := clMaroon;
       Memo.Font.Height := -11;
       Memo.Font.Name := 'MS Sans Serif';

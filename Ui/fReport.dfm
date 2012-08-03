@@ -1,10 +1,10 @@
 object ReportForm: TReportForm
   Left = 262
   Top = 101
+  Width = 861
+  Height = 738
   HelpContext = 400
   Caption = #1054#1090#1095#1077#1090
-  ClientHeight = 692
-  ClientWidth = 853
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clBlack
@@ -40,7 +40,6 @@ object ReportForm: TReportForm
   Menu = MainMenu
   OldCreateOrder = True
   Position = poDefault
-  OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnPaint = FormPaint
   OnResize = FormResize
@@ -159,7 +158,7 @@ object ReportForm: TReportForm
     Wrapable = False
     object OpenButton: TToolButton
       Left = 3
-      Top = 0
+      Top = 2
       Hint = #1047#1072#1075#1088#1091#1079#1080#1090#1100
       Caption = 'OpenButton'
       ImageIndex = 0
@@ -167,7 +166,7 @@ object ReportForm: TReportForm
     end
     object SaveButton: TToolButton
       Left = 28
-      Top = 0
+      Top = 2
       Hint = #1057#1086#1093#1088#1072#1085#1080#1090#1100
       Caption = 'SaveButton'
       ImageIndex = 1
@@ -175,7 +174,7 @@ object ReportForm: TReportForm
     end
     object PrintButton: TToolButton
       Left = 53
-      Top = 0
+      Top = 2
       Hint = #1055#1077#1095#1072#1090#1100
       Caption = 'PrintButton'
       ImageIndex = 2
@@ -183,7 +182,7 @@ object ReportForm: TReportForm
     end
     object ToolButton5: TToolButton
       Left = 78
-      Top = 0
+      Top = 2
       Width = 8
       Caption = 'ToolButton5'
       ImageIndex = 3
@@ -191,7 +190,7 @@ object ReportForm: TReportForm
     end
     object UndoButton: TToolButton
       Left = 86
-      Top = 0
+      Top = 2
       Hint = #1054#1090#1084#1077#1085#1080#1090#1100' '
       Caption = 'UndoButton'
       Enabled = False
@@ -200,7 +199,7 @@ object ReportForm: TReportForm
     end
     object CutButton: TToolButton
       Left = 111
-      Top = 0
+      Top = 2
       Hint = #1042#1099#1088#1077#1079#1072#1090#1100
       Caption = 'CutButton'
       ImageIndex = 4
@@ -208,7 +207,7 @@ object ReportForm: TReportForm
     end
     object CopyButton: TToolButton
       Left = 136
-      Top = 0
+      Top = 2
       Hint = #1050#1086#1087#1080#1088#1086#1074#1072#1090#1100' '#1074' '#1073#1091#1092#1077#1088
       Caption = 'CopyButton'
       ImageIndex = 5
@@ -216,7 +215,7 @@ object ReportForm: TReportForm
     end
     object PasteButton: TToolButton
       Left = 161
-      Top = 0
+      Top = 2
       Hint = #1042#1089#1090#1072#1074#1080#1090#1100' '#1080#1079' '#1073#1091#1092#1077#1088#1072
       Caption = 'PasteButton'
       ImageIndex = 6
@@ -224,7 +223,7 @@ object ReportForm: TReportForm
     end
     object ToolButton10: TToolButton
       Left = 186
-      Top = 0
+      Top = 2
       Width = 8
       Caption = 'ToolButton10'
       ImageIndex = 7
@@ -232,11 +231,12 @@ object ReportForm: TReportForm
     end
     object FontName: TComboBox
       Left = 194
-      Top = 0
+      Top = 2
       Width = 145
       Height = 21
       Hint = #1064#1088#1080#1092#1090
       Ctl3D = False
+      ItemHeight = 13
       ParentCtl3D = False
       TabOrder = 0
       Text = 'FontName'
@@ -244,7 +244,7 @@ object ReportForm: TReportForm
     end
     object ToolButton11: TToolButton
       Left = 339
-      Top = 0
+      Top = 2
       Width = 8
       Caption = 'ToolButton11'
       ImageIndex = 8
@@ -252,7 +252,7 @@ object ReportForm: TReportForm
     end
     object FontSize: TEdit
       Left = 347
-      Top = 0
+      Top = 2
       Width = 157
       Height = 22
       Hint = #1056#1072#1079#1084#1077#1088' '#1096#1088#1080#1092#1090#1072
@@ -262,15 +262,15 @@ object ReportForm: TReportForm
     end
     object UpDown1: TUpDown
       Left = 504
-      Top = 0
+      Top = 2
       Width = 15
       Height = 22
       Associate = FontSize
       TabOrder = 2
     end
     object BoldButton: TToolButton
-      Left = 534
-      Top = 0
+      Left = 519
+      Top = 2
       Hint = #1046#1080#1088#1085#1099#1081
       Caption = 'BoldButton'
       ImageIndex = 7
@@ -278,8 +278,8 @@ object ReportForm: TReportForm
       OnClick = BoldButtonClick
     end
     object ItalicButton: TToolButton
-      Left = 559
-      Top = 0
+      Left = 544
+      Top = 2
       Hint = #1050#1091#1088#1089#1080#1074
       Caption = 'ItalicButton'
       ImageIndex = 8
@@ -287,8 +287,8 @@ object ReportForm: TReportForm
       OnClick = ItalicButtonClick
     end
     object UnderlineButton: TToolButton
-      Left = 584
-      Top = 0
+      Left = 569
+      Top = 2
       Hint = #1055#1086#1076#1095#1077#1088#1082#1080#1074#1072#1085#1080#1077
       Caption = 'UnderlineButton'
       ImageIndex = 9
@@ -296,16 +296,16 @@ object ReportForm: TReportForm
       OnClick = UnderlineButtonClick
     end
     object ToolButton16: TToolButton
-      Left = 609
-      Top = 0
+      Left = 594
+      Top = 2
       Width = 8
       Caption = 'ToolButton16'
       ImageIndex = 12
       Style = tbsDivider
     end
     object LeftAlign: TToolButton
-      Left = 617
-      Top = 0
+      Left = 602
+      Top = 2
       Hint = #1042#1083#1077#1074#1086
       Caption = 'LeftAlign'
       Grouped = True
@@ -315,8 +315,8 @@ object ReportForm: TReportForm
     end
     object CenterAlign: TToolButton
       Tag = 2
-      Left = 642
-      Top = 0
+      Left = 627
+      Top = 2
       Hint = #1042' '#1094#1077#1085#1090#1088#1077
       Caption = 'CenterAlign'
       Grouped = True
@@ -326,8 +326,8 @@ object ReportForm: TReportForm
     end
     object RightAlign: TToolButton
       Tag = 1
-      Left = 667
-      Top = 0
+      Left = 652
+      Top = 2
       Hint = #1042#1087#1088#1072#1074#1086
       Caption = 'RightAlign'
       Grouped = True
@@ -336,16 +336,16 @@ object ReportForm: TReportForm
       OnClick = AlignButtonClick
     end
     object ToolButton20: TToolButton
-      Left = 692
-      Top = 0
+      Left = 677
+      Top = 2
       Width = 8
       Caption = 'ToolButton20'
       ImageIndex = 15
       Style = tbsDivider
     end
     object BulletsButton: TToolButton
-      Left = 700
-      Top = 0
+      Left = 685
+      Top = 2
       Hint = #1057#1087#1080#1089#1086#1082
       Caption = 'BulletsButton'
       ImageIndex = 13

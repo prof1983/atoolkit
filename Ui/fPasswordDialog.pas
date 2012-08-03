@@ -1,9 +1,8 @@
-﻿{**
-@Abstract(Диалог ввода пароля, а также года и квартала)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(19.03.2008)
-@LastMod(29.06.2011)
-@Version(0.5)
+{**
+@Abstract Password dialog box, as well as of the year and the quarter
+@Author Prof1983 <prof1983@ya.ru>
+@Created 19.03.2008
+@LastMod 26.07.2012
 }
 unit fPasswordDialog;
 

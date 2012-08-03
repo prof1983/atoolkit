@@ -2,15 +2,15 @@
 @Abstract AUi grids
 @Author Prof1983 <prof1983@ya.ru>
 @Created 11.01.2010
-@LastMod 19.07.2012
+@LastMod 27.07.2012
 }
-unit AUIGrids;
+unit AUiGrids;
 
 interface
 
 uses
   Classes, Controls, DBGrids, Grids, SysUtils,
-  ABase, {$IFDEF A0}ASettings0{$ELSE}ASettings{$ENDIF}, AUiBase;
+  ABase, ASettings, AUiBase;
 
 { DBGrid }
 

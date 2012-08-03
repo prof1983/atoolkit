@@ -1,9 +1,8 @@
-﻿{**
-@Abstract(Форма построения отчетов RichEdit)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(10.11.2008)
-@LastMod(24.10.2011)
-@Version(0.5)
+{**
+@Abstract Report building RichEdit form
+@Author Prof1983 <prof1983@ya.ru>
+@Created 10.11.2008
+@LastMod 27.07.2012
 }
 unit fReport;
 
@@ -13,7 +12,7 @@ uses
   {$IFDEF FPC}LResources,{$ENDIF}
   Buttons, Classes, ClipBrd, ComCtrls, Controls, Dialogs, ExtCtrls, Forms, Graphics, ImgList,
   Menus, Messages, Printers, RichEdit, StdCtrls, SysUtils, ToolWin, Windows,
-  ABase, {$IFDEF A0}ASettings0{$ELSE}ASettings{$ENDIF}, AUiForm;
+  ABase, ASettings, AUiForm;
 
 type
   TReportForm = class(TForm)
@@ -68,7 +67,6 @@ type
     BulletsButton: TToolButton;
     ToolbarImages: TImageList;
     procedure SelectionChange(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure FileNew(Sender: TObject);
     procedure FileOpen(Sender: TObject);
     procedure FileSave(Sender: TObject);
@@ -130,18 +128,14 @@ type
   public
     procedure AddLine(const Text: string);
     procedure Clear;
-    // Загружает конфигурации формы из Settings
     procedure LoadConfiguration(Config: AConfig);
-    // Записывает конфигурацию формы в Settings
     procedure SaveConfiguration(Config: AConfig);
     procedure SelectAllText;
-    // Задает папку для диалогов по умолчанию
     procedure SetInitialDir(const Value: string);
   end;
 
-{ Отображает модальное окно с отчетом.
-  Use AUIReports.UI_ReportWin_ShowReport() }
-procedure ShowReport(const Text: string; Font: TFont); deprecated;
+{** Displays a modal window with the report }
+procedure ShowReport(const Text: string; Font: TFont); deprecated; // Use AUiReports.UI_ReportWin_ShowReport()
 
 implementation
 
@@ -194,7 +188,7 @@ var
   SaveResp: Integer;
 begin
   if not Editor.Modified then Exit;
-  SaveResp := MessageDlg(Format('Сохранить изменения %s?', [FFileName]),
+  SaveResp := MessageDlg(Format('Save %s?', [FFileName]),
     mtConfirmation, mbYesNoCancel, 0);
   case SaveResp of
     idYes: FileSave(Self);
@@ -250,15 +244,13 @@ begin
   ActiveControl := Editor;
   {$ENDIF}
 
-  // Prof1983: 06.12.2010
-  SetFileName('Отчет1.rtf');
+  SetFileName('Report1.rtf');
   GetFontNames;
   SetupRuler;
   SelectionChange(Self);
   FClipboardOwner := SetClipboardViewer(Handle);
   Editor.Modified := False;
 
-  // Prof1983: 06.12.2010
   Left := 10;
   Top := 10;
   Width := 300;
@@ -268,21 +260,10 @@ end;
 procedure TReportForm.FileNew(Sender: TObject);
 begin
   CheckFileSave;
-  SetFileName('Отчет1.rtf');
+  SetFileName('Report1.rtf');
   Editor.Lines.Clear;
   Editor.Modified := False;
   SetModified(False);
-end;
-
-procedure TReportForm.FormCreate(Sender: TObject);
-begin
-  // Prof1983: 06.12.2010
-  {SetFileName('Отчет1.rtf');
-  GetFontNames;
-  SetupRuler;
-  SelectionChange(Self);
-  FClipboardOwner := SetClipboardViewer(Handle);
-  Editor.Modified := False;}
 end;
 
 function TReportForm.GetCurrText: TTextAttributes;
@@ -331,7 +312,7 @@ end;
 procedure TReportForm.SetFileName(const Value: string);
 begin
   FFileName := Value;
-  Caption := Format('%s - %s', ['Отчет ', ExtractFileName(Value)]);
+  Caption := Format('%s - %s', ['Report ', ExtractFileName(Value)]);
 end;
 
 procedure TReportForm.SetupRuler;
@@ -395,7 +376,7 @@ begin
   if SaveDialog.Execute then
     SaveDialog.FileName:=ChangeFileExt(SaveDialog.FileName,'.rtf');
   if FileExists(SaveDialog.FileName) then
-    if MessageDlg(Format('OK для перезаписи %s', [SaveDialog.FileName]), mtConfirmation, mbYesNoCancel, 0) <> idYes then Exit;
+    if MessageDlg(Format('File exists. Rewrite %s?', [SaveDialog.FileName]), mtConfirmation, mbYesNoCancel, 0) <> idYes then Exit;
   Editor.Lines.SaveToFile(SaveDialog.FileName);
   SetFileName(SaveDialog.FileName);
   Editor.Modified := False;
@@ -589,8 +570,6 @@ end;
 procedure TReportForm.FormShow(Sender: TObject);
 begin
   UpdateCursorPos;
-  // Prof1983: 14.01.2009
-  //DragAcceptFiles(Handle, True);
   RichEditChange(nil);
   Editor.SetFocus;
 end;

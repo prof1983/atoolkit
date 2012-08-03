@@ -2,7 +2,7 @@
 @Abstract AUiDialogs
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 19.07.2012
+@LastMod 30.07.2012
 }
 unit AUiDialogs;
 
@@ -13,7 +13,7 @@ interface
 uses
   {$IFDEF USE_JEDI}JvBaseDlg, JvSelectDirectory,{$ENDIF}
   Dialogs, ABase, ABaseTypes, 
-  AUiBase, AUiBox, AUiButton, AUiControls, AUiWindows;
+  AUiBase, AUiBox, AUiButton, AUiConsts, AUiControls, AUiWindows;
 
 // TODO: Убрать stdcall
 

@@ -83,12 +83,9 @@ object ErrorForm: TErrorForm
     Width = 90
     Height = 30
     Caption = '&'#1054#1050
-    DoubleBuffered = True
-    Kind = bkOK
-    NumGlyphs = 2
-    ParentDoubleBuffered = False
-    Style = bsNew
     TabOrder = 0
+    Kind = bkOK
+    Style = bsNew
   end
   object Panel1: TPanel
     Left = 0

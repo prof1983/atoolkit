@@ -1,9 +1,8 @@
-﻿{**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(10.08.2011)
-@LastMod(10.08.2011)
-@Version(0.5)
+{**
+@Abstract AUiReports
+@Author Prof1983 <prof1983@ya.ru>
+@Created 10.08.2011
+@LastMod 26.07.2012
 }
 unit AUiReports;
 
@@ -13,10 +12,10 @@ uses
   Graphics, ABase, AUiBase{$IFNDEF FPC}, fReport, fSimpleReport{$ENDIF};
 
 function UI_ReportWin_New: AWindow;
-{ Создает новое окно отчета.
-  ReportWinType - Тип окна отчета: 0-TReportForm; 1-SimpleReport }
+{** Creates a new window of the report
+    @param ReportWinType - Type of the report window: 0-TReportForm; 1-SimpleReport }
 function UI_ReportWin_NewA(ReportWinType: AInteger; const Text: APascalString): AWindow;
-// Отображает модальное окно с отчетом.
+{** Displays a modal window with the report }
 procedure UI_ReportWin_ShowReport(const Text: APascalString; Font: TFont);
 
 implementation

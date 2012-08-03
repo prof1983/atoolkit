@@ -2,16 +2,9 @@
 @Abstract AUiEdit
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.01.2010
-@LastMod 19.07.2012
+@LastMod 27.07.2012
 }
 unit AUiEdit;
-
-{$IFDEF FPC}
-  {$DEFINE A02}
-{$ENDIF}
-
-{$IFDEF A02}{$DEFINE A02UP}{$ENDIF}
-{$IFDEF A03}{$DEFINE A02UP}{$ENDIF}
 
 interface
 
@@ -19,7 +12,7 @@ interface
 
 uses
   Controls, StdCtrls,
-  ABase, {$IFDEF A0}AUtils0{$ELSE}AUtils{$ENDIF},
+  ABase, AUtils,
   AUiBase, AUiButton, AUiControls, AUiData;
 
 {

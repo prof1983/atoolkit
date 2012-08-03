@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 19.07.2012
+@LastMod 27.07.2012
 }
 unit AUi;
 
@@ -24,6 +24,144 @@ uses
   AUiBase, AUiBox, AUiButton, AUiControls, AUiControlsA, AUiData, AUiEvents,
   AUiMain, AUiMainWindow, AUiMainWindow2, AUiPageControl, AUiReports,
   AUiToolBar, AUiToolMenu, AUiTreeView, AUiWindows;
+
+// --- AUi ---
+
+function AUi_Boot(): AError;
+
+function AUi_MainMenuItem(): AMenuItem; stdcall;
+
+function AUi_MainTrayIcon(): ATrayIcon; stdcall;
+
+function AUi_MainWindow(): AWindow; stdcall;
+
+function AUi_Run(): AInteger; stdcall;
+
+procedure AUi_SetHideOnClose(Value: ABoolean); stdcall;
+
+function AUi_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; stdcall;
+
+// --- AUi_Control ---
+
+{ @param FontName - (const) }
+function AUi_Control_SetFont1A(Control: AControl; FontName: AStr;
+    FontSize: AInt): AError; stdcall;
+
+function AUi_Control_SetFont1P(Control: AControl; const FontName: APascalString;
+    FontSize: AInteger): AError; stdcall;
+
+procedure AUi_Control_SetFont1P_Old(Control: AControl; const FontName: APascalString;
+    FontSize: AInteger); stdcall;
+
+function AUi_Control_SetFont2P(Control: AControl; const FontName: APascalString;
+    FontSize: AInteger; FontColor: AColor): AError; stdcall;
+
+// --- AUi_Image ---
+
+function AUi_Image_LoadFromFile(Image: AControl; const FileName: AString_Type): ABoolean; stdcall;
+
+function AUi_Image_New(Parent: AControl): AControl; stdcall;
+
+// --- AUi_Label ---
+
+function AUi_Label_New(Parent: AControl): AControl; stdcall;
+
+// --- AUi_ListBox ---
+
+function AUi_ListBox_Add(ListBox: AControl; const Text: AString_Type): Integer; stdcall;
+procedure AUi_ListBox_Clear(ListBox: AControl); stdcall;
+procedure AUi_ListBox_DeleteItem(ListBox: AControl; Index: AInteger); stdcall;
+function AUi_ListBox_GetCount(ListBox: AControl): AInteger; stdcall;
+function AUi_ListBox_GetItem(ListBox: AControl; Index: AInteger; out Value: AString_Type): AInteger; stdcall;
+function AUi_ListBox_GetItemIndex(ListBox: AControl): AInteger; stdcall;
+function AUi_ListBox_New(Parent: AControl): AControl; stdcall;
+{** Create net list box
+    @param Typ: 0 - ListBox; 1 - RadioGroup }
+function AUi_ListBox_NewA(Parent: AControl; Typ: AInteger): AControl; stdcall;
+procedure AUi_ListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: AString_Type); stdcall;
+procedure AUi_ListBox_SetItemIndex(ListBox: AControl; Index: AInteger); stdcall;
+
+function AUi_MainWindow_AddMenuItem(const ParentItemName, Name, Text: AString_Type; OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem; stdcall;
+
+function AUi_PropertyBox_Add(PropertyBox: AControl; const Caption: AString_Type): Integer; stdcall;
+function AUi_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: AString_Type; EditWidth: AInteger): AInteger; stdcall;
+function AUi_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer; out Value: AString_Type): AInteger; stdcall;
+procedure AUi_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; const Value: AString_Type); stdcall;
+function AUi_PropertyBox_New(Parent: AControl): AControl; stdcall;
+
+// --- AUi_Report ---
+
+function AUi_Report_New(Parent: AControl): AReport; stdcall;
+
+procedure AUi_Report_SetText(Report: AReport; const Value: AString_Type); stdcall;
+
+// --- AUi_SpinButton ---
+
+function AUi_SpinButton_New(Parent: AControl): AControl; stdcall;
+
+// --- AUi_SpinEdit ---
+
+function AUi_SpinEdit_New(Parent: AControl): AControl; stdcall;
+function AUi_SpinEdit_NewA(Parent: AControl; Value, MinValue, MaxValue: AInteger): AControl; stdcall;
+
+{ SplitterType
+    0 - HSplitter (Align=alTop)
+    1 - VSplitter (Align=alLeft)
+    2 - HSplitter (Align=alBottom)
+    3 - VSplitter (Align=alRight) }
+function AUi_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl; stdcall;
+
+// --- AUi_TextView ---
+
+// Добавляет строку в элемент TextView
+function AUi_TextView_AddLine(TextView: AControl; const Text: AString_Type): AInteger; stdcall;
+
+{ Создает новый элемент редактирования текста
+  ViewType
+    0 - TMemo
+    1 - RichEdit }
+function AUi_TextView_New(Parent: AControl; ViewType: AInteger): AControl; stdcall;
+
+procedure AUi_TextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger); stdcall;
+
+procedure AUi_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean); stdcall;
+
+{ ScrollBars
+    0 - ssNone
+    1 - ssHorizontal
+    2 - ssVertical
+    3 - ssBoth }
+procedure AUi_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger); stdcall;
+
+procedure AUi_TextView_SetWordWrap(TextView: AControl; Value: ABoolean); stdcall;
+
+// --- AUi_TrayIcon ---
+
+{$IFNDEF UNIX}
+function AUi_TrayIcon_GetMenuItems(TrayIcon: ATrayIcon): AMenuItem; stdcall;
+{$ENDIF}
+
+// --- AUiWindow ---
+
+procedure AUi_Window_FreeAndNil(var Window: AWindow); stdcall;
+
+procedure AUi_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger); stdcall;
+
+procedure AUi_Window_SetFormStyle(Window: AWindow; FormStyle: AInteger); stdcall;
+
+procedure AUi_Window_Free(Window: AWindow); stdcall;
+
+function AUi_Window_LoadConfig2(Window: AWindow; Config: AConfig; const ConfigKey: AString_Type): ABoolean; stdcall;
+
+function AUi_Window_LoadConfig2P(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean; stdcall;
+
+function AUi_Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall;
+
+function AUi_Window_SaveConfig2(Window: AWindow; Config: AConfig; const ConfigKey: AString_Type): ABoolean; stdcall;
+
+procedure AUi_Window_SetPosition(Window: AWindow; Position: AInteger); stdcall;
+
+function AUi_Window_ShowModal(Window: AWindow): ABoolean; stdcall;
 
 // --- Procs ---
 
@@ -645,8 +783,7 @@ procedure UI_Control_SetColor(Control: AControl; Color: AColor); stdcall; deprec
 procedure UI_Control_SetEnabled(Control: AControl; Value: ABoolean); stdcall; {deprecated;}
 function UI_Control_SetFocus(Control: AControl): ABoolean; stdcall; {deprecated;}
 
-// Use Control_SetFont1()
-procedure UI_Control_SetFont1(Control: AControl; const FontName: APascalString; FontSize: AInteger); stdcall; deprecated;
+procedure UI_Control_SetFont1(Control: AControl; const FontName: APascalString; FontSize: AInteger); stdcall; deprecated; // Use Control_SetFont1()
 
 // Если FontColor = 1, то цвет не изменяется
 procedure UI_Control_SetFont2(Control: AControl; const FontName: APascalString; FontSize: AInteger; FontColor: AColor); stdcall; {deprecated;}
@@ -831,35 +968,26 @@ procedure UI_Window_FreeAndNil(var Window: AWindow); stdcall;
   Use Window_GetMenu() }
 function UI_Window_GetMenu(Window: AWindow): AMenu; stdcall; deprecated;
 
-// Use Window_LoadConfig()
-function UI_Window_LoadConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall; deprecated;
+function UI_Window_LoadConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall; deprecated; // Use AUi_Window_LoadConfig()
 
-// Use Window_LoadConfig2()
-function UI_Window_LoadConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean; stdcall; deprecated;
+function UI_Window_LoadConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean; stdcall; deprecated; // Use AUi_Window_LoadConfig2P()
 
-// Use Window_New
-function UI_Window_New: AControl; stdcall; deprecated;
+function UI_Window_New: AControl; stdcall; deprecated; // Use AUi_Window_New()
 
-// Use Window_SaveConfig()
-function UI_Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall; deprecated;
+function UI_Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall; deprecated; // Use AUi_Window_SaveConfig()
 
 function UI_Window_SaveConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean; stdcall;
 
 //** Задает стить окантовки окна.
-// Use Window_SetBorderStyle()
-procedure UI_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger); stdcall; deprecated;
+procedure UI_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger); stdcall; deprecated; // Use AUi_Window_SetBorderStyle()
 
 //** Задает стиль окна.
-// Use Window_SetFormStyle()
-procedure UI_Window_SetFormStyle(Window: AWindow; FormStyle: AInteger); stdcall; deprecated;
+procedure UI_Window_SetFormStyle(Window: AWindow; FormStyle: AInteger); stdcall; deprecated; // Use AUi_Window_SetFormStyle()
 
 //** Задает позицию окна.
-// Use Window_SetPosition()
-procedure UI_Window_SetPosition(Window: AWindow; Position: AInteger); stdcall; deprecated;
+procedure UI_Window_SetPosition(Window: AWindow; Position: AInteger); stdcall; deprecated; // Use AUi_Window_SetPosition()
 
-// TODO: Посмотреть как реализовано в Qt
-// Use Window_ShowModal()
-function UI_Window_ShowModal(Window: AWindow): ABoolean; stdcall; deprecated;
+function UI_Window_ShowModal(Window: AWindow): ABoolean; stdcall; deprecated; // Use AUi_Window_ShowModal()
 
 { UI_Reports }
 
@@ -1257,6 +1385,493 @@ begin
   end;
 end;
 
+// --- AUi ---
+
+function AUi_Boot(): AError;
+begin
+  Result := 0;
+end;
+
+function AUi_Run(): AInteger; 
+begin
+  try
+    Result := UI_Run;
+  except
+    Result := -1;
+  end;
+end;
+
+procedure AUi_SetHideOnClose(Value: ABoolean);
+begin
+  FHideOnClose := Value;
+end;
+
+function AUi_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger;
+begin
+  try
+    Result := UI_ShellExecute(
+        AStrings.String_ToWideString(Operation),
+        AStrings.String_ToWideString(FileName),
+        AStrings.String_ToWideString(Parameters),
+        AStrings.String_ToWideString(Directory));
+  except
+    Result := -1;
+  end;
+end;
+
+// --- AUi_Control ---
+
+function AUi_Control_SetFont1A(Control: AControl; FontName: AStr; FontSize: AInt): AError;
+begin
+  try
+    AUiControls.Ui_Control_SetFont1(Control, FontName, FontSize);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUi_Control_SetFont1P(Control: AControl; const FontName: APascalString;
+    FontSize: AInteger): AError;
+begin
+  try
+    AUiControls.Ui_Control_SetFont1(Control, FontName, FontSize);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+procedure AUi_Control_SetFont1P_Old(Control: AControl; const FontName: APascalString;
+    FontSize: AInteger);
+begin
+  AUi_Control_SetFont1P(Control, FontName, FontSize);
+end;
+
+function AUi_Control_SetFont2P(Control: AControl; const FontName: APascalString;
+    FontSize: AInteger; FontColor: AColor): AError;
+begin
+  if (TObject(Control) is TLabel) then
+  begin
+    if (FontName <> '') then
+      TLabel(Control).Font.Name := FontName;
+    if (FontSize <> 0) then
+      TLabel(Control).Font.Size := FontSize;
+    if (FontColor <> 1) then
+      TLabel(Control).Font.Color := FontColor;
+  end;
+  Result := 0;
+end;
+
+// --- AUi_Image ---
+
+function AUi_Image_LoadFromFile(Image: AControl; const FileName: AString_Type): ABoolean;
+begin
+  try
+    Result := UI_Image_LoadFromFile(Image, AStrings.String_ToWideString(FileName));
+  except
+    Result := False;
+  end;
+end;
+
+function AUi_Image_New(Parent: AControl): AControl;
+begin
+  try
+    Result := UI_Image_New(Parent);
+  except
+    Result := 0;
+  end;
+end;
+
+// --- AUi_Label ---
+
+function AUi_Label_New(Parent: AControl): AControl;
+begin
+  try
+    Result := UI_Label_New(Parent);
+  except
+    Result := 0;
+  end;
+end;
+
+// --- AUiListBox ---
+
+function AUi_ListBox_Add(ListBox: AControl; const Text: AString_Type): Integer;
+begin
+  try
+    Result := UI_ListBox_Add(ListBox, AStrings.String_ToWideString(Text));
+  except
+    Result := -1;
+  end;
+end;
+
+procedure AUi_ListBox_Clear(ListBox: AControl);
+begin
+  try
+    UI_ListBox_Clear(ListBox);
+  except
+  end;
+end;
+
+procedure AUi_ListBox_DeleteItem(ListBox: AControl; Index: AInteger);
+begin
+  try
+    UI_ListBox_DeleteItem(ListBox, Index);
+  except
+  end;
+end;
+
+function AUi_ListBox_GetCount(ListBox: AControl): AInteger;
+begin
+  try
+    Result := UI_ListBox_GetCount(ListBox);
+  except
+    Result := 0;
+  end;
+end;
+
+function AUi_ListBox_GetItem(ListBox: AControl; Index: AInteger; out Value: AString_Type): AInteger;
+begin
+  try
+    Result := AStrings.String_AssignWS(Value, UI_ListBox_GetItem(ListBox, Index));
+  except
+    Result := 0;
+  end;
+end;
+
+function AUi_ListBox_GetItemIndex(ListBox: AControl): AInteger;
+begin
+  try
+    Result := UI_ListBox_GetItemIndex(ListBox);
+  except
+    Result := 0;
+  end;
+end;
+
+function AUi_ListBox_New(Parent: AControl): AControl;
+begin
+  Result := AUi_ListBox_NewA(Parent, 0);
+end;
+
+function AUi_ListBox_NewA(Parent: AControl; Typ: AInteger): AControl;
+begin
+  try
+    Result := UI_ListBox_NewA(Parent, Typ);
+  except
+    Result := 0;
+  end;
+end;
+
+procedure AUi_ListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: AString_Type);
+begin
+  try
+    UI_ListBox_SetItem(ListBox, Index, AStrings.String_ToWideString(Value));
+  except
+  end;
+end;
+
+procedure AUi_ListBox_SetItemIndex(ListBox: AControl; Index: AInteger);
+begin
+  try
+    UI_ListBox_SetItemIndex(ListBox, Index);
+  except
+  end;
+end;
+
+// --- AUi_MainMenuItem ---
+
+function AUi_MainMenuItem(): AMenuItem;
+begin
+  Result := miMain;
+end;
+
+// --- AUi_MainTrayIcon ---
+
+function AUi_MainTrayIcon(): ATrayIcon;
+begin
+  Result := FMainTrayIcon;
+end;
+
+// --- AUi_MainWindow ---
+
+function AUi_MainWindow(): AWindow;
+begin
+  Result := FMainWindow;
+end;
+
+function AUi_MainWindow_AddMenuItem(const ParentItemName, Name, Text: AString_Type;
+    OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem;
+begin
+  Result := AUI.MainWindow_AddMenuItem2(ParentItemName, Name, Text, OnClick, ImageID, Weight);
+end;
+
+// --- AUi_PropertyBox ---
+
+function AUi_PropertyBox_Add(PropertyBox: AControl; const Caption: AString_Type): Integer;
+begin
+  try
+    Result := UI_PropertyBox_Add(PropertyBox, AStrings.String_ToWideString(Caption));
+  except
+    Result := 0;
+  end;
+end;
+
+function AUi_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: AString_Type;
+    EditWidth: AInteger): AInteger;
+begin
+  try
+    Result := UI_PropertyBox_AddA(PropertyBox,
+        AStrings.String_ToWideString(Caption),
+        AStrings.String_ToWideString(Text),
+        AStrings.String_ToWideString(Hint),
+        EditWidth);
+  except
+    Result := 0;
+  end;
+end;
+
+function AUi_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer; out Value: AString_Type): AInteger;
+begin
+  try
+    Result := AStrings.String_AssignWS(Value, UI_PropertyBox_Item_GetValue(PropertyBox, Index));
+  except
+    Result := 0;
+  end;
+end;
+
+procedure AUi_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; const Value: AString_Type);
+begin
+  try
+    UI_PropertyBox_Item_SetValue(PropertyBox, Index, AStrings.String_ToWideString(Value));
+  except
+  end;
+end;
+
+function AUi_PropertyBox_New(Parent: AControl): AControl;
+begin
+  try
+    Result := UI_PropertyBox_New(Parent);
+  except
+    Result := 0;
+  end;
+end;
+
+// --- AUi_Report ---
+
+function AUi_Report_New(Parent: AControl): AReport;
+begin
+  try
+    Result := UI_Report_New(Parent);
+  except
+    Result := 0;
+  end;
+end;
+
+procedure AUi_Report_SetText(Report: AReport; const Value: AString_Type);
+begin
+  try
+    UI_Report_SetText(Report, AStrings.String_ToWideString(Value));
+  except
+  end;
+end;
+
+// --- AUi_SpinButton ---
+
+function AUi_SpinButton_New(Parent: AControl): AControl; stdcall;
+begin
+  try
+    Result := UI_SpinButton_New(Parent);
+  except
+    Result := 0;
+  end;
+end;
+
+// --- AUi_SpinEdit ---
+
+function AUi_SpinEdit_New(Parent: AControl): AControl;
+begin
+  try
+    Result := UI_SpinEdit_New(Parent);
+  except
+    Result := 0;
+  end;
+end;
+
+function AUi_SpinEdit_NewA(Parent: AControl; Value, MinValue, MaxValue: AInteger): AControl;
+begin
+  try
+    Result := UI_SpinEdit_NewA(Parent, Value, MinValue, MaxValue);
+  except
+    Result := 0;
+  end;
+end;
+
+// --- AUi_Splitter ---
+
+function AUi_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl;
+begin
+  try
+    Result := UI_Splitter_New(Parent, SplitterType);
+  except
+    Result := 0;
+  end;
+end;
+
+// --- AUi_TextView ---
+
+function AUi_TextView_AddLine(TextView: AControl; const Text: AString_Type): AInteger;
+begin
+  try
+    Result := UI_TextView_AddLine(TextView, AStrings.String_ToWideString(Text));
+  except
+    Result := -1;
+  end;
+end;
+
+function AUi_TextView_New(Parent: AControl; ViewType: AInteger): AControl;
+begin
+  try
+    Result := UI_TextView_New(Parent, ViewType);
+  except
+    Result := 0;
+  end;
+end;
+
+procedure AUi_TextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger);
+begin
+  try
+    UI_TextView_SetFont(TextView, AStrings.String_ToWideString(FontName), FontSize);
+  except
+  end;
+end;
+
+procedure AUi_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean);
+begin
+  try
+    UI_TextView_SetReadOnly(TextView, ReadOnly);
+  except
+  end;
+end;
+
+procedure AUi_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger);
+begin
+  try
+    UI_TextView_SetScrollBars(TextView, ScrollBars);
+  except
+  end;
+end;
+
+procedure AUi_TextView_SetWordWrap(TextView: AControl; Value: ABoolean);
+begin
+  try
+    UI_TextView_SetWordWrap(TextView, Value);
+  except
+  end;
+end;
+
+// --- AUi_TrayIcon ---
+
+function AUi_TrayIcon_GetMenuItems(TrayIcon: ATrayIcon): AMenuItem; stdcall;
+begin
+  try
+    Result := UI_TrayIcon_GetMenuItems(TrayIcon);
+  except
+    Result := 0;
+  end;
+end;
+
+// --- AUi_Window ---
+
+procedure AUi_Window_Free(Window: AWindow);
+begin
+  AUI.Control_Free(Window);
+end;
+
+procedure AUi_Window_FreeAndNil(var Window: AWindow);
+begin
+  AUi_Window_Free(Window);
+  Window := 0;
+end;
+
+function AUi_Window_LoadConfig2(Window: AWindow; Config: AConfig; const ConfigKey: AString_Type): ABoolean;
+begin
+  try
+    if not(TObject(Window) is TForm) then
+    begin
+      Result := False;
+      Exit;
+    end;
+    Result := Form_LoadConfig2(TForm(Window), Config, AStrings.String_ToWideString(ConfigKey));
+  except
+    Result := False;
+  end;
+end;
+
+function AUi_Window_LoadConfig2P(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean;
+begin
+  try
+    Result := Form_LoadConfig2(TForm(Window), Config, ConfigKey);
+  except
+    Result := False;
+  end;
+end;
+
+function AUi_Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean;
+begin
+  try
+    if not(TObject(Window) is TForm) then
+    begin
+      Result := False;
+      Exit;
+    end;
+    Result := AUIForm.Form_SaveConfig(TForm(Window), Config);
+  except
+    Result := False;
+  end;
+end;
+
+function AUi_Window_SaveConfig2(Window: AWindow; Config: AConfig; const ConfigKey: AString_Type): ABoolean;
+begin
+  try
+    Result := UI_Window_SaveConfig2(Window, Config, AStrings.String_ToWideString(ConfigKey));
+  except
+    Result := False;
+  end;
+end;
+
+procedure AUi_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger);
+begin
+  try
+    AUiWindows.Ui_Window_SetBorderStyle(Window, BorderStyle);
+  except
+  end;
+end;
+
+procedure AUi_Window_SetFormStyle(Window: AWindow; FormStyle: AInteger);
+begin
+  try
+    AUiWindows.Ui_Window_SetFormStyle(Window, FormStyle);
+  except
+  end;
+end;
+
+procedure AUi_Window_SetPosition(Window: AWindow; Position: AInteger);
+begin
+  try
+    AUiWindows.Ui_Window_SetPosition(Window, Position);
+  except
+  end;
+end;
+
+function AUi_Window_ShowModal(Window: AWindow): ABoolean;
+begin
+  try
+    Result := AUiWindows.Ui_Window_ShowModal(Window);
+  except
+    Result := False;
+  end;
+end;
+
 { Box }
 
 function Box_New(Parent: AControl; BoxType: AInteger): AControl; stdcall;
@@ -1525,36 +2140,17 @@ end;
 
 function Control_SetFont1A(Control: AControl; {const} FontName: PAnsiChar; FontSize: AInteger): AError; stdcall;
 begin
-  try
-    AUIControls.UI_Control_SetFont1(Control, FontName, FontSize);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUi_Control_SetFont1A(Control, FontName, FontSize);
 end;
 
 function Control_SetFont1P(Control: AControl; const FontName: APascalString; FontSize: AInteger): AError; stdcall;
 begin
-  try
-    AUIControls.UI_Control_SetFont1(Control, FontName, FontSize);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUi_Control_SetFont1P(Control, FontName, FontSize);
 end;
 
 function Control_SetFont2P(Control: AControl; const FontName: APascalString; FontSize: AInteger; FontColor: AColor): AError; stdcall;
 begin
-  if (TObject(Control) is TLabel) then
-  begin
-    if (FontName <> '') then
-      TLabel(Control).Font.Name := FontName;
-    if (FontSize <> 0) then
-      TLabel(Control).Font.Size := FontSize;
-    if (FontColor <> 1) then
-      TLabel(Control).Font.Color := FontColor;
-  end;
-  Result := 0;
+  Result := AUi_Control_SetFont2P(Control, FontName, FontSize, FontColor);
 end;
 
 function Control_SetHeight(Control: AControl; Value: AInteger): AInteger; stdcall;
@@ -2185,9 +2781,14 @@ begin
 end;
 
 function Grid_RestoreColPropsWS(Grid: AControl; Config: AConfig; const Key: AWideString; Delimer: AWideChar): AError; stdcall;
+var
+  S: AnsiString;
+  C: AChar;
 begin
   try
-    AUIGrids.UI_Grid_RestoreColProps(TObject(Grid), Config, Key, Delimer);
+    S := Delimer;
+    C := AnsiString_GetChar(S, 1);
+    AUIGrids.UI_Grid_RestoreColProps(TObject(Grid), Config, Key, C);
     Result := 0;
   except
     Result := -1;
@@ -2195,9 +2796,14 @@ begin
 end;
 
 procedure Grid_RestoreColPropsWS02(Grid: AControl; Config: AConfig; const Key: AWideString; Delimer: AWideChar); stdcall;
+var
+  S: AnsiString;
+  C: AChar;
 begin
   try
-    AUIGrids.UI_Grid_RestoreColProps(TObject(Grid), Config, Key, Delimer);
+    S := Delimer;
+    C := AnsiString_GetChar(S, 1);
+    AUIGrids.UI_Grid_RestoreColProps(TObject(Grid), Config, Key, C);
   except
   end;
 end;
@@ -2232,6 +2838,9 @@ begin
 end;
 
 function Grid_SaveColPropsWS(Grid: AControl; Config: AConfig; const Key: AWideString; Delimer: AWideChar): AError; stdcall;
+var
+  S: AnsiString;
+  C: AChar;
 begin
   if (Grid = 0) then
   begin
@@ -2240,7 +2849,9 @@ begin
   end;
 
   try
-    AUIGrids.UI_Grid_SaveColProps(TObject(Grid), Config, Key, Delimer);
+    S := Delimer;
+    C := AnsiString_GetChar(S, 1);
+    AUIGrids.UI_Grid_SaveColProps(TObject(Grid), Config, Key, C);
     Result := 0;
   except
     Result := -1;
@@ -2248,11 +2859,16 @@ begin
 end;
 
 procedure Grid_SaveColPropsWS02(Grid: AControl; Config: AConfig; const Key: AWideString; Delimer: AWideChar); stdcall;
+var
+  S: AnsiString;
+  C: AChar;
 begin
   if (Grid = 0) then Exit;
 
   try
-    AUIGrids.UI_Grid_SaveColProps(TObject(Grid), Config, Key, Delimer);
+    S := Delimer;
+    C := AnsiString_GetChar(S, 1);
+    AUIGrids.UI_Grid_SaveColProps(TObject(Grid), Config, Key, C);
   except
   end;
 end;
@@ -3439,7 +4055,7 @@ end;
 
 procedure UI_Control_SetFont1(Control: AControl; const FontName: APascalString; FontSize: AInteger); stdcall;
 begin
-  AUIControls.UI_Control_SetFont1(Control, FontName, FontSize);
+  AUi_Control_SetFont1P(Control, FontName, FontSize);
 end;
 
 procedure UI_Control_SetFont2(Control: AControl; const FontName: APascalString; FontSize: AInteger; FontColor: AColor); stdcall;
@@ -4297,7 +4913,7 @@ end;
 
 function UI_Window_LoadConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean; stdcall;
 begin
-  Result := Form_LoadConfig2(TForm(Window), Config, ConfigKey);
+  Result := AUi_Window_LoadConfig2P(Window, Config, ConfigKey);
 end;
 
 function UI_Window_New: AControl; stdcall;
@@ -4332,7 +4948,7 @@ end;
 
 function UI_Window_ShowModal(Window: AWindow): ABoolean; stdcall;
 begin
-  Result := AUIWindows.UI_Window_ShowModal(Window); //Result := (TForm(Window).ShowModal = mrOk);
+  Result := AUi_Window_ShowModal(Window); 
 end;
 
 { WaitWin }

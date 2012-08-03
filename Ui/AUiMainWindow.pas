@@ -1,9 +1,8 @@
-﻿{**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(13.10.2008)
-@LastMod(21.09.2011)
-@Version(0.5)
+{**
+@Abstract AUiMainWindow
+@Author Prof1983 <prof1983@ya.ru>
+@Created 13.10.2008
+@LastMod 26.07.2012
 }
 unit AUiMainWindow;
 
@@ -39,14 +38,17 @@ procedure _MainWindow_Shutdown;
 function _MainWindow_ToolBar: AControl;
 procedure _MainWindow_ToolBar_Set(ToolBar: AControl);
 
+{$IFDEF UNIX}
 const
-  {$IFDEF UNIX}
   miAboutCaption = 'About...';
   miHelpCaption = 'Help';
+{$ELSE}
+  {$IFDEF DELPHI_XE_UP}
+    {$I AUi.ru.utf8.inc}
   {$ELSE}
-  miAboutCaption = 'О программе...';
-  miHelpCaption = 'Справка';
+    {$I AUi.ru.win1251.inc}
   {$ENDIF}
+{$ENDIF}
 
 var
   DefWindowState: AInteger{TWindowState};
@@ -54,7 +56,7 @@ var
 implementation
 
 uses
-  AUI;
+  AUi;
 
 var
   FConfig: AConfig;
@@ -322,7 +324,6 @@ begin
   {$ENDIF}
 
   (*
-  // Если использовать не стандартный заголовок (Assistant32)
   if Settings.ReadBool(FControl.Name, 'NoStandartBorderStyle', False) then
   begin
     FControl.BorderStyle := bsNone;
@@ -461,7 +462,6 @@ begin
     FConfig := 0;
   end;
 
-  // Prof1983: Почему-то тут происходит ошибка обращения к памяти 0000
   {IFNDEF A02}
   //MainForm.Close;
   {ENDIF}

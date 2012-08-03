@@ -1,0 +1,47 @@
+  { Класс иконки в трее
+
+    Данный класс реализует основную функциональность, для работы с иконкой
+    в трее. Основным отличием от аналогичных компонентов является возможность
+    отображать всплывающие подсказки.
+
+    @member(Create          Конструктор объекта.
+                            @param(AOwner Владелец данного объекта))
+    @member(Destroy         Деструктор объекта. )
+    @member(ShowToolTip     Показывает всплывающую подсказку в трее около активной иконки.
+                            @param(ATimeOut Время в мс в течении которого подсказка
+                                            будет отображаться в трее.)
+                            @param(AType Тип иконки отображаемой слева в окне
+                                         подсказки unGlobals.TLogTypeMessage.)
+                            @param(ATitle Заголовок окна всплывающей подсказки.)
+                            @param(AInfo Сообщение всплывающей подсказки.))
+    @member(IsActive        Признак отображения иконки в трее.)
+    @member(IsShowDesigning Признак разрешающий показывать иконку в режиме разработки.)
+    @member(Icon            Иконка отображающаяся в трее.)
+    @member(IDMessage       Текстовый идентификатор оконного сообщения. Должен быть
+                            уникальным для каждого приложения.)
+    @member(IsShowApp       Признак отображения окна приложения.)
+    @member(Hint            Текст отображаемый при наведении курсора на иконку в трее.)
+    @member(PopupMenu       Указатель на всплывающее меню связанное с иконкой в трее.
+                            Отображается при возникновении события @link(OnDblClick).)
+    @member(OnLeftClick     Событие возникающее при щелчке левой кнопкой мыши по иконке в трее.)
+    @member(OnDblClick      Событие возникающее при двойном щелчке левой кнопкой мыши по иконке в трее.)
+    @member(OnRightClick    Событие возникающее при щелчке правой кнопкой мыши по иконке в трее.
+                            При этом если заданно всплывающее меню @link(PopupMenu)(), то сначала
+                            будет произведенно отображение меню, а потом передано управление
+                            в этот обработчик.)
+  }
+
+    // Отображать иконку
+    property IsActive: Boolean read FIsActive write SetIsActive;
+    // Изображение иконки
+    property Icon: TIcon read FIcon write SetIcon;
+    // Всплывающая подсказка
+    property Hint: AnsiString read FHint write SetHint;
+    // Контекстное меню
+    property PopupMenu: TPopupMenu read FPopupMenu write FPopupMenu;
+    // Событие. Срабытывает при нажатии левой кнопкой.
+    //property OnLeftClick: TAProc read FOnLeftClick write FOnLeftClick;
+    // Событие. Срабатывает при двойном нажатии.
+    //property OnDblClick: TAProc read FOnDblClick write FOnDblClick;
+    // Событие. Срабатывает при нажатии правой кнопкой.
+    //property OnRightClick: TAProc read FOnRightClick write FOnRightClick;

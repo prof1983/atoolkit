@@ -35,13 +35,10 @@ object DialogForm1: TDialogForm1
     Top = 96
     Width = 77
     Height = 27
-    DoubleBuffered = True
+    TabOrder = 0
     Kind = bkOK
     Margin = 2
-    NumGlyphs = 2
-    ParentDoubleBuffered = False
     Spacing = -1
-    TabOrder = 0
     IsControl = True
   end
   object btnCancel: TBitBtn
@@ -50,13 +47,10 @@ object DialogForm1: TDialogForm1
     Width = 78
     Height = 27
     Caption = #1054#1090#1084#1077#1085#1072
-    DoubleBuffered = True
+    TabOrder = 1
     Kind = bkCancel
     Margin = 2
-    NumGlyphs = 2
-    ParentDoubleBuffered = False
     Spacing = -1
-    TabOrder = 1
     IsControl = True
   end
   object edtValue1: TEdit

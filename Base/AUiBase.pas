@@ -1,70 +1,19 @@
-﻿{**
+{**
 @Abstract User Interface base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 19.07.2012
-
-[+] 10.08.2011 - Добавил тип AFont.
-[*] 28.06.2011 - Описание процедур и функций перенес в AUI0Procs.
+@LastMod 30.07.2012
 }
 unit AUiBase;
-
-{DEFINE A02}
-{DEFINE A03}
-
-{$I A.inc}
-
-{$IFDEF FPC}
-  {$DEFINE LangEN}
-{$ENDIF}
-
-{$IFDEF A01} {$DEFINE A01_OR_02} {$ENDIF}
-{$IFDEF A02} {$DEFINE A01_OR_02} {$ENDIF}
-
-{$IFDEF A02} {$DEFINE A02UP} {$ENDIF}
-{$IFDEF A03} {$DEFINE A02UP} {$ENDIF}
-
-{
-Object
-|- Control
-|   |- Box
-|   |- Button
-|   |- Calendar
-|   |- ComboBox
-|   |- Edit
-|   |- Grid
-|   |- Image
-|   |- Label
-|   |- ListBox
-|   |- PageControl
-|   |- ProgressBar
-|   |- PropertyBox
-|   |- Report
-|   |- SpinEdit
-|   |- Splitter
-|   |- TextView
-|   |- ToolBar
-|   |- TreeView
-|   \- Window
-|- DataSource
-|- MainWindow
-|- MenuItem
-|- Menu
-|- TrayIcon
-\- WaytWin
-
-A_UI_Box_Type = TPanel
-A_UI_Button_Type = TButton
-A_UI_Calendar_Type = TCalendar
-A_UI_ComboBox_Type = TComboBox
-A_UI_Control_Type = TControl
-A_UI_DataSource = TDataSource
-}
 
 interface
 
 uses
   ABase, ABaseTypes;
+
+const
+  AUi_Name = 'AUi';
+  AUi_Uid = $08102501;
 
 // --- Types ---------------------------------------------------------------------------------------
 
@@ -136,16 +85,6 @@ const
 
 //type // = Controls.TMouseButton
 //  AUIMouseButton = (mbLeft, mbRight, mbMiddle);
-
-{$IFDEF LangEN}
-  {$I 'AUi.en.inc'}
-{$ELSE}
-  {$IFDEF DELPHI_XE_UP}
-    {$I 'AUi.ru.utf8.inc'}
-  {$ELSE}
-    {$I 'AUi.ru.win1251.inc'}
-  {$ENDIF}
-{$ENDIF}
 
 implementation
 

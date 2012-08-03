@@ -2,14 +2,15 @@
 @Abstract AData base consts and types
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.08.2011
-@LastMod 19.07.2012
+@LastMod 27.07.2012
 }
 unit ADataBase;
 
 interface
 
-type
-  AWideString = WideString;
+const
+  AData_Name = 'AData';
+  AData_Uid = $08101301;
 
 type
   ADataConnection = type Integer; // IADatabase

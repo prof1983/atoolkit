@@ -2,7 +2,7 @@
 @abstract Base types and consts
 @author Prof1983 <prof1983@ya.ru>
 @created 06.03.2008
-@lastmod 25.07.2012
+@lastmod 30.07.2012
 }
 unit ABase;
 
@@ -79,7 +79,8 @@ type
   APascalString = {$IFDEF DELPHI_2010_UP}string{$ELSE}WideString{$ENDIF};
 
 type
-  AString_Type = packed record  // (4x4 = 16 bytes)
+  { (4x4 = 16 bytes) }
+  AString_Type_Old = packed record
     Str: AnsiString;
     Reserved01: AInteger;
     Reserved02: AInteger;
@@ -97,6 +98,8 @@ type
       //** Code: 0 - Unknown or AnsiString; 1 - PAnsiChar; 2 - UTF-8
     Code: AInteger;
   end;
+
+  AString_Type = AString_Type_4;
 
 type
   AStr = PAnsiChar;

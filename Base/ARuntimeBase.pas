@@ -2,9 +2,13 @@
 @Abstract ARuntime base consts and types
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.12.2011
-@LastMod 24.07.2012
+@LastMod 01.08.2012
 }
 unit ARuntimeBase;
+
+{$IFDEF A02}{$DEFINE ADepr}{$ENDIF}
+{$IFDEF A03}{$DEFINE ADepr}{$ENDIF}
+{$IFDEF A04}{$DEFINE ADepr}{$ENDIF}
 
 interface
 
@@ -14,21 +18,50 @@ uses
 // --- Types ---
 
 type
+  AModuleFinProc = function(): AError; stdcall;
+  AModuleInitProc = function(): AError; stdcall;
+  AModuleGetProc = function(ProcName: AStr): Pointer; stdcall;
+
+  {$IFDEF ADepr}
   AModuleInitProc02 = function(): AInteger; stdcall;
   AModuleDoneProc02 = procedure(); stdcall;
-type
+  {$ENDIF}
+
+  {$IFDEF ADepr}
   AModuleInitProc03 = function(): AInteger; stdcall;
   AModuleDoneProc03 = function(): AInteger; stdcall;
+  {$ENDIF}
 
-type // Module description
+  {** Module description }
   AModuleDescription = Pointer;
 
-type
   {** The unique identifier of the module
       Format: $YYMMDDxx, YY - Year, MM - Month, DD - Day, xx - Number }
-  AModuleUid = type AInteger;
+  AModuleUid = type AInt32;
 
 type
+  {** Module }
+  AModule = ^AModule_Type;
+  AModule_Type = packed record
+    {** Module version ($AABBCCDD) }
+    Version: AVersion;
+    {** Module unique identificator $YYMMDDxx YY - Year, MM - Month, DD - Day }
+    Uid: AModuleUid;
+    {** Module unuque name }
+    Name: PAnsiChar;
+    {** Module information and description }
+    Description: AModuleDescription;
+    {** Initialize proc }
+    Init: AModuleInitProc;
+    {** Finalize proc }
+    Fin: AModuleFinProc;
+    {** Get proc address }
+    GetProc: AModuleGetProc;
+    {** Module proc list }
+    Procs: Pointer;
+  end;
+
+  {$IFDEF ADepr}
   AModule02 = ^AModule02_Type;
   AModule02_Type = packed record
     Version: AVersion;
@@ -40,36 +73,29 @@ type
     Reserved2: AInteger;
     Reserved3: AInteger;
   end;
+  {$ENDIF}
 
-type // Module (8x4)
+  {$IFDEF ADepr}
   AModule03 = ^AModule03_Type;
   AModule03_Type = packed record
-    Version: AVersion;         // Module version ($AABBCCDD). AA=00h, BB=03h.
-    Uid: AModuleUid;           // Module unique identificator $YYMMDDxx YY - Year, MM - Month, DD - Day
-    Name: PChar;               // Module unuque name
-    Description: AModuleDescription; // Module information and description
-    Init: AProc03;             // Init proc
-    Done: AProc03;             // Done proc
-    Reserved06: AInteger;      // Reserved (Delete: AModuleDeleteProc)
-    Procs: Pointer;            // Module proc list
+    {** Module version ($AABBCCDD) }
+    Version: AVersion;
+    {** Module unique identificator $YYMMDDxx YY - Year, MM - Month, DD - Day }
+    Uid: AModuleUid;
+    {** Module unuque name }
+    Name: PAnsiChar;
+    {** Module information and description }
+    Description: AModuleDescription;
+    {** Initialize proc }
+    Init: AProc;
+    {** Finalize proc }
+    Done: AProc;
+    {** Reserved }
+    Reserved06: AInteger;
+    {** Module proc list }
+    Procs: Pointer;
   end;
-
-{$IFDEF A02}
-
-type
-  AModuleData = AModule02;
-  AModuleDataType = AModule02_Type;
-  AModuleDataRec = AModule02_Type;
-  AModule = AModule02;
-  AModule_Type = AModule02_Type;
-
-{$ELSE} // A02
-
-type
-  AModule = AModule03;
-  AModule_Type = AModule03_Type;
-
-{$ENDIF A02}
+  {$ENDIF}
 
 implementation
 

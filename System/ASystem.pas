@@ -2,7 +2,7 @@
 @abstract ASystem function
 @author Prof1983 <prof1983@ya.ru>
 @created 19.08.2009
-@lastmod 24.07.2012
+@lastmod 01.08.2012
 }
 unit ASystem;
 
@@ -52,7 +52,23 @@ uses
   ABase, ABaseTypes, ALibraries, ARuntime,
   ABaseUtils, AStrings, ASystemData, ASystemMain, ASystemPrepare, ASystemResourceString, ASystemUtils;
 
+// --- ASystem ---
+
+function ASystem_Fin(): AError; stdcall;
+
 function ASystem_GetExePath(): APascalString; stdcall;
+
+function ASystem_Init(): AError; stdcall;
+
+function ASystem_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; stdcall;
+
+function ASystem_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
+
+function ASystem_ShowMessage(const Msg: AString_Type): ADialogBoxCommands; stdcall;
+
+function ASystem_ShowMessageP(const Msg: APascalString): ADialogBoxCommands; stdcall;
+
+function ASystem_ShowMessageWS(const Msg: AWideString): ADialogBoxCommands; stdcall;
 
 // --- Info functions ---
 
@@ -292,6 +308,7 @@ procedure SetOnShowMessage(Value: TAShowMessageWSProc); stdcall;
 function OnAfterRun: AEvent; stdcall;
 function OnBeforeRun: AEvent; stdcall;
 function OnAfterRun_Connect(Callback: ACallbackProc; Weight: AInteger = High(AInteger)): Integer; stdcall;
+{$IFDEF A02}function OnAfterRun_Connect02(Callback: ACallbackProc02; Weight: AInteger): Integer; stdcall;{$ENDIF}
 function OnAfterRun_Disconnect(Callback: ACallbackProc): AInteger; stdcall;
 function OnBeforeRun_Connect(Callback: ACallbackProc; Weight: AInteger = High(AInteger)): AInteger; stdcall;
 {$IFDEF A02}function OnBeforeRun_Connect02(Callback: ACallbackProc02; Weight: AInteger = High(AInteger)): AInteger; stdcall;{$ENDIF}
@@ -809,6 +826,15 @@ end;
 {$ENDIF USE_EVENTS}
 
 {$IFDEF USE_EVENTS}
+{$IFDEF A02}
+function OnAfterRun_Connect02(Callback: ACallbackProc02; Weight: AInteger): Integer; stdcall;
+begin
+  Result := AEvents.Event_Connect(FOnAfterRunEvent, Callback, Weight);
+end;
+{$ENDIF A02}
+{$ENDIF USE_EVENTS}
+
+{$IFDEF USE_EVENTS}
 function OnAfterRun_Disconnect(Callback: ACallbackProc): Integer; stdcall;
 begin
   Result := AEvents.Event_Disconnect(FOnAfterRunEvent, Callback);
@@ -847,9 +873,69 @@ end;
 
 // --- ASystem ---
 
-function ASystem_GetExePath(): APascalString; stdcall;
+function ASystem_Fin(): AError; 
+begin
+  Result := 0;
+end;
+
+function ASystem_GetExePath(): APascalString;
 begin
   Result := FExePath;
+end;
+
+function ASystem_Init(): AError;
+begin
+  Result := InitConfig();
+end;
+
+function ASystem_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger;
+begin
+  try
+    Result := ShellExecuteWS(
+        AStrings.String_ToWideString(Operation),
+        AStrings.String_ToWideString(FileName),
+        AStrings.String_ToWideString(Parameters),
+        AStrings.String_ToWideString(Directory));
+  except
+    Result := -1;
+  end;
+end;
+
+function ASystem_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger;
+begin
+  Result := ShellExecuteA(0,
+      PAnsiChar(AnsiString(Operation)),
+      PAnsiChar(AnsiString(FileName)),
+      PAnsiChar(AnsiString(Parameters)),
+      PAnsiChar(AnsiString(Directory)),
+      SW_SHOW);
+end;
+
+function ASystem_ShowMessage(const Msg: AString_Type): ADialogBoxCommands;
+begin
+  try
+    Result := System_ShowMessage(AStrings.String_ToPascalString(Msg));
+  except
+    Result := -1;
+  end;
+end;
+
+function ASystem_ShowMessageP(const Msg: APascalString): ADialogBoxCommands;
+begin
+  try
+    Result := System_ShowMessage(Msg);
+  except
+    Result := -1;
+  end;
+end;
+
+function ASystem_ShowMessageWS(const Msg: AWideString): ADialogBoxCommands;
+begin
+  try
+    Result := System_ShowMessage(Msg);
+  except
+    Result := -1;
+  end;
 end;
 
 { System public procs }
@@ -1036,12 +1122,12 @@ end;
 
 function Done(): AError; stdcall;
 begin
-  Result := 0;
+  Result := ASystem_Fin();
 end;
 
 function Done03(): AInteger; stdcall;
 begin
-  Result := 0;
+  Result := ASystem_Fin();
 end;
 
 function DoneConfig: AInteger; stdcall;
@@ -1432,12 +1518,12 @@ end;
 
 function Init(): AError; stdcall;
 begin
-  Result := InitConfig();
+  Result := ASystem_Init();
 end;
 
 function Init03(): AInteger; stdcall;
 begin
-  Result := InitConfig();
+  Result := ASystem_Init();
 end;
 
 function InitConfig(): AInteger; stdcall;
@@ -1663,25 +1749,12 @@ end;
 
 function ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; stdcall;
 begin
-  try
-    Result := ShellExecuteWS(
-        AStrings.String_ToWideString(Operation),
-        AStrings.String_ToWideString(FileName),
-        AStrings.String_ToWideString(Parameters),
-        AStrings.String_ToWideString(Directory));
-  except
-    Result := -1;
-  end;
+  Result := ASystem_ShellExecute(Operation, FileName, Parameters, Directory);
 end;
 
 function ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
 begin
-  Result := ShellExecuteA(0,
-      PAnsiChar(AnsiString(Operation)),
-      PAnsiChar(AnsiString(FileName)),
-      PAnsiChar(AnsiString(Parameters)),
-      PAnsiChar(AnsiString(Directory)),
-      SW_SHOW);
+  Result := ASystem_ShellExecuteP(Operation, FileName, Parameters, Directory);
 end;
 
 function ShellExecuteWS(const Operation, FileName, Parameters, Directory: AWideString): AInteger; stdcall;
@@ -1721,20 +1794,12 @@ end;
 
 function ShowMessage(const Msg: AString_Type): ADialogBoxCommands; stdcall;
 begin
-  try
-    Result := System_ShowMessage(AStrings.String_ToPascalString(Msg));
-  except
-    Result := -1;
-  end;
+  Result := ASystem_ShowMessage(Msg);
 end;
 
 function ShowMessage02(const Msg: AWideString): ADialogBoxCommands; stdcall;
 begin
-  try
-    Result := System_ShowMessage(Msg);
-  except
-    Result := -1;
-  end;
+  Result := ASystem_ShowMessageWS(Msg);
 end;
 
 function ShowMessage2P(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
@@ -1795,20 +1860,12 @@ end;
 
 function ShowMessageP(const Msg: APascalString): ADialogBoxCommands; stdcall;
 begin
-  try
-    Result := System_ShowMessage(Msg);
-  except
-    Result := -1;
-  end;
+  Result := ASystem_ShowMessageP(Msg);
 end;
 
 function ShowMessageWS(const Msg: AWideString): ADialogBoxCommands; stdcall;
 begin
-  try
-    Result := System_ShowMessage(Msg);
-  except
-    Result := -1;
-  end;
+  Result := ASystem_ShowMessageWS(Msg);
 end;
 
 procedure Shutdown(); stdcall;

@@ -2,7 +2,7 @@
 @Abstract Util functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.09.2009
-@LastMod 25.07.2012
+@LastMod 01.08.2012
 }
 unit AUtils;
 
@@ -14,7 +14,7 @@ interface
 
 uses
   SysUtils, {$IFNDEF FPC}Windows,{$ENDIF}
-  ABase, ABaseUtils, AStrings, ASystem;
+  ABase, ABaseUtils, AStringUtils, AStrings, ASystem;
 
 // --- AUtils ---
 
@@ -432,13 +432,13 @@ function String_ToLowerP(const S: APascalString): APascalString; stdcall;
 function String_ToLowerWS(const S: AWideString): AWideString; stdcall;
 
 // Переводит все символы строки в верхний регистр.
-function String_ToUpper(const S: AString_Type; out Res: AString_Type): AInteger; stdcall;
+function String_ToUpper(const S: AString_Type; out Res: AString_Type): AInteger; stdcall; deprecated; // Use AString_ToUpper()
 
 // Переводит все символы строки в верхний регистр.
-function String_ToUpperP(const S: APascalString): APascalString; stdcall;
+function String_ToUpperP(const S: APascalString): APascalString; stdcall; deprecated; // Use AString_ToUpperP()
 
 // Переводит все символы строки в верхний регистр.
-function String_ToUpperWS(const S: AWideString): AWideString; stdcall;
+function String_ToUpperWS(const S: AWideString): AWideString; stdcall; deprecated; // Use AString_ToUpperWS()
 
 {$IFDEF AUTILSOLD}
 function TryStrToDate(const S: AWideString; var Value: TDateTime): ABoolean; stdcall; deprecated; // Use TryStrToDateWS()
@@ -597,7 +597,7 @@ function Utils_TryStrToFloat64(const S: APascalString; var Value: AFloat64): ABo
 
 function Utils_TryStrToInt(const S: APascalString; var Value: AInteger): ABoolean; stdcall; deprecated; // Use TryStrToInt()
 
-function Utils_UpperString(const S: APascalString): APascalString; stdcall; deprecated; // Use String_ToUpperP()
+function Utils_UpperString(const S: APascalString): APascalString; stdcall; deprecated; // Use AString_ToUpperP()
 
 function Utils_FormatFloat(Value: AFloat; Count, Digits: AInteger): APascalString; stdcall; deprecated; // Use FormatFloatWS()
 
@@ -608,7 +608,7 @@ function Utils_FormatStrAnsi(const Value: AnsiString; Len: AInteger): AnsiString
 function Utils_StrToDate(const Value: APascalString): TDateTime; stdcall;
 
 function Utils_String_ToLower(const S: APascalString): APascalString;
-function Utils_String_ToUpper(const S: APascalString): APascalString;
+function Utils_String_ToUpper(const S: APascalString): APascalString; deprecated; // Use AString_ToUpperP()
 
 { Private }
 
@@ -1697,29 +1697,17 @@ end;
 
 function String_ToUpper(const S: AString_Type; out Res: AString_Type): AInteger; stdcall;
 begin
-  try
-    Result := AStrings.String_AssignWS(Res, AUtilsMain.Utils_String_ToUpper(AStrings.String_ToWideString(S)));
-  except
-    Result := 0;
-  end;
+  Result := AString_ToUpper(S, Res);
 end;
 
 function String_ToUpperP(const S: APascalString): APascalString; stdcall;
 begin
-  try
-    Result := Utils_String_ToUpper(S);
-  except
-    Result := '';
-  end;
+  Result := AString_ToUpperP(S);
 end;
 
 function String_ToUpperWS(const S: AWideString): AWideString; stdcall;
 begin
-  try
-    Result := Utils_String_ToUpper(S);
-  except
-    Result := '';
-  end;
+  Result := AString_ToUpperWS(S);
 end;
 
 {$IFDEF AUTILSOLD}
@@ -2215,7 +2203,7 @@ end;
 
 function Utils_String_ToUpper(const S: APascalString): APascalString;
 begin
-  Result := SysUtils.AnsiUpperCase(S);
+  Result := AString_ToUpperP(S);
 end;
 
 function Utils_StrToDate(const Value: APascalString): TDateTime;

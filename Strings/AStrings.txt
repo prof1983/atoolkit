@@ -1,0 +1,67 @@
+{
+Null-terminated string functions 
+Function       Description
+StrAlloc       Allocates a character buffer of a given size on the heap.
+StrBufSize     Returns the size of a character buffer allocated using StrAlloc or StrNew.
+StrCat         Concatenates two strings.
+StrComp        Compares two strings.
+StrCopy        Copies a string.
+StrDispose     Disposes a character buffer allocated using StrAlloc or StrNew.
+StrECopy       Copies a string and returns a pointer to the end of the string.
+StrEnd         Returns a pointer to the end of a string.
+StrFmt         Formats one or more values into a string.
+StrIComp       Compares two strings without case sensitivity.
+StrLCat        Concatenates two strings with a given maximum length of the resulting string.
+StrLComp       Compares two strings for a given maximum length.
+StrLCopy       Copies a string up to a given maximum length.
+StrLen         Returns the length of a string.
+StrLFmt        Formats one or more values into a string with a given maximum length.
+StrLIComp      Compares two strings for a given maximum length without case sensitivity.
+StrLower       Converts a string to lowercase.
+StrMove        Moves a block of characters from one string to another.
+StrNew         Allocates a string on the heap.
+StrPCopy       Copies a Pascal string to a null-terminated string.
+StrPLCopy      Copies a Pascal string to a null-terminated string with a given maximum length.
+StrPos         Returns a pointer to the first occurrence of a given substring within a string.
+StrRScan       Returns a pointer to the last occurrence of a given character within a string.
+StrScan        Returns a pointer to the first occurrence of a given character within a string.
+StrUpper       Converts a string to uppercase.
+
+Глава 14. Строковые и символьные функции
+    isalnum
+    isalpha
+    isblank
+    iscntrl
+    isdigit
+    isgraph
+    islower
+    isprint
+    ispunct
+    isspace
+    isupper
+    isxdigit
+    memchr
+    memcmp
+    memcpy
+    memmove
+    memset
+    strcat
+    strchr
+    strcmp
+    strcoll
+    strcpy - Функция strcpy() копирует содержимое строки str2 в строку str1. Параметр str2 должен указывать на строку с завершающим нулевым символом. Функция strcpy() возвращает значение указателя str1. 
+    strcspn
+    strerror
+    strlen
+    strncat
+    strncmp
+    strncpy
+    strpbrk
+    strrchr
+    strspn
+    strstr
+    strtok
+    strxfrm
+    tolower
+    toupper
+}

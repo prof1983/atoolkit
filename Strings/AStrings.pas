@@ -2,117 +2,64 @@
 @Abstract AStrings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.05.2011
-@LastMod 25.07.2012
-
-0.0.5
-[+] String_ToPascalString (01.08.2011)
-[*] A_String_AssignC -> A_String_AssignA (01.09.2011)
-[+] String_AssignWS (01.09.2011)
+@LastMod 01.08.2012
 }
 unit AStrings;
-
-{
-Null-terminated string functions 
-Function       Description
-StrAlloc       Allocates a character buffer of a given size on the heap.
-StrBufSize     Returns the size of a character buffer allocated using StrAlloc or StrNew.
-StrCat         Concatenates two strings.
-StrComp        Compares two strings.
-StrCopy        Copies a string.
-StrDispose     Disposes a character buffer allocated using StrAlloc or StrNew.
-StrECopy       Copies a string and returns a pointer to the end of the string.
-StrEnd         Returns a pointer to the end of a string.
-StrFmt         Formats one or more values into a string.
-StrIComp       Compares two strings without case sensitivity.
-StrLCat        Concatenates two strings with a given maximum length of the resulting string.
-StrLComp       Compares two strings for a given maximum length.
-StrLCopy       Copies a string up to a given maximum length.
-StrLen         Returns the length of a string.
-StrLFmt        Formats one or more values into a string with a given maximum length.
-StrLIComp      Compares two strings for a given maximum length without case sensitivity.
-StrLower       Converts a string to lowercase.
-StrMove        Moves a block of characters from one string to another.
-StrNew         Allocates a string on the heap.
-StrPCopy       Copies a Pascal string to a null-terminated string.
-StrPLCopy      Copies a Pascal string to a null-terminated string with a given maximum length.
-StrPos         Returns a pointer to the first occurrence of a given substring within a string.
-StrRScan       Returns a pointer to the last occurrence of a given character within a string.
-StrScan        Returns a pointer to the first occurrence of a given character within a string.
-StrUpper       Converts a string to uppercase.
-
-Глава 14. Строковые и символьные функции
-    isalnum
-    isalpha
-    isblank
-    iscntrl
-    isdigit
-    isgraph
-    islower
-    isprint
-    ispunct
-    isspace
-    isupper
-    isxdigit
-    memchr
-    memcmp
-    memcpy
-    memmove
-    memset
-    strcat
-    strchr
-    strcmp
-    strcoll
-    strcpy - Функция strcpy() копирует содержимое строки str2 в строку str1. Параметр str2 должен указывать на строку с завершающим нулевым символом. Функция strcpy() возвращает значение указателя str1. 
-    strcspn
-    strerror
-    strlen
-    strncat
-    strncmp
-    strncpy
-    strpbrk
-    strrchr
-    strspn
-    strstr
-    strtok
-    strxfrm
-    tolower
-    toupper
-}
 
 interface
 
 uses
   ABase;
 
-{$IFDEF A01}
-type
-  AString = ^AString_Type;
-{$ENDIF A01}
+// --- AString ---
+
+function AString_Assign(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
+
+function AString_AssignA(var S: AString_Type; Value: AStr): ASize; stdcall;
+
+function AString_AssignP(var S: AString_Type; const Value: APascalString): ASize; stdcall;
+
+function AString_AssignWS(var S: AString_Type; const Value: AWideString): ASize; stdcall;
+
+function AString_Clear(var S: AString_Type): AInteger; stdcall;
+
+function AString_Copy(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
+
+function AString_CopyA(var S: AString_Type; const Value: AStr): ASize; stdcall;
+
+function AString_CopyWS(var S: AString_Type; const Value: AWideString): ASize; stdcall;
+
+function AString_GetChar(const S: AString_Type; Index: AInt): AChar; stdcall;
+
+function AString_GetLength(const S: AString_Type): AInteger; stdcall;
+
+function AString_ToPascalString(const S: AString_Type): APascalString; stdcall;
+
+function AString_ToWideString(const S: AString_Type): WideString; stdcall;
+
+// --- AnsiString ---
+
+function AnsiString_GetChar(const S: AnsiString; Index: AInt): AChar; stdcall;
+
+// ----
 
 function Init(): AError; stdcall;
 function Done(): AError; stdcall;
 
-function AnsiString_GetChar(const S: AnsiString; Index: AInt): AChar; stdcall;
-
-function AString_Assign(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
-function AString_AssignAnsi(var S: AString_Type; Value: PAnsiChar): ASize; stdcall;
-function AString_GetChar(const S: AString_Type; Index: AInt): AChar; stdcall;
-function AString_ToPascalString(const S: AString_Type): APascalString; stdcall;
-
 function String_Assign(var S: AString_Type; const Value: AString_Type): ASize; stdcall; deprecated; // Use AString_Assign()
-function String_AssignA(var S: AString_Type; Value: PAnsiChar): ASize; stdcall;
+function String_AssignA(var S: AString_Type; Value: PAnsiChar): ASize; stdcall; deprecated; // Use AString_AssignA()
 function String_AssignP(var S: AString_Type; const Value: APascalString): ASize; stdcall;
-function String_AssignWS(var S: AString_Type; const Value: AWideString): ASize; stdcall;
-function String_Copy(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
-function String_CopyA(var S: AString_Type; const Value: AnsiString): ASize; stdcall;
-function String_CopyW(var S: AString_Type; const Value: WideString): ASize; stdcall;
-function String_Length(const S: AString_Type): AInteger; stdcall;
+function String_AssignWS(var S: AString_Type; const Value: AWideString): ASize; stdcall; deprecated; // Use AString_AssignWS()
+function String_Copy(var S: AString_Type; const Value: AString_Type): ASize; stdcall; deprecated; // Use AString_Copy()
+function String_CopyA(var S: AString_Type; const Value: AnsiString): ASize; stdcall; deprecated; // Use AString_CopyA()
+function String_CopyW(var S: AString_Type; const Value: WideString): ASize; stdcall; deprecated; // Use AString_CopyWS()
+function String_Length(const S: AString_Type): AInteger; stdcall; deprecated; // Use AString_GetLength()
 //function String_NewC(Value: PChar): AString;
 //function String_NewW(const Value: AWideString): AString;
-function String_ToPascalString(const S: AString_Type): APascalString; stdcall;
+function String_ToPascalString(const S: AString_Type): APascalString; stdcall; deprecated; // Use AString_ToPascalString()
 function String_ToUtf8String(const S: AString_Type): UTF8String; stdcall;
 function String_ToWideString(const S: AString_Type): WideString; stdcall;
-function String_Free(var S: AString_Type): AInteger; stdcall;
+function String_Free(var S: AString_Type): AInteger; stdcall; deprecated; // Use AString_Clear()
 
 function Str_Assign({var} S: AString; {const} Value: AString): ASize; stdcall;
 function Str_AssignA({var} S: AString; Value: PAnsiChar): ASize; stdcall;
@@ -239,9 +186,56 @@ begin
   Result := 0;
 end;
 
-function AString_AssignAnsi(var S: AString_Type; Value: PAnsiChar): ASize; stdcall;
+function AString_AssignA(var S: AString_Type; Value: AStr): ASize; stdcall;
 begin
-  Result := String_AssignA(S, Value);
+  try
+    S.Str := Value;
+  except
+  end;
+  Result := 0;
+end;
+
+function AString_AssignP(var S: AString_Type; const Value: APascalString): ASize; stdcall;
+begin
+  Result := AString_AssignA(S, AStr(AnsiString(Value)));
+end;
+
+function AString_AssignWS(var S: AString_Type; const Value: AWideString): ASize;
+begin
+  Result := AString_AssignA(S, AStr(AnsiString(Value)));
+end;
+
+function AString_Clear(var S: AString_Type): AInteger; 
+begin
+  try
+    S.Str := '';
+  except
+  end;
+  Result := 0;
+end;
+
+function AString_Copy(var S: AString_Type; const Value: AString_Type): ASize;
+begin
+  // TODO: Make!
+  try
+    S.Str := Value.Str;
+  except
+  end;
+  Result := 0;
+end;
+
+function AString_CopyA(var S: AString_Type; const Value: AStr): ASize;
+begin
+  try
+    S.Str := Value;
+  except
+  end;
+  Result := 0;
+end;
+
+function AString_CopyWS(var S: AString_Type; const Value: AWideString): ASize;
+begin
+  Result := AString_CopyA(S, AStr(AnsiString(Value)));
 end;
 
 function AString_GetChar(const S: AString_Type; Index: AInt): AChar; stdcall;
@@ -252,9 +246,26 @@ begin
     Result := #0;
 end;
 
-function AString_ToPascalString(const S: AString_Type): APascalString; stdcall;
+function AString_GetLength(const S: AString_Type): AInteger;
 begin
-  Result := String_ToPascalString(S);
+  try
+    Result := S.Len;
+  except
+    Result := 0;
+  end;
+end;
+
+function AString_ToPascalString(const S: AString_Type): APascalString; stdcall;
+var
+  A: AnsiString;
+begin
+  A := S.Str;
+  Result := A;
+end;
+
+function AString_ToWideString(const S: AString_Type): WideString;
+begin
+  Result := AString_ToPascalString(S);
 end;
 
 { String }
@@ -266,74 +277,42 @@ end;
 
 function String_AssignA(var S: AString_Type; Value: PAnsiChar): ASize; stdcall;
 begin
-  try
-    S.Str := Value;
-  except
-  end;
-  Result := 0;
+  Result := AString_AssignA(S, Value);
 end;
 
-function String_AssignP(var S: AString_Type; const Value: APascalString): ASize; stdcall;
+function String_AssignP(var S: AString_Type; const Value: APascalString): ASize;
 begin
-  try
-    S.Str := Value;
-  except
-  end;
-  Result := 0;
+  Result := AString_AssignA(S, AStr(AnsiString(Value)));
 end;
 
 function String_AssignWS(var S: AString_Type; const Value: AWideString): ASize; stdcall;
 begin
-  try
-    S.Str := Value;
-  except
-  end;
-  Result := 0;
+  Result := AString_AssignWS(S, Value);
 end;
 
 function String_Copy(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
 begin
-  try
-    S.Str := Value.Str;
-  except
-  end;
-  Result := 0;
+  Result := AString_Copy(S, Value);
 end;
 
 function String_CopyA(var S: AString_Type; const Value: AnsiString): ASize; stdcall;
 begin
-  try
-    S.Str := Value;
-  except
-  end;
-  Result := 0;
+  Result := AString_CopyA(S, AStr(Value));
 end;
 
 function String_CopyW(var S: AString_Type; const Value: WideString): ASize; stdcall;
 begin
-  try
-    S.Str := Value;
-  except
-  end;
-  Result := 0;
+  Result := AString_CopyWS(S, Value);
 end;
 
 function String_Free(var S: AString_Type): AInteger; stdcall;
 begin
-  try
-    S.Str := '';
-  except
-  end;
-  Result := 0;
+  Result := AString_Clear(S);
 end;
 
 function String_Length(const S: AString_Type): AInteger; stdcall;
 begin
-  try
-    Result := Length(S.Str);
-  except
-    Result := 0;
-  end;
+  Result := AString_GetLength(S);
 end;
 
 (*
@@ -360,7 +339,7 @@ end;
 
 function String_ToPascalString(const S: AString_Type): APascalString; stdcall;
 begin
-  Result := S.Str;
+  Result := AString_ToPascalString(S);
 end;
 
 function String_ToUtf8String(const S: AString_Type): UTF8String; stdcall;
@@ -370,7 +349,7 @@ end;
 
 function String_ToWideString(const S: AString_Type): WideString; stdcall;
 begin
-  Result := Str_ToP(Addr(S));
+  Result := AString_ToPascalString(S);
 end;
 
 { Str }
@@ -382,7 +361,7 @@ end;
 
 function Str_AssignA({var} S: AString; Value: PAnsiChar): ASize; stdcall;
 begin
-  Result := String_AssignA(S^, Value);
+  Result := AString_AssignA(S^, Value);
 end;
 
 function Str_AssignW({var} S: AString; {const} Value: PWideChar): ASize; stdcall;
@@ -400,32 +379,37 @@ end;
 
 function Str_Copy({var} S: AString; {const} Value: AString): ASize; stdcall;
 begin
-  Result := String_Copy(S^, Value^);
+  Result := AString_Copy(S^, Value^);
 end;
 
 function Str_CopyA({var} S: AString; {const} Value: PAnsiChar): ASize; stdcall;
 begin
-  Result := String_CopyA(S^, AnsiString(Value));
+  Result := AString_CopyA(S^, Value);
 end;
 
 function Str_CopyW({var} S: AString; {const} Value: PWideChar): ASize; stdcall;
 begin
-  Result := String_CopyW(S^, WideString(Value));
+  Result := AString_CopyWS(S^, AWideString(Value));
 end;
 
 function Str_CopyWS({var} S: AString; const Value: WideString): ASize; stdcall;
 begin
-  Result := String_CopyW(S^, Value);
+  Result := AString_CopyWS(S^, Value);
 end;
 
 function Str_Length({const} S: AString): AInteger; stdcall;
 begin
-  Result := String_Length(S^);
+  Result := AString_GetLength(S^);
 end;
 
 function Str_ToP({const} S: AString): APascalString; stdcall;
 begin
-  Result := S^.Str;
+  if not(Assigned(S)) then
+  begin
+    Result := '';
+    Exit;
+  end;
+  Result := AString_ToPascalString(S^);
 end;
 
 function Str_ToUtf8String({const} S: AString): UTF8String; stdcall;
@@ -440,7 +424,7 @@ end;*)
 
 function Str_Free({var} S: AString): AError; stdcall;
 begin
-  Result := String_Free(S^);
+  Result := AString_Clear(S^);
 end;
 
 { A_String }

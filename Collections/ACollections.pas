@@ -2,21 +2,17 @@
 @Abstract ACollections
 @Author Prof1983 <prof1983@ya.ru>
 @Created 29.06.2011
-@LastMod 19.07.2012
+@LastMod 27.07.2012
 }
 unit ACollections;
-
-{$IFNDEF A0}
-  {$DEFINE ALOCAL}
-{$ENDIF}
 
 interface
 
 uses
-  ABase, ACollectionsBase, ACollectionsStringList,
-  {$IFDEF ALOCAL}AStrings{$ELSE}AStrings0{$ENDIF};
+  ABase, ACollectionsBase, ACollectionsStringList, AStrings;
 
 function Init(): AError; stdcall;
+
 function Done(): AError; stdcall;
 
 //** ƒобавл€ет строку в список. ¬озвращает индекс, по которому эта строка сохранена.

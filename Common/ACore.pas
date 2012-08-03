@@ -2,7 +2,7 @@
 @Abstract ACore
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.10.2009
-@LastMod 24.07.2012
+@LastMod 27.07.2012
 }
 unit ACore;
 
@@ -20,13 +20,6 @@ unit ACore;
 interface
 
 uses
-{$IFDEF A01}
-{$ELSE}
-  {$IFDEF A02}
-  {$ELSE}
-  ARuntime0,
-  {$ENDIF A02}
-{$ENDIF A01}
   ABase, ALibraries;
 
 {$IFDEF STATIC}

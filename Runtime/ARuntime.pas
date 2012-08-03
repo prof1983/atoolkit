@@ -2,7 +2,7 @@
 @Abstract ARuntime
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.08.2007
-@LastMod 26.07.2012
+@LastMod 03.08.2012
 }
 unit ARuntime;
 
@@ -27,6 +27,7 @@ function ARuntime_DeleteModuleByNameWS(const Name: AWideString): AInteger; stdca
 
 function ARuntime_DeleteModuleByUid(Uid: AModuleUid): AInteger; stdcall;
 
+{** Finalize Runtime (Shutdown, Work end, Unloading of modules) }
 function ARuntime_Fin(): AError; stdcall;
 
 function ARuntime_FindModuleByName(Name: PAnsiChar): AInteger; stdcall;

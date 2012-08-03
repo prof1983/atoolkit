@@ -1,8 +1,8 @@
 {**
-@abstract ASystem function
-@author Prof1983 <prof1983@ya.ru>
-@created 19.08.2009
-@lastmod 01.08.2012
+@Abstract ASystem function
+@Author Prof1983 <prof1983@ya.ru>
+@Created 19.08.2009
+@LastMod 03.08.2012
 }
 unit ASystem;
 
@@ -479,10 +479,7 @@ function GetConfig(): AConfig; stdcall;
 
 function GetIsShutdown(): ABoolean; stdcall;
 
-{$IFDEF AOLD}
-{$ELSE}
 function ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; stdcall;
-{$ENDIF AOLD}
 
 function ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
 
@@ -945,8 +942,6 @@ begin
   Result := FConfig;
 end;
 
-{IFDEF AOLD}
-{ELSE}
 function ParamStr(Index: AInteger; out Value: AString_Type): AInteger; stdcall;
 var
   Res: string;
@@ -958,7 +953,6 @@ begin
     Result := -1;
   end;
 end;
-{ENDIF AOLD}
 
 function ParamStrP(Index: AInteger): APascalString; stdcall;
 begin

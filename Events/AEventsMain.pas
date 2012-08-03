@@ -2,7 +2,7 @@
 @Abstract AEvents
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.11.2011
-@LastMod 24.07.2012
+@LastMod 31.07.2012
 }
 unit AEventsMain;
 
@@ -169,15 +169,12 @@ end;
 function _Event_NewA(Obj: Integer; {const} Name: PAnsiChar): AEvent;
 var
   Event: TAEvent;
-  S: AnsiString;
   Len: Integer;
 begin
   Len := 0;
   while (Name[Len] <> #0) do
     Inc(Len);
-  SetLength(S, Len);
-  Move(Name, S, Len+1);
-  Event := TAEvent.Create(Obj, AnsiString(S));
+  Event := TAEvent.Create(Obj, AnsiString(Name));
   Result := AEvent(Event);
 end;
 

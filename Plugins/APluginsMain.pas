@@ -2,7 +2,7 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.01.2012
-@LastMod 19.07.2012
+@LastMod 26.07.2012
 }
 unit APluginsMain;
 
@@ -37,11 +37,13 @@ procedure Plugins_Find2(const Path, Exclusion: APascalString);
 procedure Plugins_SetOnCheckPlugin(CheckPluginProc: TCheckPluginProc); stdcall;
 
 var
-  PluginsVersionValue: AVersion;
+  PluginsVersionValue1: AVersion;
+  PluginsVersionValue2: AVersion;
   PluginsVersionMask: AVersion;
 
 const
-  PluginsVersionValueDef = $00030500;
+  PluginsVersionValue1Def = $00030700;
+  PluginsVersionValue2Def = $00040000;
   PluginsVersionMaskDef = $FFFF0000;
 
 implementation
@@ -211,7 +213,8 @@ begin
         Result := False;
         Exit;
       end;
-      if (Version and PluginsVersionMask <> PluginsVersionValue and PluginsVersionMask) then
+      if (Version and PluginsVersionMask <> PluginsVersionValue1 and PluginsVersionMask)
+      and (Version and PluginsVersionMask <> PluginsVersionValue2 and PluginsVersionMask) then
       begin
         ASystem.Library_Close(Lib);
         Result := False;
@@ -367,7 +370,8 @@ end;
 
 initialization
   PluginsVersionMask := PluginsVersionMaskDef;
-  PluginsVersionValue := PluginsVersionValueDef;
+  PluginsVersionValue1 := PluginsVersionValue1Def;
+  PluginsVersionValue2 := PluginsVersionValue2Def;
   //Plugins_SetOnCheckPlugin(DoCheckPlugin);
 end.
  

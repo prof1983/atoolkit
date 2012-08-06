@@ -1,17 +1,8 @@
 {**
-@Abstract Модуль для работа с настройками
+@Abstract The module for work with the settings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 24.07.2012
-
-0.3.2 - 29.08.2011
-[*] Config_DeleteKey -> Config_DeleteKeyS
-[*] Config_DeleteSection -> Config_DeleteSectionS
-[*] Config_ReadBoolDef -> Config_ReadBoolDefS
-[*] Config_ReadIntegerDef -> Config_ReadIntegerDefS
-[*] Config_ReadFloatDef -> Config_ReadFloatDefS
-[*] Config_ReadSection -> Config_ReadSectionS
-[*] Config_ReadString -> Config_ReadStringS
+@LastMod 06.08.2012
 }
 unit ASettings;
 
@@ -19,6 +10,12 @@ interface
 
 uses
   ABase, ACollectionsBase, AStrings;
+
+// --- ASettings ---
+
+function ASettings_WriteStringP(Config: AConfig; const Section, Name, Value: APascalString): AError; stdcall;
+
+// ----
 
 function Init(): AError; stdcall;
 function Done(): AError; stdcall;
@@ -214,7 +211,7 @@ function Settings_WriteBool02(Config: AConfig; const Section, Name: APascalStrin
 function Settings_WriteInteger(Config: AConfig; const Section, Name: APascalString; Value: Integer): ABoolean; stdcall; deprecated;
 function Settings_WriteInteger02(Config: AConfig; const Section, Name: APascalString; Value: Integer): ABoolean; stdcall;
 function Settings_WriteFloat02(Config: AConfig; const Section, Name: APascalString; Value: AFloat): ABoolean; stdcall;
-function Settings_WriteString(Config: AConfig; const Section, Name, Value: APascalString): ABoolean; stdcall; deprecated;
+function Settings_WriteString(Config: AConfig; const Section, Name, Value: APascalString): ABoolean; stdcall; deprecated; // Use ASettigns_WriteStringP()
 function Settings_WriteString02(Config: AConfig; const Section, Name, Value: APascalString): ABoolean; stdcall;
 function Settings_WriteDateTime02(Config: AConfig; const Section, Name: APascalString; Value: TDateTime): ABoolean; stdcall;
 
@@ -222,6 +219,13 @@ implementation
 
 uses
   ASettingsConfig;
+
+// --- ASettings ---
+
+function ASettings_WriteStringP(Config: AConfig; const Section, Name, Value: APascalString): AError;
+begin
+  Result := Config_WriteStringP(Config, Section, Name, Value);
+end;
 
 { A_Settings }
 

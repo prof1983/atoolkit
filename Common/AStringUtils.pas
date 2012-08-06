@@ -2,7 +2,7 @@
 @Abstract AString utils
 @Author Prof1983 <prof1983@ya.ru>
 @Created 01.08.2012
-@LastMod 01.08.2012
+@LastMod 06.08.2012
 }
 unit AStringUtils;
 
@@ -10,7 +10,7 @@ interface
 
 uses
   SysUtils,
-  ABase;
+  ABase, AStrings;
 
 function AString_ToUpper(const S: AString_Type; out Res: AString_Type): AInteger; stdcall;
 
@@ -20,14 +20,10 @@ function AString_ToUpperWS(const S: AWideString): AWideString; stdcall;
 
 implementation
 
-// TODO: Remove
-uses
-  AStrings, AUtilsMain;
-
 function AString_ToUpper(const S: AString_Type; out Res: AString_Type): AInteger;
 begin
   try
-    Result := AStrings.String_AssignWS(Res, AUtilsMain.Utils_String_ToUpper(AStrings.String_ToWideString(S)));
+    Result := AString_AssignWS(Res, SysUtils.AnsiUpperCase(AStrings.String_ToWideString(S)));
   except
     Result := 0;
   end;

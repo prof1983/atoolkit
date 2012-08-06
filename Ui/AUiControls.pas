@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 19.07.2012
+@LastMod 06.08.2012
 }
 unit AUiControls;
 
@@ -11,6 +11,12 @@ interface
 uses
   Buttons, {$IFNDEF FPC}ComCtrls,{$ENDIF} Controls, ExtCtrls, Forms, Menus, StdCtrls,
   ABase, AUiBase, AUiData;
+
+// --- AUiControl ---
+
+function AUiControl_SetTextP(Control: AControl; const Value: APascalString): AError; stdcall;
+
+// --- UI_Control ---
 
 function UI_Control_GetMenu(Control: AControl): AMenu;
 
@@ -46,6 +52,19 @@ procedure UI_Control_SetVisible(Control: AControl; Value: ABoolean);
 function UI_Control_SetWidth(Control: AControl; Value: AInteger): AInteger;
 
 implementation
+
+// --- AUiControl ---
+
+function AUiControl_SetTextP(Control: AControl; const Value: APascalString): AError;
+begin
+  try
+    Result := UI_Control_SetTextP(Control, Value);
+  except
+    Result := -1;
+  end;
+end;
+
+// --- UI_Control ---
 
 function UI_Control_GetMenu(Control: AControl): AMenu;
 var

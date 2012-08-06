@@ -2,14 +2,14 @@
 @Abstract AUtils - Main
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.09.2011
-@LastMod 25.07.2012
+@LastMod 06.08.2012
 }
 unit AUtilsMain;
 
 interface
 
 uses
-  SysUtils, ABase;
+  SysUtils, ABase, AStringUtils;
 
 function Utils_ExtractFileExt(const FileName: APascalString): APascalString;
 
@@ -320,7 +320,7 @@ end;
 
 function Utils_String_ToUpper(const S: APascalString): APascalString;
 begin
-  Result := SysUtils.AnsiUpperCase(S);
+  Result := AStringUtils.AString_ToUpperP(S);
 end;
 
 function Utils_Trim(const S: APascalString): APascalString;

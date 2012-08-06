@@ -2,7 +2,7 @@
 @Abstract AModuleManager
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.08.2009
-@LastMod 19.07.2012
+@LastMod 06.08.2012
 }
 unit AModuleManager;
 
@@ -13,8 +13,8 @@ uses
   ARuntime, ARuntimeBase,
   ASettings,
   ASystem,
-  AUI, AUIBase,
-  AUIWorkbench;
+  AUi, AUiBase,
+  AUiWorkbench;
 
 function Init(): AError; stdcall;
 function Done(): AError; stdcall;

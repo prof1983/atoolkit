@@ -2,7 +2,7 @@
 @Abstract ASystem function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.08.2009
-@LastMod 03.08.2012
+@LastMod 06.08.2012
 }
 unit ASystem;
 
@@ -65,6 +65,10 @@ function ASystem_ShellExecute(const Operation, FileName, Parameters, Directory: 
 function ASystem_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
 
 function ASystem_ShowMessage(const Msg: AString_Type): ADialogBoxCommands; stdcall;
+
+function ASystem_ShowMessageExP(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+
+function ASystem_ShowMessageExWS(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 
 function ASystem_ShowMessageP(const Msg: APascalString): ADialogBoxCommands; stdcall;
 
@@ -408,11 +412,9 @@ function Library_GetSymbolS(Lib: ALibrary; const SymbolName: AString_Type; var S
 
 procedure Runtime_SetConfig(Value: AConfig); stdcall; {deprecated}
 
-// Use ShowMessageWS()
-function Runtime_ShowMessage(const Msg: AWideString): ADialogBoxCommands; stdcall; deprecated;
+function Runtime_ShowMessage(const Msg: AWideString): ADialogBoxCommands; stdcall; deprecated; // Use ASystem_ShowMessageP() or ASystem_ShowMessageWS()
 
-// Use ShowMessageExWS()
-function Runtime_ShowMessageA(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall; deprecated;
+function Runtime_ShowMessageA(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall; deprecated; // Use ASystem_ShowMessageExP() or ASystem_ShowMessageExWS()
 
 // Use ShellExecuteP()
 function Runtime_ShellExecute(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall; deprecated;
@@ -912,6 +914,24 @@ function ASystem_ShowMessage(const Msg: AString_Type): ADialogBoxCommands;
 begin
   try
     Result := System_ShowMessage(AStrings.String_ToPascalString(Msg));
+  except
+    Result := -1;
+  end;
+end;
+
+function ASystem_ShowMessageExP(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands;
+begin
+  try
+    Result := System_ShowMessageEx(Text, Caption, Flags);
+  except
+    Result := -1;
+  end;
+end;
+
+function ASystem_ShowMessageExWS(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands;
+begin
+  try
+    Result := System_ShowMessageEx(Text, Caption, Flags);
   except
     Result := -1;
   end;
@@ -1692,12 +1712,12 @@ end;
 
 function Runtime_ShowMessage(const Msg: AWideString): ADialogBoxCommands; stdcall;
 begin
-  Result := System_ShowMessage(Msg);
+  Result := ASystem_ShowMessageWS(Msg);
 end;
 
 function Runtime_ShowMessageA(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
-  Result := System_ShowMessageEx(Text, Caption, Flags);
+  Result := ASystem_ShowMessageExWS(Text, Caption, Flags);
 end;
 
 function SetDataDirectoryPathP(const DataDir: APascalString): AError; stdcall;
@@ -1836,20 +1856,12 @@ end;
 
 function ShowMessageExP(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
-  try
-    Result := System_ShowMessageEx(Text, Caption, Flags);
-  except
-    Result := -1;
-  end;
+  Result := ASystem_ShowMessageExP(Text, Caption, Flags);
 end;
 
 function ShowMessageExWS(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
-  try
-    Result := System_ShowMessageEx(Text, Caption, Flags);
-  except
-    Result := -1;
-  end;
+  Result := ASystem_ShowMessageExWS(Text, Caption, Flags);
 end;
 
 function ShowMessageP(const Msg: APascalString): ADialogBoxCommands; stdcall;

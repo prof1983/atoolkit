@@ -1,9 +1,8 @@
 {**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(27.09.2011)
-@LastMod(27.09.2011)
-@Version(0.5)
+@Abstract ASystem
+@Author Prof1983 <prof1983@ya.ru>
+@Created 27.09.2011
+@LastMod 06.08.2012
 }
 unit ASystemMain;
 

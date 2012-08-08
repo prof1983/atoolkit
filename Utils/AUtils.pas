@@ -2,7 +2,7 @@
 @Abstract Util functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.09.2009
-@LastMod 01.08.2012
+@LastMod 08.08.2012
 }
 unit AUtils;
 
@@ -41,6 +41,8 @@ function AUtils_ExtractFileExt(const FileName: AString_Type; out Res: AString_Ty
 function AUtils_ExtractFileExtP(const FileName: APascalString): APascalString; stdcall;
 
 function AUtils_ExtractFileExtWS(const FileName: AWideString): AWideString; stdcall;
+
+function AUtils_ExtractFileNameP(const FileName: APascalString): APascalString; stdcall;
 
 function AUtils_ExtractFilePath(const FileName: AString_Type; out Res: AString_Type): AInteger; stdcall;
 
@@ -770,6 +772,15 @@ function AUtils_ExtractFileExtWS(const FileName: AWideString): AWideString;
 begin
   try
     Result := SysUtils.ExtractFileExt(FileName);
+  except
+    Result := '';
+  end;
+end;
+
+function AUtils_ExtractFileNameP(const FileName: APascalString): APascalString;
+begin
+  try
+    Result := SysUtils.ExtractFileName(FileName);
   except
     Result := '';
   end;

@@ -2,7 +2,7 @@
 @abstract Base types and consts
 @author Prof1983 <prof1983@ya.ru>
 @created 06.03.2008
-@lastmod 30.07.2012
+@lastmod 08.08.2012
 }
 unit ABase;
 
@@ -75,10 +75,18 @@ type
 // --- String ---
 
 type
+  {** String code: 0 - Unknown or AnsiString; 1 - PAnsiChar; 2 - UTF-8 }
+  AStringCode = AInt;
+
+const
+  AStringCode_Unknown = 0;
+  AStringCode_Ansi = 1;
+  AStringCode_Utf8 = 2;
+
+type
   AWideString = WideString;
   APascalString = {$IFDEF DELPHI_2010_UP}string{$ELSE}WideString{$ENDIF};
 
-type
   { (4x4 = 16 bytes) }
   AString_Type_Old = packed record
     Str: AnsiString;
@@ -96,7 +104,7 @@ type
       //** Allocated size in bytes. Analog GString allocated_len (gsize).
     AllocSize: ASize;
       //** Code: 0 - Unknown or AnsiString; 1 - PAnsiChar; 2 - UTF-8
-    Code: AInteger;
+    Code: AStringCode;
   end;
 
   AString_Type = AString_Type_4;

@@ -2,7 +2,7 @@
 @Abstract AStrings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.05.2011
-@LastMod 01.08.2012
+@LastMod 08.08.2012
 }
 unit AStrings;
 
@@ -13,15 +13,15 @@ uses
 
 // --- AString ---
 
-function AString_Assign(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
+function AString_Assign(var S: AString_Type; const Value: AString_Type): AError; stdcall;
 
-function AString_AssignA(var S: AString_Type; Value: AStr): ASize; stdcall;
+function AString_AssignA(var S: AString_Type; Value: AStr): AError; stdcall;
 
-function AString_AssignP(var S: AString_Type; const Value: APascalString): ASize; stdcall;
+function AString_AssignP(var S: AString_Type; const Value: APascalString): AError; stdcall;
 
-function AString_AssignWS(var S: AString_Type; const Value: AWideString): ASize; stdcall;
+function AString_AssignWS(var S: AString_Type; const Value: AWideString): AError; stdcall;
 
-function AString_Clear(var S: AString_Type): AInteger; stdcall;
+function AString_Clear(var S: AString_Type): AError; stdcall;
 
 function AString_Copy(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
 
@@ -148,6 +148,19 @@ asm
         POP     EDI
 end;
 
+function StrLen(const Str: PChar): Cardinal; assembler;
+// from SysUtils (Delphi7)
+asm
+        MOV     EDX,EDI
+        MOV     EDI,EAX
+        MOV     ECX,0FFFFFFFFH
+        XOR     AL,AL
+        REPNE   SCASB
+        MOV     EAX,0FFFFFFFEH
+        SUB     EAX,ECX
+        MOV     EDI,EDX
+end;
+
 function StrPLCopy(Dest: PAnsiChar; const Source: AnsiString; MaxLen: Cardinal): PAnsiChar;
 begin
   Result := StrLCopy(Dest, PAnsiChar(Source), MaxLen);
@@ -175,40 +188,57 @@ begin
     Result := #0;
 end;
 
+// --- AStr ---
+
+function AStr_GetLength(S: AStr): AInt;
+begin
+  Result := StrLen(S);
+end;
+
 // --- AString ---
 
-function AString_Assign(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
+function AString_Assign(var S: AString_Type; const Value: AString_Type): AError;
 begin
-  try
-    S := Value;
-  except
-  end;
-  Result := 0;
+  Result := AString_AssignA(S, Value.Str);
 end;
 
-function AString_AssignA(var S: AString_Type; Value: AStr): ASize; stdcall;
+function AString_AssignA(var S: AString_Type; Value: AStr): AError;
+var
+  Size: AInt;
 begin
   try
-    S.Str := Value;
+    Size := AStr_GetLength(Value)+1;
+    if (S.AllocSize < Size) then
+    begin
+      if Assigned(S.Str) then
+        FreeMem(S.Str);
+      GetMem(S.Str, Size);
+    end;
+    StrLCopy(S.Str, Value, Size); //Move(Value, S.Str, Size);
+    S.Len := Size-1;
+    S.AllocSize := Size;
+    S.Code := AStringCode_Ansi;
+    Result := 0;
   except
+    Result := -1;
   end;
-  Result := 0;
 end;
 
-function AString_AssignP(var S: AString_Type; const Value: APascalString): ASize; stdcall;
+function AString_AssignP(var S: AString_Type; const Value: APascalString): AError;
 begin
   Result := AString_AssignA(S, AStr(AnsiString(Value)));
 end;
 
-function AString_AssignWS(var S: AString_Type; const Value: AWideString): ASize;
+function AString_AssignWS(var S: AString_Type; const Value: AWideString): AError;
 begin
   Result := AString_AssignA(S, AStr(AnsiString(Value)));
 end;
 
-function AString_Clear(var S: AString_Type): AInteger; 
+function AString_Clear(var S: AString_Type): AError;
 begin
   try
     S.Str := '';
+    S.Len := 0;
   except
   end;
   Result := 0;

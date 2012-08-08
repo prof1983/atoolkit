@@ -2,7 +2,7 @@
 @Abstract ASystem function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.08.2009
-@LastMod 06.08.2012
+@LastMod 08.08.2012
 }
 unit ASystem;
 
@@ -10,13 +10,8 @@ unit ASystem;
 
 {$I Defines.inc}
 
-{$IFDEF A02}
-  {$DEFINE A0}
-{$ENDIF A02}
-
-{$IFDEF A03}
-  {$DEFINE A0}
-{$ENDIF A03}
+{DEFINE A01}
+{DEFINE A02}
 
 {$IFDEF UNIX}
   {$DEFINE NoRuntimeSysUtils}
@@ -45,7 +40,7 @@ uses
     {$IFNDEF UNIX}ShellApi,{$ENDIF}
   {$ENDIF}
 
-  {$IFDEF USE_SYSUTILS}SysUtils,{$ENDIF}
+  //{$IFDEF USE_SYSUTILS}SysUtils,{$ENDIF}
   {$IFNDEF UNIX}Windows,{$ENDIF}
   {$IFDEF USE_EVENTS}AEvents,{$ENDIF}
   {$IFDEF USE_CONFIG}ASystemConfig,{$ENDIF}
@@ -56,7 +51,7 @@ uses
 
 function ASystem_Fin(): AError; stdcall;
 
-function ASystem_GetExePath(): APascalString; stdcall;
+function ASystem_GetExePathP(): APascalString; stdcall;
 
 function ASystem_Init(): AError; stdcall;
 
@@ -877,7 +872,7 @@ begin
   Result := 0;
 end;
 
-function ASystem_GetExePath(): APascalString;
+function ASystem_GetExePathP(): APascalString;
 begin
   Result := FExePath;
 end;

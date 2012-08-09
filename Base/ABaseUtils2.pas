@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Базовый модуль основных типов и их преобразования. Базовые функции for Delphi 5,7,2005,2006)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(06.06.2004)
-@LastMod(29.06.2012)
-@Version(0.5)
+@Abstract Базовый модуль основных типов и их преобразования. Базовые функции for Delphi 5,7,2005,2006
+@Author Prof1983 <prof1983@ya.ru>
+@Created 06.06.2004
+@LastMod 09.08.2012
 }
 unit ABaseUtils2;
 
@@ -1473,7 +1472,7 @@ begin
   if Value = 0 then
     Result := 'Ok'
   else
-    Result := cUInt32ToStr(Value);
+    Result := cInt32ToStr(Value);
 end;
 
 {function cFloat32ToInt32(Value: Float32): Int32;

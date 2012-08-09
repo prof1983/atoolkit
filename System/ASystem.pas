@@ -33,6 +33,10 @@ unit ASystem;
   {$DEFINE USE_SYSUTILS}
 {$ENDIF NoRuntimeSysUtils}
 
+{$IFNDEF NoRuntime}
+  {$DEFINE USE_RUNTIME}
+{$ENDIF}
+
 interface
 
 uses
@@ -44,7 +48,8 @@ uses
   {$IFNDEF UNIX}Windows,{$ENDIF}
   {$IFDEF USE_EVENTS}AEvents,{$ENDIF}
   {$IFDEF USE_CONFIG}ASystemConfig,{$ENDIF}
-  ABase, ABaseTypes, ALibraries, ARuntime,
+  {$IFDEF USE_RUNTIME}ARuntime,{$ENDIF}
+  ABase, ABaseTypes, ALibraries,
   ABaseUtils, AStrings, ASystemData, ASystemMain, ASystemPrepare, ASystemResourceString, ASystemUtils;
 
 // --- ASystem ---
@@ -482,7 +487,9 @@ function Runtime_GetDataPath: APascalString; stdcall; deprecated; // Use Info_Ge
 
 function GetConfig(): AConfig; stdcall;
 
+{$IFDEF USE_RUNTIME}
 function GetIsShutdown(): ABoolean; stdcall;
+{$ENDIF USE_RUNTIME}
 
 function ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; stdcall;
 
@@ -494,7 +501,9 @@ function ShowError(const UserMessage, ExceptMessage: AString_Type): AError; stdc
 
 procedure ShowError02(const UserMessage, ExceptMessage: AWideString); stdcall;
 
+{$IFDEF USE_RUNTIME}
 procedure Shutdown(); stdcall;
+{$ENDIF USE_RUNTIME}
 
 implementation
 
@@ -1407,10 +1416,12 @@ begin
   Result := FExePath;
 end;
 
+{$IFDEF USE_RUNTIME}
 function GetIsShutdown(): ABoolean; stdcall;
 begin
   Result := ARuntime.GetIsShutdown;
 end;
+{$ENDIF USE_RUNTIME}
 
 function GetProductName(): APascalString; stdcall;
 begin
@@ -1895,9 +1906,11 @@ begin
   Result := ASystem_ShowMessageWS(Msg);
 end;
 
+{$IFDEF USE_RUNTIME}
 procedure Shutdown(); stdcall;
 begin
   ARuntime.Shutdown();
 end;
+{$ENDIF USE_RUNTIME}
 
 end.

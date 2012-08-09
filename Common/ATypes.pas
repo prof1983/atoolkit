@@ -1,17 +1,8 @@
 ﻿{**
-@Abstract(Глобальные типы для всех проектов)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(20.02.2007)
-@LastMod(06.07.2012)
-@Version(0.5)
-
-0.0.5.8 - 30.12.2011
-[+] TProfMessageRec
-0.0.5.5 - 14.07.2011
-[*] TProfMessage
-[+] TProfMessageSafe
-0.0.5.5 - 15.07.2011
-[+] Add TLogType.lTreeView
+@Abstract Глобальные типы для всех проектов
+@Author Prof1983 <prof1983@ya.ru>
+@Created 20.02.2007
+@LastMod 09.08.2012
 }
 unit ATypes;
 
@@ -361,6 +352,9 @@ type // Тип callback функции для добавления в лог ф�
 type //** Тип callback функции для добавления в лог файл
   TAddToLogProc = function(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
       const AStrMsg: WideString): Integer of object;
+
+  {** Тип callback функции для добавления в лог файл }
+  TAddToLogProcA = function(AGroup: TLogGroupMessage; AType: TLogTypeMessage; AStrMsg: AStr): AInt;
 
 type
   {**

@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Класс с основными функциями работы с БД)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(12.10.2005)
-@LastMod(03.07.2012)
-@Version(0.5)
+@Abstract Класс с основными функциями работы с БД
+@Author Prof1983 <prof1983@ya.ru>
+@Created 12.10.2005
+@LastMod 09.08.2012
 }
 unit ADbDataModule1;
 

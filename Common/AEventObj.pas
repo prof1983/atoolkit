@@ -2,7 +2,7 @@
 @Abstract Events
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.10.2005
-@LastMod 25.07.2012
+@LastMod 09.08.2012
 }
 unit AEventObj;
 
@@ -40,7 +40,7 @@ type
   protected
     procedure Delete(Index: Integer);
   public
-    function GetCount(): AInt;
+    function GetCount(): AInt; virtual;
     function GetName: WideString;
   public
     function Clear(): AError;
@@ -60,9 +60,8 @@ type
     function Run(Sender: TObject; AParams: WideString): WordBool; overload; deprecated; // Use ACallbackProc
     {$ENDIF}
   public
-    constructor Create(Obj: Integer; const Name: WideString);
-    //constructor Create(AName: WideString = ''); - Old
-  public
+    constructor Create(Obj: Integer = 0; const Name: WideString = '');
+  public
     property Count: Integer read GetCount;
     property Description: WideString read FDescription write FDescription;
     property Name: WideString read FName write FName;

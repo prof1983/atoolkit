@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(ProfMessageEvent)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(22.04.2007)
-@LastMod(27.04.2012)
-@Version(0.5)
+@Abstract ProfMessageEvent
+@Author Prof1983 <prof1983@ya.ru>
+@Created 22.04.2007
+@LastMod 09.08.2012
 }
 unit AMessageEvent;
 
@@ -13,7 +12,7 @@ uses
   AEventObj, ATypes;
 
 type
-  TProfMessageEvent = class(TEventShablon)
+  TProfMessageEvent = class(TAEvent)
   private
     FListeners: array of TProcMessageStr;
   protected

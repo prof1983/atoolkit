@@ -2,7 +2,7 @@
 @Abstract ASystem function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.08.2009
-@LastMod 08.08.2012
+@LastMod 09.08.2012
 }
 unit ASystem;
 
@@ -51,9 +51,17 @@ uses
 
 function ASystem_Fin(): AError; stdcall;
 
+function ASystem_GetConfigDirectoryPathP(): APascalString; stdcall;
+
+function ASystem_GetDataDirectoryPathP(): APascalString; stdcall;
+
 function ASystem_GetExePathP(): APascalString; stdcall;
 
 function ASystem_Init(): AError; stdcall;
+
+function ASystem_Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
+    const ProductName: APascalString; ProductVersion: AVersion;
+    const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString): AError; stdcall;
 
 function ASystem_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; stdcall;
 
@@ -872,6 +880,16 @@ begin
   Result := 0;
 end;
 
+function ASystem_GetConfigDirectoryPathP(): APascalString;
+begin
+  Result := FConfigPath;
+end;
+
+function ASystem_GetDataDirectoryPathP(): APascalString;
+begin
+  Result := FDataPath;
+end;
+
 function ASystem_GetExePathP(): APascalString;
 begin
   Result := FExePath;
@@ -880,6 +898,14 @@ end;
 function ASystem_Init(): AError;
 begin
   Result := InitConfig();
+end;
+
+function ASystem_Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
+    const ProductName: APascalString; ProductVersion: AVersion;
+    const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString): AError;
+begin
+  Result := Prepare3WS(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
+      CompanyName, Copyright, Url, Description, DataPath, ConfigPath);
 end;
 
 function ASystem_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger;

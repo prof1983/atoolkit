@@ -2,7 +2,7 @@
 @Abstract ARuntime
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.08.2007
-@LastMod 03.08.2012
+@LastMod 09.08.2012
 }
 unit ARuntime;
 
@@ -153,7 +153,7 @@ function Runtime_Modules_FindByName(Name: PAnsiChar): AInteger; stdcall; depreca
 function Runtime_Modules_FindByNameWS(const Name: AWideString): AInteger; stdcall; deprecated; // Use ARuntime_FindModuleByNameWS()
 function Runtime_Modules_FindByUid(Uid: AModuleUid): AInteger; stdcall; deprecated; // Use ARuntime_FindModuleByUid()
 function Runtime_Modules_GetByName(Name: PAnsiChar; out Module: AModule_Type): AInteger; stdcall; deprecated; // Use ARuntime_GetModuleByName()
-function Runtime_Modules_GetByNameP(Name: PChar; Module: AModule): AInteger; stdcall; //deprecated;
+function Runtime_Modules_GetByNameP(Name: PAnsiChar; Module: AModule): AInteger; stdcall; //deprecated;
 function Runtime_Modules_GetByUid(Uid: AModuleUid; out Module: AModule_Type): AInteger; stdcall; deprecated; // Use ARuntime_GetModuleByUid()
 function Runtime_Modules_GetByUidP(Uid: AModuleUid; Module: AModule): AInteger; stdcall; //deprecated;
 function Runtime_Modules_GetNameByIndex(Index: AInteger; Name: PAnsiChar; MaxLen: AInteger): AInteger; stdcall; deprecated; // Use ARuntime_GetModuleNameByIndex()
@@ -659,7 +659,7 @@ begin
   Result := ARuntime_GetModuleByName(Name, Module);
 end;
 
-function Runtime_Modules_GetByNameP(Name: PChar; Module: AModule): AInteger;
+function Runtime_Modules_GetByNameP(Name: PAnsiChar; Module: AModule): AInteger;
 begin
   Result := ARuntime_GetModuleByName(Name, Module^);
 end;

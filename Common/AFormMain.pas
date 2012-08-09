@@ -1,8 +1,8 @@
 ﻿{**
-@Abstract(Класс главной форма - оболочка для TForm)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(16.11.2005)
-@LastMod(18.07.2012)
+@Abstract Класс главной форма - оболочка для TForm
+@Author Prof1983 <prof1983@ya.ru>
+@Created 16.11.2005
+@LastMod 09.08.2012
 }
 unit AFormMain;
 
@@ -10,7 +10,7 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ABase, AConsts2, ALogDocumentsAll, AFormObj, ALogDocuments, ALogNodeUtils,
+  ABase, AConsts2, ALogDocumentsAll, AFormObj, ALogDocuments, ALogNodeUtils, ASystemData,
   ATypes, AXmlDocumentImpl, AXmlDocumentUtils, AXmlNodeUtils, AXmlUtils;
 
 type
@@ -18,7 +18,7 @@ type
   protected
     FConfigDir: APascalString;
     FConfigFileName: WideString;
-    FConfigFilePath: WideString;
+    //FConfigFilePath: WideString; - Use ASystemData.FConfigPath
     FIsConfigDocumentInit: Boolean; // ConfigDocument инициализирован в этом объекте
     FIsLogDocumentsInit: Boolean;   // LogDocuments инициализирован в этом объекте
     FLogDir: APascalString;
@@ -26,7 +26,7 @@ type
     FLogID: Integer;
     FLogName: string;
     FLogTypeSet: TLogTypeSet;
-    FExePath: APascalString;
+    //FExePath: APascalString; - Use ASystemData.FExePath
   protected
     FLogDocuments: TALogDocuments; //ALog: TLogDocumentsAll;
   public
@@ -48,7 +48,7 @@ type
       //** Имя файла конфигураций (с путем или без него)
     property ConfigFileName: WideString read FConfigFileName write FConfigFileName;
       //** Путь к файлу конфигураций (если ConfigFileName = '' то берется имя .exe файла без расширения)
-    property ConfigFilePath: WideString read FConfigFilePath write FConfigFilePath;
+    //property ConfigFilePath: WideString read FConfigFilePath write FConfigFilePath; - Use ASystem
       //** Путь к файлу логирования .txt
     property LogFilePath: WideString read FLogFilePath write FLogFilePath;
       //** ID программы для подключения к системе логирования
@@ -150,7 +150,7 @@ begin
     // Получение полного имени файла
     if ExtractFilePath(FConfigFileName) = '' then
     begin
-      if (FConfigFilePath = '') then
+      if (FConfigPath = '') then
       begin
         if (Length(FConfigDir) > 0) then
         begin
@@ -163,7 +163,7 @@ begin
           FConfigFileName := FExePath + FConfigFileName
       end
       else
-        FConfigFileName := FConfigFilePath + FConfigFileName;
+        FConfigFileName := FConfigPath + FConfigFileName;
     end;
     FConfigFileName := ExpandFileName(FConfigFileName);
     // Проверка существования директории

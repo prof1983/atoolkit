@@ -2,7 +2,7 @@
 @Abstract AStrings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.05.2011
-@LastMod 09.08.2012
+@LastMod 10.08.2012
 }
 unit AStrings;
 
@@ -41,6 +41,10 @@ function AString_ToWideString(const S: AString_Type): WideString; stdcall;
 // --- AnsiString ---
 
 function AnsiString_GetChar(const S: AnsiString; Index: AInt): AChar; stdcall;
+
+// --- AStrings ---
+
+function AStrings_Init(): AError; stdcall;
 
 // ----
 
@@ -220,7 +224,7 @@ end;
 
 function Init(): AError; stdcall;
 begin
-  Result := 0;
+  Result := AStrings_Init();
 end;
 
 // --- AnsiString ---
@@ -341,6 +345,13 @@ end;
 function AString_ToWideString(const S: AString_Type): WideString;
 begin
   Result := AString_ToPascalString(S);
+end;
+
+// --- AStrings ---
+
+function AStrings_Init(): AError;
+begin
+  Result := 0;
 end;
 
 { String }

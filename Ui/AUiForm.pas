@@ -1,9 +1,8 @@
 {**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(20.01.2010)
-@LastMod(17.08.2011)
-@Version(0.5)
+@Abstract AUi form config functions
+@Author Prof1983 <prof1983@ya.ru>
+@Created 20.01.2010
+@LastMod 10.08.2012
 }
 unit AUiForm;
 

@@ -63,6 +63,8 @@ function ASystem_GetDataDirectoryPathP(): APascalString; stdcall;
 
 function ASystem_GetExePathP(): APascalString; stdcall;
 
+function ASystem_GetTitleP(): APascalString; stdcall;
+
 function ASystem_Init(): AError; stdcall;
 
 function ASystem_Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
@@ -82,6 +84,10 @@ function ASystem_ShowMessageExWS(const Text, Caption: AWideString; Flags: AMessa
 function ASystem_ShowMessageP(const Msg: APascalString): ADialogBoxCommands; stdcall;
 
 function ASystem_ShowMessageWS(const Msg: AWideString): ADialogBoxCommands; stdcall;
+
+{$IFDEF USE_EVENTS}
+function ASystem_Shutdown(): AError; stdcall;
+{$ENDIF}
 
 // --- Info functions ---
 
@@ -875,6 +881,11 @@ begin
   Result := FExePath;
 end;
 
+function ASystem_GetTitleP(): APascalString;
+begin
+  Result := FTitle;
+end;
+
 function ASystem_Init(): AError;
 begin
   Result := InitConfig();
@@ -955,6 +966,13 @@ begin
     Result := -1;
   end;
 end;
+
+{$IFDEF USE_RUNTIME}
+function ASystem_Shutdown(): AError;
+begin
+  Result := ARuntime_Shutdown();
+end;
+{$ENDIF USE_RUNTIME}
 
 { System public procs }
 
@@ -1453,7 +1471,7 @@ end;
 
 function GetTitle(): APascalString; stdcall;
 begin
-  Result := FTitle;
+  Result := ASystem_GetTitleP();
 end;
 
 function GetTitleWS(): AWideString; stdcall;
@@ -1733,7 +1751,7 @@ end;
 {$IFDEF USE_RUNTIME}
 procedure Shutdown(); stdcall;
 begin
-  ARuntime.Shutdown();
+  ASystem_Shutdown();
 end;
 {$ENDIF USE_RUNTIME}
 

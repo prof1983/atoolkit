@@ -7,6 +7,7 @@
 unit AUi;
 
 {$I A.inc}
+{$I Defines.inc}
 
 {$IFDEF FPC}
   {$mode delphi}{$h+}
@@ -16,12 +17,22 @@ unit AUi;
   {$DEFINE OLDMAINFORM}
 {$ENDIF}
 
+{$IFNDEF NoEvents}
+  {$DEFINE USE_EVENTS}
+{$ENDIF}
+
+{$IFNDEF NoSettings}
+  {$DEFINE USE_SETTINGS}
+{$ENDIF}
+
 interface
 
 uses
   ABase, ABaseTypes,
-  {AEvents,} {ARuntime,} {AStrings,} {ASystem,}
-  AUiBase, AUiBox, AUiButton, AUiControls, AUiControlsA, AUiData, {AUiEvents,}
+  {AEvents,} ARuntime,
+  {$IFDEF USE_SETTINGS}ASettings,{$ENDIF}
+  AStrings, ASystem,
+  AUiBase, AUiBox, AUiButton, AUiControls, AUiControlsA, AUiData, AUiEventsObj,
   AUiMain, AUiMainWindow, AUiMainWindow2, AUiPageControl, AUiReports,
   AUiToolBar, AUiToolMenu, AUiTreeView, AUiWindows;
 
@@ -29,17 +40,21 @@ uses
 
 function AUi_Boot(): AError;
 
-function AUi_MainMenuItem(): AMenuItem; stdcall;
+function AUi_Init(): AError; stdcall;
 
-function AUi_MainTrayIcon(): ATrayIcon; stdcall;
+function AUi_GetMainMenuItem(): AMenuItem; stdcall;
 
-function AUi_MainWindow(): AWindow; stdcall;
+function AUi_GetMainTrayIcon(): ATrayIcon; stdcall;
+
+function AUi_GetMainWindow(): AWindow; stdcall;
 
 function AUi_Run(): AInteger; stdcall;
 
 procedure AUi_SetHideOnClose(Value: ABoolean); stdcall;
 
 function AUi_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; stdcall;
+
+function AUi_Shutdown(): AError; stdcall;
 
 // --- AUi_Control ---
 
@@ -150,14 +165,6 @@ procedure AUi_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger); std
 procedure AUi_Window_SetFormStyle(Window: AWindow; FormStyle: AInteger); stdcall;
 
 procedure AUi_Window_Free(Window: AWindow); stdcall;
-
-function AUi_Window_LoadConfig2(Window: AWindow; Config: AConfig; const ConfigKey: AString_Type): ABoolean; stdcall;
-
-function AUi_Window_LoadConfig2P(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean; stdcall;
-
-function AUi_Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall;
-
-function AUi_Window_SaveConfig2(Window: AWindow; Config: AConfig; const ConfigKey: AString_Type): ABoolean; stdcall;
 
 procedure AUi_Window_SetPosition(Window: AWindow; Position: AInteger); stdcall;
 
@@ -710,16 +717,20 @@ procedure Window_Free(Window: AWindow); stdcall;
 // Возвращает главное меню указанного окна
 function Window_GetMenu(Window: AWindow): AMenu; stdcall;
 
+{$IFDEF USE_SETTINGS}
 function Window_LoadConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall;
 
 function Window_LoadConfig2WS(Window: AWindow; Config: AConfig; const ConfigKey: AWideString): ABoolean; stdcall;
+{$ENDIF USE_SETTINGS}
 
 //** Создает новое окно.
 function Window_New(): AControl; stdcall;
 
+{$IFDEF USE_SETTINGS}
 function Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall;
 
 function Window_SaveConfig2WS(Window: AWindow; Config: AConfig; const ConfigKey: AWideString): ABoolean; stdcall;
+{$ENDIF USE_SETTINGS}
 
 //** Задает стиль окантовки окна.
 function Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger): AError; stdcall;
@@ -968,15 +979,7 @@ procedure UI_Window_FreeAndNil(var Window: AWindow); stdcall;
   Use Window_GetMenu() }
 function UI_Window_GetMenu(Window: AWindow): AMenu; stdcall; deprecated;
 
-function UI_Window_LoadConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall; deprecated; // Use AUi_Window_LoadConfig()
-
-function UI_Window_LoadConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean; stdcall; deprecated; // Use AUi_Window_LoadConfig2P()
-
 function UI_Window_New: AControl; stdcall; deprecated; // Use AUi_Window_New()
-
-function UI_Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall; deprecated; // Use AUi_Window_SaveConfig()
-
-function UI_Window_SaveConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean; stdcall;
 
 //** Задает стить окантовки окна.
 procedure UI_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger); stdcall; deprecated; // Use AUi_Window_SetBorderStyle()
@@ -1100,11 +1103,13 @@ function UI_Dialog_GetWindow(Dialog: ADialog): AWindow; stdcall; deprecated;
 function UI_Init(): AError; stdcall; deprecated; // Use AUi_Init()
 function Done04(): AError; stdcall;
 
+{$IFDEF USE_EVENTS}
 //** Присоединяет к событию OnDone.
 function OnDone_Connect(Proc: ACallbackProc): AInteger; stdcall;
 
 //** Отсоединяет от события OnDone.
 function OnDone_Disconnect(Proc: ACallbackProc): AInteger; stdcall;
+{$ENDIF}
 
 function ProcessMessages(): AError; stdcall;
 
@@ -1127,15 +1132,15 @@ uses
     {$ENDIF}
   {$ENDIF}
   {$IFDEF FPC}Interfaces,{$ELSE}Mask,{$ENDIF}
-  Buttons, Classes, Controls, ComCtrls, DB, DBGrids, ExtCtrls, Forms, Graphics, Grids, Menus, StdCtrls, SysUtils,
+  Buttons, Classes, Controls, ComCtrls, Db, DbGrids, ExtCtrls, Forms, Graphics, Grids, Menus, StdCtrls, SysUtils,
   {$IFDEF MSWINDOWS}ShellApi, Windows,{$ENDIF}
-  AUiCalendar, AUiEdit, AUiGrids, {AUiForm,} AUiMenus, AUiSpin, AUiTrayIcon,
+  AUiCalendar, AUiDialogs, AUiEdit, AUiGrids, {AUiForm,} AUiMenus, AUiPropertyBox, AUiSpin, AUiTrayIcon,
   {$IFDEF MSWINDOWS}
   fError, fInputDialog, fLogin, fMessage, fPasswordDialog, fWait,
   {$ENDIF}
   {$IFNDEF FPC}fCalendar, fDateFilter,{$ENDIF}
   {$IFDEF OLDMAINFORM}fMain,{$ENDIF}
-  ASettings, AUIDialogs, AUIPropertyBox, fAbout;
+  fAbout;
 
 { Types }
 
@@ -1197,20 +1202,30 @@ end;
 
 function miExitClick(Obj, Data: Integer): AError; stdcall;
 begin
+  {$IFDEF NoRuntimeEvents}
+  AUi_Shutdown();
+  {$ELSE}
   ASystem.Shutdown;
+  {$ENDIF}
   Result := 0;
 end;
 
 procedure miExitClick02(Obj, Data: Integer); stdcall;
 begin
+  {$IFDEF NoRuntimeEvents}
+  AUi_Shutdown();
+  {$ELSE}
   ASystem.Shutdown;
+  {$ENDIF}
 end;
 
 { Module }
 
 function Done: AError; stdcall;
 begin
+  {$IFDEF USE_EVENTS}
   AEvents.Event_Invoke(FOnDone, 0);
+  {$ENDIF}
 
   try
     if (FMainTrayIcon <> 0) then
@@ -1232,7 +1247,9 @@ begin
   ARuntime.SetOnShutdown(nil);
   ARuntime.SetOnRun(nil);
 
+  {$IFDEF USE_EVENTS}
   AEvents.Event_Free(FOnDone);
+  {$ENDIF}
   FOnDone := 0;
 
   Result := 0;
@@ -1278,6 +1295,7 @@ begin
   end;
 end;
 
+{$IFDEF USE_EVENTS}
 function OnDone_Connect(Proc: ACallbackProc): AInteger; stdcall;
 begin
   try
@@ -1286,7 +1304,9 @@ begin
     Result := 0;
   end;
 end;
+{$ENDIF}
 
+{$IFDEF USE_EVENTS}
 function OnDone_Disconnect(Proc: ACallbackProc): AInteger; stdcall;
 begin
   try
@@ -1295,6 +1315,7 @@ begin
     Result := 0;
   end;
 end;
+{$ENDIF}
 
 function ProcessMessages(): AError; stdcall;
 begin
@@ -1392,6 +1413,21 @@ begin
   Result := 0;
 end;
 
+function AUi_GetMainMenuItem(): AMenuItem;
+begin
+  Result := miMain;
+end;
+
+function AUi_GetMainTrayIcon(): ATrayIcon;
+begin
+  Result := FMainTrayIcon;
+end;
+
+function AUi_GetMainWindow(): AWindow;
+begin
+  Result := FMainWindow;
+end;
+
 function AUi_Init(): AError;
 var
   S: string;
@@ -1402,13 +1438,17 @@ begin
     Exit;
   end;
 
+  {$IFDEF USE_EVENTS}
   if (AEvents_Init() < 0) then
   begin
     Result := -4;
     Exit;
   end;
+  {$ENDIF}
 
+  {$IFDEF USE_SETTINGS}
   ASettings_Init();
+  {$ENDIF}
 
   if (AStrings_Init() < 0) then
   begin
@@ -1422,7 +1462,9 @@ begin
     Exit;
   end;
 
+  {$IFDEF USE_EVENTS}
   FOnDone := AEvents.Event_NewW(0, nil);
+  {$ENDIF}
 
   FHideOnClose := False;
   FIsShowApp := True;
@@ -1479,7 +1521,7 @@ begin
   Result := 0;
 end;
 
-function AUi_Run(): AInteger; 
+function AUi_Run(): AInteger;
 begin
   try
     Result := UI_Run;
@@ -1501,6 +1543,16 @@ begin
         AStrings.String_ToWideString(FileName),
         AStrings.String_ToWideString(Parameters),
         AStrings.String_ToWideString(Directory));
+  except
+    Result := -1;
+  end;
+end;
+
+function AUi_Shutdown(): AError;
+begin
+  try
+    _MainWindow_Shutdown();
+    Result := 0;
   except
     Result := -1;
   end;
@@ -1665,26 +1717,7 @@ begin
   end;
 end;
 
-// --- AUi_MainMenuItem ---
-
-function AUi_MainMenuItem(): AMenuItem;
-begin
-  Result := miMain;
-end;
-
-// --- AUi_MainTrayIcon ---
-
-function AUi_MainTrayIcon(): ATrayIcon;
-begin
-  Result := FMainTrayIcon;
-end;
-
 // --- AUi_MainWindow ---
-
-function AUi_MainWindow(): AWindow;
-begin
-  Result := FMainWindow;
-end;
 
 function AUi_MainWindow_AddMenuItem(const ParentItemName, Name, Text: AString_Type;
     OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem;
@@ -1878,52 +1911,6 @@ procedure AUi_Window_FreeAndNil(var Window: AWindow);
 begin
   AUi_Window_Free(Window);
   Window := 0;
-end;
-
-function AUi_Window_LoadConfig2(Window: AWindow; Config: AConfig; const ConfigKey: AString_Type): ABoolean;
-begin
-  try
-    if not(TObject(Window) is TForm) then
-    begin
-      Result := False;
-      Exit;
-    end;
-    Result := Form_LoadConfig2(TForm(Window), Config, AStrings.String_ToWideString(ConfigKey));
-  except
-    Result := False;
-  end;
-end;
-
-function AUi_Window_LoadConfig2P(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean;
-begin
-  try
-    Result := Form_LoadConfig2(TForm(Window), Config, ConfigKey);
-  except
-    Result := False;
-  end;
-end;
-
-function AUi_Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean;
-begin
-  try
-    if not(TObject(Window) is TForm) then
-    begin
-      Result := False;
-      Exit;
-    end;
-    Result := AUIForm.Form_SaveConfig(TForm(Window), Config);
-  except
-    Result := False;
-  end;
-end;
-
-function AUi_Window_SaveConfig2(Window: AWindow; Config: AConfig; const ConfigKey: AString_Type): ABoolean;
-begin
-  try
-    Result := UI_Window_SaveConfig2(Window, Config, AStrings.String_ToWideString(ConfigKey));
-  except
-    Result := False;
-  end;
 end;
 
 procedure AUi_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger);
@@ -3890,8 +3877,7 @@ end;
 
 function UI_Shutdown: AInteger; stdcall;
 begin
-  _MainWindow_Shutdown;
-  Result := 0;
+  Result := AUi_Shutdown();
 end;
 
 { UI_Calendar }
@@ -4900,29 +4886,9 @@ begin
   Result := AUIWindows.UI_Window_GetMenu(Window);
 end;
 
-function UI_Window_LoadConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall;
-begin
-  Result := AUIForm.Form_LoadConfig(TForm(Window), Config);
-end;
-
-function UI_Window_LoadConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean; stdcall;
-begin
-  Result := AUi_Window_LoadConfig2P(Window, Config, ConfigKey);
-end;
-
 function UI_Window_New: AControl; stdcall;
 begin
   Result := AUIWindows.UI_Window_New();
-end;
-
-function UI_Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall;
-begin
-  Result := AUIForm.Form_SaveConfig(TForm(Window), Config);
-end;
-
-function UI_Window_SaveConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean; stdcall;
-begin
-  Result := Form_SaveConfig2(TForm(Window), Config, ConfigKey);
 end;
 
 procedure UI_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger); stdcall;
@@ -5045,6 +5011,7 @@ begin
   end;
 end;
 
+{$IFDEF USE_SETTINGS}
 function Window_LoadConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall;
 begin
   try
@@ -5053,7 +5020,9 @@ begin
     Result := False;
   end;
 end;
+{$ENDIF}
 
+{$IFDEF USE_SETTINGS}
 function Window_LoadConfig2WS(Window: AWindow; Config: AConfig; const ConfigKey: AWideString): ABoolean; stdcall;
 begin
   try
@@ -5062,6 +5031,7 @@ begin
     Result := False;
   end;
 end;
+{$ENDIF}
 
 function Window_New(): AControl; stdcall;
 begin
@@ -5072,6 +5042,7 @@ begin
   end;
 end;
 
+{$IFDEF USE_SETTINGS}
 function Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall;
 begin
   try
@@ -5080,7 +5051,9 @@ begin
     Result := False;
   end;
 end;
+{$ENDIF}
 
+{$IFDEF USE_SETTINGS}
 function Window_SaveConfig2WS(Window: AWindow; Config: AConfig; const ConfigKey: AWideString): ABoolean; stdcall;
 begin
   try
@@ -5089,6 +5062,7 @@ begin
     Result := False;
   end;
 end;
+{$ENDIF}
 
 function Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger): AError; stdcall;
 begin

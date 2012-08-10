@@ -2,15 +2,21 @@
 @Abstract AUi grids
 @Author Prof1983 <prof1983@ya.ru>
 @Created 11.01.2010
-@LastMod 27.07.2012
+@LastMod 10.08.2012
 }
 unit AUiGrids;
+
+{$I Defines.inc}
+
+{$IFNDEF NoSettings}
+  {$DEFINE USE_SETTINGS}
+{$ENDIF}
 
 interface
 
 uses
   Classes, Controls, DBGrids, Grids, SysUtils,
-  ABase, ASettings, AUiBase;
+  ABase, {$IFDEF USE_SETTINGS}ASettings,{$ENDIF} AUiBase;
 
 { DBGrid }
 
@@ -119,6 +125,7 @@ begin
 end;
 
 procedure DBGrid_RestoreColProps(Grid: TDBGrid; Config: AConfig; const Key: APascalString; Delimer: AChar);
+{$IFDEF USE_SETTINGS}
 var
   i: SmallInt;
   k: SmallInt;
@@ -129,7 +136,9 @@ var
   default: Boolean;
   S: TStringList;
   S1: TStringList;
+{$ENDIF}
 begin
+  {$IFDEF USE_SETTINGS}
   {$IFNDEF FPC}
   default := (Grid.Columns.State = csDefault);
   try
@@ -195,14 +204,18 @@ begin
   except
   end;
   {$ENDIF}
+  {$ENDIF USE_SETTINGS}
 end;
 
 procedure DBGrid_SaveColProps(Grid1: TDBGrid; Config: AConfig; const Key: APascalString; Delimer: AChar);
+{$IFDEF USE_SETTINGS}
 var
   I: Integer;
   C: TColumn;
   SectionName: string;
+{$ENDIF}
 begin
+  {$IFDEF USE_SETTINGS}
   {$IFNDEF FPC}
   for I := 0 to Grid1.Columns.Count - 1 do
   begin
@@ -211,6 +224,7 @@ begin
     ASettings.Config_WriteIntegerWS(Config, SectionName, 'Index', I);
     ASettings.Config_WriteIntegerWS(Config, SectionName, 'Width', C.Width);
   end;
+  {$ENDIF}
   {$ENDIF}
 end;
 
@@ -358,11 +372,15 @@ begin
 end;
 
 procedure StringGrid_RestoreColPropsA(Grid: TStringGrid; Config: AConfig; const Parent, Name: APascalString; Delimer: AChar = '\');
+{$IFDEF USE_SETTINGS}
 var
   i: Integer;
+{$ENDIF}
 begin
+  {$IFDEF USE_SETTINGS}
   for i := 0 to Grid.ColCount - 1 do
     Grid.ColWidths[i] := ASettings.Config_ReadIntegerDefWS(Config, Parent + Delimer + Name + Delimer + IntToStr(i), 'Width', Grid.ColWidths[i]);
+  {$ENDIF}
 end;
 
 function StringGrid_RowAdd(Grid: TStringGrid): Integer;
@@ -502,15 +520,19 @@ begin
 end;
 
 procedure StringGrid_SaveColPropsA(Grid: TStringGrid; Config: AConfig; const Parent, Name: APascalString; Delimer: AChar = '\');
+{$IFDEF USE_SETTINGS}
 var
   I: Integer;
   SectionName: string;
+{$ENDIF}
 begin
+  {$IFDEF USE_SETTINGS}
   for I := 0 to Grid.ColCount - 1 do
   begin
     SectionName := Parent+Delimer+Name+Delimer+IntToStr(i);
     ASettings.Config_WriteIntegerWS(Config, SectionName, 'Width', Grid.ColWidths[i]);
   end;
+  {$ENDIF}
 end;
 
 procedure StringGrid_SetRowCount(Grid: TStringGrid; Count: Integer);

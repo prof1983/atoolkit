@@ -6,13 +6,21 @@
 }
 unit AUiMainWindow;
 
+{$I Defines.inc}
+
+{$IFNDEF NoSettings}
+  {$DEFINE USE_SETTINGS}
+{$ENDIF}
+
 interface
 
 uses
   Classes, ComCtrls, Controls, ExtCtrls, Forms, Graphics, Menus, StdCtrls, SysUtils, {$IFNDEF UNIX}Windows,{$ENDIF}
   ABase,
   {$IFDEF OLDMAINFORM}fMain,{$ENDIF}
-  AUiBase, AUiBox, AUiControls, AUiData, {AUiForm,} AUiToolBar;
+  AUiBase, AUiBox, AUiControls, AUiData,
+  {$IFDEF USE_SETTINGS}AUiForm,{$ENDIF}
+  AUiToolBar;
 
 type
   TMainWindowFormat = type Integer;
@@ -308,7 +316,9 @@ begin
   // UI_Window_LoadConfig(MainForm, Settings);
   //FNextTag := Settings.ReadInteger(FControl.Name, 'NextTag', 1);
 
+  {$IFDEF USE_EVENTS}
   Form_LoadConfig4(MainForm, Config, MainForm.Name, DefWindowState);
+  {$ENDIF}
 
   {$IFNDEF OLDMAINFORM}
   {
@@ -408,7 +418,9 @@ procedure _MainWindow_SaveConfig(Config: AConfig);
 
 begin
   //Settings.WriteInteger(FControl.Name, 'NextTag', FNextTag);
+  {$IFDEF USE_EVENTS}
   AUI.Window_SaveConfig(FMainWindow, Config);
+  {$ENDIF}
 
   {$IFNDEF OLDMAINFORM}
   {WritePanels(FControl);

@@ -1,8 +1,8 @@
 {**
-@Abstract Дополнительные фукнкции AUiControls
+@Abstract AUi controls functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2011
-@LastMod 19.07.2012
+@LastMod 10.08.2012
 }
 unit AUiControlsA;
 
@@ -10,7 +10,7 @@ interface
 
 uses
   ComCtrls,
-  ABase, AUiBase, AUiCalendar, AUiData, AUiEvents;
+  ABase, AUiBase, AUiCalendar, AUiData, AUiEventsObj;
 
 function UI_Control_SetOnChange(Control: AControl; OnChange: ACallbackProc): AError;
 function UI_Control_SetOnChange02(Control: AControl; OnChange: ACallbackProc02): AError;

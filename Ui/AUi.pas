@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 27.07.2012
+@LastMod 10.08.2012
 }
 unit AUi;
 
@@ -20,8 +20,8 @@ interface
 
 uses
   ABase, ABaseTypes,
-  AEvents, ARuntime, AStrings, ASystem,
-  AUiBase, AUiBox, AUiButton, AUiControls, AUiControlsA, AUiData, AUiEvents,
+  {AEvents,} {ARuntime,} {AStrings,} {ASystem,}
+  AUiBase, AUiBox, AUiButton, AUiControls, AUiControlsA, AUiData, {AUiEvents,}
   AUiMain, AUiMainWindow, AUiMainWindow2, AUiPageControl, AUiReports,
   AUiToolBar, AUiToolMenu, AUiTreeView, AUiWindows;
 
@@ -1097,7 +1097,7 @@ function UI_Dialog_SelectDirectory(var Directory: APascalString): ABoolean; stdc
 // Use Dialog_GetWindow()
 function UI_Dialog_GetWindow(Dialog: ADialog): AWindow; stdcall; deprecated;
 
-function UI_Init(): AError; stdcall;
+function UI_Init(): AError; stdcall; deprecated; // Use AUi_Init()
 function Done04(): AError; stdcall;
 
 //** Присоединяет к событию OnDone.
@@ -1129,7 +1129,7 @@ uses
   {$IFDEF FPC}Interfaces,{$ELSE}Mask,{$ENDIF}
   Buttons, Classes, Controls, ComCtrls, DB, DBGrids, ExtCtrls, Forms, Graphics, Grids, Menus, StdCtrls, SysUtils,
   {$IFDEF MSWINDOWS}ShellApi, Windows,{$ENDIF}
-  AUICalendar, AUIEdit, AUIGrids, AUIForm, AUIMenus, AUISpin, AUITrayIcon,
+  AUiCalendar, AUiEdit, AUiGrids, {AUiForm,} AUiMenus, AUiSpin, AUiTrayIcon,
   {$IFDEF MSWINDOWS}
   fError, fInputDialog, fLogin, fMessage, fPasswordDialog, fWait,
   {$ENDIF}
@@ -1245,7 +1245,7 @@ end;
 
 function Init(): AError; stdcall;
 begin
-  Result := UI_Init();
+  Result := AUi_Init();
 end;
 
 function InitMainTrayIcon(): AError; stdcall;
@@ -1389,6 +1389,93 @@ end;
 
 function AUi_Boot(): AError;
 begin
+  Result := 0;
+end;
+
+function AUi_Init(): AError;
+var
+  S: string;
+begin
+  if (FMainWindow <> 0) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+
+  if (AEvents_Init() < 0) then
+  begin
+    Result := -4;
+    Exit;
+  end;
+
+  ASettings_Init();
+
+  if (AStrings_Init() < 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+
+  if (ASystem_Init() < 0) then
+  begin
+    Result := -3;
+    Exit;
+  end;
+
+  FOnDone := AEvents.Event_NewW(0, nil);
+
+  FHideOnClose := False;
+  FIsShowApp := True;
+
+  {$IFDEF A02}
+  ASystem.SetOnProcessMessages02(UI_ProcessMessages02);
+  {$ELSE}
+  ASystem.SetOnProcessMessages(UI_ProcessMessages);
+  {$ENDIF A02}
+  ASystem.SetOnShowError(DoShowError);
+  ASystem.SetOnShowMessage(DoShowMessage);
+
+  ARuntime.SetOnShutdown(UI_Shutdown);
+  {$IFDEF A01}
+    ARuntime.OnRun_Set(UI_Run02);
+  {$ELSE}
+    {$IFDEF A02}
+    ARuntime.OnRun_Set(UI_Run02);
+    {$ELSE}
+    ARuntime.OnRun_Set(UI_Run);
+    {$ENDIF A02}
+  {$ENDIF A01}
+
+  {$IFNDEF FPC}
+  Application.CreateHandle();
+  {$ENDIF}
+
+  Application.Initialize();
+  Application.Title := ASystem.Info_GetTitleWS();
+  S := ASystem.Info_GetDataDirectoryPathP() + ASystem.Info_GetProgramNameWS() + '.ico';
+
+  if FileExists(S) then
+  try
+    Application.Icon.LoadFromFile(S);
+  except
+    ASystem.ShowMessageP('Ошибка при загрузке изображения '+S);
+  end;
+
+  try
+    if Assigned(FOnMainFormCreate) then
+      FOnMainFormCreate
+    else
+      DoMainFormCreate;
+  except
+    ASystem.ShowMessageP('Произошла ошибка при создании главного окна');
+    Result := -100;
+    Exit;
+  end;
+  {
+  if (FMainWindow <> 0) then
+    miMain := AddObject(TForm(FMainWindow).Menu.Items);
+  }
+
   Result := 0;
 end;
 
@@ -3674,101 +3761,8 @@ begin
 end;
 
 function UI_Init(): AError; stdcall;
-var
-  S: string;
 begin
-  if (FMainWindow <> 0) then
-  begin
-    Result := 0;
-    Exit;
-  end;
-
-  if (AEvents.Init() < 0) then
-  begin
-    Result := -4;
-    Exit;
-  end;
-
-  ASettings.Init();
-
-  if (AStrings.Init() < 0) then
-  begin
-    Result := -2;
-    Exit;
-  end;
-
-  if (ASystem.Init() < 0) then
-  begin
-    Result := -3;
-    Exit;
-  end;
-
-  FOnDone := AEvents.Event_NewW(0, nil);
-
-  FHideOnClose := False;
-  FIsShowApp := True;
-
-  (*
-  {$IFDEF A02}
-  Runtime_SetOnProcessMessages(UI_ProcessMessages);
-  Runtime_SetOnShowError(UI_Dialog_Error);
-  Runtime_SetOnShowMessage(UI_Dialog_Message);
-  {$ELSE}
-  ASystem.SetOnProcessMessages(UI_ProcessMessages);
-  ASystem.SetOnShowError(UI_Dialog_Error);
-  ASystem.SetOnShowMessage(UI_Dialog_Message);
-  {$ENDIF}
-  *)
-  {$IFDEF A02}
-  ASystem.SetOnProcessMessages02(UI_ProcessMessages02);
-  {$ELSE}
-  ASystem.SetOnProcessMessages(UI_ProcessMessages);
-  {$ENDIF A02}
-  ASystem.SetOnShowError(DoShowError);
-  ASystem.SetOnShowMessage(DoShowMessage);
-
-  ARuntime.SetOnShutdown(UI_Shutdown);
-  {$IFDEF A01}
-    ARuntime.OnRun_Set(UI_Run02);
-  {$ELSE}
-    {$IFDEF A02}
-    ARuntime.OnRun_Set(UI_Run02);
-    {$ELSE}
-    ARuntime.OnRun_Set(UI_Run);
-    {$ENDIF A02}
-  {$ENDIF A01}
-
-  {$IFNDEF FPC}
-  Application.CreateHandle;
-  {$ENDIF}
-
-  Application.Initialize();
-  Application.Title := ASystem.Info_GetTitleWS;
-  S := ASystem.Info_GetDataDirectoryPathP() + ASystem.Info_GetProgramNameWS() + '.ico';
-
-  if FileExists(S) then
-  try
-    Application.Icon.LoadFromFile(S);
-  except
-    ASystem.ShowMessageP('Ошибка при загрузке изображения '+S);
-  end;
-
-  try
-    if Assigned(FOnMainFormCreate) then
-      FOnMainFormCreate
-    else
-      DoMainFormCreate;
-  except
-    ASystem.ShowMessageP('Произошла ошибка при создании главного окна');
-    Result := -100;
-    Exit;
-  end;
-  {
-  if (FMainWindow <> 0) then
-    miMain := AddObject(TForm(FMainWindow).Menu.Items);
-  }
-
-  Result := 0;
+  Result := AUi_Init();
 end;
 
 function UI_InitMainMenu(): AInteger; stdcall;

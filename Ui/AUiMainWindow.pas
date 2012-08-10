@@ -2,7 +2,7 @@
 @Abstract AUiMainWindow
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2008
-@LastMod 26.07.2012
+@LastMod 10.08.2012
 }
 unit AUiMainWindow;
 
@@ -12,7 +12,7 @@ uses
   Classes, ComCtrls, Controls, ExtCtrls, Forms, Graphics, Menus, StdCtrls, SysUtils, {$IFNDEF UNIX}Windows,{$ENDIF}
   ABase,
   {$IFDEF OLDMAINFORM}fMain,{$ENDIF}
-  AUiBase, AUiBox, AUiControls, AUiData, AUiForm, AUiToolBar;
+  AUiBase, AUiBox, AUiControls, AUiData, {AUiForm,} AUiToolBar;
 
 type
   TMainWindowFormat = type Integer;

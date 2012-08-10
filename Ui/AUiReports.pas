@@ -2,14 +2,24 @@
 @Abstract AUiReports
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 26.07.2012
+@LastMod 10.08.2012
 }
 unit AUiReports;
+
+{$I Defines.inc}
+
+{$IFNDEF FPC}
+  {$IFNDEF NoUiReports}
+    {$DEFINE USE_REPORTS}
+  {$ENDIF}
+{$ENDIF}
 
 interface
 
 uses
-  Graphics, ABase, AUiBase{$IFNDEF FPC}, fReport, fSimpleReport{$ENDIF};
+  Graphics, ABase,
+  {$IFDEF USE_REPORTS}fReport, fSimpleReport,{$ENDIF}
+  AUiBase;
 
 function UI_ReportWin_New: AWindow;
 {** Creates a new window of the report
@@ -28,7 +38,7 @@ begin
 end;
 
 function UI_ReportWin_NewA(ReportWinType: AInteger; const Text: APascalString): AWindow;
-{$IFNDEF FPC}
+{$IFDEF USE_REPORTS}
 var
   ReportForm: TReportForm;
   Form: TSimpleReportForm;
@@ -36,38 +46,35 @@ var
 begin
   if (ReportWinType = 0) then
   begin
-    {$IFDEF FPC}
-    Result := 0;
-    {$ELSE}
+    {$IFDEF USE_REPORTS}
     ReportForm := TReportForm.Create(nil);
     ReportForm.Editor.Text := Text;
     Result := AWindow(ReportForm);
+    {$ELSE}
+    Result := 0;
     {$ENDIF}
   end
   else if (ReportWinType = 1) then
   begin
-    {$IFDEF FPC}
-    Result := 0;
-    {$ELSE}
+    {$IFDEF USE_REPORTS}
     Form := TSimpleReportForm.Create(nil);
     Form.Memo.Lines.Text := Text;
     Result := AWindow(Form);
+    {$ELSE}
+    Result := 0;
     {$ENDIF}
   end
   else
     Result := 0;
 end;
 
-{function UI_ReportWin_Simple_New: AWindow;
-begin
-  Result := UI_ReportWin_NewA(1);
-end;}
-
-{$IFNDEF FPC}
 procedure UI_ReportWin_ShowReport(const Text: APascalString; Font: TFont);
+{$IFDEF USE_REPORTS}
 var
   Form: TReportForm;
+{$ENDIF}
 begin
+  {$IFDEF USE_REPORTS}
   Form := TReportForm.Create(nil);
   try
     Form.Editor.Clear;
@@ -78,8 +85,8 @@ begin
   finally
     Form.Free;
   end;
+  {$ENDIF}
 end;
-{$ENDIF}
 
 end.
  

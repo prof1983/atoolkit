@@ -1,9 +1,8 @@
 {**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(28.06.2011)
-@LastMod(25.08.2011)
-@Version(0.5)
+@Abstract AUi button functions
+@Author Prof1983 <prof1983@ya.ru>
+@Created 28.06.2011
+@LastMod 10.08.2011
 }
 unit AUiButton;
 
@@ -11,7 +10,7 @@ interface
 
 uses
   Buttons, Controls,
-  AUiBase, AUiData, AUiEvents;
+  AUiBase, AUiData, AUiEventsObj;
 
 function UI_Button_New(Parent: AControl): AButton;
 procedure UI_Button_SetKind(Button: AButton; Kind: TAUIButtonKind);

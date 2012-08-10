@@ -1,15 +1,15 @@
 {**
-@abstract AUi Menus
-@author Prof1983 <prof1983@ya.ru>
-@created 16.08.2011
-@lastmod 19.07.2012
+@Abstract AUi Menus
+@Author Prof1983 <prof1983@ya.ru>
+@Created 16.08.2011
+@LastMod 10.08.2012
 }
-unit AUIMenus;
+unit AUiMenus;
 
 interface
 
 uses
-  Menus, ABase, AUiBase, AUiData, AUiEvents;
+  Menus, ABase, AUiBase, AUiData, AUiEventsObj;
 
 // --- Menu ---
 

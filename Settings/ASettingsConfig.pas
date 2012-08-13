@@ -2,7 +2,7 @@
 @Abstract ASettingsConfig
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 24.07.2012
+@LastMod 13.08.2012
 }
 unit ASettingsConfig;
 
@@ -22,7 +22,7 @@ function Settings_RegConfig_NewA(const Prefix: APascalString; HKEY: Integer): AC
 procedure Settings_Close(Config: AConfig); stdcall;
 function Settings_DeleteKey(Config: AConfig; const Section, Name: APascalString): ABoolean; stdcall;
 function Settings_DeleteSection(Config: AConfig; const Section: APascalString): ABoolean; stdcall;
-function Settings_ReadBool(Config: AConfig; const Section, Name: APascalString; DefValue: ABoolean): ABoolean; stdcall;
+function Settings_ReadBool(Config: AConfig; const Section, Name: APascalString; DefValue: ABoolean): ABoolean; stdcall; deprecated; // Use ASettings_ReadBoolDefP()
 function Settings_ReadInteger(Config: AConfig; const Section, Name: APascalString; DefValue: AInteger): AInteger; stdcall;
 function Settings_ReadFloat(Config: AConfig; const Section, Name: APascalString; DefValue: AFloat): AFloat; stdcall;
 function Settings_ReadSection(Config: AConfig; const Section: APascalString; Strings: AStringList): ABoolean; stdcall;

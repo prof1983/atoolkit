@@ -2,7 +2,7 @@
 @Abstract The module for work with the settings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 06.08.2012
+@LastMod 13.08.2012
 }
 unit ASettings;
 
@@ -160,7 +160,7 @@ function A_Settings_RegConfig_NewA(const Prefix: AString_Type; HKEY: Integer): A
 //procedure A_Settings_Config_Close(Config: AConfig); stdcall; deprecated;
 function A_Settings_Config_DeleteKey(Config: AConfig; const Section, Name: AString_Type): ABoolean; stdcall; deprecated;
 function A_Settings_Config_DeleteSection(Config: AConfig; const Section: AString_Type): ABoolean; stdcall; deprecated;
-function A_Settings_Config_ReadBool(Config: AConfig; const Section, Name: AString_Type; DefValue: ABoolean): ABoolean; stdcall; deprecated;
+function A_Settings_Config_ReadBool(Config: AConfig; const Section, Name: AString_Type; DefValue: ABoolean): ABoolean; stdcall; deprecated; // Use ASettings_ReadBoolDef()
 function A_Settings_Config_ReadInteger(Config: AConfig; const Section, Name: AString_Type; DefValue: AInteger): AInteger; stdcall; deprecated;
 function A_Settings_Config_ReadFloat(Config: AConfig; const Section, Name: AString_Type; DefValue: AFloat): AFloat; stdcall; deprecated;
 function A_Settings_Config_ReadSection(Config: AConfig; const Section: AString_Type; Strings: AStringList): ABoolean; stdcall; deprecated;

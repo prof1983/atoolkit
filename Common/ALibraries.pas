@@ -2,29 +2,51 @@
 @Abstract ALibraries (.dll, .so)
 @Author Prof1983 <prof1983@ya.ru>
 @Created 02.10.2005
-@LastMod 24.07.2012
+@LastMod 13.08.2012
 }
 unit ALibraries;
 
 {$I Defines.inc}
 
+{$IFNDEF NoSysUtils}{$DEFINE USE_SYSUTILS}{$ENDIF}
+
 interface
 
 uses
-  {$IFNDEF NoSysUtils}SysUtils,{$ENDIF}
+  {$IFDEF USE_SYSUTILS}SysUtils,{$ENDIF}
   ABase;
 
-function Library_Open(const FileName: APascalString; Flags: ALibraryFlags): ALibrary; stdcall;
+// --- ALibrary ---
 
-function Library_Close(Lib: ALibrary): ABoolean; stdcall;
+function ALibrary_BuildPathP(const Directory, LibraryName: APascalString): APascalString; stdcall;
 
-function Library_BuildPath(const Directory, LibraryName: APascalString): APascalString; stdcall;
+function ALibrary_Close(Lib: ALibrary): ABoolean; stdcall;
 
-function Library_GetName(Lib: ALibrary): APascalString; stdcall;
+function ALibrary_GetNameP(Lib: ALibrary): APascalString; stdcall;
 
-function Library_GetProcAddress(Lib: ALibrary; const Name: APascalString): Pointer; stdcall;
+function ALibrary_GetProcAddressP(Lib: ALibrary; const Name: APascalString): Pointer; stdcall;
 
-function Library_GetSymbol(Lib: ALibrary; const SymbolName: APascalString; var Symbol: Pointer): ABoolean; stdcall;
+function ALibrary_GetProcAddressWS(Lib: ALibrary; const Name: AWideString): Pointer; stdcall;
+
+function ALibrary_GetSymbolP(Lib: ALibrary; const SymbolName: APascalString; var Symbol: Pointer): ABoolean; stdcall;
+
+function ALibrary_OpenP(const FileName: APascalString; Flags: ALibraryFlags): ALibrary; stdcall;
+
+function ALibrary_OpenWS(const FileName: AWideString; Flags: ALibraryFlags): ALibrary; stdcall;
+
+// --- Library ---
+
+function Library_BuildPath(const Directory, LibraryName: APascalString): APascalString; stdcall; deprecated; // Use ALibrary_BuildPathP()
+
+function Library_Close(Lib: ALibrary): ABoolean; stdcall; deprecated; // Use ALibrary_Close()
+
+function Library_GetName(Lib: ALibrary): APascalString; stdcall; deprecated; // Use ALibrary_GetNameP()
+
+function Library_GetProcAddress(Lib: ALibrary; const Name: APascalString): Pointer; stdcall; deprecated; // Use ALibrary_GetProcAddressP()
+
+function Library_GetSymbol(Lib: ALibrary; const SymbolName: APascalString; var Symbol: Pointer): ABoolean; stdcall; deprecated; // Use ALibrary_GetSybmolP()
+
+function Library_Open(const FileName: APascalString; Flags: ALibraryFlags): ALibrary; stdcall; deprecated; // Use ALibrary_OpenP()
 
 implementation
 
@@ -50,13 +72,13 @@ var
 const
   kernel32  = 'kernel32.dll';
 
-function FreeLibrary(hLibModule: HMODULE): BOOL; stdcall; external kernel32 name 'FreeLibrary';
-function GetProcAddress(hModule: HMODULE; lpProcName: LPCSTR): FARPROC; stdcall; external kernel32 name 'GetProcAddress';
-function LoadLibrary(lpLibFileName: PAnsiChar): HMODULE; stdcall; external kernel32 name 'LoadLibraryA';
+function _FreeLibrary(hLibModule: HMODULE): BOOL; stdcall; external kernel32 name 'FreeLibrary';
+function _GetProcAddress(hModule: HMODULE; lpProcName: LPCSTR): FARPROC; stdcall; external kernel32 name 'GetProcAddress';
+function _LoadLibrary(lpLibFileName: PAnsiChar): HMODULE; stdcall; external kernel32 name 'LoadLibraryA';
 
 { Private functions }
 
-function AddLibrary(const FileName: APascalString; Handle: HMODULE): Integer;
+function _AddLibrary(const FileName: APascalString; Handle: HMODULE): Integer;
 begin
   Result := Length(FLibraries);
   SetLength(FLibraries, Result + 1);
@@ -64,14 +86,14 @@ begin
   FLibraries[Result].Handle := Handle;
 end;
 
-procedure DelLibrary(Index: Integer);
+procedure _DelLibrary(Index: Integer);
 begin
   if (Index < 0) then Exit;
   FLibraries[Index] := FLibraries[High(FLibraries)];
   SetLength(FLibraries, High(FLibraries));
 end;
 
-function FindLibraryByHandle(Handle: Integer): Integer;
+function _FindLibraryByHandle(Handle: Integer): Integer;
 var
   I: Integer;
 begin
@@ -86,7 +108,7 @@ begin
   Result := -1;
 end;
 
-function FindLibraryByFileName(const FileName: APascalString): Integer;
+function _FindLibraryByFileName(const FileName: APascalString): Integer;
 var
   I: Integer;
 begin
@@ -101,96 +123,170 @@ begin
   Result := -1;
 end;
 
-{ Public Functions }
+// --- ALibrary ---
 
-function Library_BuildPath(const Directory, LibraryName: APascalString): APascalString; stdcall;
+function ALibrary_BuildPathP(const Directory, LibraryName: APascalString): APascalString;
 begin
-  Result := LibraryName + '.dll';
-  {$IFNDEF NoSysUtils}
-  Result := ExpandFileName(Result);
-  {$ENDIF}
+  try
+    Result := LibraryName + '.dll';
+    {$IFDEF USE_SYSUTILS}
+    Result := ExpandFileName(Result);
+    {$ENDIF}
+  except
+    Result := '';
+  end;
 end;
 
-function Library_Close(Lib: ALibrary): ABoolean; stdcall;
+function ALibrary_Close(Lib: ALibrary): ABoolean;
 var
   Index: Integer;
 begin
-  if (Lib = 0) then
-  begin
-    Result := True;
-    Exit;
-  end;
   try
-    FreeLibrary(Lib{FHandle});
-    Result := True;
+    if (Lib = 0) then
+    begin
+      Result := True;
+      Exit;
+    end;
+    try
+      _FreeLibrary(Lib{FHandle});
+      Result := True;
+    except
+      Result := False;
+    end;
+    Index := _FindLibraryByHandle(Lib);
+    _DelLibrary(Index);
   except
     Result := False;
   end;
-  Index := FindLibraryByHandle(Lib);
-  DelLibrary(Index);
 end;
 
-function Library_GetName(Lib: ALibrary): APascalString; stdcall;
-{$IFNDEF NoSysUtils}
+function ALibrary_GetNameP(Lib: ALibrary): APascalString;
+{$IFDEF USE_SYSUTILS}
 var
   Index: Integer;
 {$ENDIF}
 begin
-  {$IFNDEF NoSysUtils}
-  Index := FindLibraryByHandle(Lib);
-  if (Index >= 0) then
-  begin
-    Result := ExtractFileName(FLibraries[Index].FileName);
-    Result := ChangeFileExt(Result, '');
+  try
+    {$IFDEF USE_SYSUTILS}
+    Index := _FindLibraryByHandle(Lib);
+    if (Index >= 0) then
+    begin
+      Result := ExtractFileName(FLibraries[Index].FileName);
+      Result := ChangeFileExt(Result, '');
+    end;
+    {$ENDIF}
+  except
+    Result := '';
   end;
-  {$ENDIF}
 end;
 
-function Library_GetProcAddress(Lib: ALibrary; const Name: APascalString): Pointer; stdcall;
+function ALibrary_GetProcAddressP(Lib: ALibrary; const Name: APascalString): Pointer;
 var
   S: AnsiString;
   P: PAnsiChar;
 begin
-  S := AnsiString(Name);
-  P := PAnsiChar(S);
-  Result := GetProcAddress(Lib{FHandle}, P);
+  try
+    S := AnsiString(Name);
+    P := PAnsiChar(S);
+    Result := _GetProcAddress(Lib{FHandle}, P);
+  except
+    Result := nil;
+  end;
 end;
 
-function Library_GetSymbol(Lib: ALibrary; const SymbolName: APascalString; var Symbol: Pointer): ABoolean; stdcall;
+function ALibrary_GetProcAddressWS(Lib: ALibrary; const Name: AWideString): Pointer;
 begin
-  Symbol := Library_GetProcAddress(Lib, SymbolName);
-  Result := (Symbol <> nil);
+  try
+    Result := ALibrary_GetProcAddressP(Lib, Name);
+  except
+    Result := nil;
+  end;
 end;
 
-function Library_Open(const FileName: APascalString; Flags: ALibraryFlags): ALibrary; stdcall;
+function ALibrary_GetSymbolP(Lib: ALibrary; const SymbolName: APascalString; var Symbol: Pointer): ABoolean;
+begin
+  try
+    Symbol := ALibrary_GetProcAddressP(Lib, SymbolName);
+    Result := (Symbol <> nil);
+  except
+    Result := False;
+  end;
+end;
+
+function ALibrary_OpenP(const FileName: APascalString; Flags: ALibraryFlags): ALibrary;
 var
   //Error: LongWord;
   Index: Integer;
   Handle: Integer;
   S: AnsiString;
 begin
-  Index := FindLibraryByFileName(FileName);
-  if (Index >= 0) then
-  begin
-    Result := FLibraries[Index].Handle;
-    Exit;
-  end;
+  try
+    Index := _FindLibraryByFileName(FileName);
+    if (Index >= 0) then
+    begin
+      Result := FLibraries[Index].Handle;
+      Exit;
+    end;
 
-  if (FileName = '') then
-  begin
+    if (FileName = '') then
+    begin
+      Result := 0;
+      Exit;
+    end;
+    S := string(FileName);
+    Handle := _LoadLibrary(PAnsiChar(S));
+    if (Handle <= 32) then
+    begin
+      //Error := GetLastError;
+      Result := 0;
+      Exit;
+    end;
+    _AddLibrary(FileName, Handle);
+    Result := Handle;
+  except
     Result := 0;
-    Exit;
   end;
-  S := string(FileName);
-  Handle := LoadLibrary(PAnsiChar(S));
-  if (Handle <= 32) then
-  begin
-    //Error := GetLastError;
+end;
+
+function ALibrary_OpenWS(const FileName: AWideString; Flags: ALibraryFlags): ALibrary;
+begin
+  try
+    Result := ALibraries.Library_Open(FileName, Flags);
+  except
     Result := 0;
-    Exit;
   end;
-  AddLibrary(FileName, Handle);
-  Result := Handle;
+end;
+
+// --- Library ---
+
+function Library_BuildPath(const Directory, LibraryName: APascalString): APascalString; stdcall;
+begin
+  Result := ALibrary_BuildPathP(Directory, LibraryName);
+end;
+
+function Library_Close(Lib: ALibrary): ABoolean; stdcall;
+begin
+  Result := ALibrary_Close(Lib);
+end;
+
+function Library_GetName(Lib: ALibrary): APascalString; stdcall;
+begin
+  Result := ALibrary_GetNameP(Lib);
+end;
+
+function Library_GetProcAddress(Lib: ALibrary; const Name: APascalString): Pointer; stdcall;
+begin
+  Result := ALibrary_GetProcAddressP(Lib, Name);
+end;
+
+function Library_GetSymbol(Lib: ALibrary; const SymbolName: APascalString; var Symbol: Pointer): ABoolean; stdcall;
+begin
+  Result := ALibrary_GetSymbolP(Lib, SymbolName, Symbol);
+end;
+
+function Library_Open(const FileName: APascalString; Flags: ALibraryFlags): ALibrary; stdcall;
+begin
+  Result := ALibrary_OpenP(FileName, Flags);
 end;
 
 end.

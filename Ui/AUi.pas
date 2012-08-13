@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 10.08.2012
+@LastMod 13.08.2012
 }
 unit AUi;
 
@@ -29,10 +29,11 @@ interface
 
 uses
   ABase, ABaseTypes,
-  {AEvents,} ARuntime,
+  {$IFDEF USE_EVENTS}AEvents,{$ENDIF}
+  ARuntime,
   {$IFDEF USE_SETTINGS}ASettings,{$ENDIF}
   AStrings, ASystem,
-  AUiBase, AUiBox, AUiButton, AUiControls, AUiControlsA, AUiData, AUiEventsObj,
+  AUiBase, AUiBox, AUiButton, AUiControls, AUiControlsA, AUiData, AUiEvents1, AUiEventsObj, AUiForm,
   AUiMain, AUiMainWindow, AUiMainWindow2, AUiPageControl, AUiReports,
   AUiToolBar, AUiToolMenu, AUiTreeView, AUiWindows;
 
@@ -1299,7 +1300,7 @@ end;
 function OnDone_Connect(Proc: ACallbackProc): AInteger; stdcall;
 begin
   try
-    Result := AUIMain.UI_OnDone_Connect(Proc);
+    Result := AUiEvents1.UI_OnDone_Connect(Proc);
   except
     Result := 0;
   end;
@@ -1310,7 +1311,7 @@ end;
 function OnDone_Disconnect(Proc: ACallbackProc): AInteger; stdcall;
 begin
   try
-    Result := AUIMain.UI_OnDone_Disconnect(Proc);
+    Result := AUiEvents1.UI_OnDone_Disconnect(Proc);
   except
     Result := 0;
   end;
@@ -1439,7 +1440,7 @@ begin
   end;
 
   {$IFDEF USE_EVENTS}
-  if (AEvents_Init() < 0) then
+  if (AEvents.Init() < 0) then
   begin
     Result := -4;
     Exit;
@@ -1447,7 +1448,7 @@ begin
   {$ENDIF}
 
   {$IFDEF USE_SETTINGS}
-  ASettings_Init();
+  ASettings.Init();
   {$ENDIF}
 
   if (AStrings_Init() < 0) then
@@ -1456,7 +1457,7 @@ begin
     Exit;
   end;
 
-  if (ASystem_Init() < 0) then
+  if (ASystem.Init() < 0) then
   begin
     Result := -3;
     Exit;

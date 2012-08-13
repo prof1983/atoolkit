@@ -2,7 +2,7 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.01.2012
-@LastMod 26.07.2012
+@LastMod 13.08.2012
 }
 unit APluginsMain;
 
@@ -178,27 +178,27 @@ var
   Version: AInteger;
 begin
   try
-    Lib := ASystem.Library_OpenP(FileName, 0);
+    Lib := ALibrary_OpenP(FileName, 0);
     if (Lib = 0) then
     begin
       Result := False;
       Exit;
     end;
-    if not(ASystem.Library_GetSymbolP(Lib, 'Plugin_Init', @PluginInitProc)) then
+    if not(ALibrary_GetSymbolP(Lib, 'Plugin_Init', @PluginInitProc)) then
     begin
-      ASystem.Library_Close(Lib);
+      ALibrary_Close(Lib);
       Result := False;
       Exit;
     end;
-    if not(ASystem.Library_GetSymbolP(Lib, 'Plugin_Done', @PluginDoneProc)) then
+    if not(ALibrary_GetSymbolP(Lib, 'Plugin_Done', @PluginDoneProc)) then
     begin
-      ASystem.Library_Close(Lib);
+      ALibrary_Close(Lib);
       Result := False;
       Exit;
     end;
-    if not(ASystem.Library_GetSymbolP(Lib, 'Plugin_Version', @PluginVersionProc)) then
+    if not(ALibrary_GetSymbolP(Lib, 'Plugin_Version', @PluginVersionProc)) then
     begin
-      ASystem.Library_Close(Lib);
+      ALibrary_Close(Lib);
       Result := False;
       Exit;
     end;
@@ -209,14 +209,14 @@ begin
       try
         Version := PluginVersionProc;
       except
-        ASystem.Library_Close(Lib);
+        ALibrary_Close(Lib);
         Result := False;
         Exit;
       end;
       if (Version and PluginsVersionMask <> PluginsVersionValue1 and PluginsVersionMask)
       and (Version and PluginsVersionMask <> PluginsVersionValue2 and PluginsVersionMask) then
       begin
-        ASystem.Library_Close(Lib);
+        ALibrary_Close(Lib);
         Result := False;
         Exit;
       end;
@@ -224,7 +224,7 @@ begin
 
     if not(CheckPlugin(Lib)) then
     begin
-      ASystem.Library_Close(Lib);
+      ALibrary_Close(Lib);
       Result := False;
       Exit;
     end;

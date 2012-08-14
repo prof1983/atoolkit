@@ -2,14 +2,15 @@
 @Abstract ASettings main functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.08.2012
-@LastMod 13.08.2012
+@LastMod 14.08.2012
 }
 unit ASettingsMain;
 
 interface
 
 uses
-  ABase;
+  ABase, AStrings,
+  AAbstractSettings;
 
 // --- ASettings ---
 
@@ -35,10 +36,16 @@ end;
 
 function ASettings_ReadBoolDefP(Config: AConfig; const Section, Name: APascalString; DefValue: ABoolean): ABoolean;
 begin
-  if (Config <> 0) then
-    Result := TAbstractSettings(Config).ReadBool(Section, Name, DefValue)
-  else
+  if (Config = 0) then
+  begin
     Result := DefValue;
+    Exit;
+  end;
+  try
+    Result := TAbstractSettings(Config).ReadBool(Section, Name, DefValue)
+  except
+    Result := DefValue;
+  end;
 end;
 
 end.

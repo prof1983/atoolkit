@@ -2,7 +2,7 @@
 @Abstract ASettingsConfig
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 13.08.2012
+@LastMod 14.08.2012
 }
 unit ASettingsConfig;
 
@@ -11,7 +11,7 @@ interface
 uses
   {$IFDEF MSWINDOWS}Windows, ARegistrySettings,{$ENDIF}
   ABase, ACollections, ACollectionsBase, AStrings,
-  AAbstractSettings, AIniSettings;
+  AAbstractSettings, AIniSettings, ASettingsMain;
 
 {deprecated}
 function Settings_IniConfig_New(const FileName: APascalString): AConfig; stdcall;
@@ -66,10 +66,7 @@ end;
 
 function Settings_ReadBool(Config: AConfig; const Section, Name: APascalString; DefValue: ABoolean): ABoolean;
 begin
-  if (Config <> 0) then
-    Result := TAbstractSettings(Config).ReadBool(Section, Name, DefValue)
-  else
-    Result := DefValue;
+  Result := ASettings_ReadBoolDefP(Config, Section, Name, DefValue)
 end;
 
 function Settings_ReadDateTime(Config: AConfig; const Section, Name: APascalString; DefValue: TDateTime): TDateTime;

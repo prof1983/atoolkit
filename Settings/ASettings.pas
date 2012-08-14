@@ -2,14 +2,14 @@
 @Abstract The module for work with the settings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 13.08.2012
+@LastMod 14.08.2012
 }
 unit ASettings;
 
 interface
 
 uses
-  ABase, ACollectionsBase, AStrings;
+  ABase, ACollectionsBase, ASettingsMain, AStrings;
 
 // --- ASettings ---
 
@@ -556,55 +556,32 @@ end;
 
 function Config_ReadBoolDef(Config: AConfig; const Section, Name: AString_Type; DefValue: ABoolean): ABoolean; stdcall;
 begin
-  try
-    Result := Settings_ReadBool(Config,
-        AStrings.String_ToWideString(Section),
-        AStrings.String_ToWideString(Name),
-        DefValue);
-  except
-    Result := DefValue;
-  end;
+  Result := ASettings_ReadBoolDef(Config, Section, Name, DefValue);
 end;
 
 function Config_ReadBoolDefA(Config: AConfig; {const} Section, Name: PAnsiChar; DefValue: ABoolean): ABoolean; stdcall;
 begin
-  try
-    Result := Settings_ReadBool(Config, AnsiString(Section), AnsiString(Name), DefValue);
-  except
-    Result := DefValue;
-  end;
+  Result := ASettings_ReadBoolDefP(Config, AnsiString(Section), AnsiString(Name), DefValue);
 end;
 
 function Config_ReadBoolDefP(Config: AConfig; const Section, Name: APascalString; DefValue: ABoolean): ABoolean; stdcall;
 begin
-  try
-    Result := Settings_ReadBool(Config, Section, Name, DefValue);
-  except
-    Result := DefValue;
-  end;
+  Result := ASettings_ReadBoolDefP(Config, Section, Name, DefValue);
 end;
 
 function Config_ReadBoolDefS(Config: AConfig; {const} Section, Name: AString; DefValue: ABoolean): ABoolean; stdcall;
 begin
-  Result := Config_ReadBoolDef(Config, Section^, Name^, DefValue);
+  Result := ASettings_ReadBoolDef(Config, Section^, Name^, DefValue);
 end;
 
 function Config_ReadBoolDefW(Config: AConfig; {const} Section, Name: PWideChar; DefValue: ABoolean): ABoolean; stdcall;
 begin
-  try
-    Result := Settings_ReadBool(Config, WideString(Section), WideString(Name), DefValue);
-  except
-    Result := DefValue;
-  end;
+  Result := ASettings_ReadBoolDefP(Config, WideString(Section), WideString(Name), DefValue);
 end;
 
 function Config_ReadBoolDefWS(Config: AConfig; const Section, Name: AWideString; DefValue: ABoolean): ABoolean; stdcall;
 begin
-  try
-    Result := Settings_ReadBool(Config, Section, Name, DefValue);
-  except
-    Result := DefValue;
-  end;
+  Result := ASettings_ReadBoolDefP(Config, Section, Name, DefValue);
 end;
 
 function Config_ReadIntegerDef(Config: AConfig; const Section, Name: AString_Type; DefValue: AInteger): AInteger; stdcall;

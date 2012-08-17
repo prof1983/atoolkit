@@ -2,7 +2,7 @@
 @Abstract ACore
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.10.2009
-@LastMod 27.07.2012
+@LastMod 16.08.2012
 }
 unit ACore;
 
@@ -117,7 +117,7 @@ procedure CoreLib_Close;
 begin
   if (FLib <> 0) then
   begin
-    Library_Close(FLib);
+    ALibrary_Close(FLib);
     FLib := 0;
   end;
 end;
@@ -125,9 +125,9 @@ end;
 function CoreLib_Open(const CoreLibName: string): Integer;
 begin
   if (CoreLibName = '') then
-    FLib := Library_Open(ACoreLibNameDef, 0)
+    FLib := ALibrary_OpenP(ACoreLibNameDef, 0)
   else
-    FLib := Library_Open(CoreLibName, 0);
+    FLib := ALibrary_OpenP(CoreLibName, 0);
   if (FLib = 0) then
   begin
     Result := -1;
@@ -135,24 +135,24 @@ begin
   end;
   Result := -2;
  {$IFDEF A01}
-  if not(Library_GetSymbol(FLib, 'Core_Boot', Addr(Core_Boot))) then Exit;
-  if not(Library_GetSymbol(FLib, 'Core_BootA', Addr(Core_BootA))) then Exit;
-  if not(Library_GetSymbol(FLib, 'Core_Init', Addr(Core_Init))) then Exit;
-  if not(Library_GetSymbol(FLib, 'Core_Run', Addr(Core_Run))) then Exit;
-  if not(Library_GetSymbol(FLib, 'Core_Done', Addr(Core_Done))) then Exit;
+  if not(ALibrary_GetSymbol(FLib, 'Core_Boot', Addr(Core_Boot))) then Exit;
+  if not(ALibrary_GetSymbol(FLib, 'Core_BootA', Addr(Core_BootA))) then Exit;
+  if not(ALibrary_GetSymbol(FLib, 'Core_Init', Addr(Core_Init))) then Exit;
+  if not(ALibrary_GetSymbol(FLib, 'Core_Run', Addr(Core_Run))) then Exit;
+  if not(ALibrary_GetSymbol(FLib, 'Core_Done', Addr(Core_Done))) then Exit;
  {$ELSE} // A01
   {$IFDEF A02}
-  if not(Library_GetSymbol(FLib, 'Core_Boot', Addr(Core_Boot))) then Exit;
-  if not(Library_GetSymbol(FLib, 'Core_BootA', Addr(Core_BootA))) then Exit;
-  if not(Library_GetSymbol(FLib, 'Core_BootXml', Addr(Core_BootXml))) then Exit;
-  if not(Library_GetSymbol(FLib, 'Core_Init', Addr(Core_Init))) then Exit;
-  if not(Library_GetSymbol(FLib, 'Core_Run', Addr(Core_Run))) then Exit;
-  if not(Library_GetSymbol(FLib, 'Core_Done', Addr(Core_Done))) then Exit;
+  if not(ALibrary_GetSymbol(FLib, 'Core_Boot', Addr(Core_Boot))) then Exit;
+  if not(ALibrary_GetSymbol(FLib, 'Core_BootA', Addr(Core_BootA))) then Exit;
+  if not(ALibrary_GetSymbol(FLib, 'Core_BootXml', Addr(Core_BootXml))) then Exit;
+  if not(ALibrary_GetSymbol(FLib, 'Core_Init', Addr(Core_Init))) then Exit;
+  if not(ALibrary_GetSymbol(FLib, 'Core_Run', Addr(Core_Run))) then Exit;
+  if not(ALibrary_GetSymbol(FLib, 'Core_Done', Addr(Core_Done))) then Exit;
   {$ELSE} // A02
-  if not(Library_GetSymbol(FLib, 'Core_Boot', Addr(Core_Boot))) then Exit;
-  if not(Library_GetSymbol(FLib, 'Core_Init', Addr(Core_Init))) then Exit;
-  if not(Library_GetSymbol(FLib, 'Core_Run', Addr(Core_Run))) then Exit;
-  if not(Library_GetSymbol(FLib, 'Core_Done', Addr(Core_Done))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'Core_Boot', Addr(Core_Boot))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'Core_Init', Addr(Core_Init))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'Core_Run', Addr(Core_Run))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'Core_Done', Addr(Core_Done))) then Exit;
   //if not(Library_GetSymbol(FLib, 'Core_Runtime', Addr(Core_Runtime))) then Exit;
   {$ENDIF A02}
  {$ENDIF A01}

@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Функции работы с видео)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(31.03.2006)
-@LastMod(10.07.2012)
-@Version(0.5)
+@Abstract Функции работы с видео
+@Author Prof1983 <prof1983@ya.ru>
+@Created 31.03.2006
+@LastMod 17.08.2012
 
 Канал(Chanel) - приемник видеоизображения с видеоисточника
 Видеоисточник(Source) - любой источник видео сигналов, картинок
@@ -104,7 +103,7 @@ type
   end;
 
 type // ------------------------------------------------------------------------
-  TEventPicture = class(TEventShablon)
+  TEventPicture = class(TAEvent)
   private
     FList: array of TPictureEventProc;
   public
@@ -358,7 +357,7 @@ end;
 constructor TVideoSource.Create();
 begin
   inherited Create();
-  FOnPicture := TEventPicture.Create('OnPicture');
+  FOnPicture := TEventPicture.Create(0, 'OnPicture');
 end;
 
 procedure TVideoSource.Disconnect();
@@ -509,7 +508,7 @@ constructor TVideoSources.Create();
 begin
   inherited Create();
   FCritical := TCriticalSection.Create();
-  FOnPicture := TEventPicture.Create('OnPicture');
+  FOnPicture := TEventPicture.Create(0, 'OnPicture');
 end;
 
 procedure TVideoSources.Free();

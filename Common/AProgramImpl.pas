@@ -1,12 +1,8 @@
 ﻿{**
-@Abstract(Реализация основной функциональности для главного объекта)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(22.05.2006)
-@LastMod(10.07.2012)
-@Version(0.5)
-
-0.0.5.7 - 21.07.2011
-[*] Rename ProfProgramImpl.pas(AIKernel) -> ProfProgram.pas
+@Abstract Реализация основной функциональности для главного объекта
+@Author Prof1983 <prof1983@ya.ru>
+@Created 22.05.2006
+@LastMod 17.08.2012
 }
 unit AProgramImpl;
 
@@ -20,7 +16,7 @@ uses
   ActiveX, Classes, ComObj, ComServ, Messages, SysUtils, Windows, WinSock, WinSvc,
   {$IFDEF UseComDocument}MSXML24_TLB{$ELSE}XmlIntf, AXmlDocumentImpl{$ENDIF},
   ABase, AConsts2, ALogDocumentIntf, ALogDocuments, ALogJournal, ALogNodeImpl,
-  AProcessImpl, AProgramUtils, ATypes;
+  AProcessImpl, AProgramUtils, ASystemData, ATypes;
 
 type
   {$IFDEF UseComXml}
@@ -31,14 +27,10 @@ type
   TAProgram = class(TProfProcess)
   protected
     FConfigDir: APascalString;
-    FConfigPath: APascalString;
       //** Критическая секция для добавления в лог
     FCSAddToLog: TRTLCriticalSection;
     FDataDir: APascalString;
-    FDataPath: APascalString;
     FExeFullName: WideString;
-    FExeName: WideString;
-    FExePath: WideString;
     FFileVersionInfo: TFileVersionInfoA;
   protected
     FDependencies: WideString;
@@ -125,9 +117,9 @@ type
     //** Полный путь и имя фийла "C:\example\program.exe"
     property ExeFullName: WideString read FExeFullName;
     //** Имя файла "program.exe"
-    property ExeName: WideString read FExeName;
+    //property ExeName: WideString read FExeName; - Use ASystemData.FExeName
     //** Путь расположения программы "C:\example\"
-    property ExePath: WideString read FExePath;
+    //property ExePath: WideString read FExePath; - Use ASystemData.FExePath
     //** Информация прошитая в файле
     property FileVersionInfo: TFileVersionInfoA read FFileVersionInfo;
     //** Максимальное число клиентов

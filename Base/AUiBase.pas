@@ -2,7 +2,7 @@
 @Abstract User Interface base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 30.07.2012
+@LastMod 20.08.2012
 }
 unit AUiBase;
 
@@ -74,6 +74,13 @@ type
     uibkIgnore,
     uibkAll
     );
+
+type
+  AUiProgramState = AInteger;
+const
+  AUiProgramState_Default = 0;
+  AUiProgramState_None = 1;
+  AUiProgramState_HourGlass = 11;
 
 type
   AUISplitterType = type AInteger;

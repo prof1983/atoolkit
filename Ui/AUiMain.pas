@@ -2,21 +2,47 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 10.08.2012
+@LastMod 20.08.2012
 }
 unit AUiMain;
 
 interface
 
 uses
-  Forms, Windows,
-  ASystem, AUtils;
+  Controls, Forms, Windows,
+  ABase, ASystem, AUtils,
+  AUiBase;
+
+// --- AUi ---
+
+function AUi_SetProgramState(State: AInteger): AError; stdcall;
+
+// --- UI ---
 
 procedure UI_ShowHelp();
 
 procedure UI_ShowHelp2(const FileName: string);
 
 implementation
+
+// --- AUi ---
+
+function AUi_SetProgramState(State: AInteger): AError;
+begin
+  try
+    if (State = AUiProgramState_None) then
+      Screen.Cursor := crNone
+    else if (State = AUiProgramState_HourGlass) then
+      Screen.Cursor := crHourGlass
+    else
+      Screen.Cursor := crDefault;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+// --- UI ---
 
 procedure UI_ShowHelp();
 begin

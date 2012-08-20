@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 13.08.2012
+@LastMod 20.08.2012
 }
 unit AUi;
 
@@ -1017,7 +1017,8 @@ function UI_WaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger; stdcall;
 
 procedure SetOnMainFormCreate(Value: AProc); stdcall;
 procedure SetOnMainFormCreate02(Value: AProc02); stdcall;
-function SetProgramState(State: AInteger): AError; stdcall;
+
+function SetProgramState(State: AUiProgramState): AError; stdcall;
 
 //** Отображает справочную информацию.
 function ShowHelp(): AError; stdcall;
@@ -1347,19 +1348,9 @@ begin
   {$ENDIF A02}
 end;
 
-function SetProgramState(State: AInteger): AError; stdcall;
+function SetProgramState(State: AUiProgramState): AError;
 begin
-  try
-    if (State = 1) then
-      Screen.Cursor := crNone
-    else if (State = 11) then
-      Screen.Cursor := crHourGlass
-    else
-      Screen.Cursor := crDefault;
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUi_SetProgramState(State);
 end;
 
 function ShowHelp(): AError; stdcall;

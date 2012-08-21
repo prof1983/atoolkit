@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 20.08.2012
+@LastMod 21.08.2012
 }
 unit AUi;
 
@@ -156,20 +156,6 @@ procedure AUi_TextView_SetWordWrap(TextView: AControl; Value: ABoolean); stdcall
 {$IFNDEF UNIX}
 function AUi_TrayIcon_GetMenuItems(TrayIcon: ATrayIcon): AMenuItem; stdcall;
 {$ENDIF}
-
-// --- AUiWindow ---
-
-procedure AUi_Window_FreeAndNil(var Window: AWindow); stdcall;
-
-procedure AUi_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger); stdcall;
-
-procedure AUi_Window_SetFormStyle(Window: AWindow; FormStyle: AInteger); stdcall;
-
-procedure AUi_Window_Free(Window: AWindow); stdcall;
-
-procedure AUi_Window_SetPosition(Window: AWindow; Position: AInteger); stdcall;
-
-function AUi_Window_ShowModal(Window: AWindow): ABoolean; stdcall;
 
 // --- Procs ---
 
@@ -741,6 +727,9 @@ procedure Window_SetBorderStyle02(Window: AWindow; BorderStyle: AInteger); stdca
 
 //** Задает стиль окна.
 function Window_SetFormStyle(Window: AWindow; FormStyle: AInteger): AError; stdcall;
+
+{** Задает стиль окна }
+procedure Window_SetFormStyle02(Window: AWindow; FormStyle: AInteger); stdcall;
 
 //** Задает позицию окна.
 function Window_SetPosition(Window: AWindow; Position: AInteger): AError; stdcall;
@@ -1889,52 +1878,6 @@ begin
     Result := UI_TrayIcon_GetMenuItems(TrayIcon);
   except
     Result := 0;
-  end;
-end;
-
-// --- AUi_Window ---
-
-procedure AUi_Window_Free(Window: AWindow);
-begin
-  AUI.Control_Free(Window);
-end;
-
-procedure AUi_Window_FreeAndNil(var Window: AWindow);
-begin
-  AUi_Window_Free(Window);
-  Window := 0;
-end;
-
-procedure AUi_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger);
-begin
-  try
-    AUiWindows.Ui_Window_SetBorderStyle(Window, BorderStyle);
-  except
-  end;
-end;
-
-procedure AUi_Window_SetFormStyle(Window: AWindow; FormStyle: AInteger);
-begin
-  try
-    AUiWindows.Ui_Window_SetFormStyle(Window, FormStyle);
-  except
-  end;
-end;
-
-procedure AUi_Window_SetPosition(Window: AWindow; Position: AInteger);
-begin
-  try
-    AUiWindows.Ui_Window_SetPosition(Window, Position);
-  except
-  end;
-end;
-
-function AUi_Window_ShowModal(Window: AWindow): ABoolean;
-begin
-  try
-    Result := AUiWindows.Ui_Window_ShowModal(Window);
-  except
-    Result := False;
   end;
 end;
 
@@ -4959,48 +4902,17 @@ end;
 
 function Window_Add(Window: AWindow): AError; stdcall;
 begin
-  try
-    if (Window = 0) then
-    begin
-      Result := -1;
-      Exit;
-    end;
-
-    if not(TObject(Window) is TForm) then
-    begin
-      Result := -2;
-      Exit;
-    end;
-
-    if (FindObject(TObject(Window)) >= 0) then
-    begin
-      Result := -3;
-      Exit;
-    end;
-
-    Result := AddObject(TObject(Window));
-
-    if Assigned(TForm(Window).Menu) then
-    begin
-      AddObject(TForm(Window).Menu);
-    end;
-  except
-    Result := -99;
-  end;
+  Result := AUi_Window_Add(Window);
 end;
 
 procedure Window_Free(Window: AWindow); stdcall;
 begin
-  UI_Control_Free(Window);
+  AUi_Window_Free(Window);
 end;
 
 function Window_GetMenu(Window: AWindow): AMenu; stdcall;
 begin
-  try
-    Result := AUIWindows.UI_Window_GetMenu(Window);
-  except
-    Result := 0;
-  end;
+  Result := AUi_Window_GetMenu(Window);
 end;
 
 {$IFDEF USE_SETTINGS}
@@ -5027,11 +4939,7 @@ end;
 
 function Window_New(): AControl; stdcall;
 begin
-  try
-    Result := AUIWindows.UI_Window_New(); //Result := AddObject(TForm.Create(nil));
-  except
-    Result := 0;
-  end;
+  Result := AUi_Window_New();
 end;
 
 {$IFDEF USE_SETTINGS}
@@ -5058,60 +4966,42 @@ end;
 
 function Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger): AError; stdcall;
 begin
-  try
-    AUIWindows.UI_Window_SetBorderStyle(Window, BorderStyle);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUi_Window_SetBorderStyle(Window, BorderStyle);
 end;
 
 procedure Window_SetBorderStyle02(Window: AWindow; BorderStyle: AInteger); stdcall;
 begin
-  try
-    AUIWindows.UI_Window_SetBorderStyle(Window, BorderStyle);
-  except
-  end;
+  AUi_Window_SetBorderStyle(Window, BorderStyle);
 end;
 
 function Window_SetFormStyle(Window: AWindow; FormStyle: AInteger): AError; stdcall;
 begin
-  try
-    AUIWindows.UI_Window_SetFormStyle(Window, FormStyle);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUi_Window_SetFormStyle(Window, FormStyle);
 end;
 
-//** Задает позицию окна.
+procedure Window_SetFormStyle02(Window: AWindow; FormStyle: AInteger);
+begin
+  AUi_Window_SetFormStyle(Window, FormStyle);
+end;
+
 function Window_SetPosition(Window: AWindow; Position: AInteger): AError; stdcall;
 begin
-  try
-    AUIWindows.UI_Window_SetPosition(Window, Position);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUi_Window_SetPosition(Window, Position);
+end;
+
+procedure Window_SetPosition02(Window: AWindow; Position: AInt);
+begin
+  AUi_Window_SetPosition(Window, Position);
 end;
 
 function Window_SetState(Window: AWindow; State: AInteger): AError; stdcall;
 begin
-  try
-    UI_Window_SetState(Window, State);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUi_Window_SetState(Window, State);
 end;
 
 function Window_ShowModal(Window: AWindow): ABoolean; stdcall;
 begin
-  try
-    Result := AUIWindows.UI_Window_ShowModal(Window);
-  except
-    Result := False;
-  end;
+  Result := AUi_Window_ShowModal(Window);
 end;
 
 end.

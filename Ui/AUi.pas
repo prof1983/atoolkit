@@ -57,21 +57,6 @@ function AUi_ShellExecute(const Operation, FileName, Parameters, Directory: AStr
 
 function AUi_Shutdown(): AError; stdcall;
 
-// --- AUi_Control ---
-
-{ @param FontName - (const) }
-function AUi_Control_SetFont1A(Control: AControl; FontName: AStr;
-    FontSize: AInt): AError; stdcall;
-
-function AUi_Control_SetFont1P(Control: AControl; const FontName: APascalString;
-    FontSize: AInteger): AError; stdcall;
-
-procedure AUi_Control_SetFont1P_Old(Control: AControl; const FontName: APascalString;
-    FontSize: AInteger); stdcall;
-
-function AUi_Control_SetFont2P(Control: AControl; const FontName: APascalString;
-    FontSize: AInteger; FontColor: AColor): AError; stdcall;
-
 // --- AUi_Image ---
 
 function AUi_Image_LoadFromFile(Image: AControl; const FileName: AString_Type): ABoolean; stdcall;
@@ -764,54 +749,6 @@ function UI_ComboBox_GetItemIndex(ComboBox: AControl): AInteger; stdcall;
 function UI_ComboBox_New(Parent: AControl): AControl; stdcall;
 function UI_ComboBox_NewA(Parent: AControl; Left, Top, Width: AInteger): AControl; stdcall;
 procedure UI_ComboBox_SetItemIndex(ComboBox: AControl; Value: AInteger); stdcall;
-
-procedure UI_Control_Free(Control: AControl); stdcall; {deprecated;}
-procedure UI_Control_FreeAndNil(var Control: AControl); stdcall; {deprecated;}
-function UI_Control_GetColor(Control: AControl): AColor; stdcall; {deprecated;}
-function UI_Control_GetEnabled(Control: AControl): ABoolean; stdcall; {deprecated;}
-function UI_Control_GetHeight(Control: AControl): AInteger; stdcall; {deprecated;}
-function UI_Control_GetHint(Control: AControl): APascalString; stdcall; {deprecated;}
-function UI_Control_GetName(Control: AControl): APascalString; stdcall; {deprecated;}
-function UI_Control_GetText(Control: AControl): APascalString; stdcall; {deprecated;}
-function UI_Control_GetVisible(Control: AControl): ABoolean; stdcall; {deprecated;}
-function UI_Control_GetWidth(Control: AControl): AInteger; stdcall; {deprecated;}
-procedure UI_Control_SetClientSize(Control: AControl; ClientWidth, ClientHeight: AInteger); stdcall; {deprecated;}
-
-//** Задает цвет элемента.
-// Use Control_SetColor()
-procedure UI_Control_SetColor(Control: AControl; Color: AColor); stdcall; deprecated;
-
-procedure UI_Control_SetEnabled(Control: AControl; Value: ABoolean); stdcall; {deprecated;}
-function UI_Control_SetFocus(Control: AControl): ABoolean; stdcall; {deprecated;}
-
-procedure UI_Control_SetFont1(Control: AControl; const FontName: APascalString; FontSize: AInteger); stdcall; deprecated; // Use Control_SetFont1()
-
-// Если FontColor = 1, то цвет не изменяется
-procedure UI_Control_SetFont2(Control: AControl; const FontName: APascalString; FontSize: AInteger; FontColor: AColor); stdcall; {deprecated;}
-
-// Use Control_SetHeight()
-function UI_Control_SetHeight(Control: AControl; Value: AInteger): AInteger; stdcall; deprecated;
-
-// Use Control_SetHint() or UI_Control_SetHint02()
-procedure UI_Control_SetHint(Control: AControl; const Value: APascalString); stdcall; deprecated;
-// Use Control_SetName() or UI_Control_SetName02()
-procedure UI_Control_SetName(Control: AControl; const Value: APascalString); stdcall; deprecated;
-// Use Control_SetOnChange02()
-procedure UI_Control_SetOnChange(Control: AControl; OnChange: ACallbackProc02); stdcall; deprecated;
-// Use Control_SetOnChangeEx()
-procedure UI_Control_SetOnChange2(Control: AControl; OnChange: ACallbackProc02; Obj: AInteger = 0); stdcall; deprecated;
-// Use Control_SetOnClick()
-procedure UI_Control_SetOnClick(Control: AControl; Value: ACallbackProc02); stdcall; deprecated;
-// Use Control_SetPosition()
-procedure UI_Control_SetPosition(Control: AControl; Left, Top: AInteger); stdcall; deprecated;
-// Use Control_SetSize()
-procedure UI_Control_SetSize(Control: AControl; Width, Height: AInteger); stdcall; deprecated;
-// Use Control_SetTextP()
-procedure UI_Control_SetText(Control: AControl; const Value: AWideString); stdcall; deprecated;
-// Use Control_SetVisible()
-procedure UI_Control_SetVisible(Control: AControl; Value: ABoolean); stdcall; deprecated;
-// Use Control_SetWidth()
-function UI_Control_SetWidth(Control: AControl; Value: AInteger): AInteger; stdcall; deprecated;
 
 function UI_DataSource_New: PADataSource; stdcall;
 //procedure UI_DataSource_SetDataSet(DataSource: PADataSource; Value: PADataSet); stdcall;
@@ -1539,50 +1476,6 @@ begin
   end;
 end;
 
-// --- AUi_Control ---
-
-function AUi_Control_SetFont1A(Control: AControl; FontName: AStr; FontSize: AInt): AError;
-begin
-  try
-    AUiControls.Ui_Control_SetFont1(Control, FontName, FontSize);
-    Result := 0;
-  except
-    Result := -1;
-  end;
-end;
-
-function AUi_Control_SetFont1P(Control: AControl; const FontName: APascalString;
-    FontSize: AInteger): AError;
-begin
-  try
-    AUiControls.Ui_Control_SetFont1(Control, FontName, FontSize);
-    Result := 0;
-  except
-    Result := -1;
-  end;
-end;
-
-procedure AUi_Control_SetFont1P_Old(Control: AControl; const FontName: APascalString;
-    FontSize: AInteger);
-begin
-  AUi_Control_SetFont1P(Control, FontName, FontSize);
-end;
-
-function AUi_Control_SetFont2P(Control: AControl; const FontName: APascalString;
-    FontSize: AInteger; FontColor: AColor): AError;
-begin
-  if (TObject(Control) is TLabel) then
-  begin
-    if (FontName <> '') then
-      TLabel(Control).Font.Name := FontName;
-    if (FontSize <> 0) then
-      TLabel(Control).Font.Size := FontSize;
-    if (FontColor <> 1) then
-      TLabel(Control).Font.Color := FontColor;
-  end;
-  Result := 0;
-end;
-
 // --- AUi_Image ---
 
 function AUi_Image_LoadFromFile(Image: AControl; const FileName: AString_Type): ABoolean;
@@ -1993,229 +1886,154 @@ end;
 
 function Control_Free(Control: AControl): AError; stdcall;
 begin
-  if (Control <> 0) then
-    TObject(Control).Free;
-  Result := 0;
+  Result := AUiControl_Free(Control);
 end;
 
 function Control_GetColor(Control: AControl): AColor; stdcall;
 begin
-  if (TObject(Control) is TLabel) then
-    Result := TLabel(Control).Color
-  else if (TObject(Control) is TPanel) then
-    Result := TPanel(Control).Color
-  else if (TObject(Control) is TForm) then
-    Result := TForm(Control).Color
-  else
-    Result := $000000;
+  Result := AUiControl_GetColor(Control);
 end;
 
 function Control_GetEnabled(Control: AControl): ABoolean; stdcall;
 begin
-  if (TObject(Control) is TControl) then
-    Result := TControl(Control).Enabled
-  else if (TObject(Control) is TMenuItem) then
-    Result := TMenuItem(Control).Enabled
-  else
-    Result := False;
+  Result := AUiControl_GetEnabled(Control);
 end;
 
 function Control_GetHeight(Control: AControl): AInteger; stdcall;
 begin
-  Result := TControl(Control).Height;
+  Result := AUiControl_GetHeight(Control);
 end;
 
 function Control_GetHintP(Control: AControl): APascalString; stdcall;
 begin
-  if (TObject(Control) is TControl) then
-    Result := TControl(Control).Hint
-  else if (TObject(Control) is TMenuItem) then
-    Result := TMenuItem(Control).Hint
-  else
-    Result := '';
+  Result := AUiControl_GetHintP(Control);
 end;
 
 function Control_GetHintWS(Control: AControl): AWideString; stdcall;
 begin
-  Result := Control_GetHintP(Control);
+  Result := AUiControl_GetHintP(Control);
 end;
 
 function Control_GetMenu(Control: AControl): AMenu; stdcall;
 begin
-  Result := UI_Control_GetMenu(Control);
+  Result := AUiControl_GetMenu(Control);
 end;
 
 function Control_GetNameP(Control: AControl): APascalString; stdcall;
 begin
-  if (TObject(Control) is TComponent) then
-    Result := TComponent(Control).Name
-  else
-    Result := '';
+  Result := AUiControl_GetNameP(Control);
 end;
 
 function Control_GetNameWS(Control: AControl): AWideString; stdcall;
 begin
-  Result := Control_GetNameP(Control);
+  Result := AUiControl_GetNameP(Control);
 end;
 
 function Control_GetTextP(Control: AControl): APascalString; stdcall;
 begin
-  if (TObject(Control) is TForm) then
-    Result := TForm(Control).Caption
-  else if (TObject(Control) is TMenuItem) then
-    Result := TMenuItem(Control).Caption
-  else if (TObject(Control) is TEdit) then
-    Result := TEdit(Control).Text
-  else
-    Result := '';
+  Result := AUiControl_GetTextP(Control);
 end;
 
 function Control_GetVisible(Control: AControl): ABoolean; stdcall;
 begin
-  if (TObject(Control) is TControl) then
-    Result := TControl(Control).Visible
-  else if (TObject(Control) is TMenuItem) then
-    Result := TMenuItem(Control).Visible
-  else
-    Result := False;
+  Result := AUiControl_GetVisible(Control);
 end;
 
 function Control_GetWidth(Control: AControl): AInteger; stdcall;
 begin
-  Result := TControl(Control).Width;
+  Result := AUiControl_GetWidth(Control);
 end;
 
 function Control_SetAlign(Control: AControl; Align: TUIAlign): AError; stdcall;
 begin
-  try
-    AUIControls.UI_Control_SetAlign(Control, Align);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiControl_SetAlign(Control, Align);
 end;
 
 procedure Control_SetAlign02(Control: AControl; Align: TUIAlign); stdcall;
 begin
-  AUIControls.UI_Control_SetAlign(Control, Align);
+  AUi_Control_SetAlign(Control, Align);
 end;
 
 function Control_SetClientSize(Control: AControl; ClientWidth, ClientHeight: AInteger): AError; stdcall;
 begin
-  TWinControl(Control).ClientWidth := ClientWidth;
-  TWinControl(Control).ClientHeight := ClientHeight;
-  Result := 0;
+  Result := AUiControl_SetClientSize(Control, ClientWidth, ClientHeight);
 end;
 
 function Control_SetColor(Control: AControl; Color: AColor): AError; stdcall;
 begin
-  try
-    AUIControls.UI_Control_SetColor(Control, Color);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiControl_SetColor(Control, Color);
 end;
 
 procedure Control_SetColor02(Control: AControl; Color: AColor); stdcall;
 begin
-  try
-    AUIControls.UI_Control_SetColor(Control, Color);
-  except
-  end;
+  AUiControl_SetColor(Control, Color);
 end;
 
 function Control_SetEnabled(Control: AControl; Value: ABoolean): AError; stdcall;
 begin
-  if (TObject(Control) is TControl) then
-    TControl(Control).Enabled := Value
-  else if (TObject(Control) is TMenuItem) then
-    TMenuItem(Control).Enabled := Value;
-  Result := 0;
+  Result := AUiControl_SetEnabled(Control, Value);
 end;
 
 function Control_SetFocus(Control: AControl): ABoolean; stdcall;
 begin
-  Result := False;
-  try
-    if (TObject(Control) is TWinControl) then
-    begin
-      TWinControl(Control).SetFocus;
-      Result := True;
-    end;
-  except
-  end;
+  Result := AUiControl_SetFocus(Control);
 end;
 
-function Control_SetFont1A(Control: AControl; {const} FontName: PAnsiChar; FontSize: AInteger): AError; stdcall;
+function Control_SetFont1A(Control: AControl; {const} FontName: AStr; FontSize: AInt): AError;
 begin
-  Result := AUi_Control_SetFont1A(Control, FontName, FontSize);
+  Result := AUiControl_SetFont1A(Control, FontName, FontSize);
 end;
 
 function Control_SetFont1P(Control: AControl; const FontName: APascalString; FontSize: AInteger): AError; stdcall;
 begin
-  Result := AUi_Control_SetFont1P(Control, FontName, FontSize);
+  Result := AUiControl_SetFont1P(Control, FontName, FontSize);
 end;
 
 function Control_SetFont2P(Control: AControl; const FontName: APascalString; FontSize: AInteger; FontColor: AColor): AError; stdcall;
 begin
-  Result := AUi_Control_SetFont2P(Control, FontName, FontSize, FontColor);
+  Result := AUiControl_SetFont2P(Control, FontName, FontSize, FontColor);
 end;
 
 function Control_SetHeight(Control: AControl; Value: AInteger): AInteger; stdcall;
 begin
-  try
-    AUIControls.UI_Control_SetHeight(Control, Value);
-    Result := Value;
-  except
-    Result := -1;
-  end;
+  Result := AUiControl_SetHeight(Control, Value);
 end;
 
 procedure Control_SetHint02(Control: AControl; const Value: APascalString); stdcall;
 begin
-  AUIControls.UI_Control_SetHint(Control, Value);
+  AUi_Control_SetHint(Control, Value);
 end;
 
 function Control_SetHintP(Control: AControl; const Value: APascalString): AError; stdcall;
 begin
-  try
-    AUIControls.UI_Control_SetHint(Control, Value);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiControl_SetHintP(Control, Value);
 end;
 
 function Control_SetHintWS(Control: AControl; const Value: AWideString): AError; stdcall;
 begin
-  Result := Control_SetHintP(Control, Value);
+  Result := AUiControl_SetHintP(Control, Value);
 end;
 
 procedure Control_SetName02(Control: AControl; const Value: APascalString); stdcall;
 begin
-  AUIControls.UI_Control_SetName(Control, Value);
+  AUiControl_SetNameP(Control, Value);
 end;
 
 function Control_SetNameP(Control: AControl; const Value: APascalString): AError; stdcall;
 begin
-  try
-    AUIControls.UI_Control_SetName(Control, Value);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiControl_SetNameP(Control, Value);
 end;
 
 function Control_SetNameWS(Control: AControl; const Value: AWideString): AError; stdcall;
 begin
-  Result := Control_SetNameP(Control, Value);
+  Result := AUiControl_SetNameP(Control, Value);
 end;
 
 function Control_SetOnChange(Control: AControl; OnChange: ACallbackProc): AError; stdcall;
 begin
+  xxx
   try
-    Result := AUIControlsA.UI_Control_SetOnChange(Control, OnChange);
+    Result := AUi_Control_SetOnChange(Control, OnChange);
   except
     Result := -1;
   end;
@@ -2223,6 +2041,7 @@ end;
 
 procedure Control_SetOnChange02(Control: AControl; OnChange: ACallbackProc02); stdcall;
 begin
+  xxx
   try
     AUIControlsA.UI_Control_SetOnChange02(Control, OnChange);
   except
@@ -2231,6 +2050,7 @@ end;
 
 function Control_SetOnChangeEx(Control: AControl; OnChange: ACallbackProc03; Obj: AInteger): AError; stdcall;
 begin
+  xxx
   try
     Result := AUIControlsA.UI_Control_SetOnChangeEx03(Control, OnChange, Obj);
   except
@@ -2240,103 +2060,62 @@ end;
 
 function Control_SetOnClick(Control: AControl; Value: ACallbackProc): AError; stdcall;
 begin
-  try
-    Result := AUIControls.UI_Control_SetOnClick(Control, Value);
-  except
-    Result := -1;
-  end;
+  Result := AUiControl_SetOnClick(Control, Value);
 end;
 
 procedure Control_SetOnClick02(Control: AControl; Value: ACallbackProc02); stdcall;
 begin
-  AUIControls.UI_Control_SetOnClick02(Control, Value);
+  AUiControl_SetOnClick02(Control, Value);
 end;
 
 function Control_SetPosition(Control: AControl; Left, Top: AInteger): AError; stdcall;
 begin
-  try
-    Result := AUIControls.UI_Control_SetPosition(Control, Left, Top);
-  except
-    Result := -1;
-  end;
+  Result := AUiControl_SetPosition(Control, Left, Top);
 end;
 
 procedure Control_SetPosition02(Control: AControl; Left, Top: Integer); stdcall;
 begin
-  try
-    AUIControls.UI_Control_SetPosition(Control, Left, Top);
-  except
-  end;
+  AUiControl_SetPosition(Control, Left, Top);
 end;
 
 function Control_SetSize(Control: AControl; Width, Height: Integer): AError; stdcall;
 begin
-  try
-    Result := AUIControls.UI_Control_SetSize(Control, Width, Height);
-  except
-    Result := -1;
-  end;
+  Result := AUiControl_SetSize(Control, Width, Height);
 end;
 
 procedure Control_SetSize02(Control: AControl; Width, Height: Integer); stdcall;
 begin
-  try
-    AUIControls.UI_Control_SetSize(Control, Width, Height);
-  except
-  end;
+  AUiControl_SetSize(Control, Width, Height);
 end;
 
 procedure Control_SetText02(Control: AControl; const Value: AWideString); stdcall;
 begin
-  try
-    AUIControls.UI_Control_SetTextP(Control, Value);
-  except
-  end;
+  AUiControl_SetTextP(Control, Value);
 end;
 
 function Control_SetTextP(Control: AControl; const Value: APascalString): AError; stdcall;
 begin
-  try
-    Result := AUIControls.UI_Control_SetTextP(Control, Value);
-  except
-    Result := -1;
-  end;
+  Result := AUiControl_SetTextP(Control, Value);
 end;
 
 function Control_SetTextWS(Control: AControl; const Value: AWideString): AError; stdcall;
 begin
-  try
-    Result := AUIControls.UI_Control_SetTextP(Control, Value);
-  except
-    Result := -1;
-  end;
+  Result := AUiControl_SetTextP(Control, Value);
 end;
 
 function Control_SetVisible(Control: AControl; Value: ABoolean): AError; stdcall;
 begin
-  try
-    AUIControls.UI_Control_SetVisible(Control, Value);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiControl_SetVisible(Control, Value);
 end;
 
 procedure Control_SetVisible02(Control: AControl; Value: ABoolean); stdcall;
 begin
-  try
-    AUIControls.UI_Control_SetVisible(Control, Value);
-  except
-  end;
+  AUiControl_SetVisible(Control, Value);
 end;
 
 function Control_SetWidth(Control: AControl; Value: AInteger): AInteger; stdcall;
 begin
-  try
-    Result := AUIControls.UI_Control_SetWidth(Control, Value);
-  except
-    Result := -1;
-  end;
+  Result := AUiControl_SetWidth(Control, Value);
 end;
 
 { DataSource }
@@ -3893,145 +3672,6 @@ end;
 procedure UI_ComboBox_SetItemIndex(ComboBox: AControl; Value: AInteger); stdcall;
 begin
   TComboBox(ComboBox).ItemIndex := Value;
-end;
-
-{ UI_Control }
-
-procedure UI_Control_Free(Control: AControl); stdcall;
-begin
-  Control_Free(Control);
-end;
-
-procedure UI_Control_FreeAndNil(var Control: AControl); stdcall;
-begin
-  Control_Free(Control);
-  Control := 0;
-end;
-
-function UI_Control_GetColor(Control: AControl): AColor; stdcall;
-begin
-  Result := Control_GetColor(Control);
-end;
-
-function UI_Control_GetEnabled(Control: AControl): ABoolean; stdcall;
-begin
-  Result := Control_GetEnabled(Control);
-end;
-
-function UI_Control_GetHeight(Control: AControl): AInteger; stdcall;
-begin
-  Result := Control_GetHeight(Control);
-end;
-
-function UI_Control_GetHint(Control: AControl): APascalString; stdcall;
-begin
-  Result := Control_GetHintP(Control);
-end;
-
-function UI_Control_GetName(Control: AControl): APascalString; stdcall;
-begin
-  Result := Control_GetNameP(Control);
-end;
-
-function UI_Control_GetText(Control: AControl): APascalString; stdcall;
-begin
-  Result := Control_GetTextP(Control);
-end;
-
-function UI_Control_GetVisible(Control: AControl): ABoolean; stdcall;
-begin
-  Result := Control_GetVisible(Control);
-end;
-
-function UI_Control_GetWidth(Control: AControl): AInteger; stdcall;
-begin
-  Result := Control_GetWidth(Control);
-end;
-
-procedure UI_Control_SetClientSize(Control: AControl; ClientWidth, ClientHeight: AInteger); stdcall;
-begin
-  Control_SetClientSize(Control, ClientWidth, ClientHeight);
-end;
-
-procedure UI_Control_SetColor(Control: AControl; Color: AColor);
-begin
-  AUIControls.UI_Control_SetColor(Control, Color);
-end;
-
-procedure UI_Control_SetEnabled(Control: AControl; Value: ABoolean); stdcall;
-begin
-  Control_SetEnabled(Control, Value);
-end;
-
-function UI_Control_SetFocus(Control: AControl): ABoolean; stdcall;
-begin
-  Result := Control_SetFocus(Control);
-end;
-
-procedure UI_Control_SetFont1(Control: AControl; const FontName: APascalString; FontSize: AInteger); stdcall;
-begin
-  AUi_Control_SetFont1P(Control, FontName, FontSize);
-end;
-
-procedure UI_Control_SetFont2(Control: AControl; const FontName: APascalString; FontSize: AInteger; FontColor: AColor); stdcall;
-begin
-  Control_SetFont2P(Control, FontName, FontSize, FontColor);
-end;
-
-function UI_Control_SetHeight(Control: AControl; Value: AInteger): AInteger; stdcall;
-begin
-  AUIControls.UI_Control_SetHeight(Control, Value);
-  Result := 0;
-end;
-
-procedure UI_Control_SetHint(Control: AControl; const Value: APascalString); stdcall;
-begin
-  AUIControls.UI_Control_SetHint(Control, Value);
-end;
-
-procedure UI_Control_SetName(Control: AControl; const Value: APascalString); stdcall;
-begin
-  AUIControls.UI_Control_SetName(Control, Value);
-end;
-
-procedure UI_Control_SetOnChange(Control: AControl; OnChange: ACallbackProc02); stdcall;
-begin
-  AUIControlsA.UI_Control_SetOnChange02(Control, OnChange);
-end;
-
-procedure UI_Control_SetOnChange2(Control: AControl; OnChange: ACallbackProc02; Obj: AInteger); stdcall;
-begin
-  AUIControlsA.UI_Control_SetOnChangeEx02(Control, OnChange, Obj);
-end;
-
-procedure UI_Control_SetOnClick(Control: AControl; Value: ACallbackProc02); stdcall;
-begin
-  AUIControls.UI_Control_SetOnClick02(Control, Value);
-end;
-
-procedure UI_Control_SetPosition(Control: AControl; Left, Top: Integer); stdcall;
-begin
-  AUIControls.UI_Control_SetPosition(Control, Left, Top);
-end;
-
-procedure UI_Control_SetSize(Control: AControl; Width, Height: Integer); stdcall;
-begin
-  AUIControls.UI_Control_SetSize(Control, Width, Height);
-end;
-
-procedure UI_Control_SetText(Control: AControl; const Value: AWideString); stdcall;
-begin
-  AUIControls.UI_Control_SetTextP(Control, Value);
-end;
-
-procedure UI_Control_SetVisible(Control: AControl; Value: ABoolean); stdcall;
-begin
-  AUIControls.UI_Control_SetVisible(Control, Value);
-end;
-
-function UI_Control_SetWidth(Control: AControl; Value: AInteger): AInteger; stdcall;
-begin
-  Result := AUIControls.UI_Control_SetWidth(Control, Value);
 end;
 
 { DataSource }

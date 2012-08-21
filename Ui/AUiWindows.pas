@@ -10,29 +10,29 @@ interface
 
 uses
   Controls, Forms,
-  ABase, AUiBase, AUiData;
+  ABase, AUiControls, AUiBase, AUiData;
 
 // --- AUiWindow ---
 
-function AUi_Window_Add(Window: AWindow): AError;
+function AUiWindow_Add(Window: AWindow): AError;
 
-function AUi_Window_Free(Window: AWindow): AError;
+function AUiWindow_Free(Window: AWindow): AError;
 
-function AUi_Window_FreeAndNil(var Window: AWindow): AError;
+function AUiWindow_FreeAndNil(var Window: AWindow): AError;
 
-function AUi_Window_GetMenu(Window: AWindow): AMenu;
+function AUiWindow_GetMenu(Window: AWindow): AMenu;
 
-function AUi_Window_New(): AControl;
+function AUiWindow_New(): AControl;
 
-function AUi_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInt): AError;
+function AUiWindow_SetBorderStyle(Window: AWindow; BorderStyle: AInt): AError;
 
-function AUi_Window_SetFormStyle(Window: AWindow; FormStyle: AInt): AError;
+function AUiWindow_SetFormStyle(Window: AWindow; FormStyle: AInt): AError;
 
-function AUi_Window_SetPosition(Window: AWindow; Position: AInt): AError;
+function AUiWindow_SetPosition(Window: AWindow; Position: AInt): AError;
 
-function AUi_Window_SetState(Window: AWindow; State: AInt): AError;
+function AUiWindow_SetState(Window: AWindow; State: AInt): AError;
 
-function AUi_Window_ShowModal(Window: AWindow): ABoolean;
+function AUiWindow_ShowModal(Window: AWindow): ABoolean;
 
 // --- UI_Window ---
 
@@ -56,9 +56,9 @@ function UI_Window_ShowModal(Window: AWindow): ABoolean;
 
 implementation
 
-// --- AUi_Window ---
+// --- AUiWindow ---
 
-function AUi_Window_Add(Window: AWindow): AError;
+function AUiWindow_Add(Window: AWindow): AError;
 begin
   try
     if (Window = 0) then
@@ -90,7 +90,7 @@ begin
   end;
 end;
 
-function AUi_Window_Free(Window: AWindow): AError;
+function AUiWindow_Free(Window: AWindow): AError;
 begin
   try
     AUi_Control_Free(Window);
@@ -100,7 +100,7 @@ begin
   end;
 end;
 
-function AUi_Window_FreeAndNil(var Window: AWindow): AError;
+function AUiWindow_FreeAndNil(var Window: AWindow): AError;
 begin
   try
     AUi_Window_Free(Window);
@@ -111,7 +111,7 @@ begin
   end;
 end;
 
-function AUi_Window_GetMenu(Window: AWindow): AMenu;
+function AUiWindow_GetMenu(Window: AWindow): AMenu;
 var
   O: TObject;
 begin
@@ -128,7 +128,7 @@ begin
   end;
 end;
 
-function AUi_Window_New(): AControl;
+function AUiWindow_New(): AControl;
 begin
   try
     Result := AddObject(TForm.Create(nil));
@@ -137,7 +137,7 @@ begin
   end;
 end;
 
-function AUi_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInt): AError;
+function AUiWindow_SetBorderStyle(Window: AWindow; BorderStyle: AInt): AError;
 begin
   try
     TForm(Window).BorderStyle := TBorderStyle(BorderStyle);
@@ -147,7 +147,7 @@ begin
   end;
 end;
 
-function AUi_Window_SetFormStyle(Window: AWindow; FormStyle: AInt): AError;
+function AUiWindow_SetFormStyle(Window: AWindow; FormStyle: AInt): AError;
 begin
   try
     TForm(Window).FormStyle := TFormStyle(FormStyle);
@@ -157,7 +157,7 @@ begin
   end;
 end;
 
-function AUi_Window_SetPosition(Window: AWindow; Position: AInt): AError;
+function AUiWindow_SetPosition(Window: AWindow; Position: AInt): AError;
 begin
   try
     TForm(Window).Position := TPosition(poScreenCenter);
@@ -167,7 +167,7 @@ begin
   end;
 end;
 
-function AUi_Window_SetState(Window: AWindow; State: AInt): AError;
+function AUiWindow_SetState(Window: AWindow; State: AInt): AError;
 begin
   try
     (TObject(Window) as TForm).WindowState := TWindowState(State);
@@ -177,7 +177,7 @@ begin
   end;
 end;
 
-function AUi_Window_ShowModal(Window: AWindow): ABoolean;
+function AUiWindow_ShowModal(Window: AWindow): ABoolean;
 begin
   try
     Result := (TForm(Window).ShowModal = mrOk);

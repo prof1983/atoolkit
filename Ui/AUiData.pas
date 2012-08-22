@@ -2,7 +2,7 @@
 @Abstract AUi data
 @Author Prof1983 <prof1983@ya.ru>
 @Created 31.05.2011
-@LastMod 19.07.2012
+@LastMod 22.08.2012
 }
 unit AUiData;
 
@@ -99,6 +99,11 @@ var
   miMain: AInteger;
   miHelp: AInteger;
   miFile: AInteger;
+
+var
+  UiAboutClick: AProc;
+  UiAboutWinMemoHeightDefault: Integer = 0;
+  UiAboutWinMemoWidthDefault: Integer = 0;
 
 function AddObject(Value: TObject): Integer;
 function GetObject(Value: Integer): TObject;

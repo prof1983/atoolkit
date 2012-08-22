@@ -754,39 +754,6 @@ function UI_DataSource_New: PADataSource; stdcall;
 //procedure UI_DataSource_SetDataSet(DataSource: PADataSource; Value: PADataSet); stdcall;
 procedure UI_DataSource_SetOnDataChange(DataSource: PADataSource; OnDataChange: ACallbackProc02); stdcall;
 
-procedure UI_Dialog_About; stdcall;
-
-function UI_Dialog_About_New: AWindow; stdcall;
-
-function UI_Dialog_AddButton(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
-    OnClick: ACallbackProc): AControl; stdcall;
-
-function UI_Dialog_AddButton02(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
-    OnClick: ACallbackProc02): AControl; stdcall;
-
-function UI_Dialog_Calendar(var Date: TDateTime; CenterX, CenterY: AInteger): ABoolean; stdcall;
-function UI_Dialog_DateFilter(var Group: Integer; var DateBegin, DateEnd: TDateTime): Boolean; stdcall;
-procedure UI_Dialog_Error(const Caption, UserMessage, ExceptMessage: APascalString); stdcall;
-function UI_Dialog_Font(var FontName: APascalString; var FontSize: AInteger; FontColor: AColor): ABoolean; stdcall;
-
-function UI_Dialog_InputBox(const Text: APascalString; var Value: APascalString): ABoolean; stdcall;
-
-function UI_Dialog_InputBox2(const Caption, Text1, Text2: APascalString; var Value1, Value2: APascalString): ABoolean; stdcall;
-
-function UI_Dialog_InputBox3(const Caption, Text: APascalString; var Value: APascalString): Boolean; stdcall;
-
-// Use UI_Dialog_InputBox3()
-function UI_Dialog_InputBoxA(const Caption, Text: APascalString; var Value: APascalString): ABoolean; stdcall; deprecated;
-
-function UI_Dialog_Login(var UserName, Password: APascalString; IsSave: ABoolean): ABoolean; stdcall;
-function UI_Dialog_Message(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
-// Use Dialog_New()
-function UI_Dialog_New(Buttons: AUIWindowButtons): ADialog; stdcall; deprecated;
-function UI_Dialog_OpenFile(const InitialDir, Filter, Title: APascalString; var FileName: APascalString): ABoolean; stdcall;
-function UI_Dialog_OpenFileA(const InitialDir, Filter, DefaultExt, Title: APascalString; var FileName: APascalString; var FilterIndex: AInteger): ABoolean; stdcall;
-function UI_Dialog_SaveFile(const Dir, Ext, DefFileName: APascalString): APascalString; stdcall;
-function UI_Dialog_SaveFileA(const InitialDir, DefExt, DefFileName, Filter: APascalString; var FilterIndex: AInteger): APascalString; stdcall;
-
 procedure UI_Grid_AddColumn(Grid: AControl; const FieldName, Title: APascalString; Width: Integer); stdcall;
 
 { GridType
@@ -996,13 +963,7 @@ procedure UI_TextView_SetWordWrap(TextView: AControl; Value: ABoolean); stdcall;
 function UI_ShellExecute(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
 function UI_Object_Add(Value: AInteger): AInteger; stdcall;
 
-function UI_Dialog_Color(var Color: AColor): ABoolean; stdcall;
-function UI_Dialog_SelectDirectory(var Directory: APascalString): ABoolean; stdcall;
-
 { Protected }
-
-// Use Dialog_GetWindow()
-function UI_Dialog_GetWindow(Dialog: ADialog): AWindow; stdcall; deprecated;
 
 function UI_Init(): AError; stdcall; deprecated; // Use AUi_Init()
 function Done04(): AError; stdcall;
@@ -1018,13 +979,6 @@ function OnDone_Disconnect(Proc: ACallbackProc): AInteger; stdcall;
 function ProcessMessages(): AError; stdcall;
 
 procedure ProcessMessages02(); stdcall;
-
-{ Private }
-
-var
-  UIAboutClick: AProc;
-  UIAboutWinMemoHeightDefault: Integer = 0;
-  UIAboutWinMemoWidthDefault: Integer = 0;
 
 implementation
 
@@ -2109,112 +2063,59 @@ end;
 
 function Dialog_About: AError; stdcall;
 begin
-  ShowAboutWinA(UIAboutWinMemoWidthDefault, UIAboutWinMemoHeightDefault);
-  Result := 0;
+  Result := AUi_ExecuteAboutDialog();
 end;
 
 function Dialog_About_New: AWindow; stdcall;
-var
-  Form: TAboutForm;
 begin
-  Form := TAboutForm.Create(nil);
-  try
-    Form.InitA(UIAboutWinMemoWidthDefault, UIAboutWinMemoHeightDefault);
-  except
-    Form.Free;
-    Form := nil;
-  end;
-  Result := AWindow(Form);
+  Result := AUi_NewAboutDialog();
 end;
 
 function Dialog_AddButtonP(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
     OnClick: ACallbackProc): AControl; stdcall;
 begin
-  try
-    Result := UI_Dialog_AddButton(Win, Left, Width, Text, OnClick);
-  except
-    Result := 0;
-  end;
+  Result := AUiDialog_AddButtonP(Win, Left, Width, Text, OnClick);
 end;
 
 function Dialog_AddButtonWS(Win: AWindow; Left, Width: AInteger; const Text: AWideString;
     OnClick: ACallbackProc): AControl; stdcall;
 begin
-  try
-    Result := UI_Dialog_AddButton(Win, Left, Width, Text, OnClick);
-  except
-    Result := 0;
-  end;
+  Result := AUiDialog_AddButtonP(Win, Left, Width, Text, OnClick);
 end;
 
 function Dialog_Calendar(var Date: TDateTime; CenterX, CenterY: AInteger): ABoolean; stdcall;
 begin
-  {$IFNDEF FPC}
-  Result := ShowCalendarWin(Date, CenterX, CenterY);
-  {$ENDIF}
+  Result := AUi_ExecuteCalendarDialog(Date, CenterX, CenterY);
 end;
 
 function Dialog_Color(var Color: AColor): ABoolean; stdcall;
 begin
-  Result := AUIDialogs.ExecuteColorDialog(Color);
+  Result := AUi_ExecuteColorDialog(Color);
 end;
 
 function Dialog_DateFilter(var Group: Integer; var DateBegin, DateEnd: TDateTime): Boolean; stdcall;
-{$IFNDEF FPC}
-var
-  FilterForm: TFilterForm;
-{$ENDIF}
 begin
-  {$IFNDEF FPC}
-  FilterForm := TFilterForm.Create(nil);
-  try
-    FilterForm.RadioGroup1.ItemIndex := Group;
-    FilterForm.DateTimePicker1.DateTime := DateBegin;
-    FilterForm.DateTimePicker2.DateTime := DateEnd;
-    Result := (FilterForm.ShowModal = mrOk);
-    if Result then
-    begin
-      Group := FilterForm.RadioGroup1.ItemIndex;
-      DateBegin := FilterForm.DateTimePicker1.DateTime;
-      DateEnd := FilterForm.DateTimePicker2.DateTime;
-    end;
-  finally
-    FilterForm.Free;
-  end;
-  {$ENDIF}
+  Result := AUi_ExecuteDateFilterDialog(Group, DateBegin, DateEnd);
 end;
 
 function Dialog_ErrorP(const Caption, UserMessage, ExceptMessage: APascalString): AError; stdcall;
 begin
-  try
-    {$IFNDEF FPC}
-    fError.ShowErrorA(Caption, UserMessage, ExceptMessage);
-    {$ENDIF}
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUi_ExecuteErrorDialogP(Caption, UserMessage, ExceptMessage);
 end;
 
 function Dialog_ErrorWS(const Caption, UserMessage, ExceptMessage: AWideString): AError; stdcall;
 begin
-  try
-    {$IFNDEF FPC}
-    fError.ShowErrorA(Caption, UserMessage, ExceptMessage);
-    {$ENDIF}
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUi_ExecuteErrorDialogP(Caption, UserMessage, ExceptMessage);
 end;
 
 function Dialog_FontP(var FontName: APascalString; var FontSize: AInteger; FontColor: AColor): ABoolean; stdcall;
 begin
-  Result := ExecuteFontDialog(FontName, FontSize, FontColor);
+  Result := AUi_ExecuteFontDialog(FontName, FontSize, FontColor);
 end;
 
 function Dialog_GetWindow(Dialog: ADialog): AWindow; stdcall;
 begin
+  xxx
   try
     Result := AUIDialogs.UI_Dialog_GetWindow(Dialog);
   except
@@ -2224,6 +2125,7 @@ end;
 
 function Dialog_InputBox1P(const Text: APascalString; var Value: APascalString): ABoolean; stdcall;
 begin
+  xxx
   try
     Result := UI_Dialog_InputBox(Text, Value);
   except
@@ -2235,6 +2137,7 @@ function Dialog_InputBox1WS(const Text: AWideString; var Value: AWideString): AB
 var
   S: APascalString;
 begin
+  xxx
   try
     S := Value;
     Result := UI_Dialog_InputBox(Text, S);
@@ -2246,6 +2149,7 @@ end;
 
 function Dialog_InputBox2P(const Caption, Text1, Text2: APascalString; var Value1, Value2: APascalString): ABoolean; stdcall;
 begin
+  xxx
   try
     Result := UI_Dialog_InputBox2(Caption, Text1, Text2, Value1, Value2);
   except
@@ -2258,6 +2162,7 @@ var
   S1: APascalString;
   S2: APascalString;
 begin
+  xxx
   try
     S1 := Value1;
     S2 := Value2;
@@ -2271,6 +2176,7 @@ end;
 
 function Dialog_InputBox3P(const Caption, Text: APascalString; var Value: APascalString): ABoolean; stdcall;
 begin
+  xxx
   try
     Result := UI_Dialog_InputBox3(Caption, Text, Value);
   except
@@ -2282,6 +2188,7 @@ function Dialog_InputBox3WS(const Caption, Text: AWideString; var Value: AWideSt
 var
   S: APascalString;
 begin
+  xxx
   try
     S := Value;
     Result := UI_Dialog_InputBox3(Caption, Text, S);
@@ -2293,6 +2200,7 @@ end;
 
 function Dialog_LoginP(var UserName, Password: APascalString; IsSave: ABoolean): ABoolean; stdcall;
 begin
+  xxx
   try
     Result := UI_Dialog_Login(UserName, Password, IsSave);
   except
@@ -2305,6 +2213,7 @@ var
   UserNameStr: APascalString;
   PasswordStr: APascalString;
 begin
+  xxx
   try
     UserNameStr := UserName;
     PasswordStr := Password;
@@ -2318,6 +2227,7 @@ end;
 
 function Dialog_MessageDlgWS(const Msg: AWideString; MsgDlgType: AInteger; Flags: AMessageBoxFlags): AInteger; stdcall;
 begin
+  xxx
   try
     Result := UI_Dialog_MessageDlg(Msg, MsgDlgType, Flags);
   except
@@ -2327,6 +2237,7 @@ end;
 
 function Dialog_MessageP(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
+  xxx
   try
     Result := UI_Dialog_Message(Text, Caption, Flags);
   except
@@ -2336,6 +2247,7 @@ end;
 
 function Dialog_MessageWS(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
+  xxx
   try
     Result := UI_Dialog_Message(Text, Caption, Flags);
   except
@@ -2345,6 +2257,7 @@ end;
 
 function Dialog_New(Buttons: AUIWindowButtons): ADialog; stdcall;
 begin
+  xxx
   try
     Result := AUIDialogs.UI_Dialog_New(Buttons);
   except
@@ -2356,6 +2269,7 @@ function Dialog_OpenFileWS(const InitialDir, Filter, Title: AWideString; var Fil
 var
   S: APascalString;
 begin
+  xxx
   try
     S := FileName;
     Result := UI_Dialog_OpenFile(InitialDir, Filter, Title, S);
@@ -2367,6 +2281,7 @@ end;
 
 function Dialog_PrinterSetup(): AError; stdcall;
 begin
+  xxx
   try
     // Отображаем окно выбора и настройки печати
     UI_Dialog_PrinterSetup();
@@ -2378,6 +2293,7 @@ end;
 
 function Dialog_SelectDirectoryP(var Directory: APascalString): ABoolean; stdcall;
 begin
+  xxx
   {$IFNDEF FPC}
   Result := ExecuteSelectDirectoryDialog(Directory);
   {$ENDIF}
@@ -3665,158 +3581,6 @@ begin
   begin
     FDataSources[i].OnDataChange02 := OnDataChange;
   end;
-end;
-
-{ UI_Dialog }
-
-procedure UI_Dialog_About; stdcall;
-begin
-  Dialog_About;
-end;
-
-function UI_Dialog_About_New: AWindow; stdcall;
-begin
-  Result := Dialog_About_New;
-end;
-
-function UI_Dialog_AddButton(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
-    OnClick: ACallbackProc): AControl; stdcall;
-begin
-  if (Win <> 0) and (TObject(Win) is TAboutForm) then
-    Result := TAboutForm(Win).AddButton(Left, Width, Text, OnClick)
-  else
-    Result := 0;
-end;
-
-function UI_Dialog_AddButton02(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
-    OnClick: ACallbackProc02): AControl; stdcall;
-begin
-  if (Win <> 0) and (TObject(Win) is TAboutForm) then
-    Result := TAboutForm(Win).AddButton02(Left, Width, Text, OnClick)
-  else
-    Result := 0;
-end;
-
-function UI_Dialog_Calendar(var Date: TDateTime; CenterX, CenterY: AInteger): ABoolean; stdcall;
-begin
-  Result := Dialog_Calendar(Date, CenterX, CenterY);
-end;
-
-function UI_Dialog_Color(var Color: AColor): ABoolean; stdcall;
-begin
-  Result := Dialog_Color(Color);
-end;
-
-function UI_Dialog_DateFilter(var Group: Integer; var DateBegin, DateEnd: TDateTime): Boolean; stdcall;
-begin
-  Result := Dialog_DateFilter(Group, DateBegin, DateEnd);
-end;
-
-procedure UI_Dialog_Error(const Caption, UserMessage, ExceptMessage: APascalString); stdcall;
-begin
-  Dialog_ErrorP(Caption, UserMessage, ExceptMessage);
-end;
-
-function UI_Dialog_Font(var FontName: APascalString; var FontSize: AInteger; FontColor: AColor): ABoolean; stdcall;
-begin
-  Result := Dialog_FontP(FontName, FontSize, FontColor);
-end;
-
-function UI_Dialog_GetWindow(Dialog: ADialog): AWindow; stdcall;
-begin
-  Result := AUIDialogs.UI_Dialog_GetWindow(Dialog);
-end;
-
-function UI_Dialog_InputBox(const Text: APascalString; var Value: APascalString): Boolean; stdcall;
-begin
-  Result := UI_Dialog_InputBox3(ASystem.Info_GetTitleWS(), Text, Value);
-end;
-
-function UI_Dialog_InputBox2(const Caption, Text1, Text2: APascalString; var Value1, Value2: APascalString): ABoolean; stdcall;
-begin
-  {$IFNDEF FPC}
-  Result := fPasswordDialog.InputBox2(Caption, Text1, Text2, Value1, Value2);
-  {$ENDIF}
-end;
-
-function UI_Dialog_InputBox3(const Caption, Text: APascalString; var Value: APascalString): Boolean; stdcall;
-begin
-  {$IFNDEF FPC}
-  Result := fInputDialog.InputBox(Caption, Text, Value);
-  {$ENDIF}
-end;
-
-function UI_Dialog_InputBoxA(const Caption, Text: APascalString; var Value: APascalString): Boolean; stdcall;
-begin
-  Result := UI_Dialog_InputBox3(Caption, Text, Value);
-end;
-
-function UI_Dialog_Login(var UserName, Password: APascalString; IsSave: ABoolean): ABoolean; stdcall;
-{$IFNDEF FPC}
-var
-  fmLogin: TLoginForm;
-{$ENDIF}
-begin
-  {$IFNDEF FPC}
-  fmLogin := TLoginForm.Create(nil);
-  try
-    fmLogin.UserName := UserName;
-    Result := (fmLogin.ShowModal = mrOk);
-    if Result then
-    begin
-      UserName := fmLogin.UserName;
-      Password := fmLogin.UserPassword;
-    end;
-  finally
-    fmLogin.Free();
-  end;
-  {$ENDIF}
-end;
-
-function UI_Dialog_Message(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
-var
-  PrevCursor: TCursor;
-begin
-  PrevCursor := Screen.Cursor;
-  Screen.Cursor := crDefault;
-  Result := Application.MessageBox(PChar(string(Text)), PChar(string(Caption)), Flags);
-  {$IFNDEF UNIX}
-  //Result := Windows.MessageBox(Application.Handle{0}, PChar(string(Text)), PChar(string(Caption)), Flags);
-  {$ENDIF}
-  Screen.Cursor := PrevCursor;
-end;
-
-function UI_Dialog_New(Buttons: AUIWindowButtons): ADialog; stdcall;
-begin
-  Result := AUIDialogs.UI_Dialog_New(Buttons);
-end;
-
-function UI_Dialog_SelectDirectory(var Directory: APascalString): ABoolean; stdcall;
-begin
-  Result := Dialog_SelectDirectoryP(Directory);
-end;
-
-function UI_Dialog_OpenFile(const InitialDir, Filter, Title: APascalString; var FileName: APascalString): Boolean; stdcall;
-var
-  FilterIndex: Integer;
-begin
-  FilterIndex := 0;
-  Result := AUIDialogs.ExecuteOpenDialogA(InitialDir, Filter, '', Title, FileName, FilterIndex);
-end;
-
-function UI_Dialog_OpenFileA(const InitialDir, Filter, DefaultExt, Title: APascalString; var FileName: APascalString; var FilterIndex: AInteger): ABoolean; stdcall;
-begin
-  Result := AUIDialogs.ExecuteOpenDialogA(InitialDir, Filter, DefaultExt, Title, FileName, FilterIndex);
-end;
-
-function UI_Dialog_SaveFile(const Dir, Ext, DefFileName: APascalString): APascalString; stdcall;
-begin
-  Result := AUIDialogs.ExecuteSaveFileDialog(Dir, Ext, DefFileName);
-end;
-
-function UI_Dialog_SaveFileA(const InitialDir, DefExt, DefFileName, Filter: APascalString; var FilterIndex: AInteger): APascalString; stdcall;
-begin
-  Result := ExecuteSaveFileDialogA(InitialDir, DefExt, DefFileName, Filter, FilterIndex);
 end;
 
 { Grid }

@@ -2,7 +2,7 @@
 @Abstract AUiDialogs
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 30.07.2012
+@LastMod 22.08.2012
 }
 unit AUiDialogs;
 
@@ -12,38 +12,126 @@ interface
 
 uses
   {$IFDEF USE_JEDI}JvBaseDlg, JvSelectDirectory,{$ENDIF}
-  Dialogs, ABase, ABaseTypes, 
-  AUiBase, AUiBox, AUiButton, AUiConsts, AUiControls, AUiWindows;
+  Controls, Dialogs,
+  ABase, ABaseTypes,
+  AUiBase, AUiBox, AUiButton, AUiConsts, AUiControls, AUiData, AUiWindows,
+  fAbout, fCalendar, fDateFilter, fError;
 
-// TODO: Убрать stdcall
+// --- AUi ---
 
-function ExecuteColorDialog(var Color: AColor): ABoolean;
-function ExecuteFontDialog(var FontName: APascalString; var FontSize: AInteger; var FontColor: AColor): ABoolean;
-function ExecuteOpenDialogA(const InitialDir, Filter, DefaultExt, Title: APascalString; var FileName: APascalString; var FilterIndex: AInteger): ABoolean;
-function ExecuteSaveFileDialog(const InitialDir, DefExt, DefFileName: APascalString): APascalString;
-function ExecuteSaveFileDialogA(const InitialDir, DefExt, DefFileName, Filter: APascalString; var FilterIndex: AInteger): APascalString;
-function ExecuteSelectDirectoryDialog(var Directory: APascalString): ABoolean;
+function AUi_ExecuteAboutDialog(): AError;
 
-function UI_Dialog_GetWindow(Dialog: ADialog): AWindow;
+function AUi_ExecuteCalendarDialog(var Date: TDateTime; CenterX, CenterY: AInt): ABoolean;
 
-function UI_Dialog_MessageDlg(const Msg: string; MsgDlgTypeFlag: AMessageBoxFlags; Flags: AMessageBoxFlags): AInteger;
+function AUi_ExecuteColorDialog(var Color: AColor): ABoolean;
 
-function UI_Dialog_New(Buttons: AUIWindowButtons): ADialog;
+function AUi_ExecuteDateFilterDialog(var Group: AInt; var DateBegin, DateEnd: TDateTime): ABoolean;
+
+function AUi_ExecuteErrorDialogP(const Caption, UserMessage, ExceptMessage: APascalString): AError;
+
+function AUi_ExecuteFontDialog(var FontName: APascalString; var FontSize: AInt; var FontColor: AColor): ABoolean;
+
+function AUi_NewAboutDialog(): AWindow;
+
+// --- AUiDialog ---
+
+function AUiDialog_AddButtonP(Win: AWindow; Left, Width: AInt; const Text: APascalString;
+    OnClick: ACallbackProc): AControl;
+
+// --- UI_Dialog ---
+
+procedure UI_Dialog_About(); stdcall;
+
+function UI_Dialog_About_New(): AWindow; stdcall;
+
+function UI_Dialog_AddButton(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
+    OnClick: ACallbackProc): AControl; stdcall;
+
+function UI_Dialog_AddButton02(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
+    OnClick: ACallbackProc02): AControl; stdcall;
+
+function UI_Dialog_Calendar(var Date: TDateTime; CenterX, CenterY: AInteger): ABoolean; stdcall;
+
+function UI_Dialog_Color(var Color: AColor): ABoolean; stdcall;
+
+function UI_Dialog_DateFilter(var Group: Integer; var DateBegin, DateEnd: TDateTime): Boolean; stdcall;
+
+procedure UI_Dialog_Error(const Caption, UserMessage, ExceptMessage: APascalString); stdcall;
+
+function UI_Dialog_Font(var FontName: APascalString; var FontSize: AInteger; FontColor: AColor): ABoolean; stdcall;
+
+function UI_Dialog_GetWindow(Dialog: ADialog): AWindow; stdcall; deprecated; // Use AUiDialog_GetWindow()
+
+function UI_Dialog_InputBox(const Text: APascalString;
+    var Value: APascalString): ABoolean; stdcall;
+
+function UI_Dialog_InputBox2(const Caption, Text1, Text2: APascalString;
+    var Value1, Value2: APascalString): ABoolean; stdcall;
+
+function UI_Dialog_InputBox3(const Caption, Text: APascalString;
+    var Value: APascalString): Boolean; stdcall;
+
+// Use UI_Dialog_InputBox3()
+function UI_Dialog_InputBoxA(const Caption, Text: APascalString;
+    var Value: APascalString): ABoolean; stdcall; deprecated;
+
+function UI_Dialog_Login(var UserName, Password: APascalString;
+    IsSave: ABoolean): ABoolean; stdcall;
+
+function UI_Dialog_Message(const Text, Caption: APascalString;
+    Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+
+function UI_Dialog_MessageDlg(const Msg: string; MsgDlgTypeFlag: AMessageBoxFlags;
+    Flags: AMessageBoxFlags): AInteger;
+
+function UI_Dialog_New(Buttons: AUIWindowButtons): ADialog; stdcall; deprecated; // Use AUiDialog_New()
+
+function UI_Dialog_OpenFile(const InitialDir, Filter, Title: APascalString;
+    var FileName: APascalString): ABoolean; stdcall;
+
+function UI_Dialog_OpenFileA(const InitialDir, Filter, DefaultExt, Title: APascalString;
+    var FileName: APascalString; var FilterIndex: AInteger): ABoolean; stdcall;
+
+// Отображает окно выбора и настройки печати.
+procedure UI_Dialog_PrinterSetup();
+
+function UI_Dialog_SaveFile(const Dir, Ext, DefFileName: APascalString): APascalString; stdcall;
+
+function UI_Dialog_SaveFileA(const InitialDir, DefExt, DefFileName, Filter: APascalString;
+    var FilterIndex: AInteger): APascalString; stdcall;
+
+function UI_Dialog_SelectDirectory(var Directory: APascalString): ABoolean; stdcall;
+
+// --- UI_Dialogs ---
 
 function UI_Dialogs_InputBox(const Caption, Prompt, Default: APascalString): APascalString;
 
 function UI_Dialogs_InputQuery(const Caption, Prompt: APascalString;
     var Value: APascalString): ABoolean;
 
-// Отображает окно выбора и настройки печати.
-procedure UI_Dialog_PrinterSetup();
+// --- Public ---
+
+function ExecuteColorDialog(var Color: AColor): ABoolean; deprecated; // Use AUi_ExecuteColorDialog()
+
+function ExecuteFontDialog(var FontName: APascalString; var FontSize: AInteger;
+    var FontColor: AColor): ABoolean; deprecated; // Use AUi_ExecuteFontDialog()
+
+function ExecuteOpenDialogA(const InitialDir, Filter, DefaultExt, Title: APascalString;
+    var FileName: APascalString; var FilterIndex: AInteger): ABoolean; deprecated; // Use AUi_ExecuteOpenDialogA()
+
+function ExecuteSaveFileDialog(const InitialDir, DefExt, DefFileName: APascalString): APascalString; deprecated; // Use AUi_ExecuteSaveFileDialog()
+
+function ExecuteSaveFileDialogA(const InitialDir, DefExt, DefFileName, Filter: APascalString;
+    var FilterIndex: AInteger): APascalString; deprecated; // Use AUi_ExecuteSaveFileDialog()
+
+function ExecuteSelectDirectoryDialog(var Directory: APascalString): ABoolean; deprecated; // Use AUi_ExecuteSelectDirectoryDialog()
 
 implementation
 
 { TAUIDialog }
 
 type
-  TAUIDialog = class
+  TAUiDialog = class
   private
     FButtonsBox: AControl;
     FWindow: AControl;
@@ -54,23 +142,23 @@ type
     constructor Create;
   end;
 
-{ TAUIDialog }
+{ TAUiDialog }
 
-constructor TAUIDialog.Create;
+constructor TAUiDialog.Create();
 begin
-  FWindow := UI_Window_New();
+  FWindow := AUiWindow_New();
 
   FButtonsBox := AUIBox.UI_Box_New(FWindow, 0);
   UI_Control_SetAlign(FButtonsBox, uiAlignBottom);
   AUIControls.UI_Control_SetSize(FButtonsBox, 100, 35);
 end;
 
-function TAUIDialog.GetButtonsBox: AControl;
+function TAUiDialog.GetButtonsBox(): AControl;
 begin
   Result := FButtonsBox;
 end;
 
-function TAUIDialog.GetWindow: AControl;
+function TAUiDialog.GetWindow(): AControl;
 begin
   Result := FWindow;
 end;
@@ -78,39 +166,13 @@ end;
 { Public }
 
 function ExecuteColorDialog(var Color: AColor): ABoolean;
-var
-  ColorDialog: TColorDialog;
 begin
-  ColorDialog := TColorDialog.Create(nil);
-  try
-    ColorDialog.Color := Color;
-    Result := ColorDialog.Execute;
-    if Result then
-      Color := ColorDialog.Color;
-  finally
-    ColorDialog.Free;
-  end;
+  Result := AUi_ExecuteColorDialog(Color);
 end;
 
 function ExecuteFontDialog(var FontName: APascalString; var FontSize: AInteger; var FontColor: AColor): ABoolean;
-var
-  FontDialog: TFontDialog;
 begin
-  FontDialog := TFontDialog.Create(nil);
-  try
-    FontDialog.Font.Color := FontColor;
-    FontDialog.Font.Name := FontName;
-    FontDialog.Font.Size := FontSize;
-    Result := FontDialog.Execute;
-    if Result then
-    begin
-      FontColor := FontDialog.Font.Color;
-      FontName := FontDialog.Font.Name;
-      FontSize := FontDialog.Font.Size;
-    end;
-  finally
-    FontDialog.Free;
-  end;
+  Result := AUi_ExecuteFontDialog(FontName, FontSize, FontColor);
 end;
 
 function ExecuteOpenDialogA(const InitialDir, Filter, DefaultExt, Title: APascalString;
@@ -199,7 +261,150 @@ begin
   {$ENDIF USE_JEDI}
 end;
 
-{ UI_Dialog }
+// --- AUi ---
+
+function AUi_ExecuteAboutDialog(): AError;
+begin
+  try
+    ShowAboutWinA(UiAboutWinMemoWidthDefault, UiAboutWinMemoHeightDefault);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUi_ExecuteCalendarDialog(var Date: TDateTime; CenterX, CenterY: AInt): ABoolean;
+begin
+  try
+    {$IFDEF FPC}
+    Result := False;
+    {$ELSE}
+    Result := ShowCalendarWin(Date, CenterX, CenterY);
+    {$ENDIF}
+  except
+    Result := False;
+  end;
+end;
+
+function AUi_ExecuteColorDialog(var Color: AColor): ABoolean;
+var
+  ColorDialog: TColorDialog;
+begin
+  try
+    ColorDialog := TColorDialog.Create(nil);
+    try
+      ColorDialog.Color := Color;
+      Result := ColorDialog.Execute;
+      if Result then
+        Color := ColorDialog.Color;
+    finally
+      ColorDialog.Free();
+    end;
+  except
+    Result := False;
+  end;
+end;
+
+function AUi_ExecuteDateFilterDialog(var Group: AInt; var DateBegin, DateEnd: TDateTime): ABoolean;
+{$IFNDEF FPC}
+var
+  FilterForm: TFilterForm;
+{$ENDIF}
+begin
+  try
+    {$IFNDEF FPC}
+    FilterForm := TFilterForm.Create(nil);
+    try
+      FilterForm.RadioGroup1.ItemIndex := Group;
+      FilterForm.DateTimePicker1.DateTime := DateBegin;
+      FilterForm.DateTimePicker2.DateTime := DateEnd;
+      Result := (FilterForm.ShowModal = mrOk);
+      if Result then
+      begin
+        Group := FilterForm.RadioGroup1.ItemIndex;
+        DateBegin := FilterForm.DateTimePicker1.DateTime;
+        DateEnd := FilterForm.DateTimePicker2.DateTime;
+      end;
+    finally
+      FilterForm.Free();
+    end;
+    {$ENDIF}
+  except
+    Result := False;
+  end;
+end;
+
+function AUi_ExecuteErrorDialogP(const Caption, UserMessage, ExceptMessage: APascalString): AError;
+begin
+  try
+    {$IFNDEF FPC}
+    fError.ShowErrorA(Caption, UserMessage, ExceptMessage);
+    {$ENDIF}
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUi_ExecuteFontDialog(var FontName: APascalString; var FontSize: AInt; var FontColor: AColor): ABoolean;
+var
+  FontDialog: TFontDialog;
+begin
+  try
+    FontDialog := TFontDialog.Create(nil);
+    try
+      FontDialog.Font.Color := FontColor;
+      FontDialog.Font.Name := FontName;
+      FontDialog.Font.Size := FontSize;
+      Result := FontDialog.Execute;
+      if Result then
+      begin
+        FontColor := FontDialog.Font.Color;
+        FontName := FontDialog.Font.Name;
+        FontSize := FontDialog.Font.Size;
+      end;
+    finally
+      FontDialog.Free;
+    end;
+  except
+    Result := False;
+  end;
+end;
+
+function AUi_NewAboutDialog(): AWindow;
+var
+  Form: TAboutForm;
+begin
+  try
+    Form := TAboutForm.Create(nil);
+    try
+      Form.InitA(UIAboutWinMemoWidthDefault, UIAboutWinMemoHeightDefault);
+    except
+      Form.Free;
+      Form := nil;
+    end;
+    Result := AWindow(Form);
+  except
+    Result := 0;
+  end;
+end;
+
+// --- AUiDialog ---
+
+function AUiDialog_AddButtonP(Win: AWindow; Left, Width: AInt; const Text: APascalString;
+    OnClick: ACallbackProc): AControl;
+begin
+  try
+    if (Win <> 0) and (TObject(Win) is TAboutForm) then
+      Result := TAboutForm(Win).AddButton(Left, Width, Text, OnClick)
+    else
+      Result := 0;
+  except
+    Result := 0;
+  end;
+end;
+
+// --- UI_Dialogs ---
 
 function UI_Dialogs_InputBox(const Caption, Prompt, Default: APascalString): APascalString;
 begin
@@ -221,9 +426,120 @@ begin
   Result := True;
 end;
 
+// --- UI_Dialog  ---
+
+procedure UI_Dialog_About();
+begin
+  AUi_ExecuteAboutDialog();
+end;
+
+function UI_Dialog_About_New(): AWindow;
+begin
+  Result := AUi_NewAboutDialog();
+end;
+
+function UI_Dialog_AddButton(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
+    OnClick: ACallbackProc): AControl;
+begin
+  Result := AUiDialog_AddButtonP(Win, Left, Width, Text, OnClick);
+end;
+
+function UI_Dialog_AddButton02(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
+    OnClick: ACallbackProc02): AControl;
+begin
+  if (Win <> 0) and (TObject(Win) is TAboutForm) then
+    Result := TAboutForm(Win).AddButton02(Left, Width, Text, OnClick)
+  else
+    Result := 0;
+end;
+
+function UI_Dialog_Calendar(var Date: TDateTime; CenterX, CenterY: AInteger): ABoolean;
+begin
+  Result := AUi_ExecuteCalendarDialog(Date, CenterX, CenterY);
+end;
+
+function UI_Dialog_Color(var Color: AColor): ABoolean;
+begin
+  Result := AUi_ExecuteColorDialog(Color);
+end;
+
+function UI_Dialog_DateFilter(var Group: Integer; var DateBegin, DateEnd: TDateTime): Boolean;
+begin
+  Result := AUi_ExecuteDateFilterDialog(Group, DateBegin, DateEnd);
+end;
+
+procedure UI_Dialog_Error(const Caption, UserMessage, ExceptMessage: APascalString);
+begin
+  AUi_ExecuteErrorDialogP(Caption, UserMessage, ExceptMessage);
+end;
+
+function UI_Dialog_Font(var FontName: APascalString; var FontSize: AInteger; FontColor: AColor): ABoolean;
+begin
+  Result := Dialog_FontP(FontName, FontSize, FontColor);
+end;
+
 function UI_Dialog_GetWindow(Dialog: ADialog): AWindow;
 begin
   Result := TAUIDialog(Dialog).GetWindow;
+end;
+
+function UI_Dialog_InputBox(const Text: APascalString; var Value: APascalString): Boolean;
+begin
+  Result := UI_Dialog_InputBox3(ASystem.Info_GetTitleWS(), Text, Value);
+end;
+
+function UI_Dialog_InputBox2(const Caption, Text1, Text2: APascalString; var Value1, Value2: APascalString): ABoolean;
+begin
+  {$IFNDEF FPC}
+  Result := fPasswordDialog.InputBox2(Caption, Text1, Text2, Value1, Value2);
+  {$ENDIF}
+end;
+
+function UI_Dialog_InputBox3(const Caption, Text: APascalString; var Value: APascalString): Boolean;
+begin
+  {$IFNDEF FPC}
+  Result := fInputDialog.InputBox(Caption, Text, Value);
+  {$ENDIF}
+end;
+
+function UI_Dialog_InputBoxA(const Caption, Text: APascalString; var Value: APascalString): Boolean;
+begin
+  Result := UI_Dialog_InputBox3(Caption, Text, Value);
+end;
+
+function UI_Dialog_Login(var UserName, Password: APascalString; IsSave: ABoolean): ABoolean;
+{$IFNDEF FPC}
+var
+  fmLogin: TLoginForm;
+{$ENDIF}
+begin
+  {$IFNDEF FPC}
+  fmLogin := TLoginForm.Create(nil);
+  try
+    fmLogin.UserName := UserName;
+    Result := (fmLogin.ShowModal = mrOk);
+    if Result then
+    begin
+      UserName := fmLogin.UserName;
+      Password := fmLogin.UserPassword;
+    end;
+  finally
+    fmLogin.Free();
+  end;
+  {$ENDIF}
+end;
+
+function UI_Dialog_Message(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands;
+var
+  PrevCursor: TCursor;
+begin
+  PrevCursor := Screen.Cursor;
+  Screen.Cursor := crDefault;
+  Result := Application.MessageBox(PChar(string(Text)), PChar(string(Caption)), Flags);
+  {$IFNDEF UNIX}
+  //Result := Windows.MessageBox(Application.Handle{0}, PChar(string(Text)), PChar(string(Caption)), Flags);
+  {$ENDIF}
+  Screen.Cursor := PrevCursor;
 end;
 
 function UI_Dialog_MessageDlg(const Msg: string; MsgDlgTypeFlag: AMessageBoxFlags; Flags: AMessageBoxFlags): AInteger;
@@ -299,6 +615,19 @@ begin
   Result := ADialog(Dialog);
 end;
 
+function UI_Dialog_OpenFile(const InitialDir, Filter, Title: APascalString; var FileName: APascalString): Boolean;
+var
+  FilterIndex: Integer;
+begin
+  FilterIndex := 0;
+  Result := AUIDialogs.ExecuteOpenDialogA(InitialDir, Filter, '', Title, FileName, FilterIndex);
+end;
+
+function UI_Dialog_OpenFileA(const InitialDir, Filter, DefaultExt, Title: APascalString; var FileName: APascalString; var FilterIndex: AInteger): ABoolean;
+begin
+  Result := AUIDialogs.ExecuteOpenDialogA(InitialDir, Filter, DefaultExt, Title, FileName, FilterIndex);
+end;
+
 procedure UI_Dialog_PrinterSetup();
 var
   PrinterSetupDialog: TPrinterSetupDialog;
@@ -309,6 +638,21 @@ begin
   finally
     PrinterSetupDialog.Free();
   end;
+end;
+
+function UI_Dialog_SaveFile(const Dir, Ext, DefFileName: APascalString): APascalString;
+begin
+  Result := AUIDialogs.ExecuteSaveFileDialog(Dir, Ext, DefFileName);
+end;
+
+function UI_Dialog_SaveFileA(const InitialDir, DefExt, DefFileName, Filter: APascalString; var FilterIndex: AInteger): APascalString;
+begin
+  Result := ExecuteSaveFileDialogA(InitialDir, DefExt, DefFileName, Filter, FilterIndex);
+end;
+
+function UI_Dialog_SelectDirectory(var Directory: APascalString): ABoolean;
+begin
+  Result := Dialog_SelectDirectoryP(Directory);
 end;
 
 end.

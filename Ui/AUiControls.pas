@@ -410,6 +410,7 @@ begin
     if not(TObject(Control) is TWinControl) then
     begin
       Result := False;
+      Exit;
     end;
     TWinControl(Control).SetFocus();
     Result := True;
@@ -663,11 +664,16 @@ begin
       TControl(O).Visible := Value;
       if (O is TForm) then
         TControl(O).BringToFront;
+      Result := 0;
       Exit;
     end;
     if (TObject(Control) is TMenuItem) then
+    begin
       TMenuItem(Control).Visible := Value;
-    Result := 0;
+      Result := 0;
+      Exit;
+    end;
+    Result := -2;
   except
     Result := -1;
   end;

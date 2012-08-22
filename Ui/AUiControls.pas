@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 21.08.2012
+@LastMod 22.08.2012
 }
 unit AUiControls;
 
@@ -15,6 +15,38 @@ uses
 // --- AUiControl ---
 
 function AUiControl_Free(Control: AControl): AError;
+
+function AUiControl_FreeAndNil(var Control: AControl): AError;
+
+function AUiControl_GetColor(Control: AControl): AColor;
+
+function AUiControl_GetEnabled(Control: AControl): ABoolean;
+
+function AUiControl_GetHeight(Control: AControl): AInt;
+
+function AUiControl_GetHintP(Control: AControl): APascalString;
+
+function AUiControl_GetMenu(Control: AControl): AMenu;
+
+function AUiControl_GetNameP(Control: AControl): APascalString;
+
+function AUiControl_GetPosition(Control: AControl; out Left, Top: AInteger): AError;
+
+function AUiControl_GetTextP(Control: AControl): APascalString;
+
+function AUiControl_GetVisible(Control: AControl): ABoolean;
+
+function AUiControl_GetWidth(Control: AControl): AInt;
+
+function AUiControl_SetAlign(Control: AControl; Align: TUiAlign): AError;
+
+function AUiControl_SetClientSize(Control: AControl; ClientWidth, ClientHeight: AInt): AError;
+
+function AUiControl_SetColor(Control: AControl; Color: AColor): AError;
+
+function AUiControl_SetEnabled(Control: AControl; Value: ABoolean): AError;
+
+function AUiControl_SetFocus(Control: AControl): ABoolean;
 
 { @param FontName - (const) }
 function AUiControl_SetFont1A(Control: AControl; FontName: AStr;
@@ -29,7 +61,27 @@ procedure AUiControl_SetFont1P_Old(Control: AControl; const FontName: APascalStr
 function AUiControl_SetFont2P(Control: AControl; const FontName: APascalString;
     FontSize: AInteger; FontColor: AColor): AError;
 
+function AUiControl_SetHeight(Control: AControl; Value: AInt): AInt;
+
+function AUiControl_SetHintP(Control: AControl; const Value: APascalString): AError;
+
+function AUiControl_SetNameP(Control: AControl; const Value: APascalString): AError;
+
+function AUiControl_SetOnClick(Control: AControl; Value: ACallbackProc): AError;
+
+function AUiControl_SetOnClick02(Control: AControl; Value: ACallbackProc02): AError;
+
+function AUiControl_SetOnClick03(Control: AControl; Value: ACallbackProc03): AError;
+
+function AUiControl_SetPosition(Control: AControl; Left, Top: AInteger): AError;
+
+function AUiControl_SetSize(Control: AControl; Width, Height: Integer): AError;
+
 function AUiControl_SetTextP(Control: AControl; const Value: APascalString): AError;
+
+function AUiControl_SetVisible(Control: AControl; Value: ABoolean): AError;
+
+function AUiControl_SetWidth(Control: AControl; Value: AInt): AInt;
 
 // --- UI_Control ---
 
@@ -77,8 +129,9 @@ procedure UI_Control_SetFont1(Control: AControl; const FontName: APascalString; 
 // Если FontColor = 1, то цвет не изменяется
 procedure UI_Control_SetFont2(Control: AControl; const FontName: APascalString; FontSize: AInteger; FontColor: AColor); stdcall; {deprecated;}
 
-procedure UI_Control_SetHeight(Control: AControl; Value: AInteger);
-//function UI_Control_SetHeight(Control: AControl; Value: AInteger): AInteger; stdcall; deprecated; // Use AUiControl_SetHeight()
+function UI_Control_SetHeight(Control: AControl; Value: AInteger): AInteger; stdcall; deprecated; // Use AUiControl_SetHeight()
+
+procedure UI_Control_SetHeight02(Control: AControl; Value: AInteger);
 
 procedure UI_Control_SetHint(Control: AControl; const Value: APascalString);
 //procedure UI_Control_SetHint(Control: AControl; const Value: APascalString); stdcall; deprecated; // Use AUiControl_SetHint()
@@ -86,9 +139,9 @@ procedure UI_Control_SetHint(Control: AControl; const Value: APascalString);
 procedure UI_Control_SetName(Control: AControl; const Value: APascalString);
 //procedure UI_Control_SetName(Control: AControl; const Value: APascalString); stdcall; deprecated; // Use AUiControl_SetName()
 
-procedure UI_Control_SetOnChange(Control: AControl; OnChange: ACallbackProc02); stdcall; deprecated; // Use AUiControl_SetOnChange02()
+//procedure UI_Control_SetOnChange(Control: AControl; OnChange: ACallbackProc02); stdcall; deprecated; // Use AUiControl_SetOnChange02()
 
-procedure UI_Control_SetOnChange2(Control: AControl; OnChange: ACallbackProc02; Obj: AInteger = 0); stdcall; deprecated; // Use AUiControl_SetOnChangeEx()
+//procedure UI_Control_SetOnChange2(Control: AControl; OnChange: ACallbackProc02; Obj: AInteger = 0); stdcall; deprecated; // Use AUiControl_SetOnChangeEx()
 
 function UI_Control_SetOnClick(Control: AControl; Value: ACallbackProc): AError;
 
@@ -232,7 +285,29 @@ begin
   end;
 end;
 
-function AUiControl_GetTextP(Control: AControl): APascalString; 
+function AUiControl_GetPosition(Control: AControl; out Left, Top: AInteger): AError;
+var
+  //O: TObject;
+  C: TControl;
+begin
+  try
+    C := TControl(Control);
+    Left := C.Left;
+    Top := C.Top;
+    {O := GetObject(Control);
+    if Assigned(O) and (O is TControl) then
+    begin
+      C := TControl(O);
+      Left := C.Left;
+      Top := C.Top;
+    end;}
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiControl_GetTextP(Control: AControl): APascalString;
 begin
   try
     if (TObject(Control) is TForm) then
@@ -346,7 +421,7 @@ end;
 function AUiControl_SetFont1A(Control: AControl; FontName: AStr; FontSize: AInt): AError;
 begin
   try
-    Result := AUi_Control_SetFont1P(Control, AnsiString(FontName), FontSize);
+    Result := AUiControl_SetFont1P(Control, AnsiString(FontName), FontSize);
   except
     Result := -1;
   end;
@@ -430,10 +505,179 @@ begin
   end;
 end;
 
-function AUiControl_SetTextP(Control: AControl; const Value: APascalString): AError;
+function AUiControl_SetOnClick(Control: AControl; Value: ACallbackProc): AError;
+begin
+  {$IFDEF A01}
+    Result := AUiControl_SetOnClick02(Control, Value);
+  {$ELSE}
+    {$IFDEF A02}
+    Result := AUiControl_SetOnClick02(Control, Value);
+    {$ELSE}
+    Result := AUiControl_SetOnClick03(Control, Value);
+    {$ENDIF A02}
+  {$ENDIF}
+end;
+
+function AUiControl_SetOnClick02(Control: AControl; Value: ACallbackProc02): AError;
+var
+  I: Integer;
 begin
   try
-    Result := UI_Control_SetTextP(Control, Value);
+    if (TObject(Control) is TBitBtn) then
+    begin
+      I := FindButton(Control);
+      if (I >= 0) then
+        FButtons[I].OnClick02 := Value;
+    end
+    else if (TObject(Control) is TMenuItem) then
+    begin
+      I := FindMenuItem(Control);
+      if (I >= 0) then
+        FMenuItems[I].OnClick02 := Value;
+    end
+    else if (TObject(Control) is TListBox) then
+    begin
+      I := FindListBox(Control);
+      if (I >= 0) then
+        FListBoxs[I].OnClick02 := Value;
+    end;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiControl_SetOnClick03(Control: AControl; Value: ACallbackProc03): AError;
+var
+  I: Integer;
+begin
+  try
+    if (TObject(Control) is TBitBtn) then
+    begin
+      I := FindButton(Control);
+      if (I >= 0) then
+        FButtons[I].OnClick03 := Value;
+    end
+    else if (TObject(Control) is TMenuItem) then
+    begin
+      I := FindMenuItem(Control);
+      if (I >= 0) then
+        FMenuItems[I].OnClick03 := Value;
+    end
+    else if (TObject(Control) is TListBox) then
+    begin
+      I := FindListBox(Control);
+      if (I >= 0) then
+        FListBoxs[I].OnClick03 := Value;
+    end;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiControl_SetPosition(Control: AControl; Left, Top: AInteger): AError;
+var
+  O: TObject;
+  C: TControl;
+begin
+  try
+    O := GetObject(Control);
+    if Assigned(O) and (O is TControl) then
+    begin
+      C := TControl(O);
+      C.Left := Left;
+      C.Top := Top;
+    end;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiControl_SetSize(Control: AControl; Width, Height: Integer): AError;
+var
+  O: TObject;
+  C: TControl;
+begin
+  try
+    O := GetObject(Control);
+    if Assigned(O) and (O is TControl) then
+    begin
+      C := TControl(O);
+      C.Width := Width;
+      C.Height := Height;
+    end;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiControl_SetTextP(Control: AControl; const Value: APascalString): AError;
+var
+  Obj: TObject;
+begin
+  try
+    Obj := GetObject(Control);
+    if not(Assigned(Obj)) then
+    begin
+      Result := -1;
+      Exit;
+    end;
+    if (Obj is TControl) then
+    begin
+      if (Obj is TForm) then
+        TForm(Obj).Caption := Value
+      else if (Obj is TLabel) then
+        TLabel(Obj).Caption := Value
+      else if (Obj is TEdit) then
+        TEdit(Obj).Text := Value
+      else if (Obj is TButton) then
+        TButton(Obj).Caption := Value
+      else if (Obj is TBitBtn) then
+        TBitBtn(Obj).Caption := Value
+      else if (Obj is TMemo) then
+        TMemo(Obj).Text := Value
+      {$IFNDEF FPC}
+      else if (Obj is TRichEdit) then
+        TRichEdit(Obj).Text := Value;
+      {$ENDIF}
+    end
+    else if (Obj is TMenuItem) then
+      TMenuItem(Obj).Caption := Value;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiControl_SetVisible(Control: AControl; Value: ABoolean): AError;
+var
+  O: TObject;
+begin
+  try
+    O := AUiData.GetObject(Control);
+    if Assigned(O) and (O is TControl) then
+    begin
+      TControl(O).Visible := Value;
+      if (O is TForm) then
+        TControl(O).BringToFront;
+      Exit;
+    end;
+    if (TObject(Control) is TMenuItem) then
+      TMenuItem(Control).Visible := Value;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiControl_SetWidth(Control: AControl; Value: AInt): AInt;
+begin
+  try
+    TControl(Control).Width := Value;
+    Result := Value;
   except
     Result := -1;
   end;
@@ -482,22 +726,8 @@ begin
 end;
 
 function UI_Control_GetPosition(Control: AControl; out Left, Top: AInteger): AError;
-var
-  //O: TObject;
-  C: TControl;
 begin
-  xxx
-  C := TControl(Control);
-  Left := C.Left;
-  Top := C.Top;
-  {O := GetObject(Control);
-  if Assigned(O) and (O is TControl) then
-  begin
-    C := TControl(O);
-    Left := C.Left;
-    Top := C.Top;
-  end;}
-  Result := 0;
+  Result := AUiControl_GetPosition(Control, Left, Top);
 end;
 
 function UI_Control_GetText(Control: AControl): APascalString; stdcall;
@@ -557,197 +787,76 @@ end;
 
 procedure UI_Control_SetHeight02(Control: AControl; Value: AInteger);
 begin
-  Result := AUiControl_SetHeight(Control, Value);
+  AUiControl_SetHeight(Control, Value);
 end;
 
 procedure UI_Control_SetHint(Control: AControl; const Value: APascalString);
 begin
-  Result := AUiControl_SetHint(Control, Value);
+  AUiControl_SetHintP(Control, Value);
 end;
 
 procedure UI_Control_SetName(Control: AControl; const Value: APascalString);
 begin
-  Result := AUiControl_SetNameP(Control, Value);
-end;
-
-(*
-procedure UI_Control_SetOnChange(Control: AControl; OnChange: ACallbackProc02); stdcall;
-begin
-  AUIControlsA.UI_Control_SetOnChange02(Control, OnChange);
-end;
-
-procedure UI_Control_SetOnChange2(Control: AControl; OnChange: ACallbackProc02; Obj: AInteger); stdcall;
-begin
-  AUIControlsA.UI_Control_SetOnChangeEx02(Control, OnChange, Obj);
+  AUiControl_SetNameP(Control, Value);
 end;
 
 function UI_Control_SetOnClick(Control: AControl; Value: ACallbackProc): AError;
 begin
-  {$IFDEF A01}
-    Result := UI_Control_SetOnClick02(Control, Value);
-  {$ELSE}
-    {$IFDEF A02}
-    Result := UI_Control_SetOnClick02(Control, Value);
-    {$ELSE}
-    Result := UI_Control_SetOnClick03(Control, Value);
-    {$ENDIF A02}
-  {$ENDIF}
+  Result := AUiControl_SetOnClick(Control, Value);
 end;
-*)
 
 {procedure UI_Control_SetOnClick02(Control: AControl; Value: ACallbackProc02); stdcall;
 begin
   AUIControls.UI_Control_SetOnClick02(Control, Value);
 end;}
 function UI_Control_SetOnClick02(Control: AControl; Value: ACallbackProc02): AError;
-var
-  I: Integer;
 begin
-  if (TObject(Control) is TBitBtn) then
-  begin
-    I := FindButton(Control);
-    if (I >= 0) then
-      FButtons[I].OnClick02 := Value;
-  end
-  else if (TObject(Control) is TMenuItem) then
-  begin
-    I := FindMenuItem(Control);
-    if (I >= 0) then
-      FMenuItems[I].OnClick02 := Value;
-  end
-  else if (TObject(Control) is TListBox) then
-  begin
-    I := FindListBox(Control);
-    if (I >= 0) then
-      FListBoxs[I].OnClick02 := Value;
-  end;
-  Result := 0;
+  Result := AUiControl_SetOnClick02(Control, Value);
 end;
 
 function UI_Control_SetOnClick03(Control: AControl; Value: ACallbackProc03): AError;
-var
-  I: Integer;
 begin
-  if (TObject(Control) is TBitBtn) then
-  begin
-    I := FindButton(Control);
-    if (I >= 0) then
-      FButtons[I].OnClick03 := Value;
-  end
-  else if (TObject(Control) is TMenuItem) then
-  begin
-    I := FindMenuItem(Control);
-    if (I >= 0) then
-      FMenuItems[I].OnClick03 := Value;
-  end
-  else if (TObject(Control) is TListBox) then
-  begin
-    I := FindListBox(Control);
-    if (I >= 0) then
-      FListBoxs[I].OnClick03 := Value;
-  end;
-  Result := 0;
+  Result := AUiControl_SetOnClick03(Control, Value);
 end;
 
 function UI_Control_SetPosition(Control: AControl; Left, Top: AInteger): AError;
-var
-  O: TObject;
-  C: TControl;
 begin
-  O := GetObject(Control);
-  if Assigned(O) and (O is TControl) then
-  begin
-    C := TControl(O);
-    C.Left := Left;
-    C.Top := Top;
-  end;
-  Result := 0;
+  Result := AUiControl_SetPosition(Control, Left, Top);
 end;
 
 procedure UI_Control_SetPosition02(Control: AControl; Left, Top: Integer); stdcall;
 begin
-  AUIControls.UI_Control_SetPosition(Control, Left, Top);
+  AUiControl_SetPosition(Control, Left, Top);
 end;
 
 function UI_Control_SetSize(Control: AControl; Width, Height: Integer): AError;
-var
-  O: TObject;
-  C: TControl;
 begin
-  O := GetObject(Control);
-  if Assigned(O) and (O is TControl) then
-  begin
-    C := TControl(O);
-    C.Width := Width;
-    C.Height := Height;
-  end;
-  Result := 0;
+  Result := AUiControl_SetSize(Control, Width, Height);
 end;
 
 procedure UI_Control_SetSize02(Control: AControl; Width, Height: Integer); stdcall;
 begin
-  AUIControls.UI_Control_SetSize(Control, Width, Height);
+  AUiControl_SetSize(Control, Width, Height);
 end;
 
 procedure UI_Control_SetText(Control: AControl; const Value: AWideString); stdcall;
 begin
-  AUIControls.UI_Control_SetTextP(Control, Value);
+  AUiControl_SetTextP(Control, Value);
 end;
 
 function UI_Control_SetTextP(Control: AControl; const Value: APascalString): AError;
-var
-  obj: TObject;
 begin
-  obj := GetObject(Control);
-  if not(Assigned(obj)) then
-  begin
-    Result := -1;
-    Exit;
-  end;
-  if (obj is TControl) then
-  begin
-    if (obj is TForm) then
-      TForm(obj).Caption := Value
-    else if (obj is TLabel) then
-      TLabel(obj).Caption := Value
-    else if (obj is TEdit) then
-      TEdit(obj).Text := Value
-    else if (obj is TButton) then
-      TButton(obj).Caption := Value
-    else if (obj is TBitBtn) then
-      TBitBtn(obj).Caption := Value
-    else if (obj is TMemo) then
-      TMemo(obj).Text := Value
-    {$IFNDEF FPC}
-    else if (obj is TRichEdit) then
-      TRichEdit(obj).Text := Value;
-    {$ENDIF}
-  end
-  else if (obj is TMenuItem) then
-    TMenuItem(obj).Caption := Value;
-  Result := 0;
+  Result := AUiControl_SetTextP(Control, Value);
 end;
 
 procedure UI_Control_SetVisible(Control: AControl; Value: ABoolean);
-var
-  O: TObject;
 begin
-  O := AUIData.GetObject(Control);
-  if Assigned(O) and (O is TControl) then
-  begin
-    TControl(O).Visible := Value;
-    if (O is TForm) then
-      TControl(O).BringToFront;
-    Exit;
-  end;
-  if (TObject(Control) is TMenuItem) then
-    TMenuItem(Control).Visible := Value;
+  AUiControl_SetVisible(Control, Value);
 end;
 
 function UI_Control_SetWidth(Control: AControl; Value: AInteger): AInteger;
 begin
-  TControl(Control).Width := Value;
-  Result := Value;
+  Result := AUiControl_SetWidth(Control, Value);
 end;
 
 end.

@@ -2,7 +2,7 @@
 @Abstract Util functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.09.2009
-@LastMod 08.08.2012
+@LastMod 27.08.2012
 }
 unit AUtils;
 
@@ -289,6 +289,8 @@ function FormatStrP(const Value: APascalString; Len: AInteger): APascalString; s
 
 // Возвращяет строку обрезанную до определенной длины (Len > 0) или строку указанной длины (L < 0).
 function FormatStrWS(const Value: AWideString; Len: AInteger): AWideString; stdcall;
+
+function GetNowDateTime(): TDateTime; stdcall;
 
 // Применяет Format() к строке с одним строковым параметром. Например: "Ошибка в %s".
 function FormatStrStr(const FormatStr, S: APascalString): APascalString; stdcall;
@@ -1569,6 +1571,15 @@ begin
   Result := AUtils_FormatStrWS(Value, Len);
 end;
 
+function GetNowDateTime(): TDateTime;
+begin
+  try
+    Result := SysUtils.Now();
+  except
+    Result := 0;
+  end;
+end;
+
 function Init(): AError; stdcall;
 begin
   Result := AUtils_Init();
@@ -2244,7 +2255,7 @@ end;
 
 function Utils_Time_Now: TDateTime;
 begin
-  Result := Now;
+  Result := GetNowDateTime();
 end;
 
 function Utils_Trim(const S: APascalString): APascalString;

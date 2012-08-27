@@ -2,7 +2,7 @@
 @abstract ASystem exports
 @author Prof1983 <prof1983@ya.ru>
 @created 20.08.2007
-@lastmod 24.07.2012
+@lastmod 27.08.2012
 }
 unit ASystemExp;
 
@@ -19,6 +19,7 @@ exports
   ASystem.GetCompanyName name 'ASystem_GetCompanyName',
   ASystem.GetCopyright name 'ASystem_GetCopyright',
   ASystem.GetDescription name 'ASystem_GetDescription',
+  ASystem.GetDirectoryPath name 'ASystem_GetDirectoryPath',
   ASystem.GetExeName name 'ASystem_GetExeName',
   ASystem.GetExePath name 'ASystem_GetExePath',
   ASystem.GetProductName name 'ASystem_GetProductName',
@@ -35,6 +36,11 @@ exports
   ASystem.OnBeforeRun_Connect name 'ASystem_OnBeforeRun_Connect',
   ASystem.OnBeforeRun_Disconnect name 'ASystem_OnBeforeRun_Disconnect',
   {$ENDIF USE_EVENTS}
+  ASystem.Prepare name 'ASystem_Prepare',
+  ASystem.Prepare1 name 'ASystem_Prepare1',
+  ASystem.Prepare2 name 'ASystem_Prepare2',
+  ASystem.Prepare2A name 'ASystem_Prepare2A',
+  ASystem.Prepare4A name 'ASystem_Prepare4A',
   ASystem.ProcessMessages02 name 'ASystem_ProcessMessages',
   Runtime_SetConfig name 'ASystem_SetConfig',
   ASystem.ShowError02 name 'ASystem_ShowError',

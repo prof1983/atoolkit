@@ -2,7 +2,7 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.01.2012
-@LastMod 13.08.2012
+@LastMod 27.08.2012
 }
 unit APluginsMain;
 
@@ -14,6 +14,32 @@ uses
 
 type
   TCheckPluginProc = function(Lib: ALibrary): ABoolean; stdcall;
+
+// --- APlugins ---
+
+function APlugins_AddPluginA(FileName: AStr): AError; stdcall;
+
+function APlugins_AddPluginP(const FileName: APascalString): AError; stdcall;
+
+function APlugins_Clear(): AError; stdcall;
+
+function APlugins_Delete(Index: AInteger): AError; stdcall;
+
+function APlugins_Fin(): AError; stdcall;
+
+function APlugins_Find2P(const Path, Exclusion: APascalString): AError; stdcall;
+
+function APlugins_FindA(Path: AStr): AError; stdcall;
+
+function APlugins_FindP(const Path: APascalString): AError; stdcall;
+
+function APlugins_GetCount(): AInteger; stdcall;
+
+function APlugins_Init(): AError; stdcall;
+
+function APlugins_SetOnCheckPlugin(CheckPluginProc: TCheckPluginProc): AError; stdcall;
+
+// --- Plugins ---
 
 function Plugins_Init(): AError;
 function Plugins_Done(): AError;
@@ -65,51 +91,19 @@ var
   FOnCheckPlugin: TCheckPluginProc;
   FPlugins: array of APlugin_Type;
 
-{ Events }
-
-{function DoCheckPlugin(Lib: ALibrary): ABoolean; stdcall;
-var
-  PluginBootProc: APluginBootProc;
-begin
-  if not(ASystem.Library_GetSymbolW(Lib, 'Plugin_Boot', @PluginBootProc)) then
-  begin
-    Result := False;
-    Exit;
-  end;
-  try
-    Result := (PluginBootProc(Addr(ARuntime)) >= 0);
-  except
-    Result := False;
-  end;
-end;}
-
-{ Plugin }
-
-function Plugin_Done(Index: Integer): Integer;
-begin
-  try
-    Result := FPlugins[Index].DoneProc;
-  except
-    //System0.ShowMessage('Error Plugin_Done '+Library_GetName(FPlugins[Index].Lib));
-    Result := -1;
-  end;
-end;
-
-procedure Plugin_Free(Index: Integer);
-begin
-  ALibraries.Library_Close(FPlugins[Index].Lib);
-end;
-
-function Plugin_Init(Index: Integer): Integer;
-begin
-  try
-    Result := FPlugins[Index].InitProc;
-  except
-    Result := -1;
-  end;
-end;
+function _Plugin_Fin(Index: Integer): Integer; forward;
+procedure _Plugin_Free(Index: Integer); forward;
+function _Plugin_Init(Index: Integer): Integer; forward;
 
 { Private }
+
+function CheckPlugin(Lib: ALibrary): ABoolean;
+begin
+  if Assigned(FOnCheckPlugin) then
+    Result := FOnCheckPlugin(Lib)
+  else
+    Result := True;
+end;
 
 function FindPluginByName(const Name: APascalString): AInteger;
 var
@@ -136,18 +130,32 @@ begin
   begin
     PluginIndex := FindPluginByName(PluginName);
     if (PluginIndex >= 0) then
-      Plugin_Init(PluginIndex);
+      _Plugin_Init(PluginIndex);
   end;
 end;
 
-// -------------------------------------------------------------------------------------------------
-
-function CheckPlugin(Lib: ALibrary): ABoolean;
+function _Plugin_Fin(Index: Integer): Integer;
 begin
-  if Assigned(FOnCheckPlugin) then
-    Result := FOnCheckPlugin(Lib)
-  else
-    Result := True;
+  try
+    Result := FPlugins[Index].DoneProc;
+  except
+    //System0.ShowMessage('Error Plugin_Done '+Library_GetName(FPlugins[Index].Lib));
+    Result := -1;
+  end;
+end;
+
+procedure _Plugin_Free(Index: Integer);
+begin
+  ALibraries.Library_Close(FPlugins[Index].Lib);
+end;
+
+function _Plugin_Init(Index: Integer): Integer;
+begin
+  try
+    Result := FPlugins[Index].InitProc;
+  except
+    Result := -1;
+  end;
 end;
 
 { Events }
@@ -166,9 +174,30 @@ begin
   DoAfterRun(Obj, Data);
 end;
 
-{ Plugins }
+{function DoCheckPlugin(Lib: ALibrary): ABoolean; stdcall;
+var
+  PluginBootProc: APluginBootProc;
+begin
+  if not(ASystem.Library_GetSymbolW(Lib, 'Plugin_Boot', @PluginBootProc)) then
+  begin
+    Result := False;
+    Exit;
+  end;
+  try
+    Result := (PluginBootProc(Addr(ARuntime)) >= 0);
+  except
+    Result := False;
+  end;
+end;}
 
-function Plugins_AddPlugin(const FileName: APascalString): Boolean;
+// --- APlugins ---
+
+function APlugins_AddPluginA(FileName: AStr): AError;
+begin
+  Result := APlugins_AddPluginP(FileName);
+end;
+
+function APlugins_AddPluginP(const FileName: APascalString): AError;
 var
   I: Integer;
   Lib: ALibrary;
@@ -181,25 +210,25 @@ begin
     Lib := ALibrary_OpenP(FileName, 0);
     if (Lib = 0) then
     begin
-      Result := False;
+      Result := -1;
       Exit;
     end;
     if not(ALibrary_GetSymbolP(Lib, 'Plugin_Init', @PluginInitProc)) then
     begin
       ALibrary_Close(Lib);
-      Result := False;
+      Result := -1;
       Exit;
     end;
     if not(ALibrary_GetSymbolP(Lib, 'Plugin_Done', @PluginDoneProc)) then
     begin
       ALibrary_Close(Lib);
-      Result := False;
+      Result := -1;
       Exit;
     end;
     if not(ALibrary_GetSymbolP(Lib, 'Plugin_Version', @PluginVersionProc)) then
     begin
       ALibrary_Close(Lib);
-      Result := False;
+      Result := -1;
       Exit;
     end;
 
@@ -210,14 +239,14 @@ begin
         Version := PluginVersionProc;
       except
         ALibrary_Close(Lib);
-        Result := False;
+        Result := -1;
         Exit;
       end;
       if (Version and PluginsVersionMask <> PluginsVersionValue1 and PluginsVersionMask)
       and (Version and PluginsVersionMask <> PluginsVersionValue2 and PluginsVersionMask) then
       begin
         ALibrary_Close(Lib);
-        Result := False;
+        Result := -1;
         Exit;
       end;
     end;
@@ -225,7 +254,7 @@ begin
     if not(CheckPlugin(Lib)) then
     begin
       ALibrary_Close(Lib);
-      Result := False;
+      Result := -1;
       Exit;
     end;
 
@@ -234,71 +263,63 @@ begin
     FPlugins[I].Lib := Lib;
     FPlugins[I].InitProc := PluginInitProc;
     FPlugins[I].DoneProc := PluginDoneProc;
-    Result := True;
+    Result := 0;
   except
-    Result := False;
+    Result := -1;
   end;
 end;
 
-function Plugins_Clear: Boolean;
+function APlugins_Clear(): AError;
 var
   I: Integer;
 begin
-  for I := 0 to High(FPlugins) do
   try
-    Plugin_Done(I);
-    Plugin_Free(I);
+    for I := 0 to High(FPlugins) do
+    try
+      _Plugin_Fin(I);
+      _Plugin_Free(I);
+    except
+    end;
+    SetLength(FPlugins, 0);
+    Result := 0;
   except
+    Result := -1;
   end;
-  SetLength(FPlugins, 0);
-  Result := True;
 end;
 
-function Plugins_Count: Integer;
-begin
-  Result := Length(FPlugins);
-end;
-
-function Plugins_Delete(Index: Integer): Boolean;
+function APlugins_Delete(Index: AInteger): AError;
 var
   I: Integer;
 begin
-  Result := False;
-  if (Index < 0) or (Index >= Length(FPlugins)) then Exit;
-  Plugin_Done(Index);
-  Plugin_Free(Index);
-  for I := Index to High(FPlugins) - 1 do
-  begin
-    FPlugins[I] := FPlugins[I + 1];
-  end;
-  SetLength(FPlugins, High(FPlugins));
-  Result := True;
-end;
-
-function Plugins_Done(): AError; 
-begin
-  Plugins_Clear();
-  Result := 0;
-end;
-
-function Plugins_DoneAll(): AError; stdcall;
-var
-  I: Integer;
-begin
-  for I := 0 to High(FPlugins) do
   try
-    Plugin_Done(I);
+    if (Index < 0) or (Index >= Length(FPlugins)) then
+    begin
+      Result := -1;
+      Exit;
+    end;
+    _Plugin_Fin(Index);
+    _Plugin_Free(Index);
+    for I := Index to High(FPlugins) - 1 do
+    begin
+      FPlugins[I] := FPlugins[I + 1];
+    end;
+    SetLength(FPlugins, High(FPlugins));
+    Result := 0;
   except
+    Result := -1;
   end;
-  Result := 0;
 end;
 
-procedure Plugins_Find(const Path: APascalString);
+function APlugins_Fin(): AError;
 begin
-  Plugins_Find2(Path, '');
+  try
+    Result := Plugins_Done();
+  except
+    Result := -1;
+  end;
 end;
 
-procedure Plugins_Find2(const Path, Exclusion: APascalString);
+function APlugins_Find2P(const Path, Exclusion: APascalString): AError;
 
   procedure PFind(const Path: APascalString);
   var
@@ -314,15 +335,100 @@ procedure Plugins_Find2(const Path, Exclusion: APascalString);
 var
   SearchRec: TSearchRec;
 begin
-  if (FindFirst(Path + '*', faDirectory, SearchRec) <> 0) then Exit;
-  if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
-    PFind(Path+SearchRec.Name+'\');
-  while (FindNext(SearchRec) = 0) do
-  begin
-    if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') and (SearchRec.Name <> Exclusion) then
+  try
+    if (FindFirst(Path + '*', faDirectory, SearchRec) <> 0) then Exit;
+    if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
       PFind(Path+SearchRec.Name+'\');
+    while (FindNext(SearchRec) = 0) do
+    begin
+      if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') and (SearchRec.Name <> Exclusion) then
+        PFind(Path+SearchRec.Name+'\');
+    end;
+    SysUtils.FindClose(SearchRec);
+    Result := 0;
+  except
+    Result := -1;
   end;
-  SysUtils.FindClose(SearchRec);
+end;
+
+function APlugins_FindA(Path: AStr): AError;
+begin
+  Result := APlugins_FindP(Path);
+end;
+
+function APlugins_FindP(const Path: APascalString): AError;
+begin
+  Result := APlugins_Find2P(Path, '');
+end;
+
+function APlugins_GetCount(): AInteger;
+begin
+  try
+    Result := Length(FPlugins);
+  except
+    Result := 0;
+  end;
+end;
+
+function APlugins_Init(): AError;
+begin
+  Result := Plugins_Init();
+end;
+
+function APlugins_SetOnCheckPlugin(CheckPluginProc: TCheckPluginProc): AError;
+begin
+  Plugins_SetOnCheckPlugin(CheckPluginProc);
+  Result := 0;
+end;
+
+{ Plugins }
+
+function Plugins_AddPlugin(const FileName: APascalString): Boolean;
+begin
+  Result := (APlugins_AddPluginP(FileName) >= 0);
+end;
+
+function Plugins_Clear: Boolean;
+begin
+  Result := (APlugins_Clear() >= 0);
+end;
+
+function Plugins_Count: Integer;
+begin
+  Result := APlugins_GetCount();
+end;
+
+function Plugins_Delete(Index: Integer): Boolean;
+begin
+  Result := (APlugins_Delete(Index) >= 0);
+end;
+
+function Plugins_Done(): AError;
+begin
+  Plugins_Clear();
+  Result := 0;
+end;
+
+function Plugins_DoneAll(): AError; stdcall;
+var
+  I: Integer;
+begin
+  for I := 0 to High(FPlugins) do
+  try
+    _Plugin_Fin(I);
+  except
+  end;
+  Result := 0;
+end;
+
+procedure Plugins_Find(const Path: APascalString);
+begin
+  APlugins_FindP(Path);
+end;
+
+procedure Plugins_Find2(const Path, Exclusion: APascalString);
+begin
+  APlugins_Find2P(Path, Exclusion);
 end;
 
 function Plugins_Init(): AError;
@@ -359,7 +465,7 @@ begin
   InitPluginFromConfig(Config, 'InitPlugin7');
 
   for I := 0 to High(FPlugins) do
-    Plugin_Init(I);
+    _Plugin_Init(I);
   Result := 0;
 end;
 

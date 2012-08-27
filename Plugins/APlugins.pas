@@ -2,7 +2,7 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.04.2009
-@LastMod 26.07.2012
+@LastMod 27.08.2012
 }
 unit APlugins;
 
@@ -10,14 +10,6 @@ interface
 
 uses
   ABase, APluginsMain;
-
-// --- APlugins ---
-
-function APlugins_Fin(): AError; stdcall;
-
-function APlugins_Init(): AError; stdcall;
-
-function APlugins_SetOnCheckPlugin(CheckPluginProc: TCheckPluginProc): AError; stdcall;
 
 // ----
 
@@ -37,8 +29,9 @@ procedure Find02(const Path: APascalString); stdcall;
 // Exclusion - имя исключаемой для поиска директории
 function Find2WS(const Path, Exclusion: AWideString): AError; stdcall;
 
-// Use Find() or FindWS()
-function FindP(const Path: APascalString): AError; stdcall; deprecated;
+function FindA(Path: AStr): AError; stdcall;
+
+function FindP(const Path: APascalString): AError; stdcall;
 
 function FindWS(const Path: AWideString): AError; stdcall;
 
@@ -47,28 +40,6 @@ function GetCount(): AInteger; stdcall;
 procedure Prepare(Value: AVersion);
 
 implementation
-
-// --- APlugins ---
-
-function APlugins_Fin(): AError; 
-begin
-  try
-    Result := Plugins_Done();
-  except
-    Result := -1;
-  end;
-end;
-
-function APlugins_Init(): AError;
-begin
-  Result := Plugins_Init();
-end;
-
-function APlugins_SetOnCheckPlugin(CheckPluginProc: TCheckPluginProc): AError;
-begin
-  Plugins_SetOnCheckPlugin(CheckPluginProc);
-  Result := 0;
-end;
 
 { Module }
 
@@ -122,24 +93,19 @@ begin
   end;
 end;
 
+function FindA(Path: AStr): AError; stdcall;
+begin
+  Result := APlugins_FindP(Path);
+end;
+
 function FindP(const Path: APascalString): AError; stdcall;
 begin
-  try
-    Plugins_Find(Path);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := APlugins_FindP(Path);
 end;
 
 function FindWS(const Path: AWideString): AError; stdcall;
 begin
-  try
-    Plugins_Find(Path);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := APlugins_FindP(Path);
 end;
 
 function GetCount(): AInteger; stdcall;

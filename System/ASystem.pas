@@ -2,7 +2,7 @@
 @Abstract ASystem function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.08.2009
-@LastMod 13.08.2012
+@LastMod 27.08.2012
 }
 unit ASystem;
 
@@ -324,6 +324,11 @@ procedure Prepare2WS(const Title, ProgramName: AWideString; ProgramVersion: AVer
     const ProductName: AWideString; ProductVersion: AVersion;
     const CompanyName, Copyright, Url, Description, DataPath: AWideString); stdcall;
 
+{** Prepare system }
+function Prepare3A(Title, ProgramName: AStr; ProgramVersion: AVersion;
+    ProductName: AStr; ProductVersion: AVersion;
+    CompanyName, Copyright, Url, Description, DataPath, ConfigPath: AStr): AError; stdcall;
+
 // Prepare system.
 function Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
     const ProductName: APascalString; ProductVersion: AVersion;
@@ -334,8 +339,18 @@ function Prepare3WS(const Title, ProgramName: AWideString; ProgramVersion: AVers
     const ProductName: AWideString; ProductVersion: AVersion;
     const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: AWideString): AError; stdcall;
 
+{** Prepare system }
+function Prepare4A(Title, ProgramName: AStr; ProgramVersion: AVersion;
+    ProductName: AStr; ProductVersion: AVersion;
+    CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath: AStr): AError; stdcall;
+
+{** Prepare system }
+function Prepare4P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
+    const ProductName: APascalString; ProductVersion: AVersion;
+    const CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath: APascalString): AError; stdcall;
+
 // Prepare system.
-procedure Prepare4P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
+procedure Prepare4P_Old(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
     const ProductName: APascalString; ProductVersion: AVersion;
     const CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath: APascalString); stdcall;
 
@@ -374,7 +389,11 @@ function GetCopyright(): APascalString; stdcall; deprecated;
 
 function GetDescription(): AWideString; stdcall; deprecated;
 
-function GetExePath(): APascalString; stdcall; deprecated; // Use Info_GetDirectoryPathWS()
+function GetDirectoryPath(out Value: AString_Type): AInteger; stdcall;
+
+function GetExePath(out Value: AString_Type): AInteger; stdcall;
+
+function GetExePathP(): APascalString; stdcall; deprecated; // Use GetDirectoryPathP()
 
 function GetExePathWS(): AWideString; stdcall;
 
@@ -860,7 +879,7 @@ begin
   end;
 end;
 
-function Prepare(): AError; stdcall;
+function Prepare(): AError;
 begin
   try
     Prepare1();
@@ -935,6 +954,17 @@ begin
       CompanyName, Copyright, Url, Description, DataPath, '');
 end;
 
+function Prepare3A(Title, ProgramName: AStr; ProgramVersion: AVersion;
+    ProductName: AStr; ProductVersion: AVersion;
+    CompanyName, Copyright, Url, Description, DataPath, ConfigPath: AStr): AError;
+begin
+  Result := Prepare3P(AnsiString(Title), AnsiString(ProgramName), ProgramVersion,
+      AnsiString(ProductName), ProductVersion,
+      AnsiString(CompanyName), AnsiString(Copyright),
+      AnsiString(Url), AnsiString(Description),
+      AnsiString(DataPath), AnsiString(ConfigPath));
+end;
+
 function Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
     const ProductName: APascalString; ProductVersion: AVersion;
     const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString): AError; stdcall;
@@ -977,9 +1007,20 @@ begin
   Result := 0;
 end;
 
-procedure Prepare4P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
+function Prepare4A(Title, ProgramName: AStr; ProgramVersion: AVersion;
+    ProductName: AStr; ProductVersion: AVersion;
+    CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath: AStr): AError;
+begin
+  Result := Prepare4P(AnsiString(Title), AnsiString(ProgramName), ProgramVersion,
+      AnsiString(ProductName), ProductVersion,
+      AnsiString(CompanyName), AnsiString(Copyright),
+      AnsiString(Url), AnsiString(Description),
+      AnsiString(Comments), AnsiString(DataPath), AnsiString(ConfigPath));
+end;
+
+function Prepare4P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
     const ProductName: APascalString; ProductVersion: AVersion;
-    const CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath: APascalString); stdcall;
+    const CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath: APascalString): AError;
 begin
   {$IFDEF USE_EVENTS}
     FOnAfterRunEvent := AEvents.Event_NewW(0, 'AfterRun');
@@ -999,6 +1040,15 @@ begin
   {$ENDIF USE_EVENTS}
 
   System_Prepare(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
+      CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath);
+  Result := 0;
+end;
+
+procedure Prepare4P_Old(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
+    const ProductName: APascalString; ProductVersion: AVersion;
+    const CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath: APascalString); stdcall;
+begin
+  Prepare4P(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
       CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath);
 end;
 
@@ -1234,6 +1284,11 @@ begin
   Result := FDescription;
 end;
 
+function GetDirectoryPath(out Value: AString_Type): AInteger;
+begin
+  Result := AStrings.String_AssignP(Value, FExePath);
+end;
+
 function GetExeName(): APascalString; stdcall;
 begin
   Result := FExeName;
@@ -1244,7 +1299,12 @@ begin
   Result := FExeName;
 end;
 
-function GetExePath(): APascalString; stdcall;
+function GetExePath(out Value: AString_Type): AInteger;
+begin
+  Result := AStrings.String_AssignP(Value, FExePath);
+end;
+
+function GetExePathP(): APascalString;
 begin
   Result := FExePath;
 end;

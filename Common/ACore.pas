@@ -2,7 +2,7 @@
 @Abstract ACore
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.10.2009
-@LastMod 16.08.2012
+@LastMod 27.08.2012
 }
 unit ACore;
 
@@ -84,8 +84,11 @@ var
   {$ENDIF A02}
 {$ENDIF A01}
 
-function CoreLib_Open(const CoreLibName: string): AInteger;
 procedure CoreLib_Close;
+
+function CoreLib_GetLib(): ALibrary;
+
+function CoreLib_Open(const CoreLibName: string): AInteger;
 
 {$ENDIF STATIC}
 
@@ -120,6 +123,11 @@ begin
     ALibrary_Close(FLib);
     FLib := 0;
   end;
+end;
+
+function CoreLib_GetLib(): ALibrary;
+begin
+  Result := FLib;
 end;
 
 function CoreLib_Open(const CoreLibName: string): Integer;

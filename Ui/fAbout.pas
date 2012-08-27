@@ -2,7 +2,7 @@
 @Abstract AUi about form
 @Author Prof1983 <prof1983@ya.ru>
 @Created 04.04.2006
-@LastMod 19.07.2012
+@LastMod 27.08.2012
 }
 unit fAbout;
 
@@ -17,7 +17,7 @@ uses
   {$IFDEF MSWINDOWS}ShellAPI, Windows,{$ENDIF}
   Buttons, Classes, Controls, Dialogs, ExtCtrls, Graphics, Forms, Messages, StdCtrls, SysUtils,
   ABase, ABaseUtils, ASystem, 
-  AUiBase, AUiButton, AUiControls;
+  AUiBase, AUiButtons, AUiControls;
 
 type
   AUIAboutFlags = type AInteger;
@@ -112,7 +112,7 @@ function TAboutForm.AddButton(Left, Width: Integer; const Text: APascalString;
 var
   Button: AControl;
 begin
-  Button := AUIButton.UI_Button_New(AControl(ButtonsPanel));
+  Button := AUiButton_New(AControl(ButtonsPanel));
   if (Button <> 0) then
   begin
     AUIControls.UI_Control_SetPosition(Button, Left, 4);
@@ -128,7 +128,7 @@ function TAboutForm.AddButton02(Left, Width: Integer; const Text: APascalString;
 var
   Button: AControl;
 begin
-  Button := AUIButton.UI_Button_New(AControl(ButtonsPanel));
+  Button := AUiButton_New(AControl(ButtonsPanel));
   if (Button <> 0) then
   begin
     AUIControls.UI_Control_SetPosition(Button, Left, 4);

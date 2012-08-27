@@ -2,7 +2,7 @@
 @Abstract AUiMainWindow
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2008
-@LastMod 10.08.2012
+@LastMod 27.08.2012
 }
 unit AUiMainWindow;
 

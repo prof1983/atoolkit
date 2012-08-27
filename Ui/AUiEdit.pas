@@ -2,7 +2,7 @@
 @Abstract AUiEdit
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.01.2010
-@LastMod 27.07.2012
+@LastMod 27.08.2012
 }
 unit AUiEdit;
 
@@ -13,7 +13,7 @@ interface
 uses
   Controls, StdCtrls,
   ABase, AUtils,
-  AUiBase, AUiButton, AUiControls, AUiData;
+  AUiBase, AUiButtons, AUiControls, AUiData;
 
 {
 function A_UI_Edit_CheckDate(Edit: AControl; out Value: TDateTime): ABoolean; stdcall;

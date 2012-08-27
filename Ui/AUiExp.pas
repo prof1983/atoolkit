@@ -2,7 +2,7 @@
 @Abstract User Interface exports
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.04.2011
-@LastMod 26.07.2012
+@LastMod 27.08.2012
 }
 unit AUiExp;
 
@@ -38,7 +38,6 @@ exports
   AUI.Control_SetSize name 'A_UI_Control_SetSize',
   AUI.Control_SetTextWS name 'A_UI_Control_SetTextWS',
   AUI.Control_SetVisible name 'A_UI_Control_SetVisible',
-  //AUI.DataSource_SetOnDataChange name 'A_UI_DataSource_SetOnDataChange',
   AUI.Dialog_About name 'A_UI_Dialog_About',
   AUI.Dialog_Calendar name 'A_UI_Dialog_Calendar',
   AUI.Dialog_ErrorWS name 'A_UI_Dialog_ErrorWS',
@@ -49,8 +48,6 @@ exports
   AUI.Dialog_LoginWS name 'A_UI_Dialog_LoginWS',
   AUI.Dialog_MessageWS name 'A_UI_Dialog_MessageWS',
   AUI.Dialog_OpenFileWS name 'A_UI_Dialog_OpenFileWS',
-  UI_Dialog_OpenFileA name 'A_UI_Dialog_OpenFileA',
-  UI_Dialog_SaveFile name 'A_UI_Dialog_SaveFile',
   AUI.Edit_CheckDate name 'A_UI_Edit_CheckDate',
   AUI.Edit_CheckFloat name 'A_UI_Edit_CheckFloat',
   AUI.Edit_CheckInt name 'A_UI_Edit_CheckInt',

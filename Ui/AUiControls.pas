@@ -2,9 +2,11 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 22.08.2012
+@LastMod 28.08.2012
 }
 unit AUiControls;
+
+{$ifdef A04}{$define AStdCall}{$endif}
 
 interface
 
@@ -14,74 +16,74 @@ uses
 
 // --- AUiControl ---
 
-function AUiControl_Free(Control: AControl): AError;
+function AUiControl_Free(Control: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_FreeAndNil(var Control: AControl): AError;
+function AUiControl_FreeAndNil(var Control: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_GetColor(Control: AControl): AColor;
+function AUiControl_GetColor(Control: AControl): AColor; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_GetEnabled(Control: AControl): ABoolean;
+function AUiControl_GetEnabled(Control: AControl): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_GetHeight(Control: AControl): AInt;
+function AUiControl_GetHeight(Control: AControl): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_GetHintP(Control: AControl): APascalString;
+function AUiControl_GetHintP(Control: AControl): APascalString; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_GetMenu(Control: AControl): AMenu;
+function AUiControl_GetMenu(Control: AControl): AMenu; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_GetNameP(Control: AControl): APascalString;
+function AUiControl_GetNameP(Control: AControl): APascalString; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_GetPosition(Control: AControl; out Left, Top: AInteger): AError;
+function AUiControl_GetPosition(Control: AControl; out Left, Top: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_GetTextP(Control: AControl): APascalString;
+function AUiControl_GetTextP(Control: AControl): APascalString; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_GetVisible(Control: AControl): ABoolean;
+function AUiControl_GetVisible(Control: AControl): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_GetWidth(Control: AControl): AInt;
+function AUiControl_GetWidth(Control: AControl): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetAlign(Control: AControl; Align: TUiAlign): AError;
+function AUiControl_SetAlign(Control: AControl; Align: TUiAlign): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetClientSize(Control: AControl; ClientWidth, ClientHeight: AInt): AError;
+function AUiControl_SetClientSize(Control: AControl; ClientWidth, ClientHeight: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetColor(Control: AControl; Color: AColor): AError;
+function AUiControl_SetColor(Control: AControl; Color: AColor): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetEnabled(Control: AControl; Value: ABoolean): AError;
+function AUiControl_SetEnabled(Control: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetFocus(Control: AControl): ABoolean;
+function AUiControl_SetFocus(Control: AControl): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
 
 { @param FontName - (const) }
 function AUiControl_SetFont1A(Control: AControl; FontName: AStr;
-    FontSize: AInt): AError;
+    FontSize: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetFont1P(Control: AControl; const FontName: APascalString;
-    FontSize: AInteger): AError;
+    FontSize: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 procedure AUiControl_SetFont1P_Old(Control: AControl; const FontName: APascalString;
-    FontSize: AInteger);
+    FontSize: AInteger); {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetFont2P(Control: AControl; const FontName: APascalString;
-    FontSize: AInteger; FontColor: AColor): AError;
+    FontSize: AInteger; FontColor: AColor): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetHeight(Control: AControl; Value: AInt): AInt;
+function AUiControl_SetHeight(Control: AControl; Value: AInt): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetHintP(Control: AControl; const Value: APascalString): AError;
+function AUiControl_SetHintP(Control: AControl; const Value: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetNameP(Control: AControl; const Value: APascalString): AError;
+function AUiControl_SetNameP(Control: AControl; const Value: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetOnClick(Control: AControl; Value: ACallbackProc): AError;
+function AUiControl_SetOnClick(Control: AControl; Value: ACallbackProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetOnClick02(Control: AControl; Value: ACallbackProc02): AError;
+function AUiControl_SetOnClick02(Control: AControl; Value: ACallbackProc02): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetOnClick03(Control: AControl; Value: ACallbackProc03): AError;
+function AUiControl_SetOnClick03(Control: AControl; Value: ACallbackProc03): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetPosition(Control: AControl; Left, Top: AInteger): AError;
+function AUiControl_SetPosition(Control: AControl; Left, Top: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetSize(Control: AControl; Width, Height: Integer): AError;
+function AUiControl_SetSize(Control: AControl; Width, Height: Integer): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetTextP(Control: AControl; const Value: APascalString): AError;
+function AUiControl_SetTextP(Control: AControl; const Value: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetVisible(Control: AControl; Value: ABoolean): AError;
+function AUiControl_SetVisible(Control: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetWidth(Control: AControl; Value: AInt): AInt;
+function AUiControl_SetWidth(Control: AControl; Value: AInt): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 // --- UI_Control ---
 

@@ -2,7 +2,7 @@
 @Abstract AUi Splash
 @Author Prof1983 <prof1983@ya.ru>
 @Created 08.12.2009
-@LastMod 25.07.2012
+@LastMod 27.08.2012
 }
 unit AUiSplash;
 
@@ -119,7 +119,7 @@ begin
     Exit;
   end;
   try
-    while (AUtils.Time_Now - FStartTime < cTime/(24*60*60)) do
+    while (AUtils.GetNowDateTime() - FStartTime < cTime/(24*60*60)) do
     begin
       AUI.Control_SetVisible(SplashWin, True);
       ASystem.ProcessMessages();

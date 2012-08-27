@@ -2,7 +2,7 @@
 @Abstract AUi ToolBar
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.08.2011
-@LastMod 19.07.2012
+@LastMod 27.08.2012
 }
 unit AUiToolBar;
 
@@ -10,7 +10,7 @@ interface
 
 uses
   ComCtrls, Controls,
-  ABase, AUiBase, AUiButton, AUiControls, AUiData;
+  ABase, AUiBase, AUiButtons, AUiControls, AUiData;
 
 function UI_ToolBar_AddButton(ToolBar: AControl; const Name, Text, Hint: APascalString;
     OnClick: ACallbackProc; ImageID, Weight: AInteger): AButton;
@@ -111,7 +111,7 @@ var
   Left: Integer;
   Top: Integer;
 begin
-  Button := AUIButton.UI_Button_New(ToolBar);
+  Button := AUiButton_New(ToolBar);
   AUIControls.UI_Control_SetName(Button, Name);
   AUIControls.UI_Control_SetSize(Button, 24, 24);
   AUIControls.UI_Control_SetTextP(Button, Text);

@@ -33,7 +33,7 @@ uses
   ARuntime,
   {$IFDEF USE_SETTINGS}ASettings,{$ENDIF}
   AStrings, ASystem,
-  AUiBase, AUiBox, AUiButton, AUiControls, AUiControlsA, AUiData, AUiEvents1, AUiEventsObj, AUiForm,
+  AUiBase, AUiBox, AUiButtons, AUiControls, AUiControlsA, AUiData, AUiEvents1, AUiEventsObj, AUiForm,
   AUiMain, AUiMainWindow, AUiMainWindow2, AUiPageControl, AUiReports,
   AUiToolBar, AUiToolMenu, AUiTreeView, AUiWindows;
 
@@ -884,7 +884,12 @@ function UI_WaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger; stdcall;
 
 { Testing }
 
+function SetAboutMemoDefaultSize(Width, Height: AInteger): AError; stdcall;
+
+function SetOnAboutClick(Value: AProc): AError; stdcall;
+
 procedure SetOnMainFormCreate(Value: AProc); stdcall;
+
 procedure SetOnMainFormCreate02(Value: AProc02); stdcall;
 
 function SetProgramState(State: AUiProgramState): AError; stdcall;
@@ -1190,6 +1195,19 @@ begin
     UI_ProcessMessages();
   except
   end;
+end;
+
+function SetAboutMemoDefaultSize(Width, Height: AInteger): AError;
+begin
+  UiAboutWinMemoWidthDefault := Width;
+  UiAboutWinMemoHeightDefault := Height;
+  Result := 0;
+end;
+
+function SetOnAboutClick(Value: AProc): AError;
+begin
+  UiAboutClick := Value;
+  Result := 0;
 end;
 
 procedure SetOnMainFormCreate(Value: AProc); stdcall;
@@ -1719,21 +1737,12 @@ end;
 
 function Button_New(Parent: AControl): AButton; stdcall;
 begin
-  try
-    Result := AUIButton.UI_Button_New(Parent);
-  except
-    Result := 0;
-  end;
+  Result := AUiButton_New(Parent);
 end;
 
 function Button_SetKind(Button: AButton; Kind: TAUIButtonKind): AError; stdcall;
 begin
-  try
-    AUIButton.UI_Button_SetKind(Button, Kind);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiButton_SetKind(Button, Kind);
 end;
 
 { Calendar }
@@ -2110,7 +2119,7 @@ end;
 
 function Dialog_FontP(var FontName: APascalString; var FontSize: AInteger; FontColor: AColor): ABoolean; stdcall;
 begin
-  Result := AUi_ExecuteFontDialog(FontName, FontSize, FontColor);
+  Result := AUi_ExecuteFontDialogP(FontName, FontSize, FontColor);
 end;
 
 function Dialog_GetWindow(Dialog: ADialog): AWindow; stdcall;
@@ -3446,12 +3455,12 @@ end;
 
 function UI_Button_New(Parent: AControl): AButton; stdcall;
 begin
-  Result := AUIButton.UI_Button_New(Parent);
+  Result := AUiButton_New(Parent);
 end;
 
 procedure UI_Button_SetKind(Button: AButton; Kind: TAUIButtonKind); stdcall;
 begin
-  AUIButton.UI_Button_SetKind(Button, Kind);
+  AUiButton_SetKind(Button, Kind);
 end;
 
 { UI_ComboBox }

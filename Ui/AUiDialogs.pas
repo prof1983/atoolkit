@@ -14,7 +14,7 @@ uses
   {$IFDEF USE_JEDI}JvBaseDlg, JvSelectDirectory,{$ENDIF}
   Controls, Dialogs, Forms,
   ABase, ABaseTypes, ASystem,
-  AUiBase, AUiBox, AUiButton, AUiConsts, AUiControls, AUiData, AUiWindows,
+  AUiBase, AUiBox, AUiButtons, AUiConsts, AUiControls, AUiData, AUiWindows,
   fAbout, fCalendar, fDateFilter, fError, fInputDialog, fLogin, fPasswordDialog;
 
 // --- AUi ---
@@ -810,7 +810,7 @@ end;
 
 function UI_Dialog_Message(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands;
 begin
-  Result := AUi_ExecuteMessageDialogP(Text, Caption, Flags);
+  Result := AUi_ExecuteMessageDialog1P(Text, Caption, Flags);
 end;
 
 function UI_Dialog_MessageDlg(const Msg: string; MsgDlgTypeFlag: AMessageBoxFlags; Flags: AMessageBoxFlags): AInteger;
@@ -825,12 +825,8 @@ end;
 
 function UI_Dialog_OpenFile(const InitialDir, Filter, Title: APascalString;
     var FileName: APascalString): Boolean;
-var
-  FilterIndex: Integer;
 begin
-  xxx
-  FilterIndex := 0;
-  Result := AUi_ExecuteOpenDialogP(InitialDir, Filter, '', Title, FileName, FilterIndex);
+  Result := AUi_ExecuteOpenFileDialogP(InitialDir, Filter, Title, FileName);
 end;
 
 function UI_Dialog_OpenFileA(const InitialDir, Filter, DefaultExt, Title: APascalString;
@@ -856,8 +852,7 @@ end;
 
 function UI_Dialog_SelectDirectory(var Directory: APascalString): ABoolean;
 begin
-  xxx
-  Result := Dialog_SelectDirectoryP(Directory);
+  Result := AUi_ExecuteSelectDirectoryDialogP(Directory);
 end;
 
 end.

@@ -2,7 +2,7 @@
 @Abstract AUiDialogs
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 22.08.2012
+@LastMod 27.08.2012
 }
 unit AUiDialogs;
 
@@ -12,10 +12,10 @@ interface
 
 uses
   {$IFDEF USE_JEDI}JvBaseDlg, JvSelectDirectory,{$ENDIF}
-  Controls, Dialogs,
-  ABase, ABaseTypes,
+  Controls, Dialogs, Forms,
+  ABase, ABaseTypes, ASystem,
   AUiBase, AUiBox, AUiButton, AUiConsts, AUiControls, AUiData, AUiWindows,
-  fAbout, fCalendar, fDateFilter, fError;
+  fAbout, fCalendar, fDateFilter, fError, fInputDialog, fLogin, fPasswordDialog;
 
 // --- AUi ---
 
@@ -29,14 +29,54 @@ function AUi_ExecuteDateFilterDialog(var Group: AInt; var DateBegin, DateEnd: TD
 
 function AUi_ExecuteErrorDialogP(const Caption, UserMessage, ExceptMessage: APascalString): AError;
 
-function AUi_ExecuteFontDialog(var FontName: APascalString; var FontSize: AInt; var FontColor: AColor): ABoolean;
+function AUi_ExecuteFontDialogP(var FontName: APascalString; var FontSize: AInt; var FontColor: AColor): ABoolean;
 
+function AUi_ExecuteInputBox1P(const Text: APascalString; var Value: APascalString): ABoolean;
+
+function AUi_ExecuteInputBox2P(const Caption, Text1, Text2: APascalString; var Value1, Value2: APascalString): ABoolean;
+
+function AUi_ExecuteInputBox3P(const Caption, Text: APascalString; var Value: APascalString): ABoolean;
+
+function AUi_ExecuteInputBox4P(const Caption, Prompt: APascalString; var Value: APascalString): ABoolean;
+
+function AUi_ExecuteInputQueryP(const Caption, Prompt: APascalString;
+    var Value: APascalString): ABoolean;
+
+function AUi_ExecuteLoginDialogP(var UserName, Password: APascalString; IsSave: ABoolean): ABoolean;
+
+function AUi_ExecuteMessageDialog1P(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands;
+
+function AUi_ExecuteMessageDialog2P(const Msg: APascalString; MsgDlgTypeFlag: AMessageBoxFlags;
+    Flags: AMessageBoxFlags): AInteger;
+
+function AUi_ExecuteOpenDialogP(const InitialDir, Filter, DefaultExt, Title: APascalString;
+    var FileName: APascalString; var FilterIndex: AInteger): ABoolean;
+
+function AUi_ExecuteOpenFileDialogP(const InitialDir, Filter, Title: APascalString;
+    var FileName: APascalString): ABoolean;
+    
+function AUi_ExecutePrinterSetupDialog(): AError;
+
+function AUi_ExecuteSaveFileDialog1P(const InitialDir, DefExt, DefFileName: APascalString): APascalString;
+    
+function AUi_ExecuteSaveFileDialog2P(const InitialDir, DefExt, DefFileName, Filter: APascalString;
+    var FilterIndex: AInteger): APascalString;
+
+function AUi_ExecuteSelectDirectoryDialogP(var Directory: APascalString): ABoolean;
+    
 function AUi_NewAboutDialog(): AWindow;
+
+function AUi_NewDialog(Buttons: AUiWindowButtons): ADialog;
 
 // --- AUiDialog ---
 
+function AUiDialog_AddButton02(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
+    OnClick: ACallbackProc02): AControl;
+
 function AUiDialog_AddButtonP(Win: AWindow; Left, Width: AInt; const Text: APascalString;
     OnClick: ACallbackProc): AControl;
+
+function AUiDialog_GetWindow(Dialog: ADialog): AWindow;
 
 // --- UI_Dialog ---
 
@@ -172,93 +212,29 @@ end;
 
 function ExecuteFontDialog(var FontName: APascalString; var FontSize: AInteger; var FontColor: AColor): ABoolean;
 begin
-  Result := AUi_ExecuteFontDialog(FontName, FontSize, FontColor);
+  Result := AUi_ExecuteFontDialogP(FontName, FontSize, FontColor);
 end;
 
 function ExecuteOpenDialogA(const InitialDir, Filter, DefaultExt, Title: APascalString;
     var FileName: APascalString; var FilterIndex: AInteger): ABoolean;
-var
-  Open: TOpenDialog;
 begin
-  Open := TOpenDialog.Create(nil);
-  try
-    Open.Options := [ofNoChangeDir,ofFileMustExist,ofPathMustExist];
-    Open.Initialdir := InitialDir;
-    Open.Filter := Filter;
-    Open.DefaultExt := DefaultExt;
-    if (Length(Title) = 0) then
-      Open.Title := 'Открыть'
-    else
-      Open.Title := Title;
-    Open.FilterIndex := FilterIndex;
-    Result := Open.Execute;
-    if Result then
-    begin
-      FileName := Open.FileName;
-      FilterIndex := Open.FilterIndex;
-    end;
-  finally
-    Open.Free;
-  end;
+  Result := AUi_ExecuteOpenDialogP(InitialDir, Filter, DefaultExt, Title, FileName, FilterIndex);
 end;
 
 function ExecuteSaveFileDialog(const InitialDir, DefExt, DefFileName: APascalString): APascalString;
-var
-  FilterIndex: Integer;
 begin
-  FilterIndex := 0;
-  Result := ExecuteSaveFileDialogA(InitialDir, DefExt, DefFileName, '', FilterIndex);
+  Result := AUi_ExecuteSaveFileDialog1P(InitialDir, DefExt, DefFileName);
 end;
 
 function ExecuteSaveFileDialogA(const InitialDir, DefExt, DefFileName, Filter: APascalString;
     var FilterIndex: AInteger): APascalString;
-var
-  Dialog: TSaveDialog;
 begin
-  Dialog := TSaveDialog.Create(nil);
-  try
-    Dialog.InitialDir := InitialDir;
-    Dialog.DefaultExt := DefExt;
-    Dialog.Options := Dialog.Options + [ofNoChangeDir];
-    Dialog.FileName := DefFileName;
-    Dialog.Filter := Filter;
-    Dialog.FilterIndex := FilterIndex;
-    Dialog.Options := Dialog.Options + [ofOverwritePrompt];
-    if Dialog.Execute then
-    begin
-      Result := Dialog.FileName;
-      FilterIndex := Dialog.FilterIndex;
-    end
-    else
-      Result := '';
-  finally
-    Dialog.Free();
-  end;
+  Result := AUi_ExecuteSaveFileDialog2P(InitialDir, DefExt, DefFileName, Filter, FilterIndex);
 end;
 
 function ExecuteSelectDirectoryDialog(var Directory: APascalString): ABoolean;
-{$IFDEF USE_JEDI}
-var
-  Dialog: TJvSelectDirectory;
-{$ENDIF USE_JEDI}
 begin
-  {$IFDEF USE_JEDI}
-  Dialog := TJvSelectDirectory.Create(nil);
-  try
-    Dialog.InitialDir := Directory;
-    if Dialog.Execute then
-    begin
-      Directory := Dialog.Directory;
-      Result := True;
-    end
-    else
-      Result := False;
-  finally
-    Dialog.Free;
-  end;
-  {$ELSE}
-  Result := False;
-  {$ENDIF USE_JEDI}
+  Result := AUi_ExecuteSelectDirectoryDialogP(Directory);
 end;
 
 // --- AUi ---
@@ -346,7 +322,7 @@ begin
   end;
 end;
 
-function AUi_ExecuteFontDialog(var FontName: APascalString; var FontSize: AInt; var FontColor: AColor): ABoolean;
+function AUi_ExecuteFontDialogP(var FontName: APascalString; var FontSize: AInt; var FontColor: AColor): ABoolean;
 var
   FontDialog: TFontDialog;
 begin
@@ -371,6 +347,265 @@ begin
   end;
 end;
 
+function AUi_ExecuteInputBox1P(const Text: APascalString; var Value: APascalString): ABoolean;
+begin
+  Result := AUi_ExecuteInputBox3P(ASystem.Info_GetTitleWS(), Text, Value);
+end;
+
+function AUi_ExecuteInputBox2P(const Caption, Text1, Text2: APascalString; var Value1, Value2: APascalString): ABoolean;
+begin
+  {$IFDEF FPC}
+  Result := False;
+  {$ELSE}
+  try
+    Result := fPasswordDialog.InputBox2(Caption, Text1, Text2, Value1, Value2);
+  except
+    Result := False;
+  end;
+  {$ENDIF}
+end;
+
+function AUi_ExecuteInputBox3P(const Caption, Text: APascalString; var Value: APascalString): ABoolean;
+begin
+  {$IFDEF FPC}
+  Result := False;
+  {$ELSE}
+  try
+    Result := fInputDialog.InputBox(Caption, Text, Value);
+  except
+    Result := False;
+  end;
+  {$ENDIF}
+end;
+
+function AUi_ExecuteInputBox4P(const Caption, Prompt: APascalString; var Value: APascalString): ABoolean;
+begin
+  try
+    Value := Dialogs.InputBox(Caption, Prompt, Value);
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+
+function AUi_ExecuteInputQueryP(const Caption, Prompt: APascalString;
+    var Value: APascalString): ABoolean;
+var
+  TmpValue: string;
+begin
+  try
+    TmpValue := Value;
+    if not(Dialogs.InputQuery(Caption, Prompt, TmpValue)) then
+    begin
+      Result := False;
+      Exit;
+    end;
+    Value := TmpValue;
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+
+function AUi_ExecuteLoginDialogP(var UserName, Password: APascalString; IsSave: ABoolean): ABoolean;
+{$IFNDEF FPC}
+var
+  fmLogin: TLoginForm;
+{$ENDIF}
+begin
+  {$IFDEF FPC}
+  Result := False;
+  {$ELSE}
+  try
+    fmLogin := TLoginForm.Create(nil);
+    try
+      fmLogin.UserName := UserName;
+      Result := (fmLogin.ShowModal() = mrOk);
+      if Result then
+      begin
+        UserName := fmLogin.UserName;
+        Password := fmLogin.UserPassword;
+      end;
+    finally
+      fmLogin.Free();
+    end;
+  except
+    Result := False;
+  end;
+  {$ENDIF}
+end;
+
+function AUi_ExecuteMessageDialog1P(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands;
+var
+  PrevCursor: TCursor;
+begin
+  try
+    PrevCursor := Screen.Cursor;
+    Screen.Cursor := crDefault;
+    Result := Application.MessageBox(PChar(string(Text)), PChar(string(Caption)), Flags);
+    {$IFNDEF UNIX}
+    //Result := Windows.MessageBox(Application.Handle{0}, PChar(string(Text)), PChar(string(Caption)), Flags);
+    {$ENDIF}
+    Screen.Cursor := PrevCursor;
+  except
+    Result := 0;
+  end;
+end;
+
+function AUi_ExecuteMessageDialog2P(const Msg: APascalString; MsgDlgTypeFlag: AMessageBoxFlags;
+    Flags: AMessageBoxFlags): AInteger;
+//TMsgDlgType = (mtWarning, mtError, mtInformation, mtConfirmation, mtCustom);
+//TMsgDlgBtn = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry, mbIgnore, mbAll, mbNoToAll, mbYesToAll, mbHelp);
+//TMsgDlgButtons = set of TMsgDlgBtn;
+var
+  MsgDlgType: TMsgDlgType;
+  MsgDlgButtons: TMsgDlgButtons;
+begin
+  try
+    case MsgDlgTypeFlag of
+      AMessageBoxFlags_IconError: MsgDlgType := mtError;
+      AMessageBoxFlags_IconQuestion: MsgDlgType := mtConfirmation;
+      AMessageBoxFlags_IconWarning: MsgDlgType := mtWarning;
+      AMessageBoxFlags_IconInformation: MsgDlgType := mtInformation;
+      //AMessageBoxFlags_UserIcon: MsgDlgType := mtCustom
+    else
+      MsgDlgType := mtCustom;
+    end;
+
+    if (Flags = AMessageBoxFlags_1) then
+      MsgDlgButtons := [mbYes, mbYesToAll, mbNo, mbCancel]
+    else
+      MsgDlgButtons := [mbYes, mbNo, mbCancel];
+    Result := MessageDlg(Msg, MsgDlgType, MsgDlgButtons, 0);
+  except
+    Result := -1;
+  end;
+end;
+
+function AUi_ExecuteOpenDialogP(const InitialDir, Filter, DefaultExt, Title: APascalString;
+    var FileName: APascalString; var FilterIndex: AInteger): ABoolean;
+var
+  Open: TOpenDialog;
+begin
+  try
+    Open := TOpenDialog.Create(nil);
+    try
+      Open.Options := [ofNoChangeDir,ofFileMustExist,ofPathMustExist];
+      Open.Initialdir := InitialDir;
+      Open.Filter := Filter;
+      Open.DefaultExt := DefaultExt;
+      if (Length(Title) = 0) then
+        Open.Title := 'Открыть'
+      else
+        Open.Title := Title;
+      Open.FilterIndex := FilterIndex;
+      Result := Open.Execute();
+      if Result then
+      begin
+        FileName := Open.FileName;
+        FilterIndex := Open.FilterIndex;
+      end;
+    finally
+      Open.Free();
+    end;
+  except
+    Result := False;
+  end;
+end;
+
+function AUi_ExecuteOpenFileDialogP(const InitialDir, Filter, Title: APascalString;
+    var FileName: APascalString): ABoolean;
+var
+  FilterIndex: AInteger;
+begin
+  FilterIndex := 0;
+  Result := AUi_ExecuteOpenDialogP(InitialDir, Filter, '', Title, FileName, FilterIndex);
+end;
+
+function AUi_ExecutePrinterSetupDialog(): AError;
+var
+  PrinterSetupDialog: TPrinterSetupDialog;
+begin
+  try
+    PrinterSetupDialog := TPrinterSetupDialog.Create(nil);
+    try
+      PrinterSetupDialog.Execute();
+    finally
+      PrinterSetupDialog.Free();
+    end;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUi_ExecuteSaveFileDialog1P(const InitialDir, DefExt, DefFileName: APascalString): APascalString;
+var
+  FilterIndex: Integer;
+begin
+  FilterIndex := 0;
+  Result := AUi_ExecuteSaveFileDialog2P(InitialDir, DefExt, DefFileName, '', FilterIndex);
+end;
+
+function AUi_ExecuteSaveFileDialog2P(const InitialDir, DefExt, DefFileName, Filter: APascalString;
+    var FilterIndex: AInteger): APascalString;
+var
+  Dialog: TSaveDialog;
+begin
+  try
+    Dialog := TSaveDialog.Create(nil);
+    try
+      Dialog.InitialDir := InitialDir;
+      Dialog.DefaultExt := DefExt;
+      Dialog.Options := Dialog.Options + [ofNoChangeDir];
+      Dialog.FileName := DefFileName;
+      Dialog.Filter := Filter;
+      Dialog.FilterIndex := FilterIndex;
+      Dialog.Options := Dialog.Options + [ofOverwritePrompt];
+      if Dialog.Execute() then
+      begin
+        Result := Dialog.FileName;
+        FilterIndex := Dialog.FilterIndex;
+      end
+      else
+        Result := '';
+    finally
+      Dialog.Free();
+    end;
+  except
+    Result := '';
+  end;
+end;
+
+function AUi_ExecuteSelectDirectoryDialogP(var Directory: APascalString): ABoolean;
+{$IFDEF USE_JEDI}
+var
+  Dialog: TJvSelectDirectory;
+{$ENDIF USE_JEDI}
+begin
+  {$IFDEF USE_JEDI}
+  try
+    Dialog := TJvSelectDirectory.Create(nil);
+    try
+      Dialog.InitialDir := Directory;
+      if Dialog.Execute() then
+      begin
+        Directory := Dialog.Directory;
+        Result := True;
+      end
+      else
+        Result := False;
+    finally
+      Dialog.Free;
+    end;
+  except
+    Result := False;
+  end;
+  {$ELSE}
+  Result := False;
+  {$ENDIF USE_JEDI}
+end;
+
 function AUi_NewAboutDialog(): AWindow;
 var
   Form: TAboutForm;
@@ -389,7 +624,74 @@ begin
   end;
 end;
 
+function AUi_NewDialog(Buttons: AUiWindowButtons): ADialog;
+var
+  Button: AControl;
+  Dialog: TAUIDialog;
+  Window: AControl;
+  Box: AControl;
+begin
+  try
+    Dialog := TAUiDialog.Create();
+    Box := Dialog.GetButtonsBox();
+    Window := AUiDialog_GetWindow(ADialog(Dialog));
+    if (Buttons = MB_OK) then
+    begin
+      Button := AUiButton_New(Window);
+      AUiControl_SetTextP(Button, cOkText);
+      AUiControl_SetPosition(Button, 5, 5);
+      AUiButton_SetKind(Button, uibkOk);
+    end
+    else if (Buttons = MB_OKCANCEL) then
+    begin
+      Button := AUiButton_New(Box);
+      AUiControl_SetTextP(Button, cOkText);
+      AUiControl_SetPosition(Button, 5, 5);
+      AUiButton_SetKind(Button, uibkOk);
+
+      Button := AUiButton_New(Box);
+      AUiControl_SetTextP(Button, cCancelText);
+      AUiControl_SetPosition(Button, 90, 5);
+      AUiButton_SetKind(Button, uibkCancel);
+    end
+    else if (Buttons = MB_ApplyOkCancel) then
+    begin
+      Button := AUiButton_New(Box);
+      AUiControl_SetPosition(Button, 5, 5);
+      AUiControl_SetTextP(Button, cApplyText);
+
+      Button := AUiButton_New(Box);
+      AUiControl_SetPosition(Button, 90, 5);
+      AUiButton_SetKind(Button, uibkOk);
+      AUiControl_SetTextP(Button, cOkText);
+
+      Button := AUiButton_New(Box);
+      AUiControl_SetPosition(Button, 175, 5);
+      AUiButton_SetKind(Button, uibkCancel);
+      AUiControl_SetTextP(Button, cCancelText);
+    end;
+    Result := ADialog(Dialog);
+  except
+    Result := 0;
+  end;
+end;
+
 // --- AUiDialog ---
+
+function AUiDialog_AddButton02(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
+    OnClick: ACallbackProc02): AControl;
+begin
+  try
+    if (Win = 0) or not(TObject(Win) is TAboutForm) then
+    begin
+      Result := 0;
+      Exit;
+    end;
+    Result := TAboutForm(Win).AddButton02(Left, Width, Text, OnClick)
+  except
+    Result := 0;
+  end;
+end;
 
 function AUiDialog_AddButtonP(Win: AWindow; Left, Width: AInt; const Text: APascalString;
     OnClick: ACallbackProc): AControl;
@@ -404,26 +706,27 @@ begin
   end;
 end;
 
+function AUiDialog_GetWindow(Dialog: ADialog): AWindow;
+begin
+  try
+    Result := TAUiDialog(Dialog).GetWindow();
+  except
+    Result := 0;
+  end;
+end;
+
 // --- UI_Dialogs ---
 
 function UI_Dialogs_InputBox(const Caption, Prompt, Default: APascalString): APascalString;
 begin
-  Result := Dialogs.InputBox(Caption, Prompt, Default);
+  Result := Default;
+  AUi_ExecuteInputBox3P(Caption, Prompt, Result);
 end;
 
 function UI_Dialogs_InputQuery(const Caption, Prompt: APascalString;
     var Value: APascalString): ABoolean;
-var
-  TmpValue: string;
 begin
-  TmpValue := Value;
-  if not(Dialogs.InputQuery(Caption, Prompt, TmpValue)) then
-  begin
-    Result := False;
-    Exit;
-  end;
-  Value := TmpValue;
-  Result := True;
+  Result := AUi_ExecuteInputQueryP(Caption, Prompt, Value);
 end;
 
 // --- UI_Dialog  ---
@@ -447,10 +750,7 @@ end;
 function UI_Dialog_AddButton02(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
     OnClick: ACallbackProc02): AControl;
 begin
-  if (Win <> 0) and (TObject(Win) is TAboutForm) then
-    Result := TAboutForm(Win).AddButton02(Left, Width, Text, OnClick)
-  else
-    Result := 0;
+  Result := AUiDialog_AddButton02(Win, Left, Width, Text, OnClick);
 end;
 
 function UI_Dialog_Calendar(var Date: TDateTime; CenterX, CenterY: AInteger): ABoolean;
@@ -475,185 +775,90 @@ end;
 
 function UI_Dialog_Font(var FontName: APascalString; var FontSize: AInteger; FontColor: AColor): ABoolean;
 begin
-  Result := Dialog_FontP(FontName, FontSize, FontColor);
+  Result := AUi_ExecuteFontDialogP(FontName, FontSize, FontColor);
 end;
 
 function UI_Dialog_GetWindow(Dialog: ADialog): AWindow;
 begin
-  Result := TAUIDialog(Dialog).GetWindow;
+  Result := AUiDialog_GetWindow(Dialog);
 end;
 
 function UI_Dialog_InputBox(const Text: APascalString; var Value: APascalString): Boolean;
 begin
-  Result := UI_Dialog_InputBox3(ASystem.Info_GetTitleWS(), Text, Value);
+  Result := AUi_ExecuteInputBox1P(Text, Value);
 end;
 
 function UI_Dialog_InputBox2(const Caption, Text1, Text2: APascalString; var Value1, Value2: APascalString): ABoolean;
 begin
-  {$IFNDEF FPC}
-  Result := fPasswordDialog.InputBox2(Caption, Text1, Text2, Value1, Value2);
-  {$ENDIF}
+  Result := AUi_ExecuteInputBox2P(Caption, Text1, Text2, Value1, Value2);
 end;
 
 function UI_Dialog_InputBox3(const Caption, Text: APascalString; var Value: APascalString): Boolean;
 begin
-  {$IFNDEF FPC}
-  Result := fInputDialog.InputBox(Caption, Text, Value);
-  {$ENDIF}
+  Result := AUi_ExecuteInputBox3P(Caption, Text, Value);
 end;
 
 function UI_Dialog_InputBoxA(const Caption, Text: APascalString; var Value: APascalString): Boolean;
 begin
-  Result := UI_Dialog_InputBox3(Caption, Text, Value);
+  Result := AUi_ExecuteInputBox3P(Caption, Text, Value);
 end;
 
 function UI_Dialog_Login(var UserName, Password: APascalString; IsSave: ABoolean): ABoolean;
-{$IFNDEF FPC}
-var
-  fmLogin: TLoginForm;
-{$ENDIF}
 begin
-  {$IFNDEF FPC}
-  fmLogin := TLoginForm.Create(nil);
-  try
-    fmLogin.UserName := UserName;
-    Result := (fmLogin.ShowModal = mrOk);
-    if Result then
-    begin
-      UserName := fmLogin.UserName;
-      Password := fmLogin.UserPassword;
-    end;
-  finally
-    fmLogin.Free();
-  end;
-  {$ENDIF}
+  Result := AUi_ExecuteLoginDialogP(UserName, Password, IsSave);
 end;
 
 function UI_Dialog_Message(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands;
-var
-  PrevCursor: TCursor;
 begin
-  PrevCursor := Screen.Cursor;
-  Screen.Cursor := crDefault;
-  Result := Application.MessageBox(PChar(string(Text)), PChar(string(Caption)), Flags);
-  {$IFNDEF UNIX}
-  //Result := Windows.MessageBox(Application.Handle{0}, PChar(string(Text)), PChar(string(Caption)), Flags);
-  {$ENDIF}
-  Screen.Cursor := PrevCursor;
+  Result := AUi_ExecuteMessageDialogP(Text, Caption, Flags);
 end;
 
 function UI_Dialog_MessageDlg(const Msg: string; MsgDlgTypeFlag: AMessageBoxFlags; Flags: AMessageBoxFlags): AInteger;
-//TMsgDlgType = (mtWarning, mtError, mtInformation, mtConfirmation, mtCustom);
-//TMsgDlgBtn = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry, mbIgnore, mbAll, mbNoToAll, mbYesToAll, mbHelp);
-//TMsgDlgButtons = set of TMsgDlgBtn;
-var
-  MsgDlgType: TMsgDlgType;
-  MsgDlgButtons: TMsgDlgButtons;
 begin
-  case MsgDlgTypeFlag of
-    AMessageBoxFlags_IconError: MsgDlgType := mtError;
-    AMessageBoxFlags_IconQuestion: MsgDlgType := mtConfirmation;
-    AMessageBoxFlags_IconWarning: MsgDlgType := mtWarning;
-    AMessageBoxFlags_IconInformation: MsgDlgType := mtInformation;
-    //AMessageBoxFlags_UserIcon: MsgDlgType := mtCustom
-  else
-    MsgDlgType := mtCustom;
-  end;
-
-  if (Flags = AMessageBoxFlags_1) then
-    MsgDlgButtons := [mbYes, mbYesToAll, mbNo, mbCancel]
-  else
-    MsgDlgButtons := [mbYes, mbNo, mbCancel];
-  Result := MessageDlg(Msg, MsgDlgType, MsgDlgButtons, 0);
+  Result := AUi_ExecuteMessageDialog2P(Msg, MsgDlgTypeFlag, Flags);
 end;
 
 function UI_Dialog_New(Buttons: AUIWindowButtons): ADialog;
-var
-  Button: AControl;
-  Dialog: TAUIDialog;
-  Window: AControl;
-  Box: AControl;
 begin
-  Dialog := TAUIDialog.Create;
-  Box := Dialog.GetButtonsBox;
-  Window := UI_Dialog_GetWindow(ADialog(Dialog));
-  if (Buttons = MB_OK) then
-  begin
-    Button := UI_Button_New(Window);
-    AUIControls.UI_Control_SetTextP(Button, cOkText);
-    AUIControls.UI_Control_SetPosition(Button, 5, 5);
-    UI_Button_SetKind(Button, uibkOk);
-  end
-  else if (Buttons = MB_OKCANCEL) then
-  begin
-    Button := UI_Button_New(Box);
-    AUIControls.UI_Control_SetTextP(Button, cOkText);
-    AUIControls.UI_Control_SetPosition(Button, 5, 5);
-    UI_Button_SetKind(Button, uibkOk);
-
-    Button := UI_Button_New(Box);
-    AUIControls.UI_Control_SetTextP(Button, cCancelText);
-    AUIControls.UI_Control_SetPosition(Button, 90, 5);
-    UI_Button_SetKind(Button, uibkCancel);
-  end
-  else if (Buttons = MB_ApplyOkCancel) then
-  begin
-    Button := UI_Button_New(Box);
-    AUIControls.UI_Control_SetPosition(Button, 5, 5);
-    AUIControls.UI_Control_SetTextP(Button, cApplyText);
-
-    Button := UI_Button_New(Box);
-    AUIControls.UI_Control_SetPosition(Button, 90, 5);
-    UI_Button_SetKind(Button, uibkOk);
-    AUIControls.UI_Control_SetTextP(Button, cOkText);
-
-    Button := UI_Button_New(Box);
-    AUIControls.UI_Control_SetPosition(Button, 175, 5);
-    UI_Button_SetKind(Button, uibkCancel);
-    AUIControls.UI_Control_SetTextP(Button, cCancelText);
-  end;
-  Result := ADialog(Dialog);
+  Result := AUi_NewDialog(Buttons);
 end;
 
-function UI_Dialog_OpenFile(const InitialDir, Filter, Title: APascalString; var FileName: APascalString): Boolean;
+function UI_Dialog_OpenFile(const InitialDir, Filter, Title: APascalString;
+    var FileName: APascalString): Boolean;
 var
   FilterIndex: Integer;
 begin
+  xxx
   FilterIndex := 0;
-  Result := AUIDialogs.ExecuteOpenDialogA(InitialDir, Filter, '', Title, FileName, FilterIndex);
+  Result := AUi_ExecuteOpenDialogP(InitialDir, Filter, '', Title, FileName, FilterIndex);
 end;
 
-function UI_Dialog_OpenFileA(const InitialDir, Filter, DefaultExt, Title: APascalString; var FileName: APascalString; var FilterIndex: AInteger): ABoolean;
+function UI_Dialog_OpenFileA(const InitialDir, Filter, DefaultExt, Title: APascalString;
+    var FileName: APascalString; var FilterIndex: AInteger): ABoolean;
 begin
-  Result := AUIDialogs.ExecuteOpenDialogA(InitialDir, Filter, DefaultExt, Title, FileName, FilterIndex);
+  Result := AUi_ExecuteOpenDialogP(InitialDir, Filter, DefaultExt, Title, FileName, FilterIndex);
 end;
 
 procedure UI_Dialog_PrinterSetup();
-var
-  PrinterSetupDialog: TPrinterSetupDialog;
 begin
-  PrinterSetupDialog := TPrinterSetupDialog.Create(nil);
-  try
-    PrinterSetupDialog.Execute();
-  finally
-    PrinterSetupDialog.Free();
-  end;
+  AUi_ExecutePrinterSetupDialog();
 end;
 
 function UI_Dialog_SaveFile(const Dir, Ext, DefFileName: APascalString): APascalString;
 begin
-  Result := AUIDialogs.ExecuteSaveFileDialog(Dir, Ext, DefFileName);
+  Result := AUi_ExecuteSaveFileDialog1P(Dir, Ext, DefFileName);
 end;
 
 function UI_Dialog_SaveFileA(const InitialDir, DefExt, DefFileName, Filter: APascalString; var FilterIndex: AInteger): APascalString;
 begin
-  Result := ExecuteSaveFileDialogA(InitialDir, DefExt, DefFileName, Filter, FilterIndex);
+  Result := AUi_ExecuteSaveFileDialog2P(InitialDir, DefExt, DefFileName, Filter, FilterIndex);
 end;
 
 function UI_Dialog_SelectDirectory(var Directory: APascalString): ABoolean;
 begin
+  xxx
   Result := Dialog_SelectDirectoryP(Directory);
 end;
 
 end.
- 
+

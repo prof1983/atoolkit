@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 22.08.2012
+@LastMod 27.08.2012
 }
 unit AUi;
 
@@ -2115,32 +2115,21 @@ end;
 
 function Dialog_GetWindow(Dialog: ADialog): AWindow; stdcall;
 begin
-  xxx
-  try
-    Result := AUIDialogs.UI_Dialog_GetWindow(Dialog);
-  except
-    Result := 0;
-  end;
+  Result := AUiDialog_GetWindow(Dialog);
 end;
 
 function Dialog_InputBox1P(const Text: APascalString; var Value: APascalString): ABoolean; stdcall;
 begin
-  xxx
-  try
-    Result := UI_Dialog_InputBox(Text, Value);
-  except
-    Result := False;
-  end;
+  Result := AUi_ExecuteInputBox1P(Text, Value);
 end;
 
 function Dialog_InputBox1WS(const Text: AWideString; var Value: AWideString): ABoolean; stdcall;
 var
   S: APascalString;
 begin
-  xxx
   try
     S := Value;
-    Result := UI_Dialog_InputBox(Text, S);
+    Result := AUi_ExecuteInputBox1P(Text, S);
     Value := S;
   except
     Result := False;
@@ -2149,12 +2138,7 @@ end;
 
 function Dialog_InputBox2P(const Caption, Text1, Text2: APascalString; var Value1, Value2: APascalString): ABoolean; stdcall;
 begin
-  xxx
-  try
-    Result := UI_Dialog_InputBox2(Caption, Text1, Text2, Value1, Value2);
-  except
-    Result := False;
-  end;
+  Result := AUi_ExecuteInputBox2P(Caption, Text1, Text2, Value1, Value2);
 end;
 
 function Dialog_InputBox2WS(const Caption, Text1, Text2: AWideString; var Value1, Value2: AWideString): ABoolean; stdcall;
@@ -2162,11 +2146,10 @@ var
   S1: APascalString;
   S2: APascalString;
 begin
-  xxx
   try
     S1 := Value1;
     S2 := Value2;
-    Result := UI_Dialog_InputBox2(Caption, Text1, Text2, S1, S2);
+    Result := AUi_ExecuteInputBox2P(Caption, Text1, Text2, S1, S2);
     Value1 := S1;
     Value2 := S2;
   except
@@ -2176,22 +2159,16 @@ end;
 
 function Dialog_InputBox3P(const Caption, Text: APascalString; var Value: APascalString): ABoolean; stdcall;
 begin
-  xxx
-  try
-    Result := UI_Dialog_InputBox3(Caption, Text, Value);
-  except
-    Result := False;
-  end;
+  Result := AUi_ExecuteInputBox3P(Caption, Text, Value);
 end;
 
 function Dialog_InputBox3WS(const Caption, Text: AWideString; var Value: AWideString): ABoolean; stdcall;
 var
   S: APascalString;
 begin
-  xxx
   try
     S := Value;
-    Result := UI_Dialog_InputBox3(Caption, Text, S);
+    Result := AUi_ExecuteInputBox3P(Caption, Text, Value);
     Value := S;
   except
     Result := False;
@@ -2200,12 +2177,7 @@ end;
 
 function Dialog_LoginP(var UserName, Password: APascalString; IsSave: ABoolean): ABoolean; stdcall;
 begin
-  xxx
-  try
-    Result := UI_Dialog_Login(UserName, Password, IsSave);
-  except
-    Result := False;
-  end;
+  Result := AUi_ExecuteLoginDialogP(UserName, Password, IsSave);
 end;
 
 function Dialog_LoginWS(var UserName, Password: AWideString; IsSave: ABoolean): ABoolean; stdcall;
@@ -2213,11 +2185,10 @@ var
   UserNameStr: APascalString;
   PasswordStr: APascalString;
 begin
-  xxx
   try
     UserNameStr := UserName;
     PasswordStr := Password;
-    Result := UI_Dialog_Login(UserNameStr, PasswordStr, IsSave);
+    Result := AUi_ExecuteLoginDialogP(UserNameStr, PasswordStr, IsSave);
     UserName := UserNameStr;
     Password := PasswordStr;
   except
@@ -2227,52 +2198,31 @@ end;
 
 function Dialog_MessageDlgWS(const Msg: AWideString; MsgDlgType: AInteger; Flags: AMessageBoxFlags): AInteger; stdcall;
 begin
-  xxx
-  try
-    Result := UI_Dialog_MessageDlg(Msg, MsgDlgType, Flags);
-  except
-    Result := -1;
-  end;
+  Result := AUi_ExecuteMessageDialog2P(Msg, MsgDlgType, Flags);
 end;
 
 function Dialog_MessageP(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
-  xxx
-  try
-    Result := UI_Dialog_Message(Text, Caption, Flags);
-  except
-    Result := 0;
-  end;
+  Result := AUi_ExecuteMessageDialog1P(Text, Caption, Flags);
 end;
 
 function Dialog_MessageWS(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
-  xxx
-  try
-    Result := UI_Dialog_Message(Text, Caption, Flags);
-  except
-    Result := 0;
-  end;
+  Result := AUi_ExecuteMessageDialog1P(Text, Caption, Flags);
 end;
 
 function Dialog_New(Buttons: AUIWindowButtons): ADialog; stdcall;
 begin
-  xxx
-  try
-    Result := AUIDialogs.UI_Dialog_New(Buttons);
-  except
-    Result := 0;
-  end;
+  Result := AUi_NewDialog(Buttons);
 end;
 
 function Dialog_OpenFileWS(const InitialDir, Filter, Title: AWideString; var FileName: AWideString): ABoolean; stdcall;
 var
   S: APascalString;
 begin
-  xxx
   try
     S := FileName;
-    Result := UI_Dialog_OpenFile(InitialDir, Filter, Title, S);
+    Result := AUi_ExecuteOpenFileDialogP(InitialDir, Filter, Title, S);
     FileName := S;
   except
     Result := False;
@@ -2281,22 +2231,12 @@ end;
 
 function Dialog_PrinterSetup(): AError; stdcall;
 begin
-  xxx
-  try
-    // Отображаем окно выбора и настройки печати
-    UI_Dialog_PrinterSetup();
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUi_ExecutePrinterSetupDialog();
 end;
 
 function Dialog_SelectDirectoryP(var Directory: APascalString): ABoolean; stdcall;
 begin
-  xxx
-  {$IFNDEF FPC}
-  Result := ExecuteSelectDirectoryDialog(Directory);
-  {$ENDIF}
+  Result := AUi_ExecuteSelectDirectoryDialogP(Directory);
 end;
 
 { Edit }

@@ -4,14 +4,14 @@
 	LastMod 28.08.2012
 */
 
-#include <windows.h>
 #include "ACore.h"
+#include "ALibraries.c"
 
-HMODULE Lib;
+ALibrary Lib;
 
 int CoreLib_Open(AStr CoreLibName)
 {
-	Lib = LoadLibraryA(CoreLibName);
+	Lib = ALibrary_OpenA(CoreLibName, 0);
 	if (Lib == NULL)
 	{
 		// тут обрабатываем ошибку, если библиотека не загрузилась
@@ -19,10 +19,10 @@ int CoreLib_Open(AStr CoreLibName)
 		return -1;
 	}
 
-	ACore_Boot = (ACore_Boot_Proc)GetProcAddress(Lib, "Core_Boot");
-	ACore_Fin = (ACore_Fin_Proc)GetProcAddress(Lib, "Core_Fin");
-	ACore_Init = (ACore_Init_Proc)GetProcAddress(Lib, "Core_Init");
-	ACore_Run = (ACore_Run_Proc)GetProcAddress(Lib, "Core_Run");
+	ACore_Boot = (ACore_Boot_Proc)ALibrary_GetProcAddressA(Lib, "Core_Boot");
+	ACore_Fin = (ACore_Fin_Proc)ALibrary_GetProcAddressA(Lib, "Core_Fin");
+	ACore_Init = (ACore_Init_Proc)ALibrary_GetProcAddressA(Lib, "Core_Init");
+	ACore_Run = (ACore_Run_Proc)ALibrary_GetProcAddressA(Lib, "Core_Run");
 	//ACore.Runtime = (ACore_Runtime_Proc)GetProcAddress(Lib, "Core_Runtime");
 	/*
 	Core_Boot = GetProcAddress(Lib, "Core_Boot");
@@ -39,7 +39,7 @@ void CoreLib_Close()
 {
 	if (Lib != NULL)
 	{
-		FreeLibrary(Lib);
+		ALibrary_Close(Lib);
 		Lib = NULL;
 	}
 }

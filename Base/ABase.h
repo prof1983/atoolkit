@@ -1,8 +1,7 @@
 ﻿/*  Base consts and types
  *  Author Prof1983 <prof1983@ya.ru>
  *  Created 06.03.2008
- *  LastMod 17.07.2012
- *  Version 0.5
+ *  LastMod 28.08.2012
  */
 
 #ifndef ABaseH
@@ -65,7 +64,7 @@ typedef AInt AEvent;
 
 typedef char* AAnsiString;
 typedef char* AStr;
-typedef wchar_t* AStrW;
+//typedef wchar_t* AStrW;
 //#define PChar char*
 
 typedef struct

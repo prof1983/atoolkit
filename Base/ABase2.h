@@ -1,8 +1,7 @@
 ﻿/* Base types and consts
- * Author Prof1983 prof1983@ya.ru
+ * Author Prof1983 <prof1983@ya.ru>
  * Created 06.03.2008
- * LastMod 20.06.2012
- * Version 0.5
+ * LastMod 28.08.2012
  */
 
 #ifndef ABase2_H
@@ -15,13 +14,13 @@
 // --- API function define ---
 #if defined(A_BUILD_DLL)
 //#  define func __export
-#  define afunc __declspec(dllexport)
+#  define afunc __declspec(dllexport) __stdcall
 #else
 # if defined(A_BUILD_APP)
 //#  define func __import
-#  define afunc __declspec(dllimport)
+#  define afunc __declspec(dllimport) __stdcall
 # else
-#  define afunc
+#  define afunc __stdcall
 # endif // A_BUILD_APP
 #endif // A_BUILD_DLL
 
@@ -30,7 +29,7 @@
 #endif
 
 #define AFunction /*__stdcall*/
-typedef void* APointer; //#define APointer void *
+typedef void* APointer; //#define APointer void*
 
 typedef size_t ASize;
 

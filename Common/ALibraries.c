@@ -5,11 +5,10 @@
 */
 
 #include <windows.h>
+#include "ABase2.h"
 #include "ALibraries.h"
 
 // --- Types ---
-
-#define APointer void* //typedef void* APointer;
 
 //typedef HMODULE ALibrary;
 

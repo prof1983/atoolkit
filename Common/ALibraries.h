@@ -7,12 +7,14 @@
 #ifndef ALibraries_H
 #define ALibraries_H
 
-//extern "C" {
-
 #include "ABase2.h"
+
+// --- Types ---
 
 typedef int ALibrary;
 typedef int ALibraryFlags;
+
+// ----
 
 /** Close dinamic library
 	Закрывает модуль (библиотеку)
@@ -23,12 +25,10 @@ afunc ALibrary_Close(ALibrary Lib);
 /** Open dynamic library.
 	@return(ALibrary identifier) */
 ALibrary
-afunc ALibrary_OpenA(const AStr FileName, ALibraryFlags Flags);
+afunc ALibrary_OpenA(AStr FileName, ALibraryFlags Flags);
 
 /** Возвращает адрес функции */
 APointer
 afunc ALibrary_GetProcAddressA(ALibrary Lib, AStr Name);
-
-//}
 
 #endif

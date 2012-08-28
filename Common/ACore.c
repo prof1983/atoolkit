@@ -5,7 +5,7 @@
 */
 
 #include "ACore.h"
-#include "ALibraries.c"
+#include "ALibraries.h"
 
 ALibrary Lib;
 

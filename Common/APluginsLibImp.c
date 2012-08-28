@@ -1,12 +1,11 @@
 /*  APlugins
 	Author Prof1983 <prof1983@ya.ru>
 	Created 28.08.2012
-	LastMod 28.08.2012
-*/
+	LastMod 28.08.2012 */
 
 #include "ABase"
 #include "ALibraries.h"
-#include "APlugins.h"
+#include "APluginsLibImp.h"
 
 // --- Types ---
 

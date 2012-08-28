@@ -2,7 +2,7 @@
 @Abstract ASystem
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.09.2011
-@LastMod 13.08.2012
+@LastMod 28.08.2012
 }
 unit ASystemMain;
 
@@ -20,7 +20,7 @@ uses
   {$ENDIF}
   {$IFNDEF UNIX}Windows,{$ENDIF}
   ABase, ABaseTypes,
-  {$IFDEF USE_RUNTIME}ARuntime,{$ENDIF}
+  {$IFDEF USE_RUNTIME}ARuntimeMain,{$ENDIF}
   AStrings, ASystemData;
 
 // --- ASystem ---

@@ -2,7 +2,7 @@
 @Abstract ASystem function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.08.2009
-@LastMod 27.08.2012
+@LastMod 28.08.2012
 }
 unit ASystem;
 
@@ -995,8 +995,8 @@ begin
       ARuntime.OnAfterRun_Set(DoAfterRun02);
       ARuntime.OnBeforeRun_Set(DoBeforeRun02);
       {$ELSE}
-      ARuntime.OnAfterRun_Set(DoAfterRun);
-      ARuntime.OnBeforeRun_Set(DoBeforeRun);
+      ARuntime.SetOnAfterRun(DoAfterRun);
+      ARuntime.SetOnBeforeRun(DoBeforeRun);
       {$ENDIF A02}
     {$ENDIF A01}
   {$ENDIF USE_EVENTS}
@@ -1033,8 +1033,8 @@ begin
       ARuntime.OnAfterRun_Set(DoAfterRun02);
       ARuntime.OnBeforeRun_Set(DoBeforeRun02);
       {$ELSE}
-      ARuntime.OnAfterRun_Set(DoAfterRun);
-      ARuntime.OnBeforeRun_Set(DoBeforeRun);
+      ARuntime.SetOnAfterRun(DoAfterRun);
+      ARuntime.SetOnBeforeRun(DoBeforeRun);
       {$ENDIF A02}
     {$ENDIF A01}
   {$ENDIF USE_EVENTS}

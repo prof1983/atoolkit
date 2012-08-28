@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 27.08.2012
+@LastMod 28.08.2012
 }
 unit AUi;
 
@@ -36,26 +36,6 @@ uses
   AUiBase, AUiBox, AUiButtons, AUiControls, AUiControlsA, AUiData, AUiEvents1, AUiEventsObj, AUiForm,
   AUiMain, AUiMainWindow, AUiMainWindow2, AUiPageControl, AUiReports,
   AUiToolBar, AUiToolMenu, AUiTreeView, AUiWindows;
-
-// --- AUi ---
-
-function AUi_Boot(): AError;
-
-function AUi_Init(): AError; stdcall;
-
-function AUi_GetMainMenuItem(): AMenuItem; stdcall;
-
-function AUi_GetMainTrayIcon(): ATrayIcon; stdcall;
-
-function AUi_GetMainWindow(): AWindow; stdcall;
-
-function AUi_Run(): AInteger; stdcall;
-
-procedure AUi_SetHideOnClose(Value: ABoolean); stdcall;
-
-function AUi_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; stdcall;
-
-function AUi_Shutdown(): AError; stdcall;
 
 // --- AUi_Image ---
 
@@ -1013,37 +993,18 @@ type
 { Events }
 
 procedure DoMainFormCreate; stdcall;
-var
-  MainForm: TForm;
 begin
-  Application.CreateForm({$IFDEF OLDMAINFORM}TMainForm{$ELSE}TForm{$ENDIF}, MainForm);
-  MainForm.Left := 0;
-  MainForm.Top := 0;
-  {$IFDEF OLDMAINFORM}
-    {$IFDEF OLDMAINFORM2}
-    _MainWindow_Create(MainForm, 0, Runtime_GetConfig);
-    {$ELSE}
-    _MainWindow_Create(MainForm, MainWindowFormatCreateMenu or MainWindowFormatCreateToolBar or MainWindowFormatCreateStatusBar, ASystem.GetConfig);
-    {$ENDIF}
-    FMainWindow := AddObject(MainForm);
-  {$ELSE}
-    FMainWindow := AddObject(MainForm);
-    MainForm.Name := 'MainForm';
-    MainForm.Caption := ASystem.Info_GetProgramNameP;
-    _MainWindow_Create(MainForm, MainWindowFormatCreateAll, ASystem.GetConfig);
-    MainForm.OnCloseQuery := UI_.MainFormCloseQuery;
-  {$ENDIF}
-  AddObject(MainForm.Menu);
+  AUi_CreateMainForm();
 end;
 
 procedure DoShowError(const Caption, UserMessage, ExceptMessage: AWideString); stdcall;
 begin
-  Dialog_ErrorP(Caption, UserMessage, ExceptMessage);
+  AUi_ExecuteErrorDialogP(Caption, UserMessage, ExceptMessage);
 end;
 
 function DoShowMessage(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
-  Result := UI_Dialog_Message(Text, Caption, Flags);
+  Result := AUi_ExecuteMessageDialog1P(Text, Caption, Flags);
 end;
 
 function miAboutClick(Obj, Data: Integer): AError; stdcall;
@@ -1269,158 +1230,6 @@ begin
   try
     UI_Shutdown();
   except
-  end;
-end;
-
-// --- AUi ---
-
-function AUi_Boot(): AError;
-begin
-  Result := 0;
-end;
-
-function AUi_GetMainMenuItem(): AMenuItem;
-begin
-  Result := miMain;
-end;
-
-function AUi_GetMainTrayIcon(): ATrayIcon;
-begin
-  Result := FMainTrayIcon;
-end;
-
-function AUi_GetMainWindow(): AWindow;
-begin
-  Result := FMainWindow;
-end;
-
-function AUi_Init(): AError;
-var
-  S: string;
-begin
-  if (FMainWindow <> 0) then
-  begin
-    Result := 0;
-    Exit;
-  end;
-
-  {$IFDEF USE_EVENTS}
-  if (AEvents.Init() < 0) then
-  begin
-    Result := -4;
-    Exit;
-  end;
-  {$ENDIF}
-
-  {$IFDEF USE_SETTINGS}
-  ASettings.Init();
-  {$ENDIF}
-
-  if (AStrings_Init() < 0) then
-  begin
-    Result := -2;
-    Exit;
-  end;
-
-  if (ASystem.Init() < 0) then
-  begin
-    Result := -3;
-    Exit;
-  end;
-
-  {$IFDEF USE_EVENTS}
-  FOnDone := AEvents.Event_NewW(0, nil);
-  {$ENDIF}
-
-  FHideOnClose := False;
-  FIsShowApp := True;
-
-  {$IFDEF A02}
-  ASystem.SetOnProcessMessages02(UI_ProcessMessages02);
-  {$ELSE}
-  ASystem.SetOnProcessMessages(UI_ProcessMessages);
-  {$ENDIF A02}
-  ASystem.SetOnShowError(DoShowError);
-  ASystem.SetOnShowMessage(DoShowMessage);
-
-  ARuntime.SetOnShutdown(UI_Shutdown);
-  {$IFDEF A01}
-    ARuntime.OnRun_Set(UI_Run02);
-  {$ELSE}
-    {$IFDEF A02}
-    ARuntime.OnRun_Set(UI_Run02);
-    {$ELSE}
-    ARuntime.OnRun_Set(UI_Run);
-    {$ENDIF A02}
-  {$ENDIF A01}
-
-  {$IFNDEF FPC}
-  Application.CreateHandle();
-  {$ENDIF}
-
-  Application.Initialize();
-  Application.Title := ASystem.Info_GetTitleWS();
-  S := ASystem.Info_GetDataDirectoryPathP() + ASystem.Info_GetProgramNameWS() + '.ico';
-
-  if FileExists(S) then
-  try
-    Application.Icon.LoadFromFile(S);
-  except
-    ASystem.ShowMessageP('Ошибка при загрузке изображения '+S);
-  end;
-
-  try
-    if Assigned(FOnMainFormCreate) then
-      FOnMainFormCreate
-    else
-      DoMainFormCreate;
-  except
-    ASystem.ShowMessageP('Произошла ошибка при создании главного окна');
-    Result := -100;
-    Exit;
-  end;
-  {
-  if (FMainWindow <> 0) then
-    miMain := AddObject(TForm(FMainWindow).Menu.Items);
-  }
-
-  Result := 0;
-end;
-
-function AUi_Run(): AInteger;
-begin
-  try
-    Result := UI_Run;
-  except
-    Result := -1;
-  end;
-end;
-
-procedure AUi_SetHideOnClose(Value: ABoolean);
-begin
-  FHideOnClose := Value;
-end;
-
-function AUi_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger;
-begin
-  try
-    Result := UI_ShellExecute(
-        AStrings.String_ToWideString(Operation),
-        AStrings.String_ToWideString(FileName),
-        AStrings.String_ToWideString(Parameters),
-        AStrings.String_ToWideString(Directory));
-  except
-    Result := -1;
-  end;
-end;
-
-function AUi_Shutdown(): AError;
-begin
-  try
-    _MainWindow_Shutdown();
-    Result := 0;
-  except
-    Result := -1;
   end;
 end;
 
@@ -2177,7 +1986,7 @@ var
 begin
   try
     S := Value;
-    Result := AUi_ExecuteInputBox3P(Caption, Text, Value);
+    Result := AUi_ExecuteInputBox3P(Caption, Text, S);
     Value := S;
   except
     Result := False;
@@ -3345,6 +3154,7 @@ begin
   SetOnMainFormCreate(Value);
 end;
 
+// Use AUi_ProcessMessages()
 function UI_ProcessMessages: AInteger; stdcall;
 begin
   try
@@ -3365,15 +3175,12 @@ end;
 
 function UI_Run: AInteger; stdcall;
 begin
-  _MainWindow_Init;
-  Application.Run;
-  Result := 0;
+  Result := AUi_Run();
 end;
 
 procedure UI_Run02; stdcall;
 begin
-  _MainWindow_Init;
-  Application.Run;
+  AUi_Run();
 end;
 
 procedure UI_SetHideOnClose(Value: Boolean); stdcall;
@@ -3411,9 +3218,7 @@ end;
 
 function UI_ShellExecute(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
 begin
-  {$IFNDEF UNIX}
-  Result := ShellExecute(0{Handle}, PChar(string(Operation)), PChar(string(FileName)), PChar(string(Parameters)), PChar(string(Directory)), SW_SHOW);
-  {$ENDIF}
+  Result := AUi_ShellExecuteP(Operation, FileName, Parameters, Directory);
 end;
 
 function UI_Shutdown: AInteger; stdcall;

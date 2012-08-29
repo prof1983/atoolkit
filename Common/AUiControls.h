@@ -73,12 +73,6 @@ AError
 afunc AUiControl_SetOnClick(AControl Control, ACallbackProc Value);
 
 AError
-afunc AUiControl_SetOnClick02(AControl Control, ACallbackProc02 Value);
-
-AError
-afunc AUiControl_SetOnClick03(AControl Control, ACallbackProc03 Value);
-
-AError
 afunc AUiControl_SetPosition(AControl Control, AInt Left, AInt Top);
 
 AError

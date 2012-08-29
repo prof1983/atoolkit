@@ -1535,11 +1535,7 @@ end;
 
 function Box_New(Parent: AControl; BoxType: AInteger): AControl; stdcall;
 begin
-  try
-    Result := AUIBox.UI_Box_New(Parent, BoxType);
-  except
-    Result := 0;
-  end;
+  Result := AUiBox_New(Parent, BoxType);
 end;
 
 { Button }

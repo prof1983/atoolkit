@@ -29,7 +29,9 @@ function AUi_Init(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_Run(): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
-procedure AUi_SetHideOnClose(Value: ABoolean); {$ifdef AStdCall}stdcall;{$endif}
+function AUi_SetHideOnClose(Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+procedure AUi_SetHideOnClose_Old(Value: ABoolean); {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_SetProgramState(State: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -226,7 +228,12 @@ begin
   end;
 end;
 
-procedure AUi_SetHideOnClose(Value: ABoolean);
+function AUi_SetHideOnClose(Value: ABoolean): AError;
+begin
+  FHideOnClose := Value;
+end;
+
+procedure AUi_SetHideOnClose_Old(Value: ABoolean);
 begin
   FHideOnClose := Value;
 end;

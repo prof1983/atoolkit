@@ -6,6 +6,13 @@
 #include "AUiControls.h"
 #include "AUiLibImp.h"
 
+// --- AUiBox ---
+
+typedef AControl
+afunc (*AUiBox_New_Proc)(AControl Parent, AInt BoxType);
+
+// --- AUiControl ---
+
 typedef AError
 afunc (*AUiControl_Free_Proc)(AControl Control);
 
@@ -86,6 +93,8 @@ afunc (*AUiControl_SetWidth_Proc)(AControl Control, AInt Value);
 
 // ----
 
+AUiBox_New_Proc _AUiBox_New;
+
 AUiControl_Free_Proc _AUiControl_Free;
 AUiControl_GetColor_Proc _AUiControl_GetColor;
 AUiControl_GetEnabled_Proc _AUiControl_GetEnabled;
@@ -115,9 +124,17 @@ AUiControl_SetWidth_Proc _AUiControl_SetWidth;
 
 // ----
 
+#include "AUiMainLibImp.h"
+
+// ----
+
 AError
 afunc AUi_Boot(ALibrary Lib)
 {
+    AUiMain_Boot(Lib);
+
+    _AUiBox_New = (AUiBox_New_Proc)ALibrary_GetProcAddressA(Lib, "AUiBox_New");
+
     _AUiControl_Free = (AUiControl_Free_Proc)ALibrary_GetProcAddressA(Lib, "AUiControl_Free");
     _AUiControl_GetColor = (AUiControl_GetColor_Proc)ALibrary_GetProcAddressA(Lib, "AUiControl_GetColor");
     _AUiControl_GetEnabled = (AUiControl_GetEnabled_Proc)ALibrary_GetProcAddressA(Lib, "AUiControl_GetEnabled");

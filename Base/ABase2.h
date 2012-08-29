@@ -1,7 +1,7 @@
 ﻿/* Base types and consts
  * Author Prof1983 <prof1983@ya.ru>
  * Created 06.03.2008
- * LastMod 28.08.2012
+ * LastMod 29.08.2012
  */
 
 #ifndef ABase2_H
@@ -28,7 +28,8 @@
 #define func afunc
 #endif
 
-#define AFunction /*__stdcall*/
+#define AFunction __stdcall
+
 typedef void* APointer; //#define APointer void*
 
 typedef size_t ASize;
@@ -36,8 +37,10 @@ typedef size_t ASize;
 // --- Proc ---
 
 // TODO: int AFunction -> func
-typedef int	AFunction /*__stdcall*/ (*AProc)();
-typedef void AFunction /*__stdcall*/ (*ACallbackProc)(AInteger Obj, AInteger Data);
+typedef AInt AFunction (*AProc)();
+typedef void AFunction (*ACallbackProc02)(AInt Obj, AInt Data);
+typedef AError AFunction (*ACallbackProc03)(AInt Obj, AInt Data);
+typedef ACallbackProc03 ACallbackProc;
 
 // --- AId ---
 

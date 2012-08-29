@@ -1,7 +1,7 @@
 ﻿/*  Base consts and types
  *  Author Prof1983 <prof1983@ya.ru>
  *  Created 06.03.2008
- *  LastMod 28.08.2012
+ *  LastMod 29.08.2012
  */
 
 #ifndef ABaseH
@@ -57,6 +57,7 @@ typedef AUInt32 AVersion;
  */
 typedef AInt AError;
 
+typedef AInt AColor;
 typedef AInt AConfig;
 typedef AInt AEvent;
 

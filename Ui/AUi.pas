@@ -34,7 +34,7 @@ uses
   {$IFDEF USE_SETTINGS}ASettings,{$ENDIF}
   AStrings, ASystem,
   AUiBase, AUiBox, AUiButtons, AUiControls, AUiControlsA, AUiData, AUiEvents1, AUiEventsObj, AUiForm,
-  AUiMain, AUiMainWindow, AUiMainWindow2, AUiPageControl, AUiReports,
+  AUiInit, AUiMain, AUiMainWindow, AUiMainWindow2, AUiPageControl, AUiReports,
   AUiToolBar, AUiToolMenu, AUiTreeView, AUiWindows;
 
 // --- AUi_Image ---
@@ -1005,42 +1005,6 @@ end;
 function DoShowMessage(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
   Result := AUi_ExecuteMessageDialog1P(Text, Caption, Flags);
-end;
-
-function miAboutClick(Obj, Data: Integer): AError; stdcall;
-begin
-  if Assigned(UIAboutClick) then
-    UIAboutClick
-  else
-    UI_Dialog_About;
-  Result := 0;
-end;
-
-procedure miAboutClick1(Obj, Data: Integer); stdcall;
-begin
-  if Assigned(UIAboutClick) then
-    UIAboutClick
-  else
-    UI_Dialog_About;
-end;
-
-function miExitClick(Obj, Data: Integer): AError; stdcall;
-begin
-  {$IFDEF NoRuntimeEvents}
-  AUi_Shutdown();
-  {$ELSE}
-  ASystem.Shutdown;
-  {$ENDIF}
-  Result := 0;
-end;
-
-procedure miExitClick02(Obj, Data: Integer); stdcall;
-begin
-  {$IFDEF NoRuntimeEvents}
-  AUi_Shutdown();
-  {$ELSE}
-  ASystem.Shutdown;
-  {$ENDIF}
 end;
 
 { Module }
@@ -2596,140 +2560,76 @@ end;
 
 function Menu_AddItem0(Parent: AMenuItem; MenuItem: AMenuItem; Weight: AInteger): AMenuItem; stdcall;
 begin
-  try
-    Result := AUIMenus.UI_MenuItem_Add2(Parent, MenuItem, Weight);
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_AddItem0(Parent, MenuItem, Weight)
 end;
 
 function Menu_AddItem1(Menu: AMenu; const Name, Text: AString_Type;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
-var
-  MenuItems: AMenuItem;
 begin
-  try
-    MenuItems := AUIMenus.UI_Menu_GetItems(Menu);
-
-    if (MenuItems = 0) then
-    begin
-      Result := 0;
-      Exit;
-    end;
-
-    Result := AUIMenus.UI_MenuItem_Add(MenuItems,
-        String_ToWideString(Name), String_ToWideString(Text), OnClick, ImageId, Weight, 0);
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_AddItem1(Menu, Name, Text, OnClick, ImageId, Weight);
 end;
 
 function Menu_AddItem1P(Menu: AMenu; const Name, Text: APascalString;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
 begin
-  try
-    Result := UI_Menu_AddItem(Menu, Name, Text, OnClick, ImageId, Weight);
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_AddItem1P(Menu, Name, Text, OnClick, ImageId, Weight);
 end;
 
 function Menu_AddItem2(Parent: AMenuItem; const Name, Text: AString_Type;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
 begin
-  try
-    Result := AUIMenus.UI_MenuItem_Add(Parent, String_ToWideString(Name),
-        String_ToWideString(Text), OnClick, ImageId, Weight, 0);
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_AddItem2(Parent, Name, Text, OnClick, ImageId, Weight);
 end;
 
 function Menu_AddItem2P(Parent: AMenuItem; const Name, Text: APascalString;
     OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem; stdcall;
 begin
-  try
-    Result := AUIMenus.UI_MenuItem_Add(Parent, Name, Text, OnClick, ImageID, Weight, 0);
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_AddItem2P(Parent, Name, Text, OnClick, ImageId, Weight);
 end;
 
 function Menu_AddItem2WS(Parent: AMenuItem; const Name, Text: AWideString;
     OnClick: ACallbackProc; ImageId, Weight: Integer): AMenuItem; stdcall;
 begin
-  try
-    Result := AUIMenus.UI_MenuItem_Add(Parent, Name, Text, OnClick, ImageID, Weight, 0);
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_AddItem2WS(Parent, Name, Text, OnClick, ImageId, Weight);
 end;
 
 function Menu_AddItem2WS02(Parent: AMenuItem; const Name, Text: AWideString;
     OnClick: ACallbackProc02; ImageID, Weight: Integer): AMenuItem; stdcall;
 begin
-  try
-    Result := AUIMenus.UI_MenuItem_Add02(Parent, Name, Text, OnClick, ImageID, Weight);
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_AddItem2WS02(Parent, Name, Text, OnClick, ImageId, Weight);
 end;
 
 function Menu_AddItem2WS03(Parent: AMenuItem; const Name, Text: AWideString;
     OnClick: ACallbackProc03; ImageID, Weight: AInteger): AMenuItem; stdcall;
 begin
-  try
-    Result := AUIMenus.UI_MenuItem_Add03(Parent, Name, Text, OnClick, ImageId, Weight, 0);
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_AddItem2WS03(Parent, Name, Text, OnClick, ImageId, Weight);
 end;
 
 function Menu_AddItem3(Parent: AMenuItem; MenuItem: AMenuItem; Weight: AInteger): AMenuItem; stdcall;
 begin
-  try
-    Result := AUIMenus.UI_MenuItem_Add2(Parent, MenuItem, Weight);
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_AddItem3(Parent, MenuItem, Weight);
 end;
 
 function Menu_AddItem3WS(Parent: AMenuItem; const Name, Text: AWideString;
     OnClick: ACallbackProc; ImageID, Weight, Tag: Integer): AMenuItem; stdcall;
 begin
-  try
-    Result := AUIMenus.UI_MenuItem_Add(Parent, Name, Text, OnClick, ImageID, Weight, Tag);
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_AddItem3WS(Parent, Name, Text, OnClick, ImageId, Weight, Tag);
 end;
 
 function Menu_AddItem3WS03(Parent: AMenuItem; const Name, Text: AWideString;
     OnClick: ACallbackProc03; ImageID, Weight, Tag: Integer): AMenuItem; stdcall;
 begin
-  try
-    Result := AUIMenus.UI_MenuItem_Add03(Parent, Name, Text, OnClick, ImageID, Weight, Tag);
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_AddItem3WS03(Parent, Name, Text, OnClick, ImageId, Weight, Tag);
 end;
 
 function Menu_GetItems(Menu: AMenu): AMenuItem; stdcall;
 begin
-  try
-    Result := AUIMenus.UI_Menu_GetItems(Menu);
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_GetItems(Menu);
 end;
 
 function Menu_New(MenuType: AInteger): AMenu; stdcall;
 begin
-  try
-    Result := AUIMenus.UI_Menu_New(MenuType);
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_New(MenuType);
 end;
 
 { PageControl }
@@ -3105,44 +3005,12 @@ end;
 
 function UI_InitMainTrayIcon: AInteger; stdcall;
 begin
-  {IFNDEF UNIX}
-  if (FMainTrayIcon = 0) then
-  begin
-    {$IFDEF FPC}
-    FMainTrayIcon := AddObject(TAUITrayIcon.Create(nil));
-    {$ELSE}
-    FMainTrayIcon := AddObject(TAUITrayIcon.Create);
-    {$ENDIF}
-  end;
-  {ENDIF}
-  Result := FMainTrayIcon;
+  Result := AUi_InitMainTrayIcon();
 end;
 
 procedure UI_InitMenus; stdcall;
 begin
-  miFile := AUIMenus.UI_MenuItem_Add(miMain, 'File', miFileText, nil, 0, 100, 0);
-
-  {$IFDEF A01}
-    AUIMenus.UI_MenuItem_Add(miFile, 'Exit', miExitText, miExitClick02, 0, 10000, 0);
-  {$ELSE}
-    {$IFDEF A02}
-    AUIMenus.UI_MenuItem_Add(miFile, 'Exit', miExitText, miExitClick02, 0, 10000, 0);
-    {$ELSE}
-    AUIMenus.UI_MenuItem_Add(miFile, 'Exit', miExitText, miExitClick, 0, 10000, 0);
-    {$ENDIF A02}
-  {$ENDIF A01}
-
-  miHelp := AUIMenus.UI_MenuItem_Add(miMain, 'Help', miHelpText, nil, 0, 1000, 0);
-
-  {$IFDEF A01}
-    AUIMenus.UI_MenuItem_Add(miHelp, 'About', miAboutText, miAboutClick1, 0, 1000, 0);
-  {$ELSE}
-    {$IFDEF A02}
-    AUIMenus.UI_MenuItem_Add(miHelp, 'About', miAboutText, miAboutClick1, 0, 1000, 0);
-    {$ELSE}
-    AUIMenus.UI_MenuItem_Add(miHelp, 'About', miAboutText, miAboutClick, 0, 1000, 0);
-    {$ENDIF A02}
-  {$ENDIF A01}
+  AUi_InitMenus();
 end;
 
 procedure UI_OnMainFormCreate_Set(Value: AProc); stdcall;

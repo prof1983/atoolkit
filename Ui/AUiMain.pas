@@ -2,7 +2,7 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 28.08.2012
+@LastMod 03.09.2012
 }
 unit AUiMain;
 
@@ -36,6 +36,8 @@ procedure AUi_SetHideOnClose_Old(Value: ABoolean); {$ifdef AStdCall}stdcall;{$en
 function AUi_SetProgramState(State: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUi_ShellExecuteA(Operation, FileName, Parameters, Directory: AStr): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -264,6 +266,11 @@ begin
   except
     Result := -1;
   end;
+end;
+
+function AUi_ShellExecuteA(Operation, FileName, Parameters, Directory: AStr): AInt;
+begin
+  Result := AUi_ShellExecuteP(Operation, FileName, Parameters, Directory);
 end;
 
 function AUi_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger;

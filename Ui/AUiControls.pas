@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 28.08.2012
+@LastMod 03.09.2012
 }
 unit AUiControls;
 
@@ -12,7 +12,8 @@ interface
 
 uses
   Buttons, Classes, {$IFNDEF FPC}ComCtrls,{$ENDIF} Controls, ExtCtrls, Forms, Graphics, Menus, StdCtrls,
-  ABase, AUiBase, AUiData;
+  ABase, AStrings,
+  AUiBase, AUiData;
 
 // --- AUiControl ---
 
@@ -26,9 +27,17 @@ function AUiControl_GetEnabled(Control: AControl): ABoolean; {$ifdef AStdCall}st
 
 function AUiControl_GetHeight(Control: AControl): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiControl_GetHint(Control: AControl; out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_GetHintA(Control: AControl; Value: AStr; MaxLen: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiControl_GetHintP(Control: AControl): APascalString; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_GetMenu(Control: AControl): AMenu; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_GetName(Control: AControl; out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_GetNameA(Control: AControl; Value: AStr; MaxLen: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_GetNameP(Control: AControl): APascalString; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -234,6 +243,26 @@ begin
   end;
 end;
 
+function AUiControl_GetHint(Control: AControl; out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, AUiControl_GetHintP(Control));
+end;
+
+function AUiControl_GetHintA(Control: AControl; Value: AStr; MaxLen: AInt): AError;
+var
+  S: AnsiString;
+begin
+  try
+    S := AUiControl_GetHintP(Control);
+    if (Length(S) < MaxLen) then
+      Move(S, Value, Length(S))
+    else
+      Result := -2;
+  except
+    Result := -1;
+  end;
+end;
+
 function AUiControl_GetHintP(Control: AControl): APascalString;
 begin
   try
@@ -272,6 +301,26 @@ begin
     Result := 0;
   except
     Result := 0;
+  end;
+end;
+
+function AUiControl_GetName(Control: AControl; out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, AUiControl_GetNameP(Control));
+end;
+
+function AUiControl_GetNameA(Control: AControl; Value: AStr; MaxLen: AInt): AError;
+var
+  S: AnsiString;
+begin
+  try
+    S := AUiControl_GetNameP(Control);
+    if (Length(S) < MaxLen) then
+      Move(S, Value, Length(S))
+    else
+      Result := -2;
+  except
+    Result := -1;
   end;
 end;
 

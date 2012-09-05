@@ -9,7 +9,7 @@ unit AUiExp;
 interface
 
 uses
-  AUi, AUiControls, AUiDialogs, AUiEdit, AUiInit, AUiMain, AUiMenus, AUiSpinEdit;
+  AUi, AUiControls, AUiDialogs, AUiEdit, AUiGrids, AUiInit, AUiMain, AUiMenus, AUiSpinEdit;
 
 exports
   //A_UI_ApplicationHandle,
@@ -81,11 +81,22 @@ exports
   AUiEdit_New,
   AUiEdit_NewEx,
 
-  AUI.Grid_RestoreColPropsWS name 'A_UI_Grid_RestoreColPropsWS',
-  UI_Grid_SaveColProps name 'A_UI_Grid_SaveColProps',
-  UI_Grid_SetColumnWidth name 'A_UI_Grid_SetColumnWidth',
-  UI_Grid_SetColumnWidthA name 'A_UI_Grid_SetColumnWidthA',
-  UI_Grid_SetDataSource name 'A_UI_Grid_SetDataSource',
+  AUiGrid_Clear,
+  AUiGrid_Clear2,
+  AUiGrid_DeleteRow,
+  AUiGrid_DeleteRow2,
+  AUiGrid_FindInt,
+  AUiGrid_New,
+  AUiGrid_RestoreColProps,
+  AUiGrid_RestoreColPropsA,
+  AUiGrid_RowDown,
+  AUiGrid_RowUp,
+  AUiGrid_SaveColProps,
+  AUiGrid_SaveColPropsA,
+  AUiGrid_SetColumnWidth,
+  AUiGrid_SetColumnWidth2,
+  AUiGrid_SetDataSource,
+  AUiGrid_SetRowCount,
 
   AUI.Label_New name 'A_UI_Label_New',
 

@@ -2,7 +2,7 @@
 @Abstract AUi grids
 @Author Prof1983 <prof1983@ya.ru>
 @Created 11.01.2010
-@LastMod 10.08.2012
+@LastMod 05.09.2012
 }
 unit AUiGrids;
 
@@ -12,11 +12,87 @@ unit AUiGrids;
   {$DEFINE USE_SETTINGS}
 {$ENDIF}
 
+{$define AStdCall}
+
 interface
 
 uses
-  Classes, Controls, DBGrids, Grids, SysUtils,
-  ABase, {$IFDEF USE_SETTINGS}ASettings,{$ENDIF} AUiBase;
+  Classes, Controls, Db, DbGrids, Grids, SysUtils,
+  ABase, {$IFDEF USE_SETTINGS}ASettings,{$ENDIF} AStrings,
+  AUiBase;
+
+{ Grid }
+
+{** Производит очистку таблицы. Пока работает только для TStringGrid. }
+function AUiGrid_Clear(Grid: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiGrid_AddColumnP(Grid: AControl; const FieldName, Title: APascalString;
+    Width: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Производит очистку таблицы. Пока работает только для TStringGrid. }
+function AUiGrid_Clear2(Grid: AControl; FixedRows: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Удаляет строчку. Работает пока только для TStringGrid. }
+function AUiGrid_DeleteRow(Grid: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Удаляет указанную строку }
+function AUiGrid_DeleteRow2(Grid: AControl; Row: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Производит поиск значения в заданной колонке. Работает пока только для TStringGrid. }
+function AUiGrid_FindInt(Grid: AControl; Col, Value: AInteger): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+
+{**
+    @param GridType
+      0 - StringGrid
+      1 - DBGrid }
+function AUiGrid_New(Parent: AControl; GridType: AInteger): AControl; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Восстанавливает колоноки DBGrid или StringGrid }
+function AUiGrid_RestoreColProps(Grid: AControl; Config: AConfig; const Key: AString_Type;
+    Delimer: AChar = '\'): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Восстанавливает колоноки DBGrid или StringGrid }
+function AUiGrid_RestoreColPropsA(Grid: AControl; Config: AConfig; Key: AStr;
+    Delimer: AChar = '\'): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Восстанавливает колоноки DBGrid или StringGrid }
+function AUiGrid_RestoreColPropsP(Grid: AControl; Config: AConfig; const Key: APascalString;
+    Delimer: AChar = '\'): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Восстанавливает колоноки DBGrid или StringGrid }
+function AUiGrid_RestoreColPropsWS(Grid: AControl; Config: AConfig; const Key: AWideString;
+    Delimer: AWideChar = '\'): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Перемещает строчку ниже. Работает пока только для TStringGrid. }
+function AUiGrid_RowDown(Grid: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Перемещает строчку выше. Работает пока только для TStringGrid. }
+function AUiGrid_RowUp(Grid: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Сохраняет колоноки DBGrid или StringGrid }
+function AUiGrid_SaveColProps(Grid: AControl; Config: AConfig; const Key: AString_Type;
+    Delimer: AChar = '\'): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Сохраняет колоноки DBGrid или StringGrid }
+function AUiGrid_SaveColPropsA(Grid: AControl; Config: AConfig; Key: AStr;
+    Delimer: AChar = '\'): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Сохраняет колоноки DBGrid или StringGrid }
+function AUiGrid_SaveColPropsP(Grid: AControl; Config: AConfig; const Key: APascalString;
+    Delimer: AChar = '\'): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Сохраняет колоноки DBGrid или StringGrid }
+function AUiGrid_SaveColPropsWS(Grid: AControl; Config: AConfig; const Key: AWideString;
+    Delimer: AWideChar = '\'): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiGrid_SetColumnWidth(Grid: AControl; ColumnIndex, Width, Persent, MinWidth: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiGrid_SetColumnWidth2(Grid: AControl; ColumnIndex, Width, Persent, MinWidth, MaxWidth: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiGrid_SetDataSource(Grid: AControl; Value: PADataSource): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Задает кол-во строк в таблице. Работает пока только для TStringGrid }
+function AUiGrid_SetRowCount(Grid: AControl; Count: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 { DBGrid }
 
@@ -81,8 +157,11 @@ procedure StringGrid_Sort_Int(Grid: TStringGrid);
 
 { UI_Grid }
 
+procedure UI_Grid_AddColumn(Grid: AControl; const FieldName, Title: APascalString;
+    Width: Integer); stdcall; deprecated; // Use AUiGrid_AddColumn()
+
 // Производит очистку таблицы. Пока работает только для TStringGrid.
-function UI_Grid_Clear(Grid: AControl): AError;
+function UI_Grid_Clear(Grid: AControl): AError; deprecated; // Use AUiGrid_Clear()
 
 // Производит поиск значения в заданной колонке. Работает пока только для TStringGrid.
 function UI_Grid_FindInt(Grid: TObject; Col, Value: Integer): Integer;
@@ -90,10 +169,11 @@ function UI_Grid_FindInt(Grid: TObject; Col, Value: Integer): Integer;
 { GridType
     0 - StringGrid
     1 - DBGrid }
-function UI_Grid_New(Parent: AControl; GridType: AInteger): AControl;
+function UI_Grid_New(Parent: AControl; GridType: AInteger): AControl; stdcall; deprecated; // Use AUiGrid_New()
 
 // Восстанавливает колоноки DBGrid или StringGrid.
-procedure UI_Grid_RestoreColProps(Grid: TObject; Config: AConfig; const Key: APascalString; Delimer: AChar);
+procedure UI_Grid_RestoreColProps(Grid: TObject; Config: AConfig; const Key: APascalString;
+    Delimer: AChar); stdcall; deprecated; // Use AUiGrid_RestoreColProps()
 
 // Удаляет строчку. Работает пока только для TStringGrid.
 function UI_Grid_RowDelete(Grid: AControl): AError;
@@ -105,12 +185,276 @@ procedure UI_Grid_RowDown(Grid: AControl);
 procedure UI_Grid_RowUp(Grid: AControl);
 
 // Сохраняет колоноки DBGrid или StringGrid.
-procedure UI_Grid_SaveColProps(Grid: TObject; Config: AConfig; const Key: APascalString; Delimer: AChar);
+procedure UI_Grid_SaveColProps(Grid: TObject; Config: AConfig; const Key: APascalString;
+    Delimer: AChar); stdcall; deprecated; // Use AUiGrid_SaveColPropsP()
+
+// Изменяет ширину колонки в DBGrid
+procedure UI_Grid_SetColumnWidth(Grid: AControl; ColumnIndex, Width, Persent, MinWidth: AInteger); stdcall;
+
+procedure UI_Grid_SetColumnWidthA(Grid: AControl; ColumnIndex, Width, Persent, MinWidth, MaxWidth: AInteger); stdcall;
+
+procedure UI_Grid_SetDataSource(Grid: AControl; Value: PADataSource); stdcall;
 
 // Задает кол-во строк в таблице. Работает пока только для TStringGrid.
 procedure UI_Grid_SetRowCount(Grid: AControl; Count: AInteger);
 
 implementation
+
+{ Types }
+
+type
+  TAUIColumn = {$IFDEF UNIX}TGridColumn{$ELSE}TColumn{$ENDIF};
+
+// --- AUiGrid ---
+
+function AUiGrid_AddColumnP(Grid: AControl; const FieldName, Title: APascalString; Width: AInteger): AError;
+var
+  Column: TAUiColumn;
+begin
+  try
+    {$IFNDEF FPC}
+    Column := TDBGrid(Grid).Columns.Add;
+    Column.FieldName := FieldName;
+    Column.Title.Caption := Title;
+    Column.Width := Width;
+    {$ENDIF}
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiGrid_Clear(Grid: AControl): AError;
+begin
+  try
+    if (TObject(Grid) is TStringGrid) then
+    begin
+      StringGrid_Clear(TStringGrid(Grid));
+      Result := 0;
+    end
+    else
+      Result := -2;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiGrid_Clear2(Grid: AControl; FixedRows: AInteger): AError;
+begin
+  try
+    StringGrid_ClearA(TStringGrid(Grid), FixedRows);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiGrid_DeleteRow(Grid: AControl): AError;
+begin
+  try
+    Result := UI_Grid_RowDelete(Grid);
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiGrid_DeleteRow2(Grid: AControl; Row: AInteger): AError;
+begin
+  try
+    StringGrid_RowDeleteA(TStringGrid(Grid), Row);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiGrid_FindInt(Grid: AControl; Col, Value: AInteger): AInteger;
+begin
+  if (Grid = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+
+  try
+    Result := UI_Grid_FindInt(TObject(Grid), Col, Value);
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiGrid_New(Parent: AControl; GridType: AInteger): AControl;
+begin
+  try
+    Result := AUIGrids.UI_Grid_New(Parent, GridType);
+  except
+    Result := 0;
+  end;
+end;
+
+function AUiGrid_RestoreColProps(Grid: AControl; Config: AConfig; const Key: AString_Type;
+    Delimer: AChar = '\'): AError;
+begin
+  Result := AUiGrid_RestoreColPropsP(Grid, Config, AString_ToPascalString(Key), Delimer);
+end;
+
+function AUiGrid_RestoreColPropsA(Grid: AControl; Config: AConfig; Key: AStr;
+    Delimer: AChar = '\'): AError;
+begin
+  Result := AUiGrid_RestoreColPropsP(Grid, Config, AnsiString(Key), Delimer);
+end;
+
+function AUiGrid_RestoreColPropsP(Grid: AControl; Config: AConfig; const Key: APascalString;
+    Delimer: AChar): AError;
+var
+  GridObj: TObject;
+begin
+  try
+    GridObj := TObject(Grid);
+    if not(Assigned(GridObj)) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+    if (GridObj is TDBGrid) then
+      DBGrid_RestoreColProps(TDBGrid(GridObj), Config, Key, Delimer)
+    else if (GridObj is TStringGrid) then
+      StringGrid_RestoreColProps(TStringGrid(GridObj), Config, Key, Delimer);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiGrid_RestoreColPropsWS(Grid: AControl; Config: AConfig; const Key: AWideString;
+    Delimer: AWideChar): AError;
+var
+  S: AnsiString;
+  C: AChar;
+begin
+  try
+    S := Delimer;
+    C := AnsiString_GetChar(S, 1);
+    Result := AUiGrid_RestoreColPropsP(Grid, Config, Key, C);
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiGrid_RowDown(Grid: AControl): AError;
+begin
+  try
+    UI_Grid_RowDown(Grid);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiGrid_RowUp(Grid: AControl): AError;
+begin
+  try
+    UI_Grid_RowUp(Grid);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiGrid_SaveColProps(Grid: AControl; Config: AConfig; const Key: AString_Type;
+    Delimer: AChar): AError;
+begin
+  Result := AUiGrid_SaveColPropsP(Grid, Config, AString_ToPascalString(Key), Delimer);
+end;
+
+function AUiGrid_SaveColPropsA(Grid: AControl; Config: AConfig; Key: AStr;
+    Delimer: AChar): AError;
+begin
+  Result := AUiGrid_SaveColPropsP(Grid, Config, AnsiString(Key), Delimer);
+end;
+
+function AUiGrid_SaveColPropsP(Grid: AControl; Config: AConfig; const Key: APascalString;
+    Delimer: AChar): AError;
+var
+  GridObj: TObject;
+begin
+  if (Grid = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+
+  try
+    GridObj := TObject(Grid);
+    if not(Assigned(GridObj)) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+    if (GridObj is TDBGrid) then
+      DBGrid_SaveColProps(TDBGrid(GridObj), Config, Key, Delimer)
+    else if (GridObj is TStringGrid) then
+      StringGrid_SaveColProps(TStringGrid(GridObj), Config, Key, Delimer);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiGrid_SaveColPropsWS(Grid: AControl; Config: AConfig; const Key: AWideString;
+    Delimer: AWideChar): AError;
+var
+  S: AnsiString;
+  C: AChar;
+begin
+  try
+    S := Delimer;
+    C := AnsiString_GetChar(S, 1);
+    Result := AUiGrid_SaveColPropsP(Grid, Config, Key, C);
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiGrid_SetColumnWidth(Grid: AControl; ColumnIndex, Width, Persent, MinWidth: AInteger): AError;
+begin
+  try
+    UI_Grid_SetColumnWidth(Grid, ColumnIndex, Width, Persent, MinWidth);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiGrid_SetColumnWidth2(Grid: AControl; ColumnIndex, Width, Persent, MinWidth, MaxWidth: AInteger): AError;
+begin
+  try
+    UI_Grid_SetColumnWidthA(Grid, ColumnIndex, Width, Persent, MinWidth, MaxWidth);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiGrid_SetDataSource(Grid: AControl; Value: PADataSource): AError;
+begin
+  try
+    UI_Grid_SetDataSource(Grid, Value);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiGrid_SetRowCount(Grid: AControl; Count: AInteger): AError;
+begin
+  try
+    UI_Grid_SetRowCount(Grid, Count);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
 
 { DBGrid }
 
@@ -595,15 +939,16 @@ begin
   end;
 end;
 
+// --- UI_Grid ---
+
+procedure UI_Grid_AddColumn(Grid: AControl; const FieldName, Title: APascalString; Width: Integer);
+begin
+  AUiGrid_AddColumnP(Grid, FieldName, Title, Width);
+end;
+
 function UI_Grid_Clear(Grid: AControl): AError;
 begin
-  if (TObject(Grid) is TStringGrid) then
-  begin
-    StringGrid_Clear(TStringGrid(Grid));
-    Result := 0;
-  end
-  else
-    Result := -1;
+  Result := AUiGrid_Clear(Grid);
 end;
 
 function UI_Grid_FindInt(Grid: TObject; Col, Value: Integer): Integer;
@@ -628,11 +973,7 @@ end;
 
 procedure UI_Grid_RestoreColProps(Grid: TObject; Config: AConfig; const Key: APascalString; Delimer: AChar);
 begin
-  if not(Assigned(Grid)) then Exit;
-  if (Grid is TDBGrid) then
-    DBGrid_RestoreColProps(TDBGrid(Grid), Config, Key, Delimer)
-  else if (Grid is TStringGrid) then
-    StringGrid_RestoreColProps(TStringGrid(Grid), Config, Key, Delimer);
+  AUiGrid_RestoreColPropsP(AControl(Grid), Config, Key, Delimer);
 end;
 
 function UI_Grid_RowDelete(Grid: AControl): AError;
@@ -658,11 +999,47 @@ end;
 
 procedure UI_Grid_SaveColProps(Grid: TObject; Config: AConfig; const Key: APascalString; Delimer: AChar);
 begin
-  if not(Assigned(Grid)) then Exit;
-  if (Grid is TDBGrid) then
-    DBGrid_SaveColProps(TDBGrid(Grid), Config, Key, Delimer)
-  else if (Grid is TStringGrid) then
-    StringGrid_SaveColProps(TStringGrid(Grid), Config, Key, Delimer);
+  AUiGrid_SaveColPropsP(AControl(Grid), Config, Key, Delimer);
+end;
+
+procedure UI_Grid_SetColumnWidth(Grid: AControl; ColumnIndex, Width, Persent, MinWidth: AInteger); stdcall;
+{var
+  tmpWidth: Integer;
+  Column: TColumn;}
+begin
+  DBGrid_SetColumnWidth(TDBGrid(Grid), ColumnIndex, Width, Persent, MinWidth);
+
+  {$IFNDEF FPC}
+  {Column := TDBGrid(Grid).Columns.Items[ColumnIndex];
+  tmpWidth := (Width * Persent) div 100;
+  if (tmpWidth >= MinWidth) then
+    Column.Width := tmpWidth
+  else
+    Column.Width := MinWidth;}
+  {$ENDIF}
+end;
+
+procedure UI_Grid_SetColumnWidthA(Grid: AControl; ColumnIndex, Width, Persent, MinWidth, MaxWidth: AInteger); stdcall;
+{var
+  tmpWidth: Integer;
+  Column: TColumn;}
+begin
+  DBGrid_SetColumnWidthA(TDBGrid(Grid), ColumnIndex, Width, Persent, MinWidth, MaxWidth);
+
+  {$IFNDEF FPC}
+  {Column := TDBGrid(Grid).Columns.Items[ColumnIndex];
+  tmpWidth := Round((Width - 30) * Persent / 100) - 4;
+  if (tmpWidth < MinWidth) then
+    tmpWidth := MinWidth
+  else if (tmpWidth > MaxWidth) then
+    tmpWidth := MaxWidth;
+  Column.Width := tmpWidth;}
+  {$ENDIF}
+end;
+
+procedure UI_Grid_SetDataSource(Grid: AControl; Value: PADataSource); stdcall;
+begin
+  TDBGrid(Grid).DataSource := TDataSource(Value);
 end;
 
 procedure UI_Grid_SetRowCount(Grid: AControl; Count: AInteger);

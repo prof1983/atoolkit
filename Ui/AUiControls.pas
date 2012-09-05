@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 03.09.2012
+@LastMod 05.09.2012
 }
 unit AUiControls;
 
@@ -74,7 +74,15 @@ function AUiControl_SetFont2P(Control: AControl; const FontName: APascalString;
 
 function AUiControl_SetHeight(Control: AControl; Value: AInt): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiControl_SetHint(Control: AControl; const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_SetHintA(Control: AControl; Value: AStr): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiControl_SetHintP(Control: AControl; const Value: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_SetName(Control: AControl; const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_SetNameA(Control: AControl; Value: AStr): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetNameP(Control: AControl; const Value: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -87,6 +95,10 @@ function AUiControl_SetOnClick03(Control: AControl; Value: ACallbackProc03): AEr
 function AUiControl_SetPosition(Control: AControl; Left, Top: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetSize(Control: AControl; Width, Height: Integer): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_SetText(Control: AControl; const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_SetTextA(Control: AControl; Value: AStr): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetTextP(Control: AControl; const Value: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -531,6 +543,16 @@ begin
   end;
 end;
 
+function AUiControl_SetHint(Control: AControl; const Value: AString_Type): AError;
+begin
+  Result := AUiControl_SetHintP(Control, AString_ToPascalString(Value));
+end;
+
+function AUiControl_SetHintA(Control: AControl; Value: AStr): AError;
+begin
+  Result := AUiControl_SetHintP(Control, AnsiString(Value));
+end;
+
 function AUiControl_SetHintP(Control: AControl; const Value: APascalString): AError;
 begin
   try
@@ -542,6 +564,16 @@ begin
   except
     Result := -1;
   end;
+end;
+
+function AUiControl_SetName(Control: AControl; const Value: AString_Type): AError;
+begin
+  Result := AUiControl_SetNameP(Control, AString_ToPascalString(Value));
+end;
+
+function AUiControl_SetNameA(Control: AControl; Value: AStr): AError;
+begin
+  Result := AUiControl_SetNameP(Control, AnsiString(Value));
 end;
 
 function AUiControl_SetNameP(Control: AControl; const Value: APascalString): AError;
@@ -664,6 +696,16 @@ begin
   except
     Result := -1;
   end;
+end;
+
+function AUiControl_SetText(Control: AControl; const Value: AString_Type): AError;
+begin
+  Result := AUiControl_SetTextP(Control, AString_ToPascalString(Value));
+end;
+
+function AUiControl_SetTextA(Control: AControl; Value: AStr): AError;
+begin
+  Result := AUiControl_SetTextP(Control, AnsiString(Value));
 end;
 
 function AUiControl_SetTextP(Control: AControl; const Value: APascalString): AError;

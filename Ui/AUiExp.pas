@@ -2,14 +2,14 @@
 @Abstract User Interface exports
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.04.2011
-@LastMod 03.09.2012
+@LastMod 05.09.2012
 }
 unit AUiExp;
 
 interface
 
 uses
-  AUi, AUiControls, AUiInit, AUiMain, AUiMenus;
+  AUi, AUiControls, AUiDialogs, AUiEdit, AUiInit, AUiMain, AUiMenus, AUiSpinEdit;
 
 exports
   //A_UI_ApplicationHandle,
@@ -44,32 +44,43 @@ exports
   AUiControl_GetNameA,
   AUiControl_GetVisible,
   AUiControl_SetAlign,
+  AUiControl_SetClientSize,
+  AUiControl_SetColor,
   AUiControl_SetEnabled,
+  AUiControl_SetFocus,
+  AUiControl_SetFont1A,
+  AUiControl_SetHeight,
   AUiControl_SetHint,
   AUiControl_SetHintA,
   AUiControl_SetName,
   AUiControl_SetNameA,
+  AUiControl_SetOnClick,
   AUiControl_SetPosition,
   AUiControl_SetSize,
   AUiControl_SetText,
   AUiControl_SetTextA,
   AUiControl_SetVisible,
+  AUiControl_SetWidth,
 
-  AUiDialog_ExecuteAboutDialog,
-  AUiDialog_ExecuteCalendarDialog,
-  AUiDialog_ExecuteErrorDialog,
-  AUiDialog_ExecuteDateFilterDialog,
-  AUiDialog_InputBox1WS name 'A_UI_Dialog_InputBox1WS',
-  AUiDialog_InputBox2WS name 'A_UI_Dialog_InputBox2WS',
-  AUiDialog_InputBox3WS name 'A_UI_Dialog_InputBox3WS',
-  AUiDialog_LoginWS name 'A_UI_Dialog_LoginWS',
-  AUiDialog_MessageWS name 'A_UI_Dialog_MessageWS',
-  AUiDialog_OpenFileWS name 'A_UI_Dialog_OpenFileWS',
+  AUi_ExecuteAboutDialog,
+  AUi_ExecuteCalendarDialog,
+  AUi_ExecuteColorDialog,
+  AUi_ExecuteDateFilterDialog,
+  AUi_ExecuteErrorDialog,
+  AUi_ExecuteErrorDialogA,
+  AUi_ExecuteFontDialog,
+  AUi_ExecuteFontDialogA,
+  AUi_ExecuteInputBox1,
+  AUi_ExecuteInputBox1A,
+  AUi_ExecuteInputBox2,
+  AUi_ExecuteInputBox2A,
 
-  AUI.Edit_CheckDate name 'A_UI_Edit_CheckDate',
-  AUI.Edit_CheckFloat name 'A_UI_Edit_CheckFloat',
-  AUI.Edit_CheckInt name 'A_UI_Edit_CheckInt',
-  AUI.Edit_New name 'A_UI_Edit_New',
+  AUiEdit_CheckDate,
+  AUiEdit_CheckFloat,
+  AUiEdit_CheckInt,
+  AUiEdit_New,
+  AUiEdit_NewEx,
+
   AUI.Grid_RestoreColPropsWS name 'A_UI_Grid_RestoreColPropsWS',
   UI_Grid_SaveColProps name 'A_UI_Grid_SaveColProps',
   UI_Grid_SetColumnWidth name 'A_UI_Grid_SetColumnWidth',
@@ -95,8 +106,10 @@ exports
   AUI.PageControl_AddPage name 'A_UI_PageControl_AddPage',
   AUI.PageControl_New name 'A_UI_PageControl_New',
   UI_SpinButton_New name 'A_UI_SpinButton_New',
-  UI_SpinEdit_New name 'A_UI_SpinEdit_New',
-  UI_SpinEdit_NewA name 'A_UI_SpinEdit_NewA',
+
+  AUiSpinEdit_New,
+  AUiSpinEdit_NewEx,
+
   UI_Splitter_New name 'A_UI_Splitter_New',
   AUI.ToolBar_AddButtonWS name 'A_UI_ToolBar_AddButtonWS',
   AUI.TreeView_New name 'A_UI_TreeView_New',

@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 28.08.2012
+@LastMod 05.09.2012
 }
 unit AUi;
 
@@ -80,10 +80,7 @@ procedure AUi_Report_SetText(Report: AReport; const Value: AString_Type); stdcal
 
 function AUi_SpinButton_New(Parent: AControl): AControl; stdcall;
 
-// --- AUi_SpinEdit ---
-
-function AUi_SpinEdit_New(Parent: AControl): AControl; stdcall;
-function AUi_SpinEdit_NewA(Parent: AControl; Value, MinValue, MaxValue: AInteger): AControl; stdcall;
+// --- AUi_Splitter ---
 
 { SplitterType
     0 - HSplitter (Align=alTop)
@@ -815,8 +812,6 @@ procedure UI_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; co
 function UI_PropertyBox_New(Parent: AControl): AControl; stdcall;
 
 function UI_SpinButton_New(Parent: AControl): AControl; stdcall;
-function UI_SpinEdit_New(Parent: AControl): AControl; stdcall;
-function UI_SpinEdit_NewA(Parent: AControl; Value, MinValue, MaxValue: AInteger): AControl; stdcall;
 
 { SplitterType
     0 - HSplitter (Align=alTop)
@@ -1396,26 +1391,6 @@ function AUi_SpinButton_New(Parent: AControl): AControl; stdcall;
 begin
   try
     Result := UI_SpinButton_New(Parent);
-  except
-    Result := 0;
-  end;
-end;
-
-// --- AUi_SpinEdit ---
-
-function AUi_SpinEdit_New(Parent: AControl): AControl;
-begin
-  try
-    Result := UI_SpinEdit_New(Parent);
-  except
-    Result := 0;
-  end;
-end;
-
-function AUi_SpinEdit_NewA(Parent: AControl; Value, MinValue, MaxValue: AInteger): AControl;
-begin
-  try
-    Result := UI_SpinEdit_NewA(Parent, Value, MinValue, MaxValue);
   except
     Result := 0;
   end;
@@ -2021,92 +1996,44 @@ end;
 
 function Edit_CheckDate(Edit: AControl{TMaskEdit}; out Value: TDateTime): ABoolean; stdcall;
 begin
-  try
-    Result := AUIEdit.Edit_CheckDate(TCustomEdit(Edit), Value);
-  except
-    Result := False;
-  end;
+  Result := (AUiEdit_CheckDate(Edit, Value) = 0);
 end;
 
 function Edit_CheckFloat(Edit: AControl; out Value: Double): ABoolean; stdcall;
 begin
-  try
-    Result := AUIEdit.Edit_CheckFloat(TCustomEdit(Edit), Value);
-  except
-    Result := False;
-  end;
+  Result := (AUiEdit_CheckFloat64(Edit, Value) = 0);
 end;
 
 function Edit_CheckFloat32(Edit: AControl; out Value: AFloat32): ABoolean;
 begin
-  try
-    Result := UI_Edit_CheckFloat32(Edit, Value);
-  except
-    Result := False;
-  end;
+  Result := (AUiEdit_CheckFloat32(Edit, Value) = 0);
 end;
 
 function Edit_CheckFloat64(Edit: AControl; out Value: AFloat64): ABoolean;
 begin
-  try
-    Result := UI_Edit_CheckFloat64(Edit, Value);
-  except
-    Result := False;
-  end;
+  Result := (AUiEdit_CheckFloat64(Edit, Value) = 0);
 end;
 
 function Edit_CheckInt(Edit: AControl; out Value: AInteger): ABoolean; stdcall;
 begin
-  try
-    Result := AUIEdit.Edit_CheckInt(TCustomEdit(Edit), Value);
-  except
-    Result := False;
-  end;
+  Result := (AUiEdit_CheckInt(Edit, Value) = 0);
 end;
 
 function Edit_New(Parent: AControl): AControl; stdcall;
 begin
-  try
-    Result := UI_Edit_New(Parent);
-  except
-    Result := 0;
-  end;
+  Result := AUiEdit_New(Parent);
 end;
 
 function Edit_New02(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc02;
     Left, Top, Width: AInteger): AControl; stdcall;
 begin
-  try
-    if (EditType = 3) then
-    begin
-      Result := UI_SpinEdit_New(Parent);
-      if (Result = 0) then Exit;
-      AUIControls.UI_Control_SetPosition(Result, Left, Top);
-      AUIControls.UI_Control_SetWidth(Result, Width);
-    end
-    else
-      Result := UI_Edit_New02(Parent, EditType, OnClick, Left, Top, Width);
-  except
-    Result := 0;
-  end;
+  Result := AUiEdit_New02(Parent, EditType, OnClick, Left, Top, Width);
 end;
 
 function Edit_NewA(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc;
     Left, Top, Width: AInteger): AControl; stdcall;
 begin
-  try
-    if (EditType = 3) then
-    begin
-      Result := UI_SpinEdit_New(Parent);
-      if (Result = 0) then Exit;
-      AUIControls.UI_Control_SetPosition(Result, Left, Top);
-      AUIControls.UI_Control_SetWidth(Result, Width);
-    end
-    else
-      Result := UI_Edit_NewA(Parent, EditType, OnClick, Left, Top, Width);
-  except
-    Result := 0;
-  end;
+  Result := AUiEdit_NewEx(Parent, EditType, OnClick, Left, Top, Width);
 end;
 
 { Grid }
@@ -3576,29 +3503,6 @@ begin
   Spin.Parent := TWinControl(Parent);
   Result := AControl(Spin);
   {$ENDIF}
-end;
-
-{ SpinEdit }
-
-function UI_SpinEdit_New(Parent: AControl): AControl; stdcall;
-var
-  SpinEdit: TSpinEdit;
-begin
-  SpinEdit := TSpinEdit.Create(TWinControl(Parent));
-  SpinEdit.Parent := TWinControl(Parent);
-  Result := AControl(SpinEdit);
-end;
-
-function UI_SpinEdit_NewA(Parent: AControl; Value, MinValue, MaxValue: AInteger): AControl; stdcall;
-var
-  SpinEdit: TSpinEdit;
-begin
-  SpinEdit := TSpinEdit.Create(TWinControl(Parent));
-  SpinEdit.Parent := TWinControl(Parent);
-  SpinEdit.Value := Value;
-  SpinEdit.MinValue := MinValue;
-  SpinEdit.MaxValue := MaxValue;
-  Result := AControl(SpinEdit);
 end;
 
 { Splitter }

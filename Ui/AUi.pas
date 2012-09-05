@@ -34,33 +34,10 @@ uses
   {$IFDEF USE_SETTINGS}ASettings,{$ENDIF}
   AStrings, ASystem,
   AUiBase, AUiBox, AUiButtons, AUiControls, AUiControlsA, AUiData, AUiEvents1, AUiEventsObj, AUiForm,
-  AUiInit, AUiMain, AUiMainWindow, AUiMainWindow2, AUiPageControl, AUiReports,
-  AUiToolBar, AUiToolMenu, AUiTreeView, AUiWindows;
+  AUiImages, AUiInit, AUiLabels, AUiListBox, AUiMain, AUiMainWindow, AUiMainWindow2,
+  AUiPageControl, AUiReports, AUiToolBar, AUiToolMenu, AUiTreeView, AUiWindows;
 
-// --- AUi_Image ---
-
-function AUi_Image_LoadFromFile(Image: AControl; const FileName: AString_Type): ABoolean; stdcall;
-
-function AUi_Image_New(Parent: AControl): AControl; stdcall;
-
-// --- AUi_Label ---
-
-function AUi_Label_New(Parent: AControl): AControl; stdcall;
-
-// --- AUi_ListBox ---
-
-function AUi_ListBox_Add(ListBox: AControl; const Text: AString_Type): Integer; stdcall;
-procedure AUi_ListBox_Clear(ListBox: AControl); stdcall;
-procedure AUi_ListBox_DeleteItem(ListBox: AControl; Index: AInteger); stdcall;
-function AUi_ListBox_GetCount(ListBox: AControl): AInteger; stdcall;
-function AUi_ListBox_GetItem(ListBox: AControl; Index: AInteger; out Value: AString_Type): AInteger; stdcall;
-function AUi_ListBox_GetItemIndex(ListBox: AControl): AInteger; stdcall;
-function AUi_ListBox_New(Parent: AControl): AControl; stdcall;
-{** Create net list box
-    @param Typ: 0 - ListBox; 1 - RadioGroup }
-function AUi_ListBox_NewA(Parent: AControl; Typ: AInteger): AControl; stdcall;
-procedure AUi_ListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: AString_Type); stdcall;
-procedure AUi_ListBox_SetItemIndex(ListBox: AControl; Index: AInteger); stdcall;
+// ---
 
 function AUi_MainWindow_AddMenuItem(const ParentItemName, Name, Text: AString_Type; OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem; stdcall;
 
@@ -731,40 +708,7 @@ function UI_DataSource_New: PADataSource; stdcall;
 //procedure UI_DataSource_SetDataSet(DataSource: PADataSource; Value: PADataSet); stdcall;
 procedure UI_DataSource_SetOnDataChange(DataSource: PADataSource; OnDataChange: ACallbackProc02); stdcall;
 
-{ UI_Image }
-
-//** Загружает изображение из файла.
-function UI_Image_LoadFromFile(Image: AControl; const FileName: APascalString): ABoolean; stdcall;
-
-//** Создает новый элемент-изображение.
-function UI_Image_New(Parent: AControl): AControl; stdcall;
-
-{ UI_Label }
-
-function UI_Label_New(Parent: AControl): AControl; stdcall;
-procedure UI_Label_SetFont(TextLabel: AControl; const FontName: APascalString; FontSize: AInteger); stdcall; {$IFNDEF A02}deprecated;{$ENDIF}
-
-// --- UI_ListBox ---
-
-//** Добавляет строку в список.
-function UI_ListBox_Add(ListBox: AControl; const Text: APascalString): Integer; stdcall;
-
-procedure UI_ListBox_Clear(ListBox: AControl); stdcall;
-
-//** Создает новый элемент ListBox.
-function UI_ListBox_New(Parent: AControl): AControl; stdcall;
-
-{ Typ:
-  0 - ListBox
-  1 - RadioGroup }
-function UI_ListBox_NewA(Parent: AControl; Typ: AInteger): AControl; stdcall;
-function UI_ListBox_GetCount(ListBox: AControl): AInteger; stdcall;
-function UI_ListBox_GetItem(ListBox: AControl; Index: AInteger): APascalString; stdcall;
-//function A_UI_ListBox_GetItem(ListBox: AControl; Index: AInteger; out Value: APascalString): AInteger; stdcall;
-function UI_ListBox_GetItemIndex(ListBox: AControl): AInteger; stdcall;
-procedure UI_ListBox_SetItemIndex(ListBox: AControl; Index: AInteger); stdcall;
-procedure UI_ListBox_DeleteItem(ListBox: AControl; Index: AInteger); stdcall;
-procedure UI_ListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: APascalString); stdcall;
+// ---
 
 function UI_MainTrayIcon: ATrayIcon; stdcall;
 
@@ -1154,121 +1098,6 @@ begin
   end;
 end;
 
-// --- AUi_Image ---
-
-function AUi_Image_LoadFromFile(Image: AControl; const FileName: AString_Type): ABoolean;
-begin
-  try
-    Result := UI_Image_LoadFromFile(Image, AStrings.String_ToWideString(FileName));
-  except
-    Result := False;
-  end;
-end;
-
-function AUi_Image_New(Parent: AControl): AControl;
-begin
-  try
-    Result := UI_Image_New(Parent);
-  except
-    Result := 0;
-  end;
-end;
-
-// --- AUi_Label ---
-
-function AUi_Label_New(Parent: AControl): AControl;
-begin
-  try
-    Result := UI_Label_New(Parent);
-  except
-    Result := 0;
-  end;
-end;
-
-// --- AUiListBox ---
-
-function AUi_ListBox_Add(ListBox: AControl; const Text: AString_Type): Integer;
-begin
-  try
-    Result := UI_ListBox_Add(ListBox, AStrings.String_ToWideString(Text));
-  except
-    Result := -1;
-  end;
-end;
-
-procedure AUi_ListBox_Clear(ListBox: AControl);
-begin
-  try
-    UI_ListBox_Clear(ListBox);
-  except
-  end;
-end;
-
-procedure AUi_ListBox_DeleteItem(ListBox: AControl; Index: AInteger);
-begin
-  try
-    UI_ListBox_DeleteItem(ListBox, Index);
-  except
-  end;
-end;
-
-function AUi_ListBox_GetCount(ListBox: AControl): AInteger;
-begin
-  try
-    Result := UI_ListBox_GetCount(ListBox);
-  except
-    Result := 0;
-  end;
-end;
-
-function AUi_ListBox_GetItem(ListBox: AControl; Index: AInteger; out Value: AString_Type): AInteger;
-begin
-  try
-    Result := AStrings.String_AssignWS(Value, UI_ListBox_GetItem(ListBox, Index));
-  except
-    Result := 0;
-  end;
-end;
-
-function AUi_ListBox_GetItemIndex(ListBox: AControl): AInteger;
-begin
-  try
-    Result := UI_ListBox_GetItemIndex(ListBox);
-  except
-    Result := 0;
-  end;
-end;
-
-function AUi_ListBox_New(Parent: AControl): AControl;
-begin
-  Result := AUi_ListBox_NewA(Parent, 0);
-end;
-
-function AUi_ListBox_NewA(Parent: AControl; Typ: AInteger): AControl;
-begin
-  try
-    Result := UI_ListBox_NewA(Parent, Typ);
-  except
-    Result := 0;
-  end;
-end;
-
-procedure AUi_ListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: AString_Type);
-begin
-  try
-    UI_ListBox_SetItem(ListBox, Index, AStrings.String_ToWideString(Value));
-  except
-  end;
-end;
-
-procedure AUi_ListBox_SetItemIndex(ListBox: AControl; Index: AInteger);
-begin
-  try
-    UI_ListBox_SetItemIndex(ListBox, Index);
-  except
-  end;
-end;
-
 // --- AUi_MainWindow ---
 
 function AUi_MainWindow_AddMenuItem(const ParentItemName, Name, Text: AString_Type;
@@ -1305,7 +1134,7 @@ end;
 function AUi_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer; out Value: AString_Type): AInteger;
 begin
   try
-    Result := AStrings.String_AssignWS(Value, UI_PropertyBox_Item_GetValue(PropertyBox, Index));
+    Result := AString_AssignP(Value, UI_PropertyBox_Item_GetValue(PropertyBox, Index));
   except
     Result := 0;
   end;
@@ -2099,63 +1928,36 @@ end;
 
 function Image_LoadFromFileWS(Image: AControl; const FileName: AWideString): AError; stdcall;
 begin
-  try
-    if UI_Image_LoadFromFile(Image, FileName) then
-      Result := 0
-    else
-      Result := -2;
-  except
-    Result := -1;
-  end;
+  Result := AUiImage_LoadFromFileP(Image, FileName);
 end;
 
 function Image_New(Parent: AControl): AControl; stdcall;
 begin
-  try
-    Result := UI_Image_New(Parent);
-  except
-    Result := 0;
-  end;
+  Result := AUiImage_New(Parent);
 end;
 
 { Label }
 
 function Label_New(Parent: AControl): AControl; stdcall;
-var
-  L: TLabel;
 begin
-  L := TLabel.Create(TWinControl(Parent));
-  L.Parent := TWinControl(Parent);
-  Result := AddObject(L);
+  Result := AUiLabel_New(Parent);
 end;
 
 // --- ListBox ---
 
 function ListBox_AddP(ListBox: AControl; const Text: APascalString): AInteger; stdcall;
 begin
-  try
-    Result := UI_ListBox_Add(ListBox, Text);
-  except
-    Result := -1;
-  end;
+  Result := AUiListBox_AddP(ListBox, Text);
 end;
 
 function ListBox_AddWS(ListBox: AControl; const Text: AWideString): AInteger; stdcall;
 begin
-  try
-    Result := UI_ListBox_Add(ListBox, Text);
-  except
-    Result := -1;
-  end;
+  Result := AUiListBox_AddP(ListBox, Text);
 end;
 
 function ListBox_New(Parent: AControl): AControl; stdcall;
 begin
-  try
-    Result := UI_ListBox_New(Parent);
-  except
-    Result := 0;
-  end;
+  Result := AUiListBox_New(Parent);
 end;
 
 { MainToolBar }
@@ -2656,8 +2458,8 @@ function ToolMenu_AddNewSubMenu(Parent: AToolMenu; const Name, Text: AString_Typ
 begin
   try
     Result := UI_ToolMenu_AddNewSubMenu(Parent,
-        AStrings.String_ToPascalString(Name),
-        AStrings.String_ToPascalString(Text),
+        AString_ToPascalString(Name),
+        AString_ToPascalString(Text),
         ImageId, Weight);
   except
     Result := 0;
@@ -2692,7 +2494,7 @@ begin
   try
     PageControl := AUIPageControl.UI_PageControl_New(Parent);
     UI_Control_SetAlign(PageControl, uiAlignTop);
-    AUIControls.UI_Control_SetHeight(PageControl, 60);
+    AUiControl_SetHeight(PageControl, 60);
 
     I := Length(FToolMenus);
     SetLength(FToolMenus, I + 1);
@@ -2975,172 +2777,6 @@ begin
   end;
 end;
 
-{ Image }
-
-function UI_Image_New(Parent: AControl): AControl; stdcall;
-var
-  Image: TImage;
-begin
-  Image := TImage.Create(TWinControl(Parent));
-  Image.Parent := TWinControl(Parent);
-  Result := AddObject(Image);
-end;
-
-function UI_Image_LoadFromFile(Image: AControl; const FileName: APascalString): ABoolean; stdcall;
-begin
-  try
-    TImage(Image).Picture.LoadFromFile(FileName);
-    Result := True;
-  except
-    Result := False;
-  end;
-end;
-
-{ UI_Label }
-
-function UI_Label_New(Parent: AControl): AControl; stdcall;
-begin
-  Result := Label_New(Parent);
-end;
-
-procedure UI_Label_SetFont(TextLabel: AControl; const FontName: APascalString; FontSize: AInteger); stdcall;
-begin
-  TLabel(TextLabel).Font.Name := FontName;
-  TLabel(TextLabel).Font.Size := FontSize;
-end;
-
-{ ListBox }
-
-function UI_ListBox_Add(ListBox: AControl; const Text: APascalString): Integer; stdcall;
-var
-  O: TObject;
-begin
-  O := AUIData.GetObject(ListBox);
-  if Assigned(O) and (O is TListBox) then
-    Result := TListBox(O).Items.Add(Text)
-  else if Assigned(O) and (O is TRadioGroup) then
-    Result := TRadioGroup(O).Items.Add(Text)
-  else
-    Result := -1;
-end;
-
-procedure UI_ListBox_Clear(ListBox: AControl); stdcall;
-var
-  O: TObject;
-begin
-  O := AUIData.GetObject(ListBox);
-  if Assigned(O) and (O is TListBox) then
-    TListBox(O).Clear
-  else if Assigned(O) and (O is TRadioGroup) then
-    TRadioGroup(O).Items.Clear;
-  {if (ListBox <> 0) then
-    TListBox(ListBox).Clear;}
-end;
-
-procedure UI_ListBox_DeleteItem(ListBox: AControl; Index: AInteger); stdcall;
-begin
-  TListBox(ListBox).Items.Delete(Index);
-  if (TListBox(ListBox).Items.Count > Index) then
-    TListBox(ListBox).ItemIndex := Index
-  else
-    TListBox(ListBox).ItemIndex := Index-1;
-end;
-
-function UI_ListBox_GetCount(ListBox: AControl): AInteger; stdcall;
-var
-  Obj: TObject;
-begin
-  Obj := AUIData.GetObject(ListBox);
-  if Assigned(Obj) and (Obj is TListBox) then
-    Result := TListBox(Obj).Items.Count
-  else if Assigned(Obj) and (Obj is TRadioGroup) then
-    Result := TRadioGroup(Obj).Items.Count
-  else
-    Result := 0;
-end;
-
-function UI_ListBox_GetItem(ListBox: AControl; Index: AInteger): APascalString; stdcall;
-var
-  O: TObject;
-begin
-  O := AUIData.GetObject(ListBox);
-  if Assigned(O) and (O is TListBox) then
-    Result := TListBox(O).Items[Index]
-  else if Assigned(O) and (O is TRadioGroup) then
-    Result := TRadioGroup(O).Items[Index]
-  else
-    Result := '';
-end;
-
-function UI_ListBox_GetItemIndex(ListBox: AControl): AInteger; stdcall;
-var
-  O: TObject;
-begin
-  O := AUIData.GetObject(ListBox);
-  if Assigned(O) and (O is TListBox) then
-    Result := TListBox(O).ItemIndex
-  else if Assigned(O) and (O is TRadioGroup) then
-    Result := TRadioGroup(O).ItemIndex
-  else
-    Result := 0;
-end;
-
-function UI_ListBox_New(Parent: AControl): AControl; stdcall;
-begin
-  Result := UI_ListBox_NewA(Parent, 0);
-end;
-
-function UI_ListBox_NewA(Parent: AControl; Typ: AInteger): AControl; stdcall;
-var
-  O: TObject;
-  ListBox: TListBox;
-  RadioGroup: TRadioGroup;
-  I: Integer;
-begin
-  O := AUIData.GetObject(Parent);
-  if Assigned(O) and (O is TWinControl) then
-  begin
-    if (Typ = 1) then
-    begin
-      RadioGroup := TRadioGroup.Create(TWinControl(O));
-      RadioGroup.Parent := TWinControl(O);
-      Result := AddObject(RadioGroup);
-    end
-    else
-    begin
-      ListBox := TListBox.Create(TWinControl(O));
-      ListBox.Parent := TWinControl(O);
-      ListBox.Align := alClient;
-      Result := AddObject(ListBox);
-
-      I := Length(FListBoxs);
-      SetLength(FListBoxs, I+1);
-      FListBoxs[I].ListBox := Result;
-      ListBox.OnClick := UI_.ListBoxClick;
-      FListBoxs[I].OnClick02 := nil;
-      FListBoxs[I].OnClick03 := nil;
-    end;
-  end
-  else
-    Result := 0;
-end;
-
-procedure UI_ListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: APascalString); stdcall;
-begin
-  TListBox(ListBox).Items[Index] := Value;
-end;
-
-procedure UI_ListBox_SetItemIndex(ListBox: AControl; Index: AInteger); stdcall;
-var
-  Obj: TObject;
-begin
-  Obj := AUIData.GetObject(ListBox);
-  if Assigned(Obj) and (Obj is TListBox) then
-    TListBox(Obj).ItemIndex := Index
-  else if Assigned(Obj) and (Obj is TRadioGroup) then
-    TRadioGroup(Obj).ItemIndex := Index;
-end;
-
 { UI_MainMenuItem }
 
 function UI_MainMenuItem: AMenuItem; stdcall;
@@ -3241,7 +2877,7 @@ begin
   SetLength(FReports, I + 1);
   Result := I+1;
   FReports[I].Parent := Parent;
-  FReports[I].ToolsPanel := AUIBox.UI_Box_New(Parent, 0);
+  FReports[I].ToolsPanel := AUiBox_New(Parent, 0);
   AUIControls.UI_Control_SetSize(FReports[I].ToolsPanel, 100, 25);
   AUIControls.UI_Control_SetAlign(FReports[I].ToolsPanel, uiAlignTop);
   FReports[I].TextView := UI_TextView_New(Parent, 1);

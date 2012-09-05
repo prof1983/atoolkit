@@ -2,7 +2,7 @@
 @Abstract AUiMainWindow
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2008
-@LastMod 27.08.2012
+@LastMod 05.09.2012
 }
 unit AUiMainWindow;
 
@@ -130,7 +130,7 @@ begin
 
   if (Format and MainWindowFormatCreatePanels = MainWindowFormatCreatePanels) then
   begin
-    LeftPanel := TPanel(AUIBox.UI_Box_New(AWindow(Form),0));
+    LeftPanel := TPanel(AUiBox_New(AWindow(Form),0));
     LeftPanel.Align := alLeft;
     LeftPanel.Width := 50;
     LeftPanel.DockSite := True;
@@ -142,12 +142,12 @@ begin
     LeftSplitter.Width := 3;
     LeftSplitter.Visible := False;
 
-    BasePanel := TPanel(AUIBox.UI_Box_New(AWindow(Form),0));
+    BasePanel := TPanel(AUiBox_New(AWindow(Form),0));
     BasePanel.Align := alClient;
     BasePanel.BevelInner := bvNone;
     BasePanel.BevelOuter := bvNone;
 
-      RightPanel := TPanel(AUIBox.UI_Box_New(AControl(BasePanel),0));
+      RightPanel := TPanel(AUiBox_New(AControl(BasePanel),0));
       RightPanel.Align := alRight;
       RightPanel.Width := 50;
       RightPanel.DockSite := True;
@@ -159,12 +159,12 @@ begin
       RightSplitter.Width := 3;
       RightSplitter.Visible := False;
 
-      MainPanel := TPanel(AUIBox.UI_Box_New(AControl(BasePanel),0));
+      MainPanel := TPanel(AUiBox_New(AControl(BasePanel),0));
       MainPanel.Align := alClient;
       MainPanel.BevelInner := bvNone;
       MainPanel.BevelOuter := bvNone;
 
-        BottomPanel := TPanel(AUIBox.UI_Box_New(AControl(MainPanel),0));
+        BottomPanel := TPanel(AUiBox_New(AControl(MainPanel),0));
         BottomPanel.Align := alBottom;
         BottomPanel.Height := 50;
         BottomPanel.DockSite := True;

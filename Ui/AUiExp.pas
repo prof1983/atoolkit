@@ -9,7 +9,8 @@ unit AUiExp;
 interface
 
 uses
-  AUi, AUiControls, AUiDialogs, AUiEdit, AUiGrids, AUiInit, AUiMain, AUiMenus, AUiSpinEdit;
+  AUi, AUiBox, AUiControls, AUiDialogs, AUiEdit, AUiGrids, AUiImages, AUiInit,
+  AUiLabels, AUiListBox, AUiMain, AUiMenus, AUiSpinEdit;
 
 exports
   //A_UI_ApplicationHandle,
@@ -32,6 +33,8 @@ exports
   AUi_ShellExecuteA,
   AUi_ShowHelp,
   AUi_Shutdown,
+
+  AUiBox_New,
 
   AUiControl_Free,
   AUiControl_FreeAndNil,
@@ -98,10 +101,22 @@ exports
   AUiGrid_SetDataSource,
   AUiGrid_SetRowCount,
 
-  AUI.Label_New name 'A_UI_Label_New',
+  AUiImage_LoadFromFile,
+  AUiImage_LoadFromFileA,
+  AUiImage_New,
 
-  UI_ListBox_Add name 'A_UI_ListBox_Add',
-  UI_ListBox_Clear name 'A_UI_ListBox_Clear',
+  AUiLabel_New,
+
+  AUiListBox_Add,
+  AUiListBox_Clear,
+  AUiListBox_DeleteItem,
+  AUiListBox_GetCount,
+  AUiListBox_GetItem,
+  AUiListBox_GetItemIndex,
+  AUiListBox_New,
+  AUiListBox_New2,
+  AUiListBox_SetItem,
+  AUiListBox_SetItemIndex,
 
   AUI.MainToolBar name 'A_UI_MainToolBar',
   UI_MainTrayIcon name 'A_UI_MainTrayIcon',

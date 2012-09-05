@@ -2,7 +2,7 @@
 @Abstract AStrings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.05.2011
-@LastMod 10.08.2012
+@LastMod 05.09.2012
 }
 unit AStrings;
 
@@ -11,6 +11,14 @@ interface
 uses
   SysUtils,
   ABase;
+
+// --- AStr ---
+
+function AStr_AssignP(S: AStr; const Source: APascalString; MaxLen: AInt): AError;
+
+function AStr_GetLength(S: AStr): AInt;
+
+function AStr_ToPascalString(S: AStr): APascalString;
 
 // --- AString ---
 
@@ -239,9 +247,24 @@ end;
 
 // --- AStr ---
 
+function AStr_AssignP(S: AStr; const Source: APascalString; MaxLen: AInt): AError;
+begin
+  try
+    StrPLCopy(S, AnsiString(Source), MaxLen);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
 function AStr_GetLength(S: AStr): AInt;
 begin
   Result := StrLen(S);
+end;
+
+function AStr_ToPascalString(S: AStr): APascalString;
+begin
+  Result := AnsiString(S);
 end;
 
 // --- AString ---

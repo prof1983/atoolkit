@@ -2,7 +2,7 @@
 @Abstract ASystem data
 @Author Prof1983 <prof1983@ya.ru>
 @Created 29.05.2011
-@LastMod 24.07.2012
+@LastMod 05.09.2012
 }
 unit ASystemData;
 
@@ -40,8 +40,10 @@ var
   FUrl: APascalString;
   FOnProcessMessages02: AProc02;
   FOnProcessMessages03: AProc03;
-  FOnShowError: TAShowErrorWSProc;
-  FOnShowMessage: TAShowMessageWSProc;
+  FOnShowErrorA: AShowErrorA_Proc;
+  FOnShowErrorWS: TAShowErrorWSProc;
+  FOnShowMessageA: AShowMessageA_Proc;
+  FOnShowMessageWS: TAShowMessageWSProc;
   {$IFDEF USE_EVENTS}
   FOnAfterRunEvent: AEvent;
   FOnBeforeRunEvent: AEvent;

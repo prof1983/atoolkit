@@ -1,8 +1,8 @@
 {**
-@abstract ABaseTypes
-@author Prof1983 <prof1983@ya.ru>
-@created 23.06.2011
-@lastmod 20.07.2012
+@Abstract ABaseTypes
+@Author Prof1983 <prof1983@ya.ru>
+@Created 23.06.2011
+@LastMod 05.09.2012
 }
 unit ABaseTypes;
 
@@ -82,6 +82,9 @@ const
   L_USERICON = ALogIconUser;}
 
 type
+  AShowErrorA_Proc = function(Caption, UserMessage, ExceptMessage: AStr): AError; stdcall;
+  AShowMessageA_Proc = function(Text, Caption: AStr; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+
   // TAShowErrorProc
   TAShowErrorWSProc = procedure(const Caption, UserMessage, ExceptMessage: AWideString); stdcall;
   // TAShowMessageProc

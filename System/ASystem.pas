@@ -2,7 +2,7 @@
 @Abstract ASystem function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.08.2009
-@LastMod 28.08.2012
+@LastMod 05.09.2012
 }
 unit ASystem;
 
@@ -1072,35 +1072,12 @@ end;
 
 function ProcessMessages(): AError; stdcall;
 begin
-  if Assigned(FOnProcessMessages02) then
-  begin
-    try
-      FOnProcessMessages02;
-      Result := 0;
-    except
-      Result := -1;
-    end;
-    Exit;
-  end;
-
-  if not(Assigned(FOnProcessMessages03)) then
-  begin
-    Result := 1;
-    Exit;
-  end;
-  try
-    FOnProcessMessages03;
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := ASystem_ProcessMessages();
 end;
 
 procedure ProcessMessages02(); stdcall;
 begin
-  ProcessMessages();
-  {if Assigned(FOnProcessMessages) then
-    FOnProcessMessages;}
+  ASystem_ProcessMessages();
 end;
 
 { --- }
@@ -1536,12 +1513,12 @@ end;
 
 procedure SetOnShowError(Value: TAShowErrorWSProc); stdcall;
 begin
-  FOnShowError := Value;
+  FOnShowErrorWS := Value;
 end;
 
 procedure SetOnShowMessage(Value: TAShowMessageWSProc); stdcall;
 begin
-  FOnShowMessage := Value;
+  FOnShowMessageWS := Value;
 end;
 
 function ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; stdcall;
@@ -1568,25 +1545,12 @@ end;
 
 function ShowError(const UserMessage, ExceptMessage: AString_Type): AError; stdcall;
 begin
-  try
-    if Assigned(FOnShowError) then
-      FOnShowError(
-          FTitle,
-          AStrings.String_ToPascalString(UserMessage),
-          AStrings.String_ToPascalString(ExceptMessage));
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := ASystem_ShowError(UserMessage, ExceptMessage);
 end;
 
 procedure ShowError02(const UserMessage, ExceptMessage: AWideString); stdcall;
 begin
-  try
-    if Assigned(FOnShowError) then
-      FOnShowError(FTitle, UserMessage, ExceptMessage);
-  except
-  end;
+  ASystem_ShowErrorP(UserMessage, ExceptMessage);
 end;
 
 function ShowMessage(const Msg: AString_Type): ADialogBoxCommands; stdcall;
@@ -1601,40 +1565,22 @@ end;
 
 function ShowMessage2P(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
-  Result := ShowMessageExP(Text, Caption, Flags);
+  Result := ASystem_ShowMessageExP(Text, Caption, Flags);
 end;
 
 function ShowMessageA(const Msg: PAnsiChar): ADialogBoxCommands; stdcall;
-var
-  S: AnsiString;
 begin
-  try
-    S := Msg;
-    Result := System_ShowMessage(S);
-  except
-    Result := -1;
-  end;
+  Result := ASystem_ShowMessageA(Msg);
 end;
 
 function ShowMessageEx(const Text, Caption: AString_Type; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
-  try
-    Result := System_ShowMessageEx(
-        AStrings.String_ToPascalString(Text),
-        AStrings.String_ToPascalString(Caption),
-        Flags);
-  except
-    Result := -1;
-  end;
+  Result := ASystem_ShowMessageEx(Text, Caption, Flags);
 end;
 
 function ShowMessageExA(const Text, Caption: PAnsiChar; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
-  try
-    Result := System_ShowMessageEx(Text, Caption, Flags);
-  except
-    Result := -1;
-  end;
+  Result := ASystem_ShowMessageExA(Text, Caption, Flags);
 end;
 
 function ShowMessageExP(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;

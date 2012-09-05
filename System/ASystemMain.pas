@@ -2,7 +2,7 @@
 @Abstract ASystem
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.09.2011
-@LastMod 28.08.2012
+@LastMod 05.09.2012
 }
 unit ASystemMain;
 
@@ -35,6 +35,8 @@ function ASystem_GetDataDirectoryPathP(): APascalString; stdcall;
 
 function ASystem_GetExePathP(): APascalString; stdcall;
 
+function ASystem_GetProgramNameP(): APascalString; stdcall;
+
 function ASystem_GetTitleP(): APascalString; stdcall;
 
 function ASystem_Init(): AError; stdcall;
@@ -43,11 +45,31 @@ function ASystem_Prepare3P(const Title, ProgramName: APascalString; ProgramVersi
     const ProductName: APascalString; ProductVersion: AVersion;
     const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString): AError; stdcall;
 
+function ASystem_ProcessMessages(): AError; stdcall;
+
+function ASystem_SetOnProcessMessages(Value: AProc): AError; stdcall;
+
+function ASystem_SetOnShowErrorA(Value: AShowErrorA_Proc): AError; stdcall;
+
+function ASystem_SetOnShowMessageA(Value: AShowMessageA_Proc): AError; stdcall;
+
 function ASystem_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; stdcall;
 
 function ASystem_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
 
+function ASystem_ShowError(const UserMessage, ExceptMessage: AString_Type): AError; stdcall;
+
+function ASystem_ShowErrorA(UserMessage, ExceptMessage: AStr): AError; stdcall;
+
+function ASystem_ShowErrorP(const UserMessage, ExceptMessage: APascalString): AError; stdcall;
+
 function ASystem_ShowMessage(const Msg: AString_Type): ADialogBoxCommands; stdcall;
+
+function ASystem_ShowMessageA(Msg: AStr): ADialogBoxCommands; stdcall;
+
+function ASystem_ShowMessageEx(const Text, Caption: AString_Type; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+
+function ASystem_ShowMessageExA(Text, Caption: AStr; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 
 function ASystem_ShowMessageExP(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 
@@ -99,6 +121,11 @@ begin
   Result := FExePath;
 end;
 
+function ASystem_GetProgramNameP(): APascalString;
+begin
+  Result := FProgramName;
+end;
+
 function ASystem_GetTitleP(): APascalString;
 begin
   Result := FTitle;
@@ -115,6 +142,49 @@ function ASystem_Prepare3P(const Title, ProgramName: APascalString; ProgramVersi
 begin
   Result := Prepare3WS(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
       CompanyName, Copyright, Url, Description, DataPath, ConfigPath);
+end;
+
+function ASystem_ProcessMessages(): AError;
+begin
+  if Assigned(FOnProcessMessages02) then
+  begin
+    try
+      FOnProcessMessages02;
+      Result := 0;
+    except
+      Result := -1;
+    end;
+    Exit;
+  end;
+
+  if Assigned(FOnProcessMessages03) then
+  try
+    FOnProcessMessages03;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+
+  Result := 1;
+  Exit;
+end;
+
+function ASystem_SetOnProcessMessages(Value: AProc): AError;
+begin
+  FOnProcessMessages03 := Value;
+  Result := 0;
+end;
+
+function ASystem_SetOnShowErrorA(Value: AShowErrorA_Proc): AError;
+begin
+  FOnShowErrorA := Value;
+  Result := 0;
+end;
+
+function ASystem_SetOnShowMessageA(Value: AShowMessageA_Proc): AError;
+begin
+  FOnShowMessageA := Value;
+  Result := 0;
 end;
 
 function ASystem_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger;
@@ -140,10 +210,79 @@ begin
       SW_SHOW);
 end;
 
+function ASystem_ShowError(const UserMessage, ExceptMessage: AString_Type): AError; stdcall;
+begin
+  try
+    Result := ASystem_ShowErrorP(
+          AString_ToPascalString(UserMessage),
+          AString_ToPascalString(ExceptMessage));
+  except
+    Result := -1;
+  end;
+end;
+
+function ASystem_ShowErrorA(UserMessage, ExceptMessage: AStr): AError; stdcall;
+begin
+  try
+    Result := ASystem_ShowErrorP(AnsiString(UserMessage), AnsiString(ExceptMessage));
+  except
+    Result := -1;
+  end;
+end;
+
+function ASystem_ShowErrorP(const UserMessage, ExceptMessage: APascalString): AError; stdcall;
+begin
+  try
+    if Assigned(FOnShowErrorA) then
+    begin
+      FOnShowErrorA(AStr(AnsiString(FTitle)), AStr(AnsiString(UserMessage)), AStr(AnsiString(ExceptMessage)));
+      Result := 0;
+    end;
+    if Assigned(FOnShowErrorWS) then
+    begin
+      FOnShowErrorWS(FTitle, UserMessage, ExceptMessage);
+      Result := 0;
+    end;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
 function ASystem_ShowMessage(const Msg: AString_Type): ADialogBoxCommands;
 begin
   try
-    Result := System_ShowMessage(AStrings.String_ToPascalString(Msg));
+    Result := ASystem_ShowMessageP(AString_ToPascalString(Msg));
+  except
+    Result := -1;
+  end;
+end;
+
+function ASystem_ShowMessageA(Msg: AStr): ADialogBoxCommands;
+begin
+  try
+    Result := ASystem_ShowMessageP(AnsiString(Msg));
+  except
+    Result := -1;
+  end;
+end;
+
+function ASystem_ShowMessageEx(const Text, Caption: AString_Type; Flags: AMessageBoxFlags): ADialogBoxCommands;
+begin
+  try
+    Result := ASystem_ShowMessageExP(
+        AString_ToPascalString(Text),
+        AString_ToPascalString(Caption),
+        Flags);
+  except
+    Result := -1;
+  end;
+end;
+
+function ASystem_ShowMessageExA(Text, Caption: AStr; Flags: AMessageBoxFlags): ADialogBoxCommands;
+begin
+  try
+    Result := ASystem_ShowMessageExP(AnsiString(Text), AnsiString(Caption), Flags);
   except
     Result := -1;
   end;
@@ -152,7 +291,17 @@ end;
 function ASystem_ShowMessageExP(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands;
 begin
   try
-    Result := System_ShowMessageEx(Text, Caption, Flags);
+    if Assigned(FOnShowMessageA) then
+    begin
+      Result := FOnShowMessageA(AStr(AnsiString(Text)), AStr(AnsiString(Caption)), Flags);
+      Exit;
+    end;
+    if Assigned(FOnShowMessageWS) then
+    begin
+      Result := FOnShowMessageWS(Text, Caption, Flags);
+      Exit;
+    end;
+    Result := 0;
   except
     Result := -1;
   end;
@@ -160,29 +309,17 @@ end;
 
 function ASystem_ShowMessageExWS(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands;
 begin
-  try
-    Result := System_ShowMessageEx(Text, Caption, Flags);
-  except
-    Result := -1;
-  end;
+  Result := ASystem_ShowMessageExP(Text, Caption, Flags);
 end;
 
 function ASystem_ShowMessageP(const Msg: APascalString): ADialogBoxCommands;
 begin
-  try
-    Result := System_ShowMessage(Msg);
-  except
-    Result := -1;
-  end;
+  Result := ASystem_ShowMessageExP(Msg, FTitle, MB_OK);
 end;
 
 function ASystem_ShowMessageWS(const Msg: AWideString): ADialogBoxCommands;
 begin
-  try
-    Result := System_ShowMessage(Msg);
-  except
-    Result := -1;
-  end;
+  Result := ASystem_ShowMessageP(Msg);
 end;
 
 {$IFDEF USE_RUNTIME}
@@ -196,15 +333,12 @@ end;
 
 function System_ShowMessage(const Msg: AWideString): ADialogBoxCommands;
 begin
-  Result := System_ShowMessageEx(Msg, FTitle, MB_OK);
+  Result := ASystem_ShowMessageP(Msg);
 end;
 
 function System_ShowMessageEx(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands;
 begin
-  if Assigned(FOnShowMessage) then
-    Result := FOnShowMessage(Text, Caption, Flags)
-  else
-    Result := 0;
+  Result := ASystem_ShowMessageExP(Text, Caption, Flags);
 end;
 
 end.

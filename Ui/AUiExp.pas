@@ -30,7 +30,7 @@ exports
   AUi_SetProgramState,
   AUi_ShellExecute,
   AUi_ShellExecuteA,
-  //AUI.ShowHelp name 'A_UI_ShowHelp',
+  AUi_ShowHelp,
   AUi_Shutdown,
 
   AUiControl_Free,
@@ -86,9 +86,12 @@ exports
   UI_Grid_SetColumnWidth name 'A_UI_Grid_SetColumnWidth',
   UI_Grid_SetColumnWidthA name 'A_UI_Grid_SetColumnWidthA',
   UI_Grid_SetDataSource name 'A_UI_Grid_SetDataSource',
+
   AUI.Label_New name 'A_UI_Label_New',
+
   UI_ListBox_Add name 'A_UI_ListBox_Add',
   UI_ListBox_Clear name 'A_UI_ListBox_Clear',
+
   AUI.MainToolBar name 'A_UI_MainToolBar',
   UI_MainTrayIcon name 'A_UI_MainTrayIcon',
   AUI.MainWindow name 'A_UI_MainWindow',

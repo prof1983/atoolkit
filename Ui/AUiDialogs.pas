@@ -76,6 +76,9 @@ function AUi_ExecuteInputQueryP(const Caption, Prompt: APascalString;
 function AUi_ExecuteLoginDialogP(var UserName, Password: APascalString;
     IsSave: ABoolean): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUi_ExecuteMessageDialog1A(Text, Caption: AStr;
+    Flags: AMessageBoxFlags): ADialogBoxCommands; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUi_ExecuteMessageDialog1P(const Text, Caption: APascalString;
     Flags: AMessageBoxFlags): ADialogBoxCommands; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -574,6 +577,12 @@ begin
     Result := False;
   end;
   {$ENDIF}
+end;
+
+function AUi_ExecuteMessageDialog1A(Text, Caption: AStr;
+    Flags: AMessageBoxFlags): ADialogBoxCommands;
+begin
+  Result := AUi_ExecuteMessageDialog1P(AnsiString(Text), AnsiString(Caption), Flags);
 end;
 
 function AUi_ExecuteMessageDialog1P(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands;

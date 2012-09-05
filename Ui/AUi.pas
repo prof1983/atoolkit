@@ -1149,30 +1149,17 @@ end;
 
 function ShowHelp(): AError; stdcall;
 begin
-  try
-    UI_ShowHelp();
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUi_ShowHelp();
 end;
 
 procedure ShowHelp02(); stdcall;
 begin
-  try
-    UI_ShowHelp();
-  except
-  end;
+  AUi_ShowHelp();
 end;
 
 function ShowHelp2WS(const FileName: AWideString): AError; stdcall;
 begin
-  try
-    UI_ShowHelp2(FileName);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUi_ShowHelp2WS(FileName);
 end;
 
 function Shutdown(): AError; stdcall;

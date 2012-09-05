@@ -2,7 +2,7 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 03.09.2012
+@LastMod 05.09.2012
 }
 unit AUiMain;
 
@@ -12,7 +12,7 @@ interface
 
 uses
   Controls, Forms, ShellApi, SysUtils, Windows,
-  ABase, ABaseTypes, ARuntimeMain, AStrings, ASystem, AUtils,
+  ABase, ABaseTypes, ARuntimeMain, AStrings, ASystemMain, AUtilsMain,
   AUiBase, AUiData, AUiDialogs, AUiEventsObj, AUiMainWindow;
 
 // --- AUi ---
@@ -41,13 +41,22 @@ function AUi_ShellExecuteA(Operation, FileName, Parameters, Directory: AStr): AI
 
 function AUi_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
+{** Отображает справочную информацию }
+function AUi_ShowHelp(): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Отображает справочную информацию }
+function AUi_ShowHelp2P(const FileName: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Отображает справочную информацию }
+function AUi_ShowHelp2WS(const FileName: AWideString): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUi_Shutdown(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 // --- UI ---
 
-procedure UI_ShowHelp();
+procedure UI_ShowHelp(); deprecated; // Use AUi_ShowHelp()
 
-procedure UI_ShowHelp2(const FileName: string);
+procedure UI_ShowHelp2(const FileName: string); deprecated; // Use AUi_ShowHelp2()
 
 implementation
 
@@ -70,14 +79,14 @@ begin
   Result := 0;
 end;
 
-procedure DoShowError(const Caption, UserMessage, ExceptMessage: AWideString); stdcall;
+function DoShowErrorA(Caption, UserMessage, ExceptMessage: AStr): AError; stdcall;
 begin
-  AUi_ExecuteErrorDialogP(Caption, UserMessage, ExceptMessage);
+  Result := AUi_ExecuteErrorDialogA(Caption, UserMessage, ExceptMessage);
 end;
 
-function DoShowMessage(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+function DoShowMessageA(Text, Caption: AStr; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
-  Result := AUi_ExecuteMessageDialog1P(Text, Caption, Flags);
+  Result := AUi_ExecuteMessageDialog1A(Text, Caption, Flags);
 end;
 
 function DoShutdown(): AInteger; stdcall;
@@ -104,11 +113,12 @@ begin
   {$ELSE}
     FMainWindow := AddObject(MainForm);
     MainForm.Name := 'MainForm';
-    MainForm.Caption := ASystem.Info_GetProgramNameP;
-    _MainWindow_Create(MainForm, MainWindowFormatCreateAll, ASystem.GetConfig);
+    MainForm.Caption := ASystem_GetProgramNameP();
+    _MainWindow_Create(MainForm, MainWindowFormatCreateAll, ASystem_GetConfig());
     MainForm.OnCloseQuery := UI_.MainFormCloseQuery;
   {$ENDIF}
   AddObject(MainForm.Menu);
+  Result := 0;
 end;
 
 function AUi_GetMainMenuItem(): AMenuItem;
@@ -154,7 +164,7 @@ begin
     Exit;
   end;
 
-  if (ASystem.Init() < 0) then
+  if (ASystem_Init() < 0) then
   begin
     Result := -3;
     Exit;
@@ -170,10 +180,10 @@ begin
   {$IFDEF A02}
   ASystem.SetOnProcessMessages02(UI_ProcessMessages02);
   {$ELSE}
-  ASystem.SetOnProcessMessages(DoProcessMessages);
+  ASystem_SetOnProcessMessages(DoProcessMessages);
   {$ENDIF A02}
-  ASystem.SetOnShowError(DoShowError);
-  ASystem.SetOnShowMessage(DoShowMessage);
+  ASystem_SetOnShowErrorA(DoShowErrorA);
+  ASystem_SetOnShowMessageA(DoShowMessageA);
 
   ARuntime_SetOnShutdown(DoShutdown);
   {$IFDEF A01}
@@ -191,14 +201,14 @@ begin
   {$ENDIF}
 
   Application.Initialize();
-  Application.Title := ASystem.Info_GetTitleWS();
-  S := ASystem.Info_GetDataDirectoryPathP() + ASystem.Info_GetProgramNameWS() + '.ico';
+  Application.Title := ASystem_GetTitleP();
+  S := ASystem_GetDataDirectoryPathP() + ASystem_GetProgramNameP() + '.ico';
 
   if SysUtils.FileExists(S) then
   try
     Application.Icon.LoadFromFile(S);
   except
-    ASystem.ShowMessageP('Ошибка при загрузке изображения '+S);
+    ASystem_ShowMessageP('Ошибка при загрузке изображения '+S);
   end;
 
   try
@@ -207,7 +217,7 @@ begin
     else
       AUi_CreateMainForm();
   except
-    ASystem.ShowMessageP('Произошла ошибка при создании главного окна');
+    ASystem_ShowMessageP('Произошла ошибка при создании главного окна');
     Result := -100;
     Exit;
   end;
@@ -233,6 +243,7 @@ end;
 function AUi_SetHideOnClose(Value: ABoolean): AError;
 begin
   FHideOnClose := Value;
+  Result := 0;
 end;
 
 procedure AUi_SetHideOnClose_Old(Value: ABoolean);
@@ -270,7 +281,8 @@ end;
 
 function AUi_ShellExecuteA(Operation, FileName, Parameters, Directory: AStr): AInt;
 begin
-  Result := AUi_ShellExecuteP(Operation, FileName, Parameters, Directory);
+  Result := AUi_ShellExecuteP(AnsiString(Operation), AnsiString(FileName),
+      AnsiString(Parameters), AnsiString(Directory));
 end;
 
 function AUi_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger;
@@ -278,6 +290,33 @@ begin
   {$IFNDEF UNIX}
   Result := ShellApi.ShellExecute(0{Handle}, PChar(string(Operation)), PChar(string(FileName)), PChar(string(Parameters)), PChar(string(Directory)), SW_SHOW);
   {$ENDIF}
+end;
+
+function AUi_ShowHelp(): AError;
+begin
+  try
+    Result := AUi_ShowHelp2P(ASystem_GetExePathP() + AUtils_ChangeFileExtP(ASystem_GetProgramNameP(), '.hlp'));
+  except
+    Result := -1;
+  end;
+end;
+
+function AUi_ShowHelp2P(const FileName: APascalString): AError;
+begin
+  try
+    {$IFNDEF UNIX}
+    Application.HelpFile := FileName;
+    Application.HelpCommand(HELP_FINDER, 1);
+    {$ENDIF}
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUi_ShowHelp2WS(const FileName: AWideString): AError;
+begin
+  Result := AUi_ShowHelp2P(FileName);
 end;
 
 function AUi_Shutdown(): AError;
@@ -294,15 +333,12 @@ end;
 
 procedure UI_ShowHelp();
 begin
-  UI_ShowHelp2(ASystem.Info_GetDirectoryPathP + AUtils_ChangeFileExtP(ASystem.Info_GetProgramNameP, '.hlp'));
+  AUi_ShowHelp();
 end;
 
 procedure UI_ShowHelp2(const FileName: string);
 begin
-{$IFNDEF UNIX}
-  Application.HelpFile := FileName;
-  Application.HelpCommand(HELP_FINDER, 1);
-{$ENDIF}
+  AUi_ShowHelp2P(FileName);
 end;
 
 end.

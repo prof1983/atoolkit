@@ -2,9 +2,9 @@
 @Abstract AUi calendar
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.12.2009
-@LastMod 26.07.2012
+@LastMod 06.09.2012
 }
-unit AUiCalendar;
+unit AUiCalendarObj;
 
 interface
 

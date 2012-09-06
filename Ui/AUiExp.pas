@@ -9,14 +9,16 @@ unit AUiExp;
 interface
 
 uses
-  AUi, AUiBox, AUiControls, AUiDialogs, AUiEdit, AUiGrids, AUiImages, AUiInit,
-  AUiLabels, AUiListBox, AUiMain, AUiMenus, AUiSpinEdit;
+  AUi, AUiBox, AUiCalendar, AUiComboBox, AUiControls, AUiDialogs, AUiEdit,
+  AUiGrids, AUiImages, AUiInit, AUiLabels, AUiListBox,
+  AUiMain, AUiMainWindow, AUiMainWindow2, AUiMenus, AUiPageControl, AUiSpinEdit;
 
 exports
   //A_UI_ApplicationHandle,
   //A_UI_HideOnClose,
   AUi_CreateMainForm,
   AUi_GetMainMenuItem,
+  AUi_GetMainToolBar,
   AUi_GetMainTrayIcon,
   AUi_GetMainWindow,
   AUi_Init,
@@ -28,13 +30,27 @@ exports
   //UI_ProcessMessages name 'A_UI_ProcessMessages',
   AUi_Run,
   AUi_SetHideOnClose,
+  AUi_SetMainToolBar,
   AUi_SetProgramState,
+  AUi_SetMainWindow,
+  AUi_SetMainWindow2,
   AUi_ShellExecute,
   AUi_ShellExecuteA,
   AUi_ShowHelp,
   AUi_Shutdown,
 
   AUiBox_New,
+
+  AUiCalendar_GetDate,
+  AUiCalendar_New,
+  AUiCalendar_SetMonth,
+
+  AUiComboBox_Add,
+  AUiComboBox_AddA,
+  AUiComboBox_GetItemIndex,
+  AUiComboBox_New,
+  AUiComboBox_New2,
+  AUiComboBox_SetItemIndex,
 
   AUiControl_Free,
   AUiControl_FreeAndNil,
@@ -118,12 +134,11 @@ exports
   AUiListBox_SetItem,
   AUiListBox_SetItemIndex,
 
-  AUI.MainToolBar name 'A_UI_MainToolBar',
-  UI_MainTrayIcon name 'A_UI_MainTrayIcon',
-  AUI.MainWindow name 'A_UI_MainWindow',
-  AUI.MainWindow_AddMenuItem name 'A_UI_MainWindow_AddMenuItem',
-  AUI.MainWindow_AddMenuItem2 name 'A_UI_MainWindow_AddMenuItem2',
-  AUI.MainWindow_Set name 'A_UI_MainWindow_Set',
+  AUiMainWindow_AddMenuItem,
+  AUiMainWindow_AddMenuItemA,
+  AUiMainWindow_GetLeftContainer,
+  AUiMainWindow_GetMainContainer,
+  AUiMainWindow_GetRightContainer,
 
   AUiMenu_AddItem0,
   AUiMenu_AddItem1,
@@ -132,8 +147,10 @@ exports
   AUiMenu_GetItems,
   AUiMenu_New,
 
-  AUI.PageControl_AddPage name 'A_UI_PageControl_AddPage',
-  AUI.PageControl_New name 'A_UI_PageControl_New',
+  AUiPageControl_AddPage,
+  AUiPageControl_AddPageA,
+  AUiPageControl_New,
+
   UI_SpinButton_New name 'A_UI_SpinButton_New',
 
   AUiSpinEdit_New,

@@ -2,7 +2,7 @@
 @Abstract AUi controls functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2011
-@LastMod 22.08.2012
+@LastMod 06.09.2012
 }
 unit AUiControlsA;
 
@@ -10,7 +10,7 @@ interface
 
 uses
   ComCtrls,
-  ABase, AUiBase, AUiCalendar, AUiData, AUiEventsObj;
+  ABase, AUiBase, AUiCalendarObj, AUiData, AUiEventsObj;
 
 // --- AUiControl ---
 

@@ -2,7 +2,7 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 05.09.2012
+@LastMod 06.09.2012
 }
 unit AUiMain;
 
@@ -21,8 +21,11 @@ function AUi_CreateMainForm(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_GetMainMenuItem(): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUi_GetMainToolBar(): AControl; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUi_GetMainTrayIcon(): ATrayIcon; {$ifdef AStdCall}stdcall;{$endif}
 
+{** Возвращает идентификатор главного окна программы }
 function AUi_GetMainWindow(): AWindow; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_Init(): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -32,6 +35,8 @@ function AUi_Run(): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 function AUi_SetHideOnClose(Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 procedure AUi_SetHideOnClose_Old(Value: ABoolean); {$ifdef AStdCall}stdcall;{$endif}
+
+function AUi_SetMainToolBar(ToolBar: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_SetProgramState(State: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -124,6 +129,11 @@ end;
 function AUi_GetMainMenuItem(): AMenuItem;
 begin
   Result := miMain;
+end;
+
+function AUi_GetMainToolBar(): AControl;
+begin
+  Result := _MainWindow_ToolBar;
 end;
 
 function AUi_GetMainTrayIcon(): ATrayIcon;
@@ -249,6 +259,16 @@ end;
 procedure AUi_SetHideOnClose_Old(Value: ABoolean);
 begin
   FHideOnClose := Value;
+end;
+
+function AUi_SetMainToolBar(ToolBar: AControl): AError;
+begin
+  try
+    _MainWindow_ToolBar_Set(ToolBar);
+    Result := 0;
+  except
+    Result := -1;
+  end;
 end;
 
 function AUi_SetProgramState(State: AInteger): AError;

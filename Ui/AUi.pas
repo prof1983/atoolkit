@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 05.09.2012
+@LastMod 06.09.2012
 }
 unit AUi;
 
@@ -38,8 +38,6 @@ uses
   AUiPageControl, AUiReports, AUiToolBar, AUiToolMenu, AUiTreeView, AUiWindows;
 
 // ---
-
-function AUi_MainWindow_AddMenuItem(const ParentItemName, Name, Text: AString_Type; OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem; stdcall;
 
 function AUi_PropertyBox_Add(PropertyBox: AControl; const Caption: AString_Type): Integer; stdcall;
 function AUi_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: AString_Type; EditWidth: AInteger): AInteger; stdcall;
@@ -687,23 +685,6 @@ function Window_ShowModal(Window: AWindow): ABoolean; stdcall;
 // Заглушка. Реальная функция находится в .\Modules\AUI.pas.
 function UI_Boot(): AError;
 
-// --- UI_Button ---
-
-// Use Button_New()
-function UI_Button_New(Parent: AControl): AButton; stdcall; deprecated;
-// Use Button_SetKind()
-procedure UI_Button_SetKind(Button: AButton; Kind: TAUIButtonKind); stdcall; deprecated;
-
-function UI_Calendar_GetDate(Calendar: AControl): TDateTime; stdcall;
-function UI_Calendar_New(Parent: AControl): AControl; stdcall;
-procedure UI_Calendar_SetMonth(Calendar: AControl; Value: AInteger); stdcall;
-
-function UI_ComboBox_Add(ComboBox: AControl; const Value: APascalString): AInteger; stdcall;
-function UI_ComboBox_GetItemIndex(ComboBox: AControl): AInteger; stdcall;
-function UI_ComboBox_New(Parent: AControl): AControl; stdcall;
-function UI_ComboBox_NewA(Parent: AControl; Left, Top, Width: AInteger): AControl; stdcall;
-procedure UI_ComboBox_SetItemIndex(ComboBox: AControl; Value: AInteger); stdcall;
-
 function UI_DataSource_New: PADataSource; stdcall;
 //procedure UI_DataSource_SetDataSet(DataSource: PADataSource; Value: PADataSet); stdcall;
 procedure UI_DataSource_SetOnDataChange(DataSource: PADataSource; OnDataChange: ACallbackProc02); stdcall;
@@ -711,19 +692,6 @@ procedure UI_DataSource_SetOnDataChange(DataSource: PADataSource; OnDataChange: 
 // ---
 
 function UI_MainTrayIcon: ATrayIcon; stdcall;
-
-// Use Menu_GetItems()
-function UI_Menu_GetItems(Menu: AMenu): AMenuItem; stdcall; deprecated;
-
-// Use Menu_New()
-function UI_Menu_New(MenuType: AInteger): AMenu; stdcall; deprecated;
-
-{ Создает новую вкладку. Возврашает:
-  0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
-// Use PageControl_AddPage()
-function UI_PageControl_AddPage(PageControl: AControl; const Name, Text: APascalString): AControl; stdcall; deprecated;
-// Use PageControl_New()
-function UI_PageControl_New(Parent: AControl): AControl; stdcall; deprecated;
 
 function UI_ProgressBar_New(Parent: AControl; Max: AInteger): AControl;
 function UI_ProgressBar_StepIt(ProgressBar: AControl): AInteger; 
@@ -1098,14 +1066,6 @@ begin
   end;
 end;
 
-// --- AUi_MainWindow ---
-
-function AUi_MainWindow_AddMenuItem(const ParentItemName, Name, Text: AString_Type;
-    OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem;
-begin
-  Result := AUI.MainWindow_AddMenuItem2(ParentItemName, Name, Text, OnClick, ImageID, Weight);
-end;
-
 // --- AUi_PropertyBox ---
 
 function AUi_PropertyBox_Add(PropertyBox: AControl; const Caption: AString_Type): Integer;
@@ -1284,76 +1244,17 @@ end;
 
 function Calendar_GetDate(Calendar: AControl): TDateTime; stdcall;
 begin
-  try
-    Result := UI_Calendar_GetDate(Calendar);
-  except
-    Result := -1;
-  end;
+  Result := AUiCalendar_GetDate(Calendar);
 end;
 
 function Calendar_New(Parent: AControl): AControl; stdcall;
 begin
-  try
-    Result := UI_Calendar_New(Parent);
-  except
-    Result := 0;
-  end;
+  Result := AUiCalendar_New(Parent);
 end;
 
 function Calendar_SetMonth(Calendar: AControl; Value: AInteger): AError; stdcall;
 begin
-  try
-    UI_Calendar_SetMonth(Calendar, Value);
-    Result := 0;
-  except
-    Result := -1;
-  end;
-end;
-
-{ ComboBox }
-
-function ComboBox_Add(ComboBox: AControl; const Value: AString_Type): AInteger; stdcall;
-begin
-  try
-    Result := UI_ComboBox_Add(ComboBox, AStrings.String_ToWideString(Value));
-  except
-    Result := -1;
-  end;
-end;
-
-function ComboBox_GetItemIndex(ComboBox: AControl): AInteger; stdcall;
-begin
-  try
-    Result := UI_ComboBox_GetItemIndex(ComboBox);
-  except
-    Result := -1;
-  end;
-end;
-
-function ComboBox_New(Parent: AControl): AControl; stdcall;
-begin
-  try
-    Result := UI_ComboBox_New(Parent);
-  except
-    Result := 0;
-  end;
-end;
-
-function ComboBox_NewA(Parent: AControl; Left, Top, Width: AInteger): AControl; stdcall;
-begin
-  try
-    Result := UI_ComboBox_NewA(Parent, Left, Top, Width);
-  except
-    Result := 0;
-  end;
-end;
-
-procedure ComboBox_SetItemIndex(ComboBox: AControl; Value: AInteger); stdcall;
-begin
-  try
-    UI_ComboBox_SetItemIndex(ComboBox, Value);
-  except
-  end;
+  Result := AUiCalendar_SetMonth(Calendar, Value);
 end;
 
 { Control }
@@ -1964,141 +1865,80 @@ end;
 
 function MainToolBar: AControl; stdcall;
 begin
-  Result := _MainWindow_ToolBar;
+  Result := AUi_GetMainToolBar();
 end;
 
 procedure MainToolBar_Set(ToolBar: AControl); stdcall;
 begin
-  _MainWindow_ToolBar_Set(ToolBar);
+  AUi_SetMainToolBar(ToolBar);
 end;
 
 { MainWindow }
 
 function MainWindow: AWindow; stdcall;
 begin
-  Result := FMainWindow;
+  Result := AUi_GetMainWindow();
 end;
 
 function MainWindow_AddMenuItem(const ParentItemName, Name, Text: APascalString;
     OnClick: ACallbackProc; ImageID, Weight: Integer): AMenuItem; stdcall;
 begin
-  try
-    Result := UI_MainWindow_AddMenuItem(ParentItemName, Name, Text, OnClick, ImageID, Weight);
-  except
-    Result := 0;
-  end;
+  Result := AUiMainWindow_AddMenuItemP(ParentItemName, Name, Text, OnClick, ImageId, Weight);
 end;
 
 function MainWindow_AddMenuItem02(const ParentItemName, Name, Text: APascalString;
     OnClick: ACallbackProc02; ImageID, Weight: AInteger): AMenuItem; stdcall;
 begin
-  try
-    Result := UI_MainWindow_AddMenuItem02(ParentItemName, Name, Text, OnClick, ImageID, Weight);
-  except
-    Result := 0;
-  end;
+  Result := AUiMainWindow_AddMenuItem02P(ParentItemName, Name, Text, OnClick, ImageId, Weight);
 end;
 
 function MainWindow_AddMenuItem03WS(const ParentItemName, Name, Text: AWideString;
     OnClick: ACallbackProc03; ImageId, Weight: AInteger): AMenuItem; stdcall;
 begin
-  try
-    Result := UI_MainWindow_AddMenuItem03(ParentItemName, Name, Text, OnClick, ImageId, Weight);
-  except
-    Result := 0;
-  end;
+  Result := AUiMainWindow_AddMenuItem03P(ParentItemName, Name, Text, OnClick, ImageId, Weight);
 end;
 
 function MainWindow_AddMenuItem2(const ParentItemName, Name, Text: AString_Type;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
 begin
-  try
-    Result := MainWindow_AddMenuItem2WS(
-        AStrings.String_ToWideString(ParentItemName),
-        AStrings.String_ToWideString(Name),
-        AStrings.String_ToWideString(Text),
-        OnClick, ImageID, Weight);
-  except
-    Result := 0;
-  end;
+  Result := AUiMainWindow_AddMenuItem(ParentItemName, Name, Text, OnClick, ImageId, Weight);
 end;
 
 function MainWindow_AddMenuItem2WS(const ParentItemName, Name, Text: AWideString;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
 begin
-  try
-    {$IFDEF A01}
-      Result := UI_MainWindow_AddMenuItem02(ParentItemName, Name, Text, OnClick, ImageID, Weight);
-    {$ELSE}
-      {$IFDEF A02}
-      Result := UI_MainWindow_AddMenuItem02(ParentItemName, Name, Text, OnClick, ImageID, Weight);
-      {$ELSE}
-      Result := UI_MainWindow_AddMenuItem03(ParentItemName, Name, Text, OnClick, ImageID, Weight);
-      {$ENDIF A02}
-    {$ENDIF A01}
-  except
-    Result := 0;
-  end;
+  Result := AUiMainWindow_AddMenuItemP(ParentItemName, Name, Text, OnClick, ImageId, Weight);
 end;
 
 function MainWindow_AddMenuItem2WS02(const ParentItemName, Name, Text: AWideString;
     OnClick: ACallbackProc02; ImageId, Weight: AInteger): AMenuItem; stdcall;
 begin
-  try
-    Result := UI_MainWindow_AddMenuItem02(ParentItemName, Name, Text, OnClick, ImageID, Weight);
-  except
-    Result := 0;
-  end;
+  Result := AUiMainWindow_AddMenuItem02P(ParentItemName, Name, Text, OnClick, ImageId, Weight);
 end;
 
 function MainWindow_GetLeftContainer(): AControl; stdcall;
 begin
-  try
-    Result := _MainWindow_GetLeftContainer();
-  except
-    Result := 0;
-  end;
+  Result := AUiMainWindow_GetLeftContainer();
 end;
 
 function MainWindow_GetMainContainer(): AControl; stdcall;
 begin
-  try
-    Result := _MainWindow_GetMainContainer();
-  except
-    Result := 0;
-  end;
+  Result := AUiMainWindow_GetMainContainer();
 end;
 
 function MainWindow_GetRightContainer(): AControl; stdcall;
 begin
-  try
-    Result := _MainWindow_GetRightContainer();
-  except
-    Result := 0;
-  end;
+  Result := AUiMainWindow_GetRightContainer();
 end;
 
 procedure MainWindow_Set(Value: AWindow); stdcall;
 begin
-  _MainWindow_Set(Value);
+  AUi_SetMainWindow(Value);
 end;
 
 procedure MainWindow_SetA(Value: AWindow; ToolBar, StatusBar: AControl; Config: AConfig); stdcall;
 begin
-  if (Value = 0) then
-    FMainWindow := 0
-  else
-  begin
-    FMainWindow := AddObject(TForm(Value));
-    if Assigned(TForm(Value).Menu) then
-    begin
-      {FMainMenu :=} AddObject(TForm(Value).Menu);
-      miMain := AMenuItem(TForm(Value).Menu.Items);
-    end;
-    //FMainWindow := Value;
-
-    _MainWindow_SetA(Value, ToolBar, StatusBar, Config);
-  end;
+  AUi_SetMainWindow2(Value, ToolBar, StatusBar, Config);
 end;
 
 // --- MenuItem ---
@@ -2212,29 +2052,17 @@ end;
 
 function PageControl_AddPage(PageControl: AControl; const Name, Text: APascalString): AControl; stdcall;
 begin
-  try
-    Result := AUIPageControl.UI_PageControl_AddPage(PageControl, Name, Text);
-  except
-    Result := 0;
-  end;
+  Result := AUiPageControl_AddPageP(PageControl, Name, Text);
 end;
 
 function PageControl_AddPageWS(PageControl: AControl; const Name, Text: AWideString): AControl; stdcall;
 begin
-  try
-    Result := AUIPageControl.UI_PageControl_AddPage(PageControl, Name, Text);
-  except
-    Result := 0;
-  end;
+  Result := AUiPageControl_AddPageP(PageControl, Name, Text);
 end;
 
 function PageControl_New(Parent: AControl): AControl; stdcall;
 begin
-  try
-    Result := AUIPageControl.UI_PageControl_New(Parent);
-  except
-    Result := 0
-  end;
+  Result := AUiPageControl_New(Parent);
 end;
 
 { ProgressBar }
@@ -2666,86 +2494,6 @@ begin
   Result := AUi_Shutdown();
 end;
 
-{ UI_Calendar }
-
-function UI_Calendar_GetDate(Calendar: AControl): TDateTime; stdcall;
-begin
-  {$IFDEF FPC}
-  Result := TCalendar(Calendar).DateTime;
-  {$ELSE}
-  Result := TCalendar(Calendar).CalendarDate;
-  {$ENDIF}
-end;
-
-function UI_Calendar_New(Parent: AControl): AControl; stdcall;
-var
-  Calendar: TCalendar;
-begin
-  Calendar := TCalendar.Create(TWinControl(Parent));
-  Calendar.Parent := TWinControl(Parent);
-  {$IFNDEF FPC}
-  Calendar.StartOfWeek := 0;
-  {$ENDIF}
-  Result := AControl(Calendar);
-end;
-
-procedure UI_Calendar_SetMonth(Calendar: AControl; Value: AInteger); stdcall;
-begin
-  {$IFNDEF FPC}
-  TCalendar(Calendar).Month := Value;
-  {$ENDIF}
-end;
-
-{ UI_Button }
-
-function UI_Button_New(Parent: AControl): AButton; stdcall;
-begin
-  Result := AUiButton_New(Parent);
-end;
-
-procedure UI_Button_SetKind(Button: AButton; Kind: TAUIButtonKind); stdcall;
-begin
-  AUiButton_SetKind(Button, Kind);
-end;
-
-{ UI_ComboBox }
-
-function UI_ComboBox_Add(ComboBox: AControl; const Value: APascalString): AInteger; stdcall;
-begin
-  Result := TComboBox(ComboBox).Items.Add(Value);
-end;
-
-function UI_ComboBox_GetItemIndex(ComboBox: AControl): AInteger; stdcall;
-begin
-  Result := TComboBox(ComboBox).ItemIndex;
-end;
-
-function UI_ComboBox_New(Parent: AControl): AControl; stdcall;
-var
-  ComboBox: TComboBox;
-begin
-  ComboBox := TComboBox.Create(TWinControl(Parent));
-  ComboBox.Parent := TWinControl(Parent);
-  Result := AddObject(ComboBox);
-end;
-
-function UI_ComboBox_NewA(Parent: AControl; Left, Top, Width: AInteger): AControl; stdcall;
-var
-  ComboBox: TComboBox;
-begin
-  ComboBox := TComboBox.Create(TWinControl(Parent));
-  ComboBox.Parent := TWinControl(Parent);
-  ComboBox.Left := Left;
-  ComboBox.Top := Top;
-  ComboBox.Width := Width;
-  Result := AddObject(ComboBox);
-end;
-
-procedure UI_ComboBox_SetItemIndex(ComboBox: AControl; Value: AInteger); stdcall;
-begin
-  TComboBox(ComboBox).ItemIndex := Value;
-end;
-
 { DataSource }
 
 function UI_DataSource_New: PADataSource; stdcall;
@@ -2791,35 +2539,11 @@ begin
   Result := FMainTrayIcon;
 end;
 
-{ Menu }
-
-function UI_Menu_GetItems(Menu: AMenu): AMenuItem; stdcall;
-begin
-  Result := AUIMenus.UI_Menu_GetItems(Menu);
-end;
-
-function UI_Menu_New(MenuType: AInteger): AMenu; stdcall;
-begin
-  Result := AUIMenus.UI_Menu_New(MenuType);
-end;
-
 { Objects }
 
 function UI_Object_Add(Value: AInteger): AInteger; stdcall;
 begin
   Result := AddObject(TObject(Value));
-end;
-
-{ PageControl }
-
-function UI_PageControl_AddPage(PageControl: AControl; const Name, Text: APascalString): AControl; stdcall;
-begin
-  Result := AUIPageControl.UI_PageControl_AddPage(PageControl, Name, Text);
-end;
-
-function UI_PageControl_New(Parent: AControl): AControl; stdcall;
-begin
-  Result := AUIPageControl.UI_PageControl_New(Parent);
 end;
 
 { ProgressBar }

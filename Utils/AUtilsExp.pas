@@ -2,7 +2,7 @@
 @Abstract AUtils
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.06.2011
-@LastMod 25.07.2012
+@LastMod 24.09.2012
 }
 unit AUtilsExp;
 
@@ -11,7 +11,7 @@ interface
 implementation
 
 uses
-  AUtils;
+  AUtilsMain;
 
 exports
   AUtils_ChangeFileExtP,
@@ -69,14 +69,7 @@ exports
   AUtils_ReplaceCommaP,
   AUtils_ReplaceCommaWS,
   AUtils_Round2,
-  AUtils_Sleep,
+  AUtils_Sleep;
 
-  AUtils.FloatToStrAWS name 'AUtils_FloatToStrAWS',
-  AUtils.FloatToStrBWS name 'AUtils_FloatToStrBWS',
-  AUtils.FloatToStrCWS name 'AUtils_FloatToStrCWS',
-  AUtils.FloatToStrDWS name 'AUtils_FloatToStrDWS',
-  AUtils.NormalizeFloat name 'AUtils_NormalizeFloat',
-  AUtils.ReplaceCommaWS name 'AUtils_ReplaceCommaWS';
-
 end.
  

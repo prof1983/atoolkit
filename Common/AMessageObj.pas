@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Сообщения для передачи команд между модулями и внутри программы)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(04.11.2005)
-@LastMod(26.04.2012)
-@Version(0.5)
+@Abstract Сообщения для передачи команд между модулями и внутри программы
+@Author Prof1983 <prof1983@ya.ru>
+@Created 04.11.2005
+@LastMod 12.11.2012
 }
 unit AMessageObj;
 
@@ -13,7 +12,7 @@ uses
   ATypes;
 
 type
-  TProfMessage3 = class
+  TAMessageObj = class
   public
     FMessage: TProfMessageRec;
   public
@@ -35,6 +34,8 @@ type
     property SenderName: WideString read FSenderName write FSenderName;
     *)
   end;
+
+  //TProfMessage3 = TAMessageObj;
 
 implementation
 

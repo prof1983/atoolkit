@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Сообщения для передачи команд между модулями и внутри программы)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(04.11.2005)
-@LastMod(04.07.2012)
-@Version(0.5)
+@Abstract Сообщения для передачи команд между модулями и внутри программы
+@Author Prof1983 <prof1983@ya.ru>
+@Created 04.11.2005
+@LastMod 12.11.2012
 }
 unit AMessagesObj;
 
@@ -15,7 +14,7 @@ uses
 type //** Конвеер сообщений
   TAMessages = class
   private
-    FMessages: array of TProfMessage3;
+    FMessages: array of TAMessageObj;
       //** Счетчик номеров команд
     FNextIdent: Integer;
       //** Index следующей точки вставки нового сообщения
@@ -32,9 +31,9 @@ type //** Конвеер сообщений
     function AddMsg(AConnectionID: UInt64; AMsg: WideString): Boolean;
     constructor Create(StekSize: Integer = 512);
       //** Найти ответ
-    function FindMsgAnswer(AConnectionId: UInt64; AIdent: Integer; AComId: UInt64; AComName: WideString; var AMsg: TProfMessage3): Boolean;
+    function FindMsgAnswer(AConnectionId: UInt64; AIdent: Integer; AComId: UInt64; AComName: WideString; var AMsg: TAMessageObj): Boolean;
       //** Получить сообщение
-    function GetMessage(Index: Integer): TProfMessage3;
+    function GetMessage(Index: Integer): TAMessageObj;
       //** Получить сообщение
     function GetMessageRec(Index: Integer; var AMsg: TProfMessageRec): Boolean;
       //** Вернуть следующее значение счетчика сообщений
@@ -47,7 +46,7 @@ type //** Конвеер сообщений
       //** Колличество сообщений
     property Count: Integer read GetCount;
       //** Сообщения
-    property Messages[Index: Integer]: TProfMessage3 read GetMessage;
+    property Messages[Index: Integer]: TAMessageObj read GetMessage;
       //** Следующее значение счетчика сообщений
     property NextIdent: Integer read GetNextIdent;
       //** Следующее сообщение для обработки
@@ -108,7 +107,7 @@ begin
   FNextMsg := 0;
 end;
 
-function TAMessages.FindMsgAnswer(AConnectionId: UInt64; AIdent: Integer; AComId: UInt64; AComName: WideString; var AMsg: TProfMessage3): Boolean;
+function TAMessages.FindMsgAnswer(AConnectionId: UInt64; AIdent: Integer; AComId: UInt64; AComName: WideString; var AMsg: TAMessageObj): Boolean;
 // Найти ответ
 
   function Check(Index: Integer): Boolean;
@@ -153,7 +152,7 @@ begin
   Result := Length(FMessages);
 end;
 
-function TAMessages.GetMessage(Index: Integer): TProfMessage3;
+function TAMessages.GetMessage(Index: Integer): TAMessageObj;
 begin
   if (Index < 0) or (Index >= Length(FMessages)) then
   begin
@@ -207,7 +206,7 @@ begin
   if FNextIdent >= High(Int32) then FNextIdent := 1 else Inc(FNextIdent);
 end;
 
-{function TAMessages.GetNextMessage(): TProfMessage3;
+{function TAMessages.GetNextMessage(): TAMessageObj;
 begin
   Result := False;
   Result := FMessages[FNextRun];
@@ -224,7 +223,7 @@ end;}
 
 function TAMessages.GetNextMessageRec(var AMsg: TProfMessageRec): Boolean;
 var
-  tmpMsg: TProfMessage3;
+  tmpMsg: TAMessageObj;
 begin
   Result := False;
   tmpMsg := FMessages[FNextRun];

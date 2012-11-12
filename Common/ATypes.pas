@@ -2,7 +2,7 @@
 @Abstract Глобальные типы для всех проектов
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.02.2007
-@LastMod 09.08.2012
+@LastMod 12.11.2012
 }
 unit ATypes;
 
@@ -427,6 +427,8 @@ type //** Сообщение
     OwnerId: UInt64;
       //** Дополнительные параметры. Имя нода = 'Params'
     Params: WideString{IProfXmlNode};
+      //** Дополнительные параметры. Имя нода = 'Params'
+    //ParamsOld: TProfXmlNode1;
   end;
 
 type //** Тип версии системы

@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Главная форма для проектирования)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(08.11.2006)
-@LastMod(03.05.2012)
-@Version(0.5)
+@Abstract Главная форма для проектирования
+@Author Prof1983 <prof1983@ya.ru>
+@Created 08.11.2006
+@LastMod 12.11.2012
 }
 unit fDeveloper;
 
@@ -11,7 +10,7 @@ interface
 
 uses
   Classes, ComCtrls, Controls, ExtCtrls, Forms, Menus, ValEdit,
-  ABase, ANodeIntf, fAbout1, fShablon;
+  ABase, ANodeIntf, fAbout1, AShablonForm{fShablon};
 
 type
   //** @abstract(Тип вкладки главной области)

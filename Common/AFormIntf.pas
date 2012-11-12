@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(AForm interface)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(12.03.2012)
-@LastMod(27.06.2012)
-@Version(0.5)
+@Abstract AForm interface
+@Author Prof1983 <prof1983@ya.ru>
+@Created 12.03.2012
+@LastMod 12.11.2012
 }
 unit AFormIntf;
 
@@ -15,23 +14,21 @@ uses
 type //** Интерфейс для любой формы
   IProfForm = interface
     //** Добавление лог-сообщений
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
+    function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: WideString): AInt;
     //** Загрузить конфигурации
-    function ConfigureLoad(AConfig: IProfNode): AError;
+    function ConfigureLoad(Config: AConfig{IProfNode}): AError;
     //** Сохранить конфигурации
-    function ConfigureSave(AConfig: IProfNode): AError;
+    function ConfigureSave(Config: AConfig{IProfNode}): AError;
     //** Финализировать
-    function Finalize(): TProfError;
+    function Finalize(): AError;
     //** Инициализировать
-    function Initialize(): TProfError;
+    function Initialize(): AError;
 
-    function GetConfig(): IProfNode; safecall;
-    //function GetLog(): ILogNode; safecall;
-    procedure SetConfig(const Value: IProfNode); safecall;
-    //procedure SetLog(const Value: ILogNode); safecall;
+    function GetConfig(): AConfig{IProfNode}; {safecall;}
+    procedure SetConfig(const Value: AConfig{IProfNode}); {safecall;}
 
-    property Config: IProfNode read GetConfig write SetConfig;
-    //property Log: ILogNode read GetLog write SetLog;
+    //property Config: AConfig{IProfNode} read GetConfig write SetConfig;
   end;
 
   IProfForm2 = interface(IProfForm)

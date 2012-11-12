@@ -1,8 +1,8 @@
 {**
-@Abstract(TForm with Logging and Configurations)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(06.10.2005)
-@LastMod(18.07.2012)
+@Abstract TForm with Logging and Configurations
+@Author Prof1983 <prof1983@ya.ru>
+@Created 06.10.2005
+@LastMod 12.11.2012
 }
 unit AFormObj;
 
@@ -27,6 +27,10 @@ type
     function DoFinalize(): WordBool; virtual;
     function DoInitialize(): WordBool; virtual;
   public
+    function GetConfig(): AConfig;
+  public
+    procedure SetConfig(Value: AConfig);
+  public
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: APascalString): AInteger; virtual;
     function AddToLog2(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
@@ -41,15 +45,17 @@ type
         const AStrMsg: WideString): Integer; virtual;
   public
     function ConfigureLoad(): WordBool; virtual;
-    function ConfigureLoad1(): WordBool; virtual; deprecated; // Use ConfigureLoad()
+    //function ConfigureLoad1(): WordBool; virtual; deprecated; // Use ConfigureLoad()
+    function ConfigureLoad2(FConfig: AConfig): AError;
     function ConfigureSave(): WordBool; virtual;
-    function ConfigureSave1(): WordBool; virtual; deprecated; // Use ConfigureSave()
-    function Finalize(): WordBool; virtual;
-    function Initialize(): WordBool; virtual;
+    //function ConfigureSave1(): WordBool; virtual; deprecated; // Use ConfigureSave()
+    function ConfigureSave2(FConfig: AConfig): AError;
+    function Finalize(): AError; virtual;
+    function Initialize(): AError; virtual;
   public
     procedure Free(); virtual;
   public
-    property Config: AConfig read FConfig write FConfig;
+    property Config: AConfig read GetConfig write SetConfig;
     property ConfigDocument1: TConfigDocument read FConfigDocument1 write FConfigDocument1;
     property Initialized: WordBool read FInitialized;
     property Log: ALogNode read FLog write FLog;
@@ -104,6 +110,16 @@ begin
 end;
 
 function TAFormObject.ConfigureLoad(): WordBool;
+begin
+  Result := (ConfigureLoad2(FConfig) >= 0);
+end;
+
+{function TAFormObject.ConfigureLoad1(): WordBool;
+begin
+  Result := ConfigureLoad();
+end;}
+
+function TAFormObject.ConfigureLoad2(FConfig: AConfig): AError;
 var
   I: Integer;
   S: APascalString;
@@ -111,7 +127,7 @@ var
 begin
   if (FConfig = 0) then
   begin
-    Result := False;
+    Result := -1;
     Exit;
   end;
 
@@ -126,62 +142,31 @@ begin
     Width := I;
   if (AConfig_ReadInt32(FConfig, 'Height', I) >= 0) then
     Height := I;
-  if (AConfig_ReadInt32(FConfig, 'WindowState', I) >= 0) then
-    WindowState := TWindowState(I);
-  if (AConfig_ReadString(FConfig, 'Caption', S) >= 0) then
-    Caption := S;
 
-  if (WindowState <> tmpWindowState) then
-    WindowState := tmpWindowState;
-
-  Result := True;
-end;
-
-function TAFormObject.ConfigureLoad1(): WordBool;
-begin
-  Result := ConfigureLoad();
-end;
-
-{function TProfForm.ConfigureLoad2(AConfig: IXmlNode): WordBool;
-var
-  I: Integer;
-  S: APascalString;
-  tmpWindowState: TWindowState;
-begin
-  if (FConfig = 0) then
-  begin
-    Result := False;
-    Exit;
-  end;
-
-  tmpWindowState := TWindowState(AConfig_ReadInt32Def(FConfig, 'WindowState', Integer(wsNormal)));
-  WindowState := wsNormal;
-
-  //if tmpWindowState = wsNormal then
-  begin
-    if (AConfig_ReadInt(FConfig, 'Left', I) >= 0) then
-      Left := I;
-    if (AConfig_ReadInt(FConfig, 'Top', I) >= 0) then
-      Top := I;
-    if (AConfig_ReadInt(FConfig, 'Width', I) >= 0) then
-      Width := I;
-    if (AConfig_ReadInt(FConfig, 'Height', I) >= 0) then
-      Height := I;
-  end;
   if (WindowState <> tmpWindowState) then
     WindowState := tmpWindowState;
 
   if (AConfig_ReadString(FConfig, 'Caption', S) >= 0) then
     Caption := S;
 
-  Result := True;
-end;}
+  Result := 0;
+end;
 
 function TAFormObject.ConfigureSave(): WordBool;
 begin
+  Result := (ConfigureSave2(FConfig) >= 0);
+end;
+
+{function TAFormObject.ConfigureSave1(): WordBool;
+begin
+  Result := ConfigureSave();
+end;}
+
+function TAFormObject.ConfigureSave2(FConfig: AConfig): AError;
+begin
   if (FConfig = 0) then
   begin
-    Result := False;
+    Result := -1;
     Exit;
   end;
   if (WindowState <> wsMaximized) then
@@ -194,32 +179,8 @@ begin
   AConfig_WriteInt32(FConfig, 'WindowState', Integer(WindowState));
   AConfig_WriteString(FConfig, 'Caption', Caption);
   AConfig_WriteBool(FConfig, 'Visible', Self.Visible);
-  Result := True;
+  Result := 0;
 end;
-
-function TAFormObject.ConfigureSave1(): WordBool;
-begin
-  Result := ConfigureSave();
-end;
-
-{function TProfForm.ConfigureSave2(AConfig: IXmlNode): WordBool;
-begin
-  if (FConfig = 0) then
-  begin
-    Result := False;
-    Exit;
-  end;
-  if (WindowState <> wsMaximized) then
-  begin
-    AConfig_WriteInt(FConfig, 'Left', Left);
-    AConfig_WriteInt(FConfig, 'Top', Top);
-    AConfig_WriteInt(FConfig, 'Width', Width);
-    AConfig_WriteInt(FConfig, 'Height', Height);
-  end;
-  AConfig_WriteInt(FConfig, 'WindowState', Integer(WindowState));
-  AConfig_WriteString(FConfig, 'Caption', Caption);
-  AConfig_WriteBool(FConfig, 'Visible', Self.Visible);
-end;}
 
 procedure TAFormObject.DoDestroy();
 begin
@@ -242,9 +203,12 @@ begin
   Result := True;
 end;
 
-function TAFormObject.Finalize(): WordBool;
+function TAFormObject.Finalize(): AError;
 begin
-  Result := DoFinalize();
+  if DoFinalize() then
+    Result := 0
+  else
+    Result := -1;
 end;
 
 procedure TAFormObject.Free();
@@ -252,9 +216,22 @@ begin
   inherited Free;
 end;
 
-function TAFormObject.Initialize(): WordBool;
+function TAFormObject.GetConfig(): AConfig;
 begin
-  Result := DoInitialize();
+  Result := FConfig;
+end;
+
+function TAFormObject.Initialize(): AError;
+begin
+  if DoInitialize() then
+    Result := 0
+  else
+    Result := -1;
+end;
+
+procedure TAFormObject.SetConfig(Value: AConfig);
+begin
+  FConfig := Value;
 end;
 
 function TAFormObject.ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;

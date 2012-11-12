@@ -1,11 +1,8 @@
 ﻿{**
-@Abstract(Класс-потомок для форм с логированием и конфигурациями)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(06.10.2005)
-@LastMod(04.07.2012)
-@Version(0.5)
-
-13.06.2012 - TProfForm3
+@Abstract Класс-потомок для форм с логированием и конфигурациями
+@Author Prof1983 <prof1983@ya.ru>
+@Created 06.10.2005
+@LastMod 12.11.2012
 }
 unit AFormImpl;
 
@@ -14,10 +11,35 @@ unit AFormImpl;
 interface
 
 uses
-  Classes, Forms, SysUtils,
-  ABase, AFormIntf, ALogNodeImpl, ANodeUtils, ANodeIntf, ATypes, AXmlUtils,
-  AObjectIntf;
+  ABase, AFormIntf, AFormObj, ANodeIntf, ATypes;
+  {Classes, Forms, SysUtils,
+  AFormIntf, ALogNodeImpl, ANodeUtils, AXmlUtils,
+  AObjectIntf;}
 
+type //** Класс-потомок для форм с логированием и конфигурациями
+  TProfFormI = class(TInterfacedObject, IProfForm)
+  protected
+    FForm: TAFormObject;
+  public
+    //** Добавление лог-сообщений
+    function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: WideString): AInt;
+    //** Загрузить конфигурации
+    function ConfigureLoad(Config: AConfig{IProfNode}): AError;
+    //** Сохранить конфигурации
+    function ConfigureSave(Config: AConfig{IProfNode}): AError;
+    //** Финализировать
+    function Finalize(): AError;
+    //** Инициализировать
+    function Initialize(): AError;
+  public
+    function GetConfig(): AConfig{IProfNode};
+    procedure SetConfig(const Value: AConfig{IProfNode});
+  end;
+
+  TProfForm = TAFormObject;
+
+(*
 type //** Класс-потомок для форм с логированием и конфигурациями
   TProfForm = class(TForm, IProfForm)
   protected
@@ -49,8 +71,6 @@ type //** Класс-потомок для форм с логированием 
   public
       //** Добавляет сообщение
     function AddMessage(const AMsg: WideString): Integer; virtual;
-      //** Добавляет сообщение
-    function AddMessageSafe(const Msg: WideString): Integer; virtual; safecall;
       //** Добавляет лог-сообщение
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AMsg: WideString): Integer; virtual;
@@ -91,9 +111,11 @@ resourcestring // Сообщения -------------------------------------------
 const
   //** @abstract(Состояние окна)
   WINDOW_STATE: array[TWindowState] of string = ('Normal', 'Minimized', 'Maximized');
+*)
 
 implementation
 
+(*
 const
   configCaption = 'Caption';
   configLeft = 'Left';
@@ -108,16 +130,6 @@ const
 function TProfForm.AddMessage(const AMsg: WideString): Integer;
 begin
   Result := DoMessage(AMsg);
-end;
-
-{function TProfForm.AddMessageX(AMsg: IProfNode): Integer;
-begin
-  Result := 0;
-end;}
-
-function TProfForm.AddMessageSafe(const Msg: WideString): Integer;
-begin
-  Result := AddMessage(Msg);
 end;
 
 function TProfForm.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
@@ -268,26 +280,6 @@ begin
   FConfig := Value;
 end;
 
-{function TProfForm.SendMessage(const AMsg: WideString): Integer;
-begin
-  Result := 0;
-  if Assigned(FOnSendMessage) then
-  try
-    Result := FOnSendMessage(AMsg);
-  except
-  end;
-end;}
-
-{function TProfForm.SendMessageX(Msg: IProfNode): Integer;
-begin
-  Result := 0;
-  if Assigned(FOnSendMessageX) then
-  try
-    Result := FOnSendMessageX(Msg);
-  except
-  end;
-end;}
-
 function TProfForm.ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
     const AStrMsg: WideString; AParams: array of const): Integer;
 begin
@@ -299,11 +291,44 @@ function TProfForm.ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
 begin
   Result := DoAddToLog(AGroup, AType, AStrMsg);
 end;
+*)
 
-function TProfForm.ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
-    const AStrMsg: WideString): Integer;
+{ TProfFormI }
+
+function TProfFormI.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+  const StrMsg: WideString): AInt;
 begin
-  //Result := DoAddToLog(GroupMessageFromInt(AGroup), TypeMessageFromInt(AType), AStrMsg);
+  Result := FForm.AddToLog(LogGroup, LogType, StrMsg);
+end;
+
+function TProfFormI.ConfigureLoad(Config: AConfig{IProfNode}): AError;
+begin
+  Result := FForm.ConfigureLoad2(Config);
+end;
+
+function TProfFormI.ConfigureSave(Config: AConfig{IProfNode}): AError;
+begin
+  Result := FForm.ConfigureSave2(Config);
+end;
+
+function TProfFormI.Finalize(): AError;
+begin
+  Result := FForm.Finalize();
+end;
+
+function TProfFormI.GetConfig(): AConfig{IProfNode};
+begin
+  Result := FForm.GetConfig();
+end;
+
+function TProfFormI.Initialize(): AError;
+begin
+  Result := FForm.Initialize();
+end;
+
+procedure TProfFormI.SetConfig(const Value: AConfig{IProfNode});
+begin
+  FForm.SetConfig(Value);
 end;
 
 end.

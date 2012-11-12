@@ -1,9 +1,9 @@
 object fmShablon: TfmShablon
   Left = 213
   Top = 106
-  Width = 495
-  Height = 304
   Caption = 'fmShablon'
+  ClientHeight = 277
+  ClientWidth = 487
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

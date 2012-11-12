@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Главная форма для проектирования)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(08.11.2006)
-@LastMod(27.06.2012)
-@Version(0.5)
+@Abstract Главная форма для проектирования
+@Author Prof1983 <prof1983@ya.ru>
+@Created 08.11.2006
+@LastMod 12.11.2012
 }
 unit ADeveloperForm3;
 
@@ -11,7 +10,7 @@ interface
 
 uses
   Classes, ComCtrls, Controls, ExtCtrls, Forms, Menus, ValEdit,
-  AAboutForm, ABase, ANodeIntf, AShablonForm3, ATypes;
+  AAboutForm, ABase, ANodeIntf, AShablonForm{fShablon}, ATypes;
 
 type //** @abstract(Тип вкладки главной области)
   TabMainTypeEnum = Integer;
@@ -62,7 +61,7 @@ type
 
 type
   //** @abstract(Форма дизайнера с панелями и линейками)
-  TfmDeveloper3 = class(TProfShablon3)
+  TfmDeveloper3 = class(TfmShablon)
   private
     procedure CreateMenu();
   protected

@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 06.09.2012
+@LastMod 12.11.2012
 }
 unit AUi;
 
@@ -21,6 +21,10 @@ unit AUi;
   {$DEFINE USE_EVENTS}
 {$ENDIF}
 
+{$IFNDEF NoRuntime}
+  {$DEFINE USE_RUNTIME}
+{$ENDIF}
+
 {$IFNDEF NoSettings}
   {$DEFINE USE_SETTINGS}
 {$ENDIF}
@@ -30,12 +34,12 @@ interface
 uses
   ABase, ABaseTypes,
   {$IFDEF USE_EVENTS}AEvents,{$ENDIF}
-  ARuntime,
+  {$IFDEF USE_RUNTIME}ARuntime,{$ENDIF}
   {$IFDEF USE_SETTINGS}ASettings,{$ENDIF}
   AStrings, ASystem,
   AUiBase, AUiBox, AUiButtons, AUiControls, AUiControlsA, AUiData, AUiEvents1, AUiEventsObj, AUiForm,
   AUiImages, AUiInit, AUiLabels, AUiListBox, AUiMain, AUiMainWindow, AUiMainWindow2,
-  AUiPageControl, AUiReports, AUiToolBar, AUiToolMenu, AUiTreeView, AUiWindows;
+  AUiPageControl, AUiReports, AUiTextView, AUiToolBar, AUiToolMenu, AUiTreeView, AUiWindows;
 
 // ---
 
@@ -67,26 +71,26 @@ function AUi_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): ACon
 // --- AUi_TextView ---
 
 // Добавляет строку в элемент TextView
-function AUi_TextView_AddLine(TextView: AControl; const Text: AString_Type): AInteger; stdcall;
+function AUi_TextView_AddLine(TextView: AControl; const Text: AString_Type): AInteger; stdcall; deprecated; // Use AUiTextView_AddLine()
 
 { Создает новый элемент редактирования текста
   ViewType
     0 - TMemo
     1 - RichEdit }
-function AUi_TextView_New(Parent: AControl; ViewType: AInteger): AControl; stdcall;
+function AUi_TextView_New(Parent: AControl; ViewType: AInteger): AControl; stdcall; deprecated; // Use AUiTextView_New()
 
-procedure AUi_TextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger); stdcall;
+procedure AUi_TextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger); stdcall; deprecated; // AUiTextView_SetFont()
 
-procedure AUi_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean); stdcall;
+procedure AUi_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean); stdcall; deprecated; // Use AUiTextView_SetReadOnly()
 
 { ScrollBars
     0 - ssNone
     1 - ssHorizontal
     2 - ssVertical
     3 - ssBoth }
-procedure AUi_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger); stdcall;
+procedure AUi_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger); stdcall; deprecated; // Use AUiTextView_SetScrollBars()
 
-procedure AUi_TextView_SetWordWrap(TextView: AControl; Value: ABoolean); stdcall;
+procedure AUi_TextView_SetWordWrap(TextView: AControl; Value: ABoolean); stdcall; deprecated; // Use AUiTextView_SetWordWrap()
 
 // --- AUi_TrayIcon ---
 
@@ -705,13 +709,6 @@ function UI_PropertyBox_New(Parent: AControl): AControl; stdcall;
 
 function UI_SpinButton_New(Parent: AControl): AControl; stdcall;
 
-{ SplitterType
-    0 - HSplitter (Align=alTop)
-    1 - VSplitter (Align=alLeft)
-    2 - HSplitter (Align=alBottom)
-    3 - VSplitter (Align=alRight) }
-function UI_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl; stdcall;
-
 // Use ToolBar_AddButtonWS02()
 function UI_ToolBar_AddButton(ToolBar: AControl; const Name, Text, Hint: APascalString;
     OnClick: ACallbackProc; ImageID, Weight: AInteger): AButton; stdcall; deprecated;
@@ -1162,52 +1159,32 @@ end;
 
 function AUi_TextView_AddLine(TextView: AControl; const Text: AString_Type): AInteger;
 begin
-  try
-    Result := UI_TextView_AddLine(TextView, AStrings.String_ToWideString(Text));
-  except
-    Result := -1;
-  end;
+  Result := AUiTextView_AddLine(TextView, AStrings.String_ToWideString(Text));
 end;
 
 function AUi_TextView_New(Parent: AControl; ViewType: AInteger): AControl;
 begin
-  try
-    Result := UI_TextView_New(Parent, ViewType);
-  except
-    Result := 0;
-  end;
+  Result := AUiTextView_New(Parent, ViewType);
 end;
 
 procedure AUi_TextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger);
 begin
-  try
-    UI_TextView_SetFont(TextView, AStrings.String_ToWideString(FontName), FontSize);
-  except
-  end;
+  AUiTextView_SetFont(TextView, AStrings.String_ToWideString(FontName), FontSize);
 end;
 
 procedure AUi_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean);
 begin
-  try
-    UI_TextView_SetReadOnly(TextView, ReadOnly);
-  except
-  end;
+  AUiTextView_SetReadOnly(TextView, ReadOnly);
 end;
 
 procedure AUi_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger);
 begin
-  try
-    UI_TextView_SetScrollBars(TextView, ScrollBars);
-  except
-  end;
+  AUiTextView_SetScrollBars(TextView, ScrollBars);
 end;
 
 procedure AUi_TextView_SetWordWrap(TextView: AControl; Value: ABoolean);
 begin
-  try
-    UI_TextView_SetWordWrap(TextView, Value);
-  except
-  end;
+  AUiTextView_SetWordWrap(TextView, Value);
 end;
 
 // --- AUi_TrayIcon ---
@@ -2378,11 +2355,7 @@ end;
 
 function Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl; stdcall;
 begin
-  try
-    Result := UI_Splitter_New(Parent, SplitterType);
-  except
-    Result := 0;
-  end;
+  Result := AUiSplitter_New(Parent, SplitterType);
 end;
 
 { UI Public }
@@ -2640,115 +2613,6 @@ begin
   Spin := TSpinButton.Create(TWinControl(Parent));
   Spin.Parent := TWinControl(Parent);
   Result := AControl(Spin);
-  {$ENDIF}
-end;
-
-{ Splitter }
-
-function UI_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl; stdcall;
-var
-  O: TObject;
-  Splitter: TSplitter;
-begin
-  O := AUIData.GetObject(Parent);
-  if Assigned(O) and (O is TWinControl) then
-  begin
-    Splitter := TSplitter.Create(TWinControl(O));
-    Splitter.Parent := TWinControl(O);
-    Splitter.Left := 200;
-    case SplitterType of
-      AUISplitter_HSplitter: Splitter.Align := alTop;
-      AUISplitter_VSplitter: Splitter.Align := alLeft;
-      AUISplitter_HSplitterBottom: Splitter.Align := alBottom;
-      AUISplitter_VSplitterRight: Splitter.Align := alRight;
-    end;
-    Result := AddObject(Splitter);
-  end
-  else
-    Result := 0;
-end;
-
-{ TextView }
-
-function UI_TextView_AddLine(TextView: AControl; const Text: APascalString): AInteger; stdcall;
-begin
-  if (TObject(TextView) is TMemo) then
-    Result := TMemo(TextView).Lines.Add(Text)
-  {$IFNDEF FPC}
-  else if (TObject(TextView) is TRichEdit) then
-    Result := TRichEdit(TextView).Lines.Add(Text)
-  {$ENDIF}
-  else
-    Result := -1;
-end;
-
-function UI_TextView_New(Parent: AControl; ViewType: AInteger): AControl; stdcall;
-var
-  Memo: TMemo;
-  {$IFNDEF FPC}
-  Rich: TRichEdit;
-  {$ENDIF}
-begin
-  if (ViewType = 0) then
-  begin
-    Memo := TMemo.Create(TWinControl(Parent));
-    Memo.Parent := TWinControl(Parent);
-    Result := AddObject(Memo);
-  end
-  else
-  begin
-    {$IFNDEF FPC}
-    Rich := TRichEdit.Create(TWinControl(Parent));
-    Rich.Parent := TWinControl(Parent);
-    Result := AddObject(Rich);
-    {$ENDIF}
-  end;
-end;
-
-procedure UI_TextView_SetFont(TextView: AControl; const FontName: APascalString; FontSize: AInteger); stdcall;
-
-  procedure SetFont(Font: TFont);
-  begin
-    if (FontName <> '') then
-      Font.Name := FontName;
-    if (FontSize <> 0) then
-      Font.Size := FontSize;
-  end;
-
-begin
-  {$IFNDEF FPC}
-  if (TObject(TextView) is TRichEdit) then
-    SetFont(TRichEdit(TextView).Font)
-  {$ENDIF}
-end;
-
-procedure UI_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean); stdcall;
-begin
-  if (TObject(TextView) is TMemo) then
-    TMemo(TextView).ReadOnly := ReadOnly
-  {$IFNDEF FPC}
-  else if (TObject(TextView) is TRichEdit) then
-    TRichEdit(TextView).ReadOnly := ReadOnly;
-  {$ENDIF}
-end;
-
-procedure UI_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger); stdcall;
-begin
-  if (TObject(TextView) is TMemo) then
-    TMemo(TextView).ScrollBars := TScrollStyle(ScrollBars)
-  {$IFNDEF FPC}
-  else if (TObject(TextView) is TRichEdit) then
-    TRichEdit(TextView).ScrollBars := TScrollStyle(ScrollBars);
-  {$ENDIF}
-end;
-
-procedure UI_TextView_SetWordWrap(TextView: AControl; Value: ABoolean); stdcall;
-begin
-  if (TObject(TextView) is TMemo) then
-    TMemo(TextView).WordWrap := Value
-  {$IFNDEF FPC}
-  else if (TObject(TextView) is TRichEdit) then
-    TRichEdit(TextView).WordWrap := Value;
   {$ENDIF}
 end;
 

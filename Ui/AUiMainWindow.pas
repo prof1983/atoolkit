@@ -2,7 +2,7 @@
 @Abstract AUiMainWindow
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2008
-@LastMod 06.09.2012
+@LastMod 12.11.2012
 }
 unit AUiMainWindow;
 
@@ -22,7 +22,7 @@ uses
   {$IFDEF OLDMAINFORM}fMain,{$ENDIF}
   AUiBase, AUiBox, AUiControls, AUiData,
   {$IFDEF USE_SETTINGS}AUiForm,{$ENDIF}
-  AUiMainWindowData, AUiToolBar;
+  AUiMainWindowData, AUiSplitter, AUiToolBar;
 
 type
   TMainWindowFormat = type Integer;
@@ -82,9 +82,6 @@ var
   DefWindowState: AInteger{TWindowState};
 
 implementation
-
-uses
-  AUi;
 
 (*
 const
@@ -247,7 +244,7 @@ begin
     MainMenu := TMainMenu.Create(Form);
     Form.Menu := MainMenu;
   end;
-  AUI.MainWindow_SetA(AWindow(Form), MainToolBar, AControl(MainStatusBar), Config);
+  AUi_SetMainWindow2(AWindow(Form), MainToolBar, AControl(MainStatusBar), Config);
 end;
 
 function _MainWindow_GetLeftContainer: AControl;

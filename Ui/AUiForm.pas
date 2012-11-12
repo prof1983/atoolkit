@@ -9,7 +9,7 @@ unit AUiForm;
 interface
 
 uses
-  Forms, ABase, ASettings;
+  Forms, ABase; {ASettings;}
 
 function Form_LoadConfig(Form: TForm; Config: AConfig): ABoolean;
 function Form_LoadConfig2(Form: TForm; Config: AConfig; const ConfigKey: APascalString): ABoolean;

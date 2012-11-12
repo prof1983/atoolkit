@@ -2,7 +2,7 @@
 @Abstract ASystem function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.08.2009
-@LastMod 05.09.2012
+@LastMod 12.11.2012
 }
 unit ASystem;
 
@@ -987,6 +987,7 @@ begin
 
     FOnAfterRunEvent := AEvents.Event_NewW(0, 'AfterRun');
     FOnBeforeRunEvent := AEvents.Event_NewW(0, 'BeforeRun');
+    {$IFDEF USE_RUNTIME}
     {$IFDEF A01}
       ARuntime.OnAfterRun_Set(DoAfterRun02);
       ARuntime.OnBeforeRun_Set(DoBeforeRun02);
@@ -999,6 +1000,7 @@ begin
       ARuntime.SetOnBeforeRun(DoBeforeRun);
       {$ENDIF A02}
     {$ENDIF A01}
+    {$ENDIF USE_RUNTIME}
   {$ENDIF USE_EVENTS}
 
   System_Prepare(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
@@ -1025,6 +1027,7 @@ begin
   {$IFDEF USE_EVENTS}
     FOnAfterRunEvent := AEvents.Event_NewW(0, 'AfterRun');
     FOnBeforeRunEvent := AEvents.Event_NewW(0, 'BeforeRun');
+    {$IFDEF USE_RUNTIME}
     {$IFDEF A01}
       ARuntime.OnAfterRun_Set(DoAfterRun02);
       ARuntime.OnBeforeRun_Set(DoBeforeRun02);
@@ -1037,6 +1040,7 @@ begin
       ARuntime.SetOnBeforeRun(DoBeforeRun);
       {$ENDIF A02}
     {$ENDIF A01}
+    {$ENDIF USE_RUNTIME}
   {$ENDIF USE_EVENTS}
 
   System_Prepare(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,

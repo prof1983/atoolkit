@@ -9,14 +9,8 @@ unit ASettingsConfig;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}Windows, ARegistrySettings,{$ENDIF}
-  ABase, ACollections, ACollectionsBase, AStrings,
-  AAbstractSettings, AIniSettings, ASettingsMain;
-
-{deprecated}
-function Settings_IniConfig_New(const FileName: APascalString): AConfig; stdcall;
-function Settings_RegConfig_New(const Prefix: APascalString): AConfig; stdcall;
-function Settings_RegConfig_NewA(const Prefix: APascalString; HKEY: Integer): AConfig; stdcall;
+  ABase, {ACollections,} ACollectionsBase, AStrings,
+  AAbstractSettings, ASettingsMain;
 
 {deprecated}
 procedure Settings_Close(Config: AConfig); stdcall;
@@ -53,15 +47,6 @@ end;
 function Settings_DeleteSection(Config: AConfig; const Section: APascalString): ABoolean;
 begin
   Result := TAbstractSettings(Config).DeleteSection(Section);
-end;
-
-function Settings_IniConfig_New(const FileName: APascalString): AConfig;
-var
-  S: TIniSettings;
-begin
-  S := TIniSettings.Create;
-  S.OpenIniFile(FileName);
-  Result := Integer(S);
 end;
 
 function Settings_ReadBool(Config: AConfig; const Section, Name: APascalString; DefValue: ABoolean): ABoolean;
@@ -122,31 +107,6 @@ begin
     Result := ''
   else
     TAbstractSettings(Config).ReadString(Section, Name, DefValue, Result);
-end;
-
-function Settings_RegConfig_New(const Prefix: APascalString): AConfig;
-begin
-  {$IFDEF MSWINDOWS}
-  Result := Settings_RegConfig_NewA(Prefix, Integer(HKEY_CURRENT_USER));
-  {$ELSE}
-  Result := 0;
-  {$ENDIF}
-end;
-
-function Settings_RegConfig_NewA(const Prefix: APascalString; HKEY: Integer): AConfig;
-{$IFDEF MSWINDOWS}
-var
-  S: TARegistrySettings;
-{$ENDIF}
-begin
-  {$IFDEF MSWINDOWS}
-  S := TARegistrySettings.Create;
-  S.Registry.RootKey := HKEY;
-  S.Prefix := Prefix;
-  Result := AConfig(S);
-  {$ELSE}
-  Result := 0;
-  {$ENDIF}
 end;
 
 function Settings_WriteBool(Config: AConfig; const Section, Name: APascalString; Value: ABoolean): ABoolean;

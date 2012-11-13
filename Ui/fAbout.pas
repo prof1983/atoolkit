@@ -2,7 +2,7 @@
 @Abstract AUi about form
 @Author Prof1983 <prof1983@ya.ru>
 @Created 04.04.2006
-@LastMod 27.08.2012
+@LastMod 13.11.2012
 }
 unit fAbout;
 
@@ -65,9 +65,6 @@ type
 procedure ShowAboutWinA(MemoWidth, MemoHeight: Integer);
 
 implementation
-
-uses
-  AUI;
 
 {$IFNDEF FPC}
   {$R *.dfm}

@@ -2,7 +2,7 @@
 @Abstract AUiDialogs
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 05.09.2012
+@LastMod 13.11.2012
 }
 unit AUiDialogs;
 
@@ -224,7 +224,7 @@ constructor TAUiDialog.Create();
 begin
   FWindow := AUiWindow_New();
 
-  FButtonsBox := AUIBox.UI_Box_New(FWindow, 0);
+  FButtonsBox := AUiBox_New(FWindow, 0);
   UI_Control_SetAlign(FButtonsBox, uiAlignBottom);
   AUIControls.UI_Control_SetSize(FButtonsBox, 100, 35);
 end;

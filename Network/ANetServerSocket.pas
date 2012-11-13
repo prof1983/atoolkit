@@ -1,11 +1,12 @@
 ﻿{**
-@Abstract(Server socket)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(30.10.2005)
-@LastMod(09.07.2012)
-@Version(0.5)
+@Abstract Server socket
+@Author Prof1983 <prof1983@ya.ru>
+@Created 30.10.2005
+@LastMod 13.11.2012
 }
 unit ANetServerSocket;
+
+TODO: AObjectImpl2006 -> AObjectImpl
 
 interface
 
@@ -19,7 +20,7 @@ type
     Error: Integer;
   end;
 
-  TProfServerSocket = class(TProfObject)
+  TProfServerSocket = class(TAObject2006)
   private
     FClients: array of TClient;
     FPort: Integer;
@@ -32,10 +33,12 @@ type
     procedure DoError(Client: TClient);
   public
     function ConfigureLoad: WordBool; override;
-    constructor Create(APort: Integer);
-    procedure Free; override;
-    property Port: Integer read FPort write FPort;
     function Initialize: WordBool; override;
+  public
+    constructor Create(APort: Integer);
+    procedure Free(); override;
+  public
+    property Port: Integer read FPort write FPort;
   end;
 
 implementation

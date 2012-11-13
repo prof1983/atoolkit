@@ -1,12 +1,8 @@
 ﻿{**
-@Abstract(Объект с логированием, конфигурациями и функциями Старт, Стоп и Пауза)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(22.12.2005)
-@LastMod(26.04.2012)
-@Version(0.5)
-
-История изменений:
-0.1.0.0 - 14.07.2007
+@Abstract Объект с логированием, конфигурациями и функциями Старт, Стоп и Пауза
+@Author Prof1983 <prof1983@ya.ru>
+@Created 22.12.2005
+@LastMod 13.11.2012
 }
 unit AProcessImpl;
 
@@ -16,7 +12,7 @@ uses
   AObjectImpl, ATypes;
 
 type //** Объект с логированием, конфигурациями и функциями Старт, Стоп и Пауза
-  TProfProcess = class(TProfObject)
+  TProfProcess = class(TAObject)
   protected
       //** Срабатывает при начале запуска
     function DoStart(): WordBool; virtual; safecall;

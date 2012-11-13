@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Объект с логированием и конфигурациями)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(22.12.2005)
-@LastMod(09.07.2012)
-@Version(0.5)
+@Abstract Объект с логированием и конфигурациями
+@Author Prof1983 <prof1983@ya.ru>
+@Created 22.12.2005
+@LastMod 13.11.2012
 }
 unit AObjectImpl2006;
 
@@ -11,40 +10,33 @@ interface
 
 uses
   SysUtils,
-  ABase, ALogNodeImpl, ALogNodeIntf, AObjectIntf2006, ATypes, AXmlNodeIntf;
+  ABase, ALogNodeImpl, ALogNodeIntf, AObjectIntf, ATypes, AXmlNodeIntf;
 
 type //** Объект с логированием и конфигурациями
-  TProfObject = class(TInterfacedObject, IProfObject)
+  TAObject2006 = class(TInterfacedObject, IProfObject2006)
   protected
-    FConfig: AProfXmlNode2{IProfXmlNode2006};
+    FConfig: AProfXmlNode2;
     FInitialized: Boolean;
     FLog: ILogNode2;
     procedure SetInitialized(Value: Boolean);
   protected
-    function Get_Config(): AProfXmlNode2{IProfXmlNode2006}; safecall;
-    function Get_Log: ILogNode2; safecall;
-    procedure Set_Config(const Value: AProfXmlNode2{IProfXmlNode2006}); safecall;
+    function Get_Config(): AProfXmlNode2; safecall;
+    function Get_Log(): ILogNode2; safecall;
+    procedure Set_Config(const Value: AProfXmlNode2); safecall;
     procedure Set_Log(const Value: ILogNode2); virtual; safecall;
-    //function GetConfig: TConfigNode;
-    //function GetLog: TLogNode;
-    //procedure SetConfig(const Value: TConfigNode);
-    //procedure SetLog(const Value: TLogNode); virtual;
   public
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: String; AParams: array of const): Boolean; virtual;
     function AddToLog2(AMsg: WideString): TALogNode; virtual;
-    //function AddToLogProf(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg, AParams: WideString; AParentId: Integer): Integer; virtual;
-    function AssignedConfig: Boolean;
-    function CheckInitialized: Boolean; virtual;
-    function ConfigureLoad: WordBool; virtual; safecall;
-    function ConfigureSave: WordBool; virtual; safecall;
-    function Finalize: WordBool; virtual; safecall;
-    function Initialize: WordBool; virtual; safecall;
+    function AssignedConfig(): Boolean;
+    function CheckInitialized(): Boolean; virtual;
+    function ConfigureLoad(): WordBool; virtual; safecall;
+    function ConfigureSave(): WordBool; virtual; safecall;
+    function Finalize(): WordBool; virtual; safecall;
+    function Initialize(): WordBool; virtual; safecall;
   public
     constructor Create(AConfig: AProfXmlNode2 = 0; ALog: TALogNode = nil);
-    procedure Free; virtual;
+    procedure Free(); virtual;
   public
-    //property Config: TConfigNode read GetConfig write SetConfig;
-    //property Log: TLogNode read GetLog write SetLog;
     property Initialized: Boolean read FInitialized write SetInitialized;
   end;
 
@@ -58,7 +50,7 @@ implementation
 
 { TProfObject }
 
-function TProfObject.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: string; AParams: array of const): Boolean;
+function TAObject2006.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: string; AParams: array of const): Boolean;
 begin
   if Assigned(FLog) then
     Result := (FLog.ToLogA(AGroup, AType, Format(AStrMsg, AParams)) >= 0)
@@ -66,29 +58,18 @@ begin
     Result := False;
 end;
 
-function TProfObject.AddToLog2(AMsg: WideString): TALogNode;
+function TAObject2006.AddToLog2(AMsg: WideString): TALogNode;
 begin
   if Assigned(FLog) then
   begin
-    FLog.ToLogA(lgGeneral, ltInformation, AMsg);
+    FLog.AddToLog(lgGeneral, ltInformation, AMsg);
     Result := nil;
-    //Result := FLog.AddToLog2(AMsg);
   end
   else
     Result := nil;
 end;
 
-{function TProfObject.AddToLogProf(AType: TTypeMessage; APlace: TPlaceMessage; AMsg, AParams: WideString): UInt32;
-begin
-  if Assigned(FLog) then begin
-    FLog.AddToLogA(elgGeneral, eltInformation, AMsg, 0);
-    Result := 0;
-    //Result := FLog.AddToLogProf(AType, APlace, AMsg, AParams);
-  end else
-    Result := 0;
-end;}
-
-function TProfObject.AssignedConfig: Boolean;
+function TAObject2006.AssignedConfig: Boolean;
 begin
   if (FConfig = 0) then
   begin
@@ -99,31 +80,31 @@ begin
   Result := True;
 end;
 
-function TProfObject.CheckInitialized: Boolean;
+function TAObject2006.CheckInitialized: Boolean;
 begin
   Result := FInitialized;
   if not(Result) then
     AddToLog(lgGeneral, ltWarning, stNotInitialized, []);
 end;
 
-function TProfObject.ConfigureLoad: WordBool;
+function TAObject2006.ConfigureLoad: WordBool;
 begin
   Result := AssignedConfig;
 end;
 
-function TProfObject.ConfigureSave: WordBool;
+function TAObject2006.ConfigureSave: WordBool;
 begin
   Result := AssignedConfig;
 end;
 
-constructor TProfObject.Create(AConfig: AProfXmlNode2 = 0; ALog: TALogNode = nil);
+constructor TAObject2006.Create(AConfig: AProfXmlNode2 = 0; ALog: TALogNode = nil);
 begin
   inherited Create;
   FConfig := AConfig;
   FLog := ALog;
 end;
 
-function TProfObject.Finalize: WordBool;
+function TAObject2006.Finalize: WordBool;
 begin
   Result := False;
   if not(FInitialized) then begin
@@ -134,40 +115,24 @@ begin
   FInitialized := False;
 end;
 
-procedure TProfObject.Free;
+procedure TAObject2006.Free;
 begin
   if FInitialized then
     Finalize;
-
-  {!!!}
-  //Finalize;
-  //ConfigureSave;
-  {!!!}
-
   inherited Free;
 end;
 
-function TProfObject.Get_Config(): AProfXmlNode2{IProfXmlNode2006};
+function TAObject2006.Get_Config(): AProfXmlNode2;
 begin
   Result := FConfig;
 end;
 
-function TProfObject.Get_Log(): ILogNode2;
+function TAObject2006.Get_Log(): ILogNode2;
 begin
   Result := FLog;
 end;
 
-{function TProfObject.GetConfig: TConfigNode;
-begin
-  Result := FConfig;
-end;}
-
-{function TProfObject.GetLog: TLogNode;
-begin
-  Result := FLog;
-end;}
-
-function TProfObject.Initialize: WordBool;
+function TAObject2006.Initialize(): WordBool;
 begin
   if FInitialized then begin
     AddToLog(lgGeneral, ltInformation, stAlreadyInitialize, []);
@@ -178,7 +143,7 @@ begin
   FInitialized := True;
 end;
 
-procedure TProfObject.SetInitialized(Value: Boolean);
+procedure TAObject2006.SetInitialized(Value: Boolean);
 begin
   if Value then
     Initialize
@@ -186,24 +151,14 @@ begin
     Finalize;
 end;
 
-procedure TProfObject.Set_Config(const Value: AProfXmlNode2{IProfXmlNode2006});
+procedure TAObject2006.Set_Config(const Value: AProfXmlNode2);
 begin
   FConfig := Value;
 end;
 
-procedure TProfObject.Set_Log(const Value: ILogNode2);
+procedure TAObject2006.Set_Log(const Value: ILogNode2);
 begin
   FLog := Value;
 end;
-
-{procedure TProfObject.SetConfig(const Value: TConfigNode);
-begin
-  FConfig := Value;
-end;}
-
-{procedure TProfObject.SetLog(const Value: TLogNode);
-begin
-  FLog := Value;
-end;}
 
 end.

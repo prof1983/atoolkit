@@ -2,9 +2,11 @@
 @Abstract AUi button functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.06.2011
-@LastMod 06.09.2011
+@LastMod 13.11.2011
 }
 unit AUiButtons;
+
+{$define AStdCall}
 
 interface
 
@@ -14,15 +16,9 @@ uses
 
 // --- AUiButton ---
 
-function AUiButton_New(Parent: AControl): AButton;
+function AUiButton_New(Parent: AControl): AButton; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiButton_SetKind(Button: AButton; Kind: TAUiButtonKind): AError;
-
-// --- UI_Button ---
-
-function UI_Button_New(Parent: AControl): AButton; deprecated; // Use AUiButton_New()
-
-procedure UI_Button_SetKind(Button: AButton; Kind: TAUIButtonKind); deprecated; // Use AUiButton_SetKind()
+function AUiButton_SetKind(Button: AButton; Kind: TAUiButtonKind): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
@@ -55,18 +51,6 @@ begin
   except
     Result := -1;
   end;
-end;
-
-{ UI_Button }
-
-function UI_Button_New(Parent: AControl): AButton;
-begin
-  Result := AUiButton_New(Parent);
-end;
-
-procedure UI_Button_SetKind(Button: AButton; Kind: TAUIButtonKind);
-begin
-  AUiButton_SetKind(Button, Kind);
 end;
 
 end.

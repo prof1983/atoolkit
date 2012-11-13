@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 12.11.2012
+@LastMod 13.11.2012
 }
 unit AUiControls;
 
@@ -375,7 +375,11 @@ end;
 function AUiControl_GetTextP(Control: AControl): APascalString;
 begin
   try
-    if (TObject(Control) is TForm) then
+    if (TObject(Control) is TButton) then
+      Result := TButton(Control).Caption
+    else if (TObject(Control) is TComboBox) then
+      Result := TComboBox(Control).Text
+    else if (TObject(Control) is TForm) then
       Result := TForm(Control).Caption
     else if (TObject(Control) is TMenuItem) then
       Result := TMenuItem(Control).Caption
@@ -745,16 +749,18 @@ begin
     end;
     if (Obj is TControl) then
     begin
-      if (Obj is TForm) then
+      if (Obj is TBitBtn) then
+        TBitBtn(Obj).Caption := Value
+      else if (Obj is TButton) then
+        TButton(Obj).Caption := Value
+      else if (Obj is TComboBox) then
+        TComboBox(Obj).Text := Value
+      else if (Obj is TEdit) then
+        TEdit(Obj).Text := Value
+      else if (Obj is TForm) then
         TForm(Obj).Caption := Value
       else if (Obj is TLabel) then
         TLabel(Obj).Caption := Value
-      else if (Obj is TEdit) then
-        TEdit(Obj).Text := Value
-      else if (Obj is TButton) then
-        TButton(Obj).Caption := Value
-      else if (Obj is TBitBtn) then
-        TBitBtn(Obj).Caption := Value
       else if (Obj is TMemo) then
         TMemo(Obj).Text := Value
       {$IFNDEF FPC}

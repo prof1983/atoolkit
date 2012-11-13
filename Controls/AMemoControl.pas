@@ -1,8 +1,8 @@
 ﻿{**
-@Abstract(AMemoControl)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(28.10.2006)
-@LastMod(13.07.2012)
+@Abstract AMemoControl
+@Author Prof1983 <prof1983@ya.ru>
+@Created 28.10.2006
+@LastMod 13.11.2012
 
 Uses
   @link ABase
@@ -18,7 +18,7 @@ uses
   ABase, AControlImpl, ATypes;
 
 type
-  TProfMemoControl = class(TProfControl)
+  TAMemoControl = class(TAControl)
   private
     procedure memInputKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure memInputKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -33,16 +33,18 @@ type
     procedure LoadFromFile(const FileName: WideString);
   end;
 
+  //TProfMemoControl = TAMemoControl;
+
 implementation
 
-{ TMessagesMemoControl }
+{ TAMemoControl }
 
-function TProfMemoControl.AddMessage(const Msg: WideString): Integer;
+function TAMemoControl.AddMessage(const Msg: WideString): Integer;
 begin
   Result := memMessages.Lines.Add('<-- ' + Msg);
 end;
 
-function TProfMemoControl.Initialize(): TProfError;
+function TAMemoControl.Initialize(): TProfError;
 begin
   Result := inherited Initialize();
   memInput := TMemo.Create(FControl);
@@ -58,12 +60,12 @@ begin
   memMessages.ScrollBars := ssVertical;
 end;
 
-procedure TProfMemoControl.LoadFromFile(const FileName: WideString);
+procedure TAMemoControl.LoadFromFile(const FileName: WideString);
 begin
   memMessages.Lines.LoadFromFile(FileName);
 end;
 
-procedure TProfMemoControl.memInputKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TAMemoControl.memInputKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if (Key = 13) and (memInput.Text <> '') then
   begin
@@ -72,7 +74,7 @@ begin
   end;
 end;
 
-procedure TProfMemoControl.memInputKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TAMemoControl.memInputKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key = 13 then
   begin
@@ -80,13 +82,10 @@ begin
   end;
 end;
 
-function TProfMemoControl.SendMessage(const Msg: WideString): Integer;
+function TAMemoControl.SendMessage(const Msg: WideString): Integer;
 begin
   inherited SendMessage(Msg);
   Result := memMessages.Lines.Add('--> ' + Msg);
-
-  //memMessages.Lines.Insert(0, Msg);
-  //Result := memMessages.Lines.Count;
 end;
 
 end.

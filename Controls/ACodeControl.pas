@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Контрол работы с кодом)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(09.11.2006)
-@LastMod(26.04.2012)
-@Version(0.5)
+@Abstract Контрол работы с кодом
+@Author Prof1983 <prof1983@ya.ru>
+@Created 09.11.2006
+@LastMod 13.11.2012
 }
 unit ACodeControl;
 
@@ -14,7 +13,7 @@ uses
   AControlImpl, ATypes;
 
 type //** Контрол работы с кодом
-  TArCodeControl = class(TProfControl)
+  TArCodeControl = class(TAControl)
   private
     FMemo: TMemo;
     function GetLines(): TStrings;

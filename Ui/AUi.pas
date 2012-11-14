@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 12.11.2012
+@LastMod 14.11.2012
 }
 unit AUi;
 
@@ -216,7 +216,9 @@ procedure DataSource_SetOnDataChange02(DataSource: PADataSource; OnDataChange: A
 
 function Dialog_About: AError; stdcall;
 
-function Dialog_About_New: AWindow; stdcall;
+function Dialog_About_New(): AWindow; stdcall;
+
+function Dialog_About_Init(AboutDialog: AWindow): AError; stdcall;
 
 function Dialog_AddButtonP(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
     OnClick: ACallbackProc): AControl; stdcall;
@@ -1488,9 +1490,14 @@ begin
   Result := AUi_ExecuteAboutDialog();
 end;
 
-function Dialog_About_New: AWindow; stdcall;
+function Dialog_About_New(): AWindow;
 begin
   Result := AUi_NewAboutDialog();
+end;
+
+function Dialog_About_Init(AboutDialog: AWindow): AError;
+begin
+  Result := AUi_InitAboutDialog(AboutDialog);
 end;
 
 function Dialog_AddButtonP(Win: AWindow; Left, Width: AInteger; const Text: APascalString;

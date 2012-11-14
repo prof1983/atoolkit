@@ -39,31 +39,8 @@ object AboutForm: TAboutForm
   OldCreateOrder = False
   Position = poScreenCenter
   OnResize = FormResize
-  DesignSize = (
-    348
-    192)
   PixelsPerInch = 96
   TextHeight = 13
-  object lbName: TLabel
-    Left = 93
-    Top = 0
-    Width = 251
-    Height = 41
-    Alignment = taCenter
-    Anchors = [akLeft, akTop, akRight]
-    AutoSize = False
-    Caption = 
-      '1234567890 1234567890 1234567890 1234567890 1234567890 123456789' +
-      '0 1234567890'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -15
-    Font.Name = 'Arial'
-    Font.Style = [fsBold]
-    ParentFont = False
-    Layout = tlCenter
-    WordWrap = True
-  end
   object Panel1: TPanel
     Left = 4
     Top = 16

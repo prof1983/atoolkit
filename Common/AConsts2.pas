@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Глобальные типы и константы для всех проектов)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(06.10.2006)
-@LastMod(10.07.2012)
-@Version(0.5)
+@Abstract Глобальные типы и константы для всех проектов
+@Author Prof1983 <prof1983@ya.ru>
+@Created 06.10.2006
+@LastMod 14.11.2012
 }
 unit AConsts2;
 
@@ -20,63 +19,24 @@ const
 const // Расширения файлов -----------------------------------------------------
   FILE_EXT_CONF = 'conf';
   FILE_EXT_CONFIG = FILE_EXT_CONF;
-  FILE_EXT_INI    = 'ini';
-  FILE_EXT_LOG    = 'log';
-  FILE_EXT_MDB    = 'mdb';
-  FILE_EXT_XML    = 'xml';
-
-const // Некоторые имена тегов в XML файле конфигурации программ ---------------
-  CONFIG_LOG_DOCUMENTS = 'LogDocuments';
+  FILE_EXT_INI = 'ini';
+  FILE_EXT_LOG = 'log';
+  FILE_EXT_POOL = 'pool';
+  FILE_EXT_XML = 'xml';
 
 const // -----------------------------------------------------------------------
   CR = #13;
   LF = #10;
   CRLF = #13 + #10;
 
-{const // Константы временных интервалов ----------------------------------------
-  //** Интервал в часах проверки старых логов
-  INTERVAL_CHECK_OLD_LOG = 1.0;
-  //** Минимальный размер свободного места на диске (в %)
-  MIN_FREE_DISK_SPACE    = 0.01;
-  //** Максимальный объем логов (в %)
-  MAX_DIR_LOG_SIZE       = 0.05;
-  //** Максимальный объем файлов сигналов (в %)
-  MAX_DIR_SIG_FILE_SIZE  = 0.20;}
-
-const // Константы для файлов настроек -----------------------------------------
-  FILE_EXT_SETTING = '.stg';
-  //** Имя файла настроек
-  FILE_NAME_SETTING = 'settings' + FILE_EXT_SETTING;
-  //** Время ожидания блокировки файлов настроек
-  TIMEOUT_LOCK_FILE_SETTING = 5000;
-  //** Имя мутекса для блокировки файлов настроек
-  NAME_MUTEX_LOCK_SETTING = '%s_Settings_LOCK';
-  //** Имя мутекса для блокировки порта
-  NAME_MUTEX_LOCK_SERIAL_PORT = 'AR_MUTEX_%s'; //'PROF_MUTEX_%s';
-  //** Имя файла проецируемого в память для расшаривания инфы о портах
-  NAME_FILE_MAP_SERIAL_PORT = 'AR_SHARE_%s'; //'PROF_SHARE_%s';
-
 const // Стандартная структура папок проекта -----------------------------------
   DEFAULT_DB_DIR = 'DataBase';
   DEFAULT_BIN_DIR = 'Bin';
-  //DEFAULT_HTTP_DIR = 'HTTP';
   DEFAULT_MODULE_DIR = 'Modules';
   DEFAULT_LOGS_DIR = 'Logs';
 
-{const
-  FILE_EXT_RELS_TKR = 'tkr'; }
-
 const
-  PROF_HOME_PAGE = 'http://prof1983.info';
-  PROF_EMAIL_MAIN = 'prof1983@yandex.ru';
-
-const // Для регистрации категории COM объектов
-  Ar_CategoryComDesc_409 = 'AReason OLE Automation'; //Prof_CategoryComDesc_409 = 'Prof OLE Automation'; // eng
-  Ar_CategoryComDesc_419 = 'AReason OLE Automation'; //Prof_CategoryComDesc_419 = 'Prof OLE Automation'; // rus
-  CATID_ArAppServer: TGUID = '{C3D94DD9-3B4A-4010-BE1D-0873DC0AF5A7}'; //CATID_ProfAppServer: TGUID = '{43B87872-98B1-44D1-B53E-9E84845FDEA7}';
-
-const // Название группы в которой регистрируются все сервисы ------------------
-  LOAD_GROUP: PChar = 'ArServices';
+  PROF_EMAIL_MAIN = 'prof1983@ya.ru';
 
 // === Константы ===============================================================
 
@@ -171,20 +131,6 @@ resourcestring // Сообщения -------------------------------------------
 
 const //** @abstract(Для логирования всех ошибок)
   err_Exception_Str = '%s <%s.%s>.';
-
-// === unConst ===
-
-{uses
-  ProfTypes;}
-
-const // Идентификатор стандартной библиотеки ----------------------------------
-  STD_TLB_GUID: TGUID = '{00020430-0000-0000-C000-000000000046}';
-
-const // Описания для датчиков -------------------------------------------------
-  STR_CH_SENSOR_NAME_RUS: array[0..3]of string =
-    ('левый ближний', 'левый дальний', 'правый дальний', 'правый ближний');
-  STR_CH_SENSOR_NAME: array[0..3]of string =
-    ('LB', 'LD', 'PD', 'PB');
 
 implementation
 

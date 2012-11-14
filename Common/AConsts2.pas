@@ -132,6 +132,23 @@ resourcestring // Сообщения -------------------------------------------
 const //** @abstract(Для логирования всех ошибок)
   err_Exception_Str = '%s <%s.%s>.';
 
+const
+  {$IFDEF FPC}
+  cAboutCaption = 'About...';
+  cCompanyName = 'Company: ';
+  cDesctiption = 'Description: ';
+  cProgramName = 'Program name: ';
+  cProgramVersion = 'Version: ';
+  cProductVersion = 'Product version: ';
+  {$ELSE}
+  cAboutCaption = 'О программе';
+  cCompanyName = 'Компания: ';
+  cDescription = 'Описание: ';
+  cProgramName = 'Имя файла: ';
+  cProgramVersion = 'Версия: ';
+  cProductVersion = 'Версия продукта: ';
+  {$ENDIF}
+
 implementation
 
 end.

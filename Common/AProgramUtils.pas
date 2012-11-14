@@ -1,8 +1,8 @@
 ﻿{**
-@Abstract(Некоторые часто используемые функции)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(13.03.2007)
-@LastMod(18.07.2012)
+@Abstract Некоторые часто используемые функции
+@Author Prof1983 <prof1983@ya.ru>
+@Created 13.03.2007
+@LastMod 14.11.2012
 }
 unit AProgramUtils;
 
@@ -12,7 +12,7 @@ interface
 
 uses
   Windows,
-  ABase, ATypes;
+  ABase, AConsts2, ATypes;
 
 //** @abstract(Возвращает информацию о файле)
 function GetProgramVersionInfo(const AFileName: AnsiString): TFileVersionInfoA;
@@ -92,17 +92,17 @@ begin
   else
     S := S + #13#10;
   if (Length(VersionInfo.OriginalFileName) > 0) then
-    S := S + 'Имя файла: '+VersionInfo.OriginalFileName+#13#10;
+    S := S + cProgramName+VersionInfo.OriginalFileName+#13#10;
   if (Length(VersionInfo.InternalName) > 0) then
     S := S + VersionInfo.InternalName+#13#10;
   if (Length(VersionInfo.FileVersion) > 0) then
-    S := S + 'Версия: '+VersionInfo.FileVersion+#13#10;
+    S := S + cProgramVersion+VersionInfo.FileVersion+#13#10;
   if (Length(VersionInfo.LegalCopyright) > 0) then
     S := S + VersionInfo.LegalCopyright+#13#10;
   if (Length(VersionInfo.CompanyName) > 0) then
-    S := S + 'Компания: '+VersionInfo.CompanyName+#13#10;
+    S := S + cCompanyName+VersionInfo.CompanyName+#13#10;
   if (Length(VersionInfo.FileDescription) > 0) then
-    S := S + 'Описание: '+VersionInfo.FileDescription+#13#10;
+    S := S + cDescription+VersionInfo.FileDescription+#13#10;
 
   Result := S;
 end;

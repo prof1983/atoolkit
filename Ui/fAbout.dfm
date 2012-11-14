@@ -45,7 +45,7 @@ object AboutForm: TAboutForm
   PixelsPerInch = 96
   TextHeight = 13
   object lbName: TLabel
-    Left = 96
+    Left = 93
     Top = 0
     Width = 251
     Height = 41
@@ -80,16 +80,5 @@ object AboutForm: TAboutForm
       Center = True
       Transparent = True
     end
-  end
-  object Memo: TMemo
-    Left = 96
-    Top = 40
-    Width = 249
-    Height = 113
-    TabStop = False
-    Color = clBtnFace
-    ReadOnly = True
-    ScrollBars = ssVertical
-    TabOrder = 1
   end
 end

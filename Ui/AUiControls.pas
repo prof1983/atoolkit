@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 13.11.2012
+@LastMod 14.11.2012
 }
 unit AUiControls;
 
@@ -98,6 +98,8 @@ function AUiControl_SetPosition(Control: AControl; Left, Top: AInteger): AError;
 
 function AUiControl_SetSize(Control: AControl; Width, Height: Integer): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiControl_SetTabStop(Control: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiControl_SetText(Control: AControl; const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetTextA(Control: AControl; Value: AStr): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -176,12 +178,10 @@ function UI_Control_SetOnClick02(Control: AControl; Value: ACallbackProc02): AEr
 function UI_Control_SetOnClick03(Control: AControl; Value: ACallbackProc03): AError;
 
 //** Задает расположение элемента.
-function UI_Control_SetPosition(Control: AControl; Left, Top: AInteger): AError;
-//procedure UI_Control_SetPosition(Control: AControl; Left, Top: AInteger); stdcall; deprecated; // Use AUiControl_SetPosition()
+function UI_Control_SetPosition(Control: AControl; Left, Top: AInteger): AError; deprecated; // Use AUiControl_SetPosition()
 
 //** Задает внешний размер элемента.
-function UI_Control_SetSize(Control: AControl; Width, Height: Integer): AError;
-//procedure UI_Control_SetSize(Control: AControl; Width, Height: AInteger); stdcall; deprecated; // Use AUiControl_SetSize()
+function UI_Control_SetSize(Control: AControl; Width, Height: Integer): AError; deprecated; // Use AUiControl_SetSize()
 
 procedure UI_Control_SetText(Control: AControl; const Value: AWideString); stdcall; deprecated; // Use AUiControl_SetTextP()
 
@@ -472,6 +472,8 @@ begin
       else
         TLabel(Control).Font.Color := clBlack; //UI_Control_SetFont(ColorLineTipV, '', 0, $000000{clBlack}); *)
     end
+    else if (TObject(Control) is TMemo) then
+      TMemo(Control).Color := Color
     else if (TObject(Control) is TPanel) then
       TPanel(Control).Color := Color
     else if (TObject(Control) is TForm) then
@@ -720,6 +722,25 @@ begin
       C.Width := Width;
       C.Height := Height;
     end;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiControl_SetTabStop(Control: AControl; Value: ABoolean): AError;
+var
+  Obj: TObject;
+begin
+  try
+    Obj := GetObject(Control);
+    if not(Assigned(Obj)) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+    if (Obj is TWinControl) then
+      TWinControl(Obj).TabStop := Value;
     Result := 0;
   except
     Result := -1;

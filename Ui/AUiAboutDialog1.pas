@@ -9,6 +9,7 @@ unit AUiAboutDialog1;
 interface
 
 uses
+  Forms,
   ABase, AProgramUtils,
   AUiAboutDialog, AUiControls;
 
@@ -19,6 +20,7 @@ implementation
 function AboutForm_Init1(var AboutForm: TAboutFormRec): AError;
 begin
   Result := AUiControl_SetTextP(AboutForm.Memo, GetProgramVersionInfoStr(ParamStr(0)));
+  AboutForm.Image.Picture.Assign(Application.Icon);
 end;
 
 end.

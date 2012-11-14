@@ -2,7 +2,7 @@
 @Abstract AUi button functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.06.2011
-@LastMod 13.11.2011
+@LastMod 14.11.2011
 }
 unit AUiButtons;
 
@@ -17,6 +17,8 @@ uses
 // --- AUiButton ---
 
 function AUiButton_New(Parent: AControl): AButton; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiButton_LoadGlyphP(Button: AButton; const FileName: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiButton_SetKind(Button: AButton; Kind: TAUiButtonKind): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -40,6 +42,25 @@ begin
     FButtons[I].Button := Result;
   except
     Result := 0;
+  end;
+end;
+
+function AUiButton_LoadGlyphP(Button: AButton; const FileName: APascalString): AError;
+var
+  Obj: TObject;
+begin
+  try
+    Obj := GetObject(Button);
+    if not(Assigned(Obj)) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+    if (Obj is TBitBtn) then
+      TBitBtn(Obj).Glyph.LoadFromFile(FileName);
+    Result := 0;
+  except
+    Result := -1;
   end;
 end;
 

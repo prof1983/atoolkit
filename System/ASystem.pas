@@ -2,7 +2,7 @@
 @Abstract ASystem function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.08.2009
-@LastMod 12.11.2012
+@LastMod 15.11.2012
 }
 unit ASystem;
 
@@ -390,6 +390,8 @@ function GetCopyright(): APascalString; stdcall; deprecated;
 function GetDescription(): AWideString; stdcall; deprecated;
 
 function GetDirectoryPath(out Value: AString_Type): AInteger; stdcall;
+
+function GetDirectoryPathP(): APascalString; stdcall;
 
 function GetExePath(out Value: AString_Type): AInteger; stdcall;
 
@@ -1268,6 +1270,11 @@ end;
 function GetDirectoryPath(out Value: AString_Type): AInteger;
 begin
   Result := AStrings.String_AssignP(Value, FExePath);
+end;
+
+function GetDirectoryPathP(): APascalString;
+begin
+  Result := FExePath;
 end;
 
 function GetExeName(): APascalString; stdcall;

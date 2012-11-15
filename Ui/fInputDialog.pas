@@ -1,9 +1,8 @@
 {**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.02.2009)
-@LastMod(29.06.2011)
-@Version(0.5)
+@Abstract AUi input dialog
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.02.2009
+@LastMod 15.11.2012
 }
 unit fInputDialog;
 

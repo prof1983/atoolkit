@@ -2,7 +2,7 @@
 @Abstract AUi calendar form
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.08.2008
-@LastMod 19.07.2012
+@LastMod 15.11.2012
 }
 unit fCalendar;
 

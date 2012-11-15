@@ -1,9 +1,8 @@
 {**
-@Abstract(Форма ввода имени и пароля)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(04.02.2008)
-@LastMod(03.05.2011)
-@Version(0.5)
+@Abstract AUi login form
+@Author Prof1983 <prof1983@ya.ru>
+@Created 04.02.2008
+@LastMod 15.11.2012
 }
 unit fLogin;
 

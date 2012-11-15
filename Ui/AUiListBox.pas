@@ -2,7 +2,7 @@
 @Abstract AUiListBox
 @Author Prof1983 <prof1983@ya.ru>
 @Created 05.09.2012
-@LastMod 12.11.2012
+@LastMod 15.11.2012
 }
 unit AUiListBox;
 
@@ -42,9 +42,13 @@ function AUiListBox_New2(Parent: AControl; Typ: AInteger): AControl; {$ifdef ASt
 
 function AUiListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiListBox_SetItemHeight(ListBox: AControl; Value: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiListBox_SetItemP(ListBox: AControl; Index: AInteger; const Value: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiListBox_SetItemIndex(ListBox: AControl; Index: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiListBox_SetOnDblClick(ListBox: AControl; Value: ACallbackProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 // --- AUi_ListBox ---
 
@@ -273,6 +277,27 @@ begin
   Result := AUiListBox_SetItemP(ListBox, Index, AStrings.String_ToWideString(Value));
 end;
 
+function AUiListBox_SetItemHeight(ListBox: AControl; Value: AInt): AError;
+var
+  Obj: TObject;
+begin
+  try
+    Obj := GetObject(ListBox);
+    if not(Assigned(Obj)) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+
+    if (Obj is TListBox) then
+      TListBox(Obj).ItemHeight := Value;
+
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
 function AUiListBox_SetItemP(ListBox: AControl; Index: AInteger; const Value: APascalString): AError;
 begin
   try
@@ -296,6 +321,20 @@ begin
     Result := 0;
   except
     Result := -1;
+  end;
+end;
+
+function AUiListBox_SetOnDblClick(ListBox: AControl; Value: ACallbackProc): AError;
+var
+  I: AInt;
+begin
+  try
+    I := FindListBox(ListBox);
+    if (I >= 0) then
+      FListBoxs[I].OnDblClick := Value;
+    Result := 0;
+  except
+    Result := -2;
   end;
 end;
 
@@ -360,7 +399,7 @@ end;
 
 procedure UI_ListBox_Clear(ListBox: AControl);
 begin
-  AUiListBox_Clear();
+  AUiListBox_Clear(ListBox);
 end;
 
 procedure UI_ListBox_DeleteItem(ListBox: AControl; Index: AInteger);

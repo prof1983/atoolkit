@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 14.11.2012
+@LastMod 15.11.2012
 }
 unit AUi;
 
@@ -2304,8 +2304,8 @@ var
   I: Integer;
 begin
   try
-    PageControl := AUIPageControl.UI_PageControl_New(Parent);
-    UI_Control_SetAlign(PageControl, uiAlignTop);
+    PageControl := AUiPageControl_New(Parent);
+    AUiControl_SetAlign(PageControl, uiAlignTop);
     AUiControl_SetHeight(PageControl, 60);
 
     I := Length(FToolMenus);
@@ -2343,7 +2343,7 @@ end;}
 function TreeView_AddItemWS(TreeView: AControl; Parent: ATreeNode; Text: AWideString): ATreeNode; stdcall;
 begin
   try
-    Result := AUITreeView.UI_TreeView_AddItem(TreeView, Parent, Text);
+    Result := AUiTreeView_AddItemP(TreeView, Parent, Text);
   except
     Result := 0;
   end;
@@ -2352,7 +2352,7 @@ end;
 function TreeView_New(Parent: AControl): AControl; stdcall;
 begin
   try
-    Result := AUITreeView.UI_TreeView_New(Parent);
+    Result := AUiTreeView_New(Parent);
   except
     Result := 0;
   end;

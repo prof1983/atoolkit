@@ -2,7 +2,7 @@
 @Abstract AUi data
 @Author Prof1983 <prof1983@ya.ru>
 @Created 31.05.2011
-@LastMod 22.08.2012
+@LastMod 15.11.2012
 }
 unit AUiData;
 
@@ -14,7 +14,7 @@ uses
 { Types }
 
 type
-  TAUICalendar = record
+  TAUiCalendar = record
     Calendar: AControl;
     OnChange02: ACallbackProc02;
     OnChange03: ACallbackProc03;
@@ -22,27 +22,28 @@ type
   end;
 
 type
-  TAUIDataSource = record
+  TAUiDataSource = record
     DataSource: PADataSource;
     OnDataChange02: ACallbackProc02;
     OnDataChange03: ACallbackProc03;
   end;
 
 type
-  TAUIFrame = record
+  TAUiFrame = record
     Frame: AControl;
     Menu: AMenu;
   end;
 
 type
-  TAUIListBox = record
+  TAUiListBox = record
     ListBox: AControl;
     OnClick02: ACallbackProc02;
     OnClick03: ACallbackProc03;
+    OnDblClick: ACallbackProc03;
   end;
 
 type
-  TAUIMenuItem = record
+  TAUiMenuItem = record
     Parent: Integer;
     MenuItem: AMenuItem;
     OnClick02: ACallbackProc02;
@@ -51,21 +52,21 @@ type
   end;
 
 type
-  TAUIPageControl = record
+  TAUiPageControl = record
     PageControl: AControl;
     OnChange02: ACallbackProc02;
     OnChange03: ACallbackProc03;
   end;
 
 type
-  TAUIReport = record
+  TAUiReport = record
     Parent: AControl;
     TextView: AControl;
     ToolsPanel: AControl;
   end;
 
 type
-  TAUIToolMenu = record
+  TAUiToolMenu = record
     PageControl: AControl;
     Page: AControl; //TabSheet: TTabSheet;
     //CoolBar: AControl; //TCoolBar;
@@ -79,17 +80,17 @@ var
     OnClick02: ACallbackProc02;
     OnClick03: ACallbackProc03;
   end;
-  FCalendars: array of TAUICalendar;
-  FDataSources: array of TAUIDataSource;
-  FFrames: array of TAUIFrame;
-  FListBoxs: array of TAUIListBox;
-  FMenuItems: array of TAUIMenuItem;
+  FCalendars: array of TAUiCalendar;
+  FDataSources: array of TAUiDataSource;
+  FFrames: array of TAUiFrame;
+  FListBoxs: array of TAUiListBox;
+  FMenuItems: array of TAUiMenuItem;
   FObjects: array of TObject;
   FOnDone: AEvent;
   FOnMainFormCreate: AProc;
-  FPageControls: array of TAUIPageControl;
-  FReports: array of TAUIReport;
-  FToolMenus: array of TAUIToolMenu;
+  FPageControls: array of TAUiPageControl;
+  FReports: array of TAUiReport;
+  FToolMenus: array of TAUiToolMenu;
   FIsShowApp: Boolean;
   FMainTrayIcon: AControl;
   FMainWindow: AWindow;

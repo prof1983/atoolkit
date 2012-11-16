@@ -80,6 +80,3 @@ const
   cProgramVersion_ru = 'Версия: ';
   cProductVersion_ru = 'Версия продукта: ';
 
-implementation
-
-end.

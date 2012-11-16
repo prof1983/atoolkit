@@ -2,7 +2,7 @@
 @Abstract Util functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.09.2009
-@LastMod 05.09.2012
+@LastMod 16.11.2012
 }
 unit AUtils;
 
@@ -411,7 +411,7 @@ function Sleep(Milliseconds: AUInt): AError; stdcall;
 procedure Sleep02(Milliseconds: AUInt); stdcall;
 
 //** Возвращает текущую дату и время.
-function Time_Now(): TDateTime; stdcall;
+function Time_Now(): TDateTime; stdcall; // Use GetNowDateTime()
 
 { Utils }
 
@@ -446,7 +446,7 @@ function Utils_ReplaceComma(const S: APascalString; DecimalSeparator: AChar = #0
 
 procedure Utils_Sleep(Milliseconds: AUInt); stdcall;
 
-function Utils_Time_Now: TDateTime; stdcall;
+function Utils_Time_Now: TDateTime; stdcall; // Use GetNowDateTime()
 
 {$IFDEF AUTILSOLD}
 function Utils_Trim(const S: APascalString): APascalString; deprecated; // Use TrimWS()

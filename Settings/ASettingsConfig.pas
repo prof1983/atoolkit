@@ -129,7 +129,7 @@ end;
 
 function Settings_WriteInteger(Config: AConfig; const Section, Name: APascalString; Value: AInteger): ABoolean;
 begin
-  Result := (ASettings_WriteInteger(Config, Section, Name, Value) = 0);
+  Result := (ASettings_WriteIntegerP(Config, Section, Name, Value) = 0);
 end;
 
 function Settings_WriteString(Config: AConfig; const Section, Name, Value: APascalString): ABoolean;

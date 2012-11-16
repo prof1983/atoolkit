@@ -2,14 +2,14 @@
 @Abstract The module for work with the settings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 14.08.2012
+@LastMod 16.11.2012
 }
 unit ASettings;
 
 interface
 
 uses
-  ABase, ACollectionsBase, ASettingsMain, AStrings;
+  ABase, ACollectionsBase, ASettingsIni, ASettingsMain, ASettingsReg, AStrings;
 
 // --- ASettings ---
 
@@ -380,20 +380,12 @@ end;
 
 function A_Settings_IniConfig_New(const FileName: AString_Type): AConfig; stdcall;
 begin
-  try
-    Result := Settings_IniConfig_New(AStrings.String_ToWideString(FileName));
-  except
-    Result := 0;
-  end;
+  Result := ASettings_IniConfig_NewP(AStrings.String_ToWideString(FileName));
 end;
 
 function A_Settings_RegConfig_New(const Prefix: AString_Type): AConfig; stdcall;
 begin
-  try
-    Result := Settings_RegConfig_New(AStrings.String_ToWideString(Prefix));
-  except
-    Result := 0;
-  end;
+  Result := ASettings_RegConfig_NewP(AStrings.String_ToWideString(Prefix));
 end;
 
 function A_Settings_RegConfig_NewA(const Prefix: AString_Type; HKEY: Integer): AConfig; stdcall;
@@ -409,7 +401,7 @@ end;
 
 function Config_Close(Config: AConfig): AError;
 begin
-  Result := ASettings_Close();
+  Result := ASettings_Close(Config);
 end;
 
 procedure Config_Close02(Config: AConfig);

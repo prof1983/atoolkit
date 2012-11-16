@@ -44,12 +44,10 @@ uses
     {$IFNDEF UNIX}ShellApi,{$ENDIF}
   {$ENDIF}
 
-  //{$IFDEF USE_SYSUTILS}SysUtils,{$ENDIF}
   {$IFNDEF UNIX}Windows,{$ENDIF}
-  {$IFDEF USE_EVENTS}AEvents,{$ENDIF}
   {$IFDEF USE_CONFIG}ASystemConfig,{$ENDIF}
+  {$IFDEF USE_EVENTS}ASystemEvents,{$ENDIF}
   ABase, ABaseTypes, ABaseUtils,
-  {ALibraries,}
   {$IFDEF USE_RUNTIME}ARuntime,{$ENDIF}
   AStrings, ASystemData, ASystemMain, ASystemPrepare, ASystemResourceString, ASystemUtils;
 
@@ -81,9 +79,9 @@ function Info_GetCopyrightP: APascalString; stdcall;
     Prototype: System.Application.Info.Copyright }
 function Info_GetCopyrightWS(): AWideString; stdcall;
 
-function Info_GetDataDirectoryPathP: APascalString; stdcall;
+function Info_GetDataDirectoryPathP: APascalString; stdcall; deprecated; // Use ASystem_GetDataDirectoryPathP()
 
-function Info_GetDataDirectoryPathWS(): AWideString; stdcall;
+function Info_GetDataDirectoryPathWS(): AWideString; stdcall; deprecated; // Use ASystem_GetDataDirectoryPathP()
 
 {** Gets the description associated with the application.
     Prototype: System.Application.Info.Description }
@@ -135,15 +133,15 @@ function Info_GetProductVersionStrWS(): AWideString; stdcall;
 
 {** Gets the name, without the extension, of the assembly file for the application.
     Prototype: System.Application.Info.AssemblyName }
-function Info_GetProgramName(out Value: AString_Type): AInteger; stdcall;
+function Info_GetProgramName(out Value: AString_Type): AInteger; stdcall; deprecated; // Use ASystem_GetProgramName()
 
 {** Gets the name, without the extension, of the assembly file for the application.
     Prototype: System.Application.Info.AssemblyName }
-function Info_GetProgramNameP: APascalString; stdcall;
+function Info_GetProgramNameP: APascalString; stdcall; deprecated; // Use ASystem_GetProgramNameP()
 
 {** Gets the name, without the extension, of the assembly file for the application.
     Prototype: System.Application.Info.AssemblyName }
-function Info_GetProgramNameWS(): AWideString; stdcall;
+function Info_GetProgramNameWS(): AWideString; stdcall; deprecated; // Use ASystem_GetProgramNameP()
 
 {** Gets the version number of the application.
     Prototype: System.Application.Info.Version }
@@ -441,11 +439,11 @@ function Runtime_GetExePath(): APascalString; stdcall; deprecated; // Use ASyste
 function Runtime_GetProductName(): APascalString; stdcall; deprecated;
 function Runtime_GetProductVersion(): APascalString; stdcall; deprecated;
 function Runtime_GetExeName(): APascalString; stdcall; deprecated;
-function Runtime_GetProgramName(): APascalString; stdcall; deprecated;
+function Runtime_GetProgramName(): APascalString; stdcall; deprecated; deprecated; // Use ASystem_GetProgramNameP()
 function Runtime_GetProgramVersion(): APascalString; stdcall; deprecated;
 function Runtime_GetTitle(): APascalString; stdcall; deprecated;
 function Runtime_GetUrl(): APascalString; stdcall; deprecated;
-function Runtime_GetDataPath: APascalString; stdcall; deprecated; // Use Info_GetDataDirectoryPathWS()
+function Runtime_GetDataPath(): APascalString; stdcall; deprecated; // Use ASystem_GetDataDirectoryPathP()
 
 function GetConfig(): AConfig; stdcall;
 
@@ -504,34 +502,6 @@ begin
 end;
 
 { Events }
-
-{$IFDEF USE_EVENTS}
-function DoAfterRun(): AInteger; stdcall;
-begin
-  Result := AEvents.Event_Invoke(FOnAfterRunEvent, 0);
-end;
-{$ENDIF USE_EVENTS}
-
-{$IFDEF USE_EVENTS}
-procedure DoAfterRun02(); stdcall;
-begin
-  AEvents.Event_Invoke(FOnAfterRunEvent, 0);
-end;
-{$ENDIF USE_EVENTS}
-
-{$IFDEF USE_EVENTS}
-function DoBeforeRun(): AInteger; stdcall;
-begin
-  Result := AEvents.Event_Invoke(FOnBeforeRunEvent, 0);
-end;
-{$ENDIF USE_EVENTS}
-
-{$IFDEF USE_EVENTS}
-procedure DoBeforeRun02(); stdcall;
-begin
-  AEvents.Event_Invoke(FOnBeforeRunEvent, 0);
-end;
-{$ENDIF USE_EVENTS}
 
 function DoShowMessage(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
@@ -794,7 +764,7 @@ end;
 {$IFDEF USE_EVENTS}
 function OnAfterRun_Connect(Callback: ACallbackProc; Weight: AInteger): Integer; stdcall;
 begin
-  Result := AEvents.Event_Connect(FOnAfterRunEvent, Callback, Weight);
+  Result := ASystem_OnAfterRun_Connect(Callback, Weight);
 end;
 {$ENDIF USE_EVENTS}
 
@@ -810,7 +780,7 @@ end;
 {$IFDEF USE_EVENTS}
 function OnAfterRun_Disconnect(Callback: ACallbackProc): Integer; stdcall;
 begin
-  Result := AEvents.Event_Disconnect(FOnAfterRunEvent, Callback);
+  Result := ASystem_OnAfterRun_Disconnect(Callback);
 end;
 {$ENDIF USE_EVENTS}
 
@@ -824,7 +794,7 @@ end;
 {$IFDEF USE_EVENTS}
 function OnBeforeRun_Connect(Callback: ACallbackProc; Weight: AInteger = High(AInteger)): AInteger; stdcall;
 begin
-  Result := AEvents.Event_Connect(FOnBeforeRunEvent, Callback, Weight);
+  Result := ASystem_OnBeforeRun_Connect(Callback, Weight);
 end;
 {$ENDIF USE_EVENTS}
 
@@ -840,7 +810,7 @@ end;
 {$IFDEF USE_EVENTS}
 function OnBeforeRun_Disconnect(Callback: ACallbackProc): Integer; stdcall;
 begin
-  Result := AEvents.Event_Disconnect(FOnBeforeRunEvent, Callback);
+  Result := ASystem_OnBeforeRun_Disconnect(Callback);
 end;
 {$ENDIF USE_EVENTS}
 
@@ -851,34 +821,19 @@ begin
   Result := FConfig;
 end;
 
-function ParamStr(Index: AInteger; out Value: AString_Type): AInteger; stdcall;
-var
-  Res: string;
+function ParamStr(Index: AInteger; out Value: AString_Type): AInteger; 
 begin
-  try
-    Res := System.ParamStr(Index);
-    Result := AStrings.String_AssignP(Value, Res);
-  except
-    Result := -1;
-  end;
+  Result := ASystem_ParamStr(Index, Value);
 end;
 
-function ParamStrP(Index: AInteger): APascalString; stdcall;
+function ParamStrP(Index: AInteger): APascalString;
 begin
-  try
-    Result := System.ParamStr(Index);
-  except
-    Result := '';
-  end;
+  Result := ASystem_ParamStrP(Index);
 end;
 
-function ParamStrWS(Index: AInteger): AWideString; stdcall;
+function ParamStrWS(Index: AInteger): AWideString;
 begin
-  try
-    Result := System.ParamStr(Index);
-  except
-    Result := '';
-  end;
+  Result := ASystem_ParamStrP(Index);
 end;
 
 function Prepare(): AError;
@@ -978,31 +933,17 @@ end;
 function Prepare3WS(const Title, ProgramName: AWideString; ProgramVersion: AVersion;
     const ProductName: AWideString; ProductVersion: AVersion;
     const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: AWideString): AError; stdcall;
+var
+  R: AError;
 begin
   SetOnShowMessage(DoShowMessage);
   {$IFDEF USE_EVENTS}
-    if (AEvents.Init() < 0) then
-    begin
-      Result := -3;
-      Exit;
-    end;
-
-    FOnAfterRunEvent := AEvents.Event_NewW(0, 'AfterRun');
-    FOnBeforeRunEvent := AEvents.Event_NewW(0, 'BeforeRun');
-    {$IFDEF USE_RUNTIME}
-    {$IFDEF A01}
-      ARuntime.OnAfterRun_Set(DoAfterRun02);
-      ARuntime.OnBeforeRun_Set(DoBeforeRun02);
-    {$ELSE}
-      {$IFDEF A02}
-      ARuntime.OnAfterRun_Set(DoAfterRun02);
-      ARuntime.OnBeforeRun_Set(DoBeforeRun02);
-      {$ELSE}
-      ARuntime.SetOnAfterRun(DoAfterRun);
-      ARuntime.SetOnBeforeRun(DoBeforeRun);
-      {$ENDIF A02}
-    {$ENDIF A01}
-    {$ENDIF USE_RUNTIME}
+  R := ASystemEvents_Init();
+  if (R < 0) then
+  begin
+    Result := R;
+    Exit;
+  end;
   {$ENDIF USE_EVENTS}
 
   System_Prepare(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
@@ -1027,22 +968,7 @@ function Prepare4P(const Title, ProgramName: APascalString; ProgramVersion: AVer
     const CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath: APascalString): AError;
 begin
   {$IFDEF USE_EVENTS}
-    FOnAfterRunEvent := AEvents.Event_NewW(0, 'AfterRun');
-    FOnBeforeRunEvent := AEvents.Event_NewW(0, 'BeforeRun');
-    {$IFDEF USE_RUNTIME}
-    {$IFDEF A01}
-      ARuntime.OnAfterRun_Set(DoAfterRun02);
-      ARuntime.OnBeforeRun_Set(DoBeforeRun02);
-    {$ELSE}
-      {$IFDEF A02}
-      ARuntime.OnAfterRun_Set(DoAfterRun02);
-      ARuntime.OnBeforeRun_Set(DoBeforeRun02);
-      {$ELSE}
-      ARuntime.SetOnAfterRun(DoAfterRun);
-      ARuntime.SetOnBeforeRun(DoBeforeRun);
-      {$ENDIF A02}
-    {$ENDIF A01}
-    {$ENDIF USE_RUNTIME}
+  ASystemEvents_Init();
   {$ENDIF USE_EVENTS}
 
   System_Prepare(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,

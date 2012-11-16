@@ -19,7 +19,7 @@ object CalendarForm: TCalendarForm
     Top = 0
     Width = 191
     Height = 154
-    Date = 39685.332321319440000000
+    Date = 39685.492726226850000000
     TabOrder = 0
   end
   object btnOk: TBitBtn
@@ -29,7 +29,8 @@ object CalendarForm: TCalendarForm
     Height = 25
     Caption = 'OK'
     Default = True
-    DoubleBuffered = True
+    ModalResult = 1
+    TabOrder = 1
     Glyph.Data = {
       DE010000424DDE01000000000000760000002800000024000000120000000100
       0400000000006801000000000000000000001000000000000000000000000000
@@ -47,10 +48,7 @@ object CalendarForm: TCalendarForm
       3338F38F000033333333333333A223333333333333338F830000333333333333
       333A333333333333333338330000333333333333333333333333333333333333
       0000}
-    ModalResult = 1
     NumGlyphs = 2
-    ParentDoubleBuffered = False
-    TabOrder = 1
   end
   object btnCancel: TBitBtn
     Left = 104
@@ -58,11 +56,8 @@ object CalendarForm: TCalendarForm
     Width = 75
     Height = 25
     Caption = #1054#1090#1084#1077#1085#1072
-    DoubleBuffered = True
-    Kind = bkCancel
-    NumGlyphs = 2
-    ParentDoubleBuffered = False
     TabOrder = 2
+    Kind = bkCancel
   end
   object RG: TRadioGroup
     Left = 208

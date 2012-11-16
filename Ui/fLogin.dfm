@@ -78,7 +78,8 @@ object LoginForm: TLoginForm
       Height = 30
       Caption = 'OK'
       Default = True
-      DoubleBuffered = True
+      ModalResult = 1
+      TabOrder = 0
       Glyph.Data = {
         CE070000424DCE07000000000000360000002800000024000000120000000100
         1800000000009807000000000000000000000000000000000000008284008284
@@ -143,10 +144,7 @@ object LoginForm: TLoginForm
         8400828400828400828400828400828400828400828400828400828400828400
         8284008284008284008284008284008284008284008284008284008284008284
         008284008284008284008284008284008284}
-      ModalResult = 1
       NumGlyphs = 2
-      ParentDoubleBuffered = False
-      TabOrder = 0
     end
     object btnCancel: TBitBtn
       Left = 149
@@ -154,11 +152,8 @@ object LoginForm: TLoginForm
       Width = 90
       Height = 30
       Caption = #1054#1090#1084#1077#1085#1072
-      DoubleBuffered = True
-      Kind = bkCancel
-      NumGlyphs = 2
-      ParentDoubleBuffered = False
       TabOrder = 1
+      Kind = bkCancel
     end
   end
 end

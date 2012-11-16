@@ -39,11 +39,8 @@ object InputForm: TInputForm
       Top = 4
       Width = 75
       Height = 25
-      DoubleBuffered = True
-      Kind = bkOK
-      NumGlyphs = 2
-      ParentDoubleBuffered = False
       TabOrder = 0
+      Kind = bkOK
     end
     object btnCancel: TBitBtn
       Left = 152
@@ -51,11 +48,8 @@ object InputForm: TInputForm
       Width = 75
       Height = 25
       Caption = #1054#1090#1084#1077#1085#1072
-      DoubleBuffered = True
-      Kind = bkCancel
-      NumGlyphs = 2
-      ParentDoubleBuffered = False
       TabOrder = 1
+      Kind = bkCancel
     end
   end
   object Memo: TMemo

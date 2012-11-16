@@ -1,9 +1,9 @@
 object FilterForm: TFilterForm
   Left = 204
   Top = 103
+  Width = 358
+  Height = 183
   Caption = #1042#1099#1073#1086#1088' '#1076#1080#1072#1087#1072#1079#1086#1085#1072' '#1092#1080#1083#1100#1090#1088#1072#1094#1080#1080' '#1079#1072#1087#1080#1089#1077#1081
-  ClientHeight = 156
-  ClientWidth = 350
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -59,11 +59,8 @@ object FilterForm: TFilterForm
     Top = 112
     Width = 75
     Height = 25
-    DoubleBuffered = True
-    Kind = bkOK
-    NumGlyphs = 2
-    ParentDoubleBuffered = False
     TabOrder = 2
+    Kind = bkOK
   end
   object CancelButton: TBitBtn
     Left = 256
@@ -71,11 +68,8 @@ object FilterForm: TFilterForm
     Width = 75
     Height = 25
     Caption = #1054#1090#1084#1077#1085#1072
-    DoubleBuffered = True
-    Kind = bkCancel
-    NumGlyphs = 2
-    ParentDoubleBuffered = False
     TabOrder = 3
+    Kind = bkCancel
   end
   object DateTimePicker1: TDateTimePicker
     Left = 192

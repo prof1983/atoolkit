@@ -2,7 +2,7 @@
 @Abstract ASystem function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.08.2009
-@LastMod 15.11.2012
+@LastMod 16.11.2012
 }
 unit ASystem;
 
@@ -1269,7 +1269,7 @@ end;
 
 function GetDirectoryPath(out Value: AString_Type): AInteger;
 begin
-  Result := AStrings.String_AssignP(Value, FExePath);
+  Result := ASystem_GetDirectoryPath(Value);
 end;
 
 function GetDirectoryPathP(): APascalString;

@@ -1,5 +1,5 @@
-﻿{**
-@Abstract Некоторые часто используемые функции
+{**
+@Abstract AProgram util functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.03.2007
 @LastMod 14.11.2012
@@ -14,7 +14,6 @@ uses
   Windows,
   ABase, AConsts2, ATypes;
 
-//** @abstract(Возвращает информацию о файле)
 function GetProgramVersionInfo(const AFileName: AnsiString): TFileVersionInfoA;
 
 function GetProgramVersionInfoStr(const FileName: AnsiString): APascalString;

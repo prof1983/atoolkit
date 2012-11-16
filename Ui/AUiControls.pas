@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 14.11.2012
+@LastMod 16.11.2012
 }
 unit AUiControls;
 
@@ -269,7 +269,10 @@ begin
   try
     S := AUiControl_GetHintP(Control);
     if (Length(S) < MaxLen) then
-      Move(S, Value, Length(S))
+    begin
+      Move(S, Value, Length(S));
+      Result := 0;
+    end
     else
       Result := -2;
   except
@@ -330,7 +333,10 @@ begin
   try
     S := AUiControl_GetNameP(Control);
     if (Length(S) < MaxLen) then
-      Move(S, Value, Length(S))
+    begin
+      Move(S, Value, Length(S));
+      Result := 0;
+    end
     else
       Result := -2;
   except

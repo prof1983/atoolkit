@@ -2,14 +2,14 @@
 @Abstract AUi Splash
 @Author Prof1983 <prof1983@ya.ru>
 @Created 08.12.2009
-@LastMod 27.08.2012
+@LastMod 16.11.2012
 }
 unit AUiSplash;
 
 interface
 
 uses
-  ABase, ASettings, ASystem, AUi, AUiBase, AUtils;
+  ABase, ASettings, ASystem, ASystemMain, AUi, AUiBase, AUtils;
 
 {** Finalize splash }
 function AUiSplash_Fin(): AError; stdcall;
@@ -62,7 +62,7 @@ begin
   Result := False;
   I := 1;
   repeat
-    S := ASystem.ParamStrWS(I);
+    S := ASystem_ParamStrP(I);
     if (AUtils.String_ToUpperWS(S) = '-NOSPLASH') then
     begin
       Result := True;
@@ -73,7 +73,7 @@ begin
 
   if not(NoSplash) then
   begin
-    Config := ASystem.GetConfig();
+    Config := ASystem_GetConfig();
     if (Config <> 0) then
       Result := ASettings.Config_ReadBoolDefP(Config, 'App', 'NoSplash', False);
   end;
@@ -146,31 +146,6 @@ begin
     Exit;
   end;
 
-  // --- Init modules ---
-
-  try
-    if (ASystem.Init < 0) then
-    begin
-      Result := -2;
-      Exit;
-    end;
-
-    if (AUI.Init < 0) then
-    begin
-      Result := -3;
-      Exit;
-    end;
-
-    if (AUtils.Init < 0) then
-    begin
-      Result := -4;
-      Exit;
-    end;
-  except
-    Result := -1;
-    Exit;
-  end;
-
   // --- Init recomended modules ---
 
   {if (ARuntime.Modules_GetByUid(ASettings_Uid, Addr(Module)) < 0) then
@@ -206,7 +181,7 @@ begin
           AUI.Control_SetAlign(Image, uiAlignLeft);
           AUI.Control_SetSize(Image, 168, 47);
 
-          S := ASystem.GetTitleWS();
+          S := ASystem_GetTitleP();
           TextLabel := AUI.Label_New(Box1);
           AUI.Control_SetColor(TextLabel, $FFFFFF{clWhite});
           AUI.Control_SetTextWS(TextLabel, S);
@@ -245,18 +220,18 @@ begin
           AUI.TextView_SetWordWrap(TextView, False);
     end;
 
-    FStartTime := AUtils.Time_Now;
+    FStartTime := AUtils.GetNowDateTime();
 
     if (FImageFileName = '') then
     begin
-      S := ASystem.GetDataDirectoryPathWS() + ASystem.GetProgramNameWS() + '.png';
+      S := ASystem_GetDataDirectoryPathP() + ASystem_GetProgramNameP() + '.png';
       if AUtils.FileExistsWS(S) then
         FImageFileName := S;
     end;
 
     if (FImageFileName = '') then
     begin
-      S := ASystem.GetDataDirectoryPathWS() + ASystem.GetProgramNameWS() + '.bmp';
+      S := ASystem_GetDataDirectoryPathP() + ASystem_GetProgramNameP() + '.bmp';
       if AUtils.FileExistsWS(S) then
         FImageFileName := S;
     end;

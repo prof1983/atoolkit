@@ -2,7 +2,7 @@
 @Abstract AUiMainWindow
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2008
-@LastMod 12.11.2012
+@LastMod 16.11.2012
 }
 unit AUiMainWindow;
 
@@ -21,7 +21,7 @@ uses
   ABase,
   {$IFDEF OLDMAINFORM}fMain,{$ENDIF}
   AUiBase, AUiBox, AUiControls, AUiData,
-  {$IFDEF USE_SETTINGS}AUiForm,{$ENDIF}
+  {$IFDEF USE_SETTINGS}AUiWindowSettings{AUiForm},{$ENDIF}
   AUiMainWindowData, AUiSplitter, AUiToolBar;
 
 type
@@ -200,7 +200,7 @@ begin
     LeftPanel.DragMode := dmAutomatic;
     LeftPanel.Visible := False;
 
-    LeftSplitter := TSplitter(UI_Splitter_New(AWindow(Form),0));
+    LeftSplitter := TSplitter(AUiSplitter_New(AWindow(Form),0));
     LeftSplitter.Align := alLeft;
     LeftSplitter.Width := 3;
     LeftSplitter.Visible := False;
@@ -217,7 +217,7 @@ begin
       RightPanel.DragMode := dmAutomatic;
       RightPanel.Visible := False;
 
-      RightSplitter := TSplitter(UI_Splitter_New(AControl(BasePanel),0));
+      RightSplitter := TSplitter(AUiSplitter_New(AControl(BasePanel),0));
       RightSplitter.Align := alRight;
       RightSplitter.Width := 3;
       RightSplitter.Visible := False;
@@ -234,7 +234,7 @@ begin
         BottomPanel.DragMode := dmAutomatic;
         BottomPanel.Visible := False;
 
-        BottomSplitter := TSplitter(UI_Splitter_New(AControl(MainPanel),0));
+        BottomSplitter := TSplitter(AUiSplitter_New(AControl(MainPanel),0));
         BottomSplitter.Align := alBottom;
         BottomSplitter.Height := 3;
   end;
@@ -372,15 +372,9 @@ procedure _MainWindow_LoadConfig(Config: AConfig);
   end;
   *)
 
-var
-  MainForm: TForm;
 begin
-  MainForm := TForm(FMainWindow);
-  // UI_Window_LoadConfig(MainForm, Settings);
-  //FNextTag := Settings.ReadInteger(FControl.Name, 'NextTag', 1);
-
   {$IFDEF USE_EVENTS}
-  Form_LoadConfig4(MainForm, Config, MainForm.Name, DefWindowState);
+  AUiWindow_LoadConfig3P(FMainWindow, Config, TForm(FMainWindow).Name, DefWindowState);
   {$ENDIF}
 
   {$IFNDEF OLDMAINFORM}
@@ -417,14 +411,6 @@ begin
     }
   end;
   *)
-
-  {for I := 0 to Self.ComponentCount - 1 do
-  begin
-    if (Self.Components[I] is TPanel) and (Self.Components[I].Tag > 0) then
-    begin
-      TPanel(Self.Components[I]).Dra
-    end;
-  end;}
 end;
 
 procedure _MainWindow_SaveConfig(Config: AConfig);
@@ -482,7 +468,7 @@ procedure _MainWindow_SaveConfig(Config: AConfig);
 begin
   //Settings.WriteInteger(FControl.Name, 'NextTag', FNextTag);
   {$IFDEF USE_EVENTS}
-  AUI.Window_SaveConfig(FMainWindow, Config);
+  AUiWindow_SaveConfig(FMainWindow, Config);
   {$ENDIF}
 
   {$IFNDEF OLDMAINFORM}

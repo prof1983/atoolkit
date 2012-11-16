@@ -2,7 +2,7 @@
 @Abstract AUiEdit
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.01.2010
-@LastMod 05.09.2012
+@LastMod 16.11.2012
 }
 unit AUiEdit;
 
@@ -166,7 +166,7 @@ begin
   try
     if (EditType = 3) then
     begin
-      Result := UI_SpinEdit_New(Parent);
+      Result := AUiSpinEdit_New(Parent);
       if (Result = 0) then Exit;
       AUIControls.UI_Control_SetPosition(Result, Left, Top);
       AUIControls.UI_Control_SetWidth(Result, Width);
@@ -204,18 +204,18 @@ begin
           Edit.Width := Width;
           Result := AddObject(Edit);
 
-          Button := UI_Button_New(Parent);
-          UI_Control_SetPosition(Button, Left + Width - 20, Top + 2);
-          UI_Control_SetSize(Button, 18, 18);
-          UI_Control_SetTextP(Button, '...');
-          UI_Control_SetOnClick(Button, OnClick);
+          Button := AUiButton_New(Parent);
+          AUiControl_SetPosition(Button, Left + Width - 20, Top + 2);
+          AUiControl_SetSize(Button, 18, 18);
+          AUiControl_SetTextP(Button, '...');
+          AUiControl_SetOnClick(Button, OnClick);
         end;
       3:
         begin
-          Result := UI_SpinEdit_New(Parent);
+          Result := AUiSpinEdit_New(Parent);
           if (Result = 0) then Exit;
-          AUIControls.UI_Control_SetPosition(Result, Left, Top);
-          AUIControls.UI_Control_SetWidth(Result, Width);
+          AUiControl_SetPosition(Result, Left, Top);
+          AUiControl_SetWidth(Result, Width);
         end
     else
       Result := 0;
@@ -354,11 +354,11 @@ begin
         Edit.Width := Width;
         Result := AddObject(Edit);
 
-        Button := UI_Button_New(Parent);
-        UI_Control_SetPosition(Button, Left + Width - 20, Top + 2);
-        UI_Control_SetSize(Button, 18, 18);
-        UI_Control_SetTextP(Button, '...');
-        UI_Control_SetOnClick02(Button, OnClick);
+        Button := AUiButton_New(Parent);
+        AUiControl_SetPosition(Button, Left + Width - 20, Top + 2);
+        AUiControl_SetSize(Button, 18, 18);
+        AUiControl_SetTextP(Button, '...');
+        AUiControl_SetOnClick02(Button, OnClick);
       end;
   else
     Result := 0;

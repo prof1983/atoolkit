@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 15.11.2012
+@LastMod 16.11.2012
 }
 unit AUi;
 
@@ -39,7 +39,8 @@ uses
   AStrings, ASystem,
   AUiBase, AUiBox, AUiButtons, AUiControls, AUiControlsA, AUiData, AUiEvents1, AUiEventsObj, AUiForm,
   AUiImages, AUiInit, AUiLabels, AUiListBox, AUiMain, AUiMainWindow, AUiMainWindow2,
-  AUiPageControl, AUiReports, AUiTextView, AUiToolBar, AUiToolMenu, AUiTreeView, AUiWindows;
+  AUiPageControl, AUiReports, AUiSplitter, AUiTextView, AUiToolBar, AUiToolMenu, AUiTreeView,
+  AUiWindows, AUiWindowSettings;
 
 // ---
 
@@ -802,35 +803,6 @@ procedure UI_Run02; stdcall;
 
 function UI_Shutdown: AInteger; stdcall;
 
-{ --- UI_TextView --- }
-
-//** Добавляет строку в элемент TextView.
-function UI_TextView_AddLine(TextView: AControl; const Text: APascalString): AInteger; stdcall;
-
-{ Создает новый элемент редактирования текста
-  ViewType
-    0 - TMemo
-    1 - RichEdit }
-function UI_TextView_New(Parent: AControl; ViewType: AInteger): AControl; stdcall;
-
-procedure UI_TextView_SetFont(TextView: AControl; const FontName: APascalString; FontSize: AInteger); stdcall;
-
-//** Устанавливает значение параметра "Только чтение".
-procedure UI_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean); stdcall;
-
-{**
-  Указывает какие ползунки отображать.
-  ScrollBars
-    0 - ssNone
-    1 - ssHorizontal
-    2 - ssVertical
-    3 - ssBoth
-}
-procedure UI_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger); stdcall;
-
-//** Задает параметр "переносить по словам".
-procedure UI_TextView_SetWordWrap(TextView: AControl; Value: ABoolean); stdcall;
-
 function UI_ShellExecute(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
 function UI_Object_Add(Value: AInteger): AInteger; stdcall;
 
@@ -1151,7 +1123,7 @@ end;
 function AUi_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl;
 begin
   try
-    Result := UI_Splitter_New(Parent, SplitterType);
+    Result := AUiSplitter_New(Parent, SplitterType);
   except
     Result := 0;
   end;
@@ -1161,7 +1133,7 @@ end;
 
 function AUi_TextView_AddLine(TextView: AControl; const Text: AString_Type): AInteger;
 begin
-  Result := AUiTextView_AddLine(TextView, AStrings.String_ToWideString(Text));
+  Result := AUiTextView_AddLineP(TextView, AStrings.String_ToWideString(Text));
 end;
 
 function AUi_TextView_New(Parent: AControl; ViewType: AInteger): AControl;
@@ -1171,7 +1143,7 @@ end;
 
 procedure AUi_TextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger);
 begin
-  AUiTextView_SetFont(TextView, AStrings.String_ToWideString(FontName), FontSize);
+  AUiTextView_SetFontP(TextView, AStrings.String_ToWideString(FontName), FontSize);
 end;
 
 procedure AUi_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean);
@@ -1497,7 +1469,7 @@ end;
 
 function Dialog_About_Init(AboutDialog: AWindow): AError;
 begin
-  Result := AUi_InitAboutDialog(AboutDialog);
+  Result := AUi_InitAboutDialog1(AboutDialog);
 end;
 
 function Dialog_AddButtonP(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
@@ -2772,22 +2744,14 @@ end;
 {$IFDEF USE_SETTINGS}
 function Window_LoadConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall;
 begin
-  try
-    Result := AUIForm.Form_LoadConfig(TForm(Window), Config);
-  except
-    Result := False;
-  end;
+  Result := (AUiWindow_LoadConfig(Window, Config) = 0);
 end;
 {$ENDIF}
 
 {$IFDEF USE_SETTINGS}
 function Window_LoadConfig2WS(Window: AWindow; Config: AConfig; const ConfigKey: AWideString): ABoolean; stdcall;
 begin
-  try
-    Result := Form_LoadConfig2(TForm(Window), Config, ConfigKey);
-  except
-    Result := False;
-  end;
+  Result := (AUiWindow_LoadConfig2P(Window, Config, ConfigKey) = 0);
 end;
 {$ENDIF}
 
@@ -2799,22 +2763,14 @@ end;
 {$IFDEF USE_SETTINGS}
 function Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall;
 begin
-  try
-    Result := AUIForm.Form_SaveConfig(TForm(Window), Config);
-  except
-    Result := False;
-  end;
+  Result := (AUiWindow_SaveConfig(Window, Config) = 0);
 end;
 {$ENDIF}
 
 {$IFDEF USE_SETTINGS}
 function Window_SaveConfig2WS(Window: AWindow; Config: AConfig; const ConfigKey: AWideString): ABoolean; stdcall;
 begin
-  try
-    Result := AUIForm.Form_SaveConfig2(TForm(Window), Config, ConfigKey);
-  except
-    Result := False;
-  end;
+  Result := (AUiWindow_SaveConfig2P(Window, Config, ConfigKey) = 0);
 end;
 {$ENDIF}
 

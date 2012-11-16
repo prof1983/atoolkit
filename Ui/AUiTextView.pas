@@ -2,7 +2,7 @@
 @Abstract AUi text view
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.11.2012
-@LastMod 12.11.2012
+@LastMod 16.11.2012
 }
 unit AUiTextView;
 
@@ -39,6 +39,35 @@ function AUiTextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean): AError
 function AUiTextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiTextView_SetWordWrap(TextView: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{ --- UI_TextView --- }
+
+//** Добавляет строку в элемент TextView.
+function UI_TextView_AddLine(TextView: AControl; const Text: APascalString): AInteger; stdcall;
+
+{ Создает новый элемент редактирования текста
+  ViewType
+    0 - TMemo
+    1 - RichEdit }
+function UI_TextView_New(Parent: AControl; ViewType: AInteger): AControl; stdcall;
+
+procedure UI_TextView_SetFont(TextView: AControl; const FontName: APascalString; FontSize: AInteger); stdcall;
+
+//** Устанавливает значение параметра "Только чтение".
+procedure UI_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean); stdcall;
+
+{**
+  Указывает какие ползунки отображать.
+  ScrollBars
+    0 - ssNone
+    1 - ssHorizontal
+    2 - ssVertical
+    3 - ssBoth
+}
+procedure UI_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger); stdcall;
+
+//** Задает параметр "переносить по словам".
+procedure UI_TextView_SetWordWrap(TextView: AControl; Value: ABoolean); stdcall;
 
 implementation
 

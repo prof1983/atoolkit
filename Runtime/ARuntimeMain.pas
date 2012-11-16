@@ -2,7 +2,7 @@
 @Abstract ARuntime
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.08.2012
-@LastMod 28.08.2012
+@LastMod 15.11.2012
 }
 unit ARuntimeMain;
 
@@ -43,6 +43,8 @@ function ARuntime_GetModuleByUid(Uid: AModuleUid; out Module: AModule_Type): AIn
 function ARuntime_GetModuleNameByIndex(Index: AInteger; Name: AStr; MaxLen: AInteger): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
 function ARuntime_GetModuleNameByIndexP(Index: AInteger): APascalString;
+
+function ARuntime_GetModuleNameByIndexWS(Index: AInteger): AWideString; {$ifdef AStdCall}stdcall;{$endif}
 
 function ARuntime_GetModuleNameByUid(Uid: AInteger; Name: AStr; MaxLen: AInteger): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -295,6 +297,14 @@ begin
 end;
 
 function ARuntime_GetModuleNameByIndexP(Index: AInteger): APascalString;
+begin
+  if (Index >= 0) and (Index < Length(FModules)) then
+    Result := FModules[Index].Name
+  else
+    Result := '';
+end;
+
+function ARuntime_GetModuleNameByIndexWS(Index: AInteger): AWideString;
 begin
   if (Index >= 0) and (Index < Length(FModules)) then
     Result := FModules[Index].Name

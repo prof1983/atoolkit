@@ -26,6 +26,8 @@ function ASettings_ReadStringDefP(Config: AConfig; const Section, Name, DefValue
 
 function ASettings_WriteIntegerP(Config: AConfig; const Section, Name: APascalString; Value: AInteger): AError; stdcall;
 
+function ASettings_WriteStringP(Config: AConfig; const Section, Name, Value: APascalString): AError; stdcall;
+
 implementation
 
 // --- ASettings ---
@@ -102,6 +104,24 @@ begin
       Result := 0
     else
       Result := -1;
+  except
+    Result := -1;
+  end;
+end;
+
+function ASettings_WriteStringP(Config: AConfig; const Section, Name, Value: APascalString): AError;
+begin
+  if (Config = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+
+  try
+    if TAbstractSettings(Config).WriteString(Section, Name, Value) then
+      Result := 0
+    else
+      Result := -2;
   except
     Result := -1;
   end;

@@ -134,10 +134,7 @@ end;
 
 function Settings_WriteString(Config: AConfig; const Section, Name, Value: APascalString): ABoolean;
 begin
-  if (Config <> 0) then
-    Result := TAbstractSettings(Config).WriteString(Section, Name, Value)
-  else
-    Result := False;
+  Result := (ASettings_WriteStringP(Config, Section, Name, Value) = 0);
 end;
 
 end.

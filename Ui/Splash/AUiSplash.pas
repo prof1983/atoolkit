@@ -9,7 +9,7 @@ unit AUiSplash;
 interface
 
 uses
-  ABase, ASettings, ASystem, ASystemMain, AUi, AUiBase, AUtils;
+  ABase, ASettings, ASystemEvents, ASystemMain, AUi, AUiBase, AUtils;
 
 {** Finalize splash }
 function AUiSplash_Fin(): AError; stdcall;
@@ -100,7 +100,7 @@ begin
   {$IFDEF A02}
   ASystem.OnBeforeRun_Disconnect(DoBeforeRun02);
   {$ELSE}
-  ASystem.OnBeforeRun_Disconnect(DoBeforeRun);
+  ASystem_OnBeforeRun_Disconnect(DoBeforeRun);
   {$ENDIF}
 
   AUI.Window_Free(SplashWin);
@@ -122,7 +122,7 @@ begin
     while (AUtils.GetNowDateTime() - FStartTime < cTime/(24*60*60)) do
     begin
       AUI.Control_SetVisible(SplashWin, True);
-      ASystem.ProcessMessages();
+      ASystem_ProcessMessages();
       AUtils.Sleep(50);
     end;
     AUI.Control_Free(SplashWin);
@@ -160,7 +160,7 @@ begin
     {$IFDEF A02}
     ASystem.OnBeforeRun_Connect(DoBeforeRun02);
     {$ELSE}
-    ASystem.OnBeforeRun_Connect(DoBeforeRun);
+    ASystem_OnBeforeRun_Connect(DoBeforeRun);
     {$ENDIF}
 
     if (SplashWin = 0) then
@@ -249,7 +249,7 @@ begin
     else
     begin
       AUI.Control_SetVisible(SplashWin, True);
-      ASystem.ProcessMessages();
+      ASystem_ProcessMessages();
     end;
 
     FInitialized := True;

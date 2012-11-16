@@ -2,7 +2,7 @@
 @Abstract AUi about form
 @Author Prof1983 <prof1983@ya.ru>
 @Created 04.04.2006
-@LastMod 14.11.2012
+@LastMod 16.11.2012
 }
 unit fAbout;
 
@@ -28,9 +28,7 @@ type
     procedure UrlTextClick(Sender: TObject);
   private
     function GetPicture: TPicture;
-    function GetProgramName(): APascalString; deprecated; // Use AboutForm_GetProgramNameP()
     function GetReference: APascalString;
-    procedure SetProgramName(const Value: APascalString);
     procedure SetReference(const Value: APascalString);
   protected
     procedure DoCreate; override;
@@ -47,8 +45,6 @@ type
   public
     {** Картинка для отображения }
     property Picture: TPicture read GetPicture;
-    {** Название программы }
-    property ProgramName: APascalString read GetProgramName write SetProgramName;
     {** Ссылка на сайт программы }
     property Reference: APascalString read GetReference write SetReference;
   end;
@@ -201,11 +197,6 @@ begin
   Result := FAboutForm.Image.Picture;
 end;
 
-function TAboutForm.GetProgramName(): APascalString;
-begin
-  Result := AboutForm_GetProgramNameP(FAboutForm);
-end;
-
 function TAboutForm.GetReference(): APascalString;
 begin
   Result := FAboutForm.UrlText.Caption;
@@ -234,11 +225,6 @@ end;}
 procedure TAboutForm.LoadApplicationIcon();
 begin
   AboutForm_LoadApplicationIcon(FAboutForm);
-end;
-
-procedure TAboutForm.SetProgramName(const Value: APascalString);
-begin
-  AboutForm_SetProgramNameP(FAboutForm, Value);
 end;
 
 procedure TAboutForm.SetReference(const Value: APascalString);

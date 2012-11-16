@@ -43,6 +43,8 @@ function AUiControl_GetNameP(Control: AControl): APascalString; {$ifdef AStdCall
 
 function AUiControl_GetPosition(Control: AControl; out Left, Top: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiControl_GetText(Control: AControl; out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiControl_GetTextP(Control: AControl): APascalString; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_GetVisible(Control: AControl): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
@@ -376,6 +378,11 @@ begin
   except
     Result := -1;
   end;
+end;
+
+function AUiControl_GetText(Control: AControl; out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, AUiControl_GetTextP(Control));
 end;
 
 function AUiControl_GetTextP(Control: AControl): APascalString;

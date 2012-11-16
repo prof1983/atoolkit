@@ -16,25 +16,25 @@ uses
 
 // --- AUiWindow ---
 
-function AUiWindow_Add(Window: AWindow): AError;
+function AUiWindow_Add(Window: AWindow): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiWindow_Free(Window: AWindow): AError;
+function AUiWindow_Free(Window: AWindow): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiWindow_FreeAndNil(var Window: AWindow): AError;
+function AUiWindow_FreeAndNil(var Window: AWindow): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiWindow_GetMenu(Window: AWindow): AMenu;
+function AUiWindow_GetMenu(Window: AWindow): AMenu; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiWindow_New(): AControl;
+function AUiWindow_New(): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiWindow_SetBorderStyle(Window: AWindow; BorderStyle: AInt): AError;
+function AUiWindow_SetBorderStyle(Window: AWindow; BorderStyle: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiWindow_SetFormStyle(Window: AWindow; FormStyle: AInt): AError;
+function AUiWindow_SetFormStyle(Window: AWindow; FormStyle: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiWindow_SetPosition(Window: AWindow; Position: AInt): AError;
+function AUiWindow_SetPosition(Window: AWindow; Position: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiWindow_SetState(Window: AWindow; State: AInt): AError;
+function AUiWindow_SetState(Window: AWindow; State: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiWindow_ShowModal(Window: AWindow): ABoolean;
+function AUiWindow_ShowModal(Window: AWindow): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
 
 // --- UI_Window ---
 

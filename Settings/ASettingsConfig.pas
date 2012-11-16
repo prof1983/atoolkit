@@ -2,30 +2,30 @@
 @Abstract ASettingsConfig
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 14.08.2012
+@LastMod 16.11.2012
 }
 unit ASettingsConfig;
 
 interface
 
 uses
-  ABase, {ACollections,} ACollectionsBase, AStrings,
+  ABase, ACollectionsBase, AStrings,
   AAbstractSettings, ASettingsMain;
 
 {deprecated}
-procedure Settings_Close(Config: AConfig); stdcall;
+procedure Settings_Close(Config: AConfig); stdcall; deprecated; // Use ASettings_Close()
 function Settings_DeleteKey(Config: AConfig; const Section, Name: APascalString): ABoolean; stdcall;
 function Settings_DeleteSection(Config: AConfig; const Section: APascalString): ABoolean; stdcall;
 function Settings_ReadBool(Config: AConfig; const Section, Name: APascalString; DefValue: ABoolean): ABoolean; stdcall; deprecated; // Use ASettings_ReadBoolDefP()
-function Settings_ReadInteger(Config: AConfig; const Section, Name: APascalString; DefValue: AInteger): AInteger; stdcall;
+function Settings_ReadInteger(Config: AConfig; const Section, Name: APascalString; DefValue: AInteger): AInteger; stdcall; deprecated; // Use ASettings_ReadIntegerDefP()
 function Settings_ReadFloat(Config: AConfig; const Section, Name: APascalString; DefValue: AFloat): AFloat; stdcall;
 function Settings_ReadSection(Config: AConfig; const Section: APascalString; Strings: AStringList): ABoolean; stdcall;
 function Settings_ReadString(Config: AConfig; const Section, Name: APascalString; out Value: APascalString): AInteger; stdcall;
 function Settings_ReadStringA(Config: AConfig; const Section, Name, DefValue: APascalString; out Value: APascalString): AInteger; stdcall;
-function Settings_ReadStringDef(Config: AConfig; const Section, Name, DefValue: APascalString): APascalString; stdcall;
+function Settings_ReadStringDef(Config: AConfig; const Section, Name, DefValue: APascalString): APascalString; stdcall; deprecated; // Use ASettings_ReadStringDefP()
 function Settings_ReadDateTime(Config: AConfig; const Section, Name: APascalString; DefValue: TDateTime): TDateTime; stdcall;
 function Settings_WriteBool(Config: AConfig; const Section, Name: APascalString; Value: Boolean): ABoolean; stdcall;
-function Settings_WriteInteger(Config: AConfig; const Section, Name: APascalString; Value: Integer): ABoolean; stdcall;
+function Settings_WriteInteger(Config: AConfig; const Section, Name: APascalString; Value: Integer): ABoolean; stdcall; // Use ASettings_WriteIntegerP()
 function Settings_WriteFloat(Config: AConfig; const Section, Name: APascalString; Value: AFloat): ABoolean; stdcall;
 function Settings_WriteString(Config: AConfig; const Section, Name, Value: APascalString): ABoolean; stdcall;
 function Settings_WriteDateTime(Config: AConfig; const Section, Name: APascalString; Value: TDateTime): ABoolean; stdcall;
@@ -36,7 +36,7 @@ implementation
 
 procedure Settings_Close(Config: AConfig);
 begin
-  TAbstractSettings(Config).Close;
+  ASettings_Close(Config);
 end;
 
 function Settings_DeleteKey(Config: AConfig; const Section, Name: APascalString): ABoolean;
@@ -72,10 +72,7 @@ end;
 
 function Settings_ReadInteger(Config: AConfig; const Section, Name: APascalString; DefValue: AInteger): AInteger;
 begin
-  if (Config <> 0) then
-    Result := TAbstractSettings(Config).ReadInteger(Section, Name, DefValue)
-  else
-    Result := DefValue;
+  Result := ASettings_ReadIntegerDefP(Config, Section, Name, DefValue);
 end;
 
 function Settings_ReadSection(Config: AConfig; const Section: APascalString; Strings: AStringList): ABoolean;
@@ -101,12 +98,9 @@ begin
   Result := TAbstractSettings(Config).ReadString(Section, Name, DefValue, Value);
 end;
 
-function Settings_ReadStringDef(Config: AConfig; const Section, Name, DefValue: APascalString): APascalString; stdcall;
+function Settings_ReadStringDef(Config: AConfig; const Section, Name, DefValue: APascalString): APascalString;
 begin
-  if (Config = 0) then
-    Result := ''
-  else
-    TAbstractSettings(Config).ReadString(Section, Name, DefValue, Result);
+  Result := ASettings_ReadStringDefP(Config, Section, Name, DefValue);
 end;
 
 function Settings_WriteBool(Config: AConfig; const Section, Name: APascalString; Value: ABoolean): ABoolean;
@@ -135,10 +129,7 @@ end;
 
 function Settings_WriteInteger(Config: AConfig; const Section, Name: APascalString; Value: AInteger): ABoolean;
 begin
-  if (Config <> 0) then
-    Result := TAbstractSettings(Config).WriteInteger(Section, Name, Value)
-  else
-    Result := False;
+  Result := (ASettings_WriteInteger(Config, Section, Name, Value) = 0);
 end;
 
 function Settings_WriteString(Config: AConfig; const Section, Name, Value: APascalString): ABoolean;

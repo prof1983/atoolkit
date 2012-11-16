@@ -407,22 +407,14 @@ end;
 
 { Config }
 
-function Config_Close(Config: AConfig): AError; stdcall;
+function Config_Close(Config: AConfig): AError;
 begin
-  try
-    Settings_Close(Config);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := ASettings_Close();
 end;
 
-procedure Config_Close02(Config: AConfig); stdcall;
+procedure Config_Close02(Config: AConfig);
 begin
-  try
-    Settings_Close(Config);
-  except
-  end;
+  ASettings_Close(Config);
 end;
 
 function Config_DeleteKey(Config: AConfig; const Section, Name: AString_Type): AError; stdcall;
@@ -605,13 +597,9 @@ begin
   end;
 end;
 
-function Config_ReadIntegerDefP(Config: AConfig; const Section, Name: APascalString; DefValue: AInteger): AInteger; stdcall;
+function Config_ReadIntegerDefP(Config: AConfig; const Section, Name: APascalString; DefValue: AInteger): AInteger;
 begin
-  try
-    Result := ASettingsConfig.Settings_ReadInteger(Config, Section, Name, DefValue);
-  except
-    Result := DefValue;
-  end;
+  Result := ASettings_ReadIntegerDefP(Config, Section, Name, DefValue);
 end;
 
 function Config_ReadIntegerDefS(Config: AConfig; {const} Section, Name: AString; DefValue: AInteger): AInteger; stdcall;
@@ -1049,16 +1037,9 @@ begin
   end;
 end;
 
-function Config_WriteIntegerP(Config: AConfig; const Section, Name: APascalString; Value: AInteger): AError; stdcall;
+function Config_WriteIntegerP(Config: AConfig; const Section, Name: APascalString; Value: AInteger): AError; 
 begin
-  try
-    if ASettingsConfig.Settings_WriteInteger(Config, Section, Name, Value) then
-      Result := 0
-    else
-      Result := -1;
-  except
-    Result := -1;
-  end;
+  Result := ASettings_WriteIntegerP(Config, Section, Name, Value);
 end;
 
 function Config_WriteIntegerS(Config: AConfig; {const} Section, Name: AString; Value: AInteger): AError; stdcall;

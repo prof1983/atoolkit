@@ -2,7 +2,7 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 06.09.2012
+@LastMod 15.11.2012
 }
 unit AUiMain;
 
@@ -13,6 +13,7 @@ interface
 uses
   Controls, Forms, ShellApi, SysUtils, Windows,
   ABase, ABaseTypes, ARuntimeMain, AStrings, ASystemMain, AUtilsMain,
+  {$IFDEF OLDMAINFORM}fMain,{$ENDIF}
   AUiBase, AUiData, AUiDialogs, AUiEventsObj, AUiMainWindow;
 
 // --- AUi ---
@@ -112,7 +113,7 @@ begin
     {$IFDEF OLDMAINFORM2}
     _MainWindow_Create(MainForm, 0, Runtime_GetConfig);
     {$ELSE}
-    _MainWindow_Create(MainForm, MainWindowFormatCreateMenu or MainWindowFormatCreateToolBar or MainWindowFormatCreateStatusBar, ASystem.GetConfig);
+    _MainWindow_Create(MainForm, MainWindowFormatCreateMenu or MainWindowFormatCreateToolBar or MainWindowFormatCreateStatusBar, ASystem_GetConfig());
     {$ENDIF}
     FMainWindow := AddObject(MainForm);
   {$ELSE}

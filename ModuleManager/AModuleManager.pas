@@ -2,7 +2,7 @@
 @Abstract AModuleManager
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.08.2009
-@LastMod 06.08.2012
+@LastMod 20.11.2012
 }
 unit AModuleManager;
 
@@ -14,7 +14,7 @@ uses
   ASettings,
   ASystem,
   AUi, AUiBase,
-  AUiWorkbench;
+  AUiWorkbenchMain, AUiWorkbenchModClient;
 
 function Init(): AError; stdcall;
 function Done(): AError; stdcall;
@@ -130,11 +130,11 @@ begin
 
   // --- Init recomended modules ---
 
-  if AUIWorkbench_IsBoot then
+  if AUiWorkbench_IsBoot then
   begin
-    if (AUIWorkbench.Init() >= 0) then
+    if (AUiWorkbench_Init() >= 0) then
     begin
-      FPage := AUIWorkbench.AddPageP('ModuleManager', SModules);
+      FPage := AUiWorkbench_AddPageP('ModuleManager', SModules);
       FModuleManagerControl := ModuleManagerControl_New(FPage);
     end;
   end;

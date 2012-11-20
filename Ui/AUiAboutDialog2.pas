@@ -77,7 +77,7 @@ begin
     AUiControl_SetWidth(AboutForm.Memo, MemoWidth);
 
   if (MemoHeight > 0) then
-    AUiControl_SetWidth(AboutForm.Memo, MemoHeight);
+    AUiControl_SetHeight(AboutForm.Memo, MemoHeight);
 
   AUiControl_GetPosition(AboutForm.Memo, I, J);
   AboutForm.Form.ClientWidth :=  I + AUiControl_GetWidth(AboutForm.Memo) + 8;

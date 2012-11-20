@@ -2,9 +2,11 @@
 @Abstract AUi controls functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2011
-@LastMod 06.09.2012
+@LastMod 20.11.2012
 }
 unit AUiControlsA;
+
+{$define AStdCall}
 
 interface
 
@@ -14,15 +16,15 @@ uses
 
 // --- AUiControl ---
 
-function AUiControl_SetOnChange(Control: AControl; OnChange: ACallbackProc): AError;
+function AUiControl_SetOnChange(Control: AControl; OnChange: ACallbackProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetOnChange02(Control: AControl; OnChange: ACallbackProc02): AError;
+function AUiControl_SetOnChange02(Control: AControl; OnChange: ACallbackProc02): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetOnChange03(Control: AControl; OnChange: ACallbackProc03): AError;
+function AUiControl_SetOnChange03(Control: AControl; OnChange: ACallbackProc03): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetOnChangeEx02(Control: AControl; OnChange: ACallbackProc02; Obj: AInteger): AError;
+function AUiControl_SetOnChangeEx02(Control: AControl; OnChange: ACallbackProc02; Obj: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetOnChangeEx03(Control: AControl; OnChange: ACallbackProc03; Obj: AInteger): AError;
+function AUiControl_SetOnChangeEx03(Control: AControl; OnChange: ACallbackProc03; Obj: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 // ---  UI_Control ---
 

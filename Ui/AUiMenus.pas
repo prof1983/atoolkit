@@ -2,9 +2,11 @@
 @Abstract AUi Menus
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2011
-@LastMod 03.09.2012
+@LastMod 20.11.2012
 }
 unit AUiMenus;
+
+{$define AStdCall}
 
 interface
 
@@ -15,49 +17,49 @@ uses
 // --- AUiMenu ---
 
 function AUiMenu_AddItem0(Parent: AMenuItem; MenuItem: AMenuItem;
-    Weight: AInteger): AMenuItem; stdcall;
+    Weight: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem1(Menu: AMenu; const Name, Text: AString_Type;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem1P(Menu: AMenu; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem2(Parent: AMenuItem; const Name, Text: AString_Type;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; stdcall;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem2P(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight: Integer): AMenuItem; stdcall;
+    OnClick: ACallbackProc; ImageId, Weight: Integer): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem2WS(Parent: AMenuItem; const Name, Text: AWideString;
-    OnClick: ACallbackProc; ImageId, Weight: Integer): AMenuItem; stdcall;
+    OnClick: ACallbackProc; ImageId, Weight: Integer): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem2WS02(Parent: AMenuItem; const Name, Text: AWideString;
-    OnClick: ACallbackProc02; ImageId, Weight: Integer): AMenuItem; stdcall;
+    OnClick: ACallbackProc02; ImageId, Weight: Integer): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem2WS03(Parent: AMenuItem; const Name, Text: AWideString;
-    OnClick: ACallbackProc03; ImageId, Weight: AInteger): AMenuItem; stdcall;
+    OnClick: ACallbackProc03; ImageId, Weight: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem3(Parent: AMenuItem; MenuItem: AMenuItem;
-    Weight: AInteger): AMenuItem; stdcall;
+    Weight: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem3WS(Parent: AMenuItem; const Name, Text: AWideString;
-    OnClick: ACallbackProc; ImageId, Weight, Tag: AInteger): AMenuItem; stdcall;
+    OnClick: ACallbackProc; ImageId, Weight, Tag: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem3WS03(Parent: AMenuItem; const Name, Text: AWideString;
-    OnClick: ACallbackProc03; ImageId, Weight, Tag: AInteger): AMenuItem; stdcall;
+    OnClick: ACallbackProc03; ImageId, Weight, Tag: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem4P(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight, Tag: AInteger): AMenuItem; stdcall;
+    OnClick: ACallbackProc; ImageId, Weight, Tag: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItemExP(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
-    ImageId, Weight, Tag: AInteger; out ResIndex: AInteger): AError; stdcall;
+    ImageId, Weight, Tag: AInteger; out ResIndex: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiMenu_GetItems(Menu: AMenu): AMenuItem; stdcall;
+function AUiMenu_GetItems(Menu: AMenu): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_FindItemByNameP(MenuItem: AMenuItem; const Name: APascalString): AMenuItem;
 
-function AUiMenu_New(MenuType: AInteger): AMenu; stdcall;
+function AUiMenu_New(MenuType: AInteger): AMenu; {$ifdef AStdCall}stdcall;{$endif}
 
 // --- UI_Menu ---
 

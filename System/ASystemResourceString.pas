@@ -13,7 +13,7 @@ unit ASystemResourceString;
 interface
 
 uses
-  ABase;
+  ABase, AStrings;
 
 function ASystem_GetResourceString(const Section, Name, Default: AString_Type; out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 

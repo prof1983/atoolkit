@@ -1272,7 +1272,7 @@ end;
 
 function GetResourceStringWS(const Section, Name, Default: AWideString): AWideString; stdcall;
 begin
-  Result := ASystem_GetResourceString(Section, Name, Default);
+  Result := ASystem_GetResourceStringP(Section, Name, Default);
 end;
 
 function GetTitle(): APascalString; stdcall;

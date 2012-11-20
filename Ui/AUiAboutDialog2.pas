@@ -2,7 +2,7 @@
 @Abstract AUi about dialog win 1
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.11.2012
-@LastMod 14.11.2012
+@LastMod 20.11.2012
 }
 unit AUiAboutDialog2;
 
@@ -74,7 +74,10 @@ begin
     AboutForm_LoadApplicationIcon(AboutForm);
 
   if (MemoWidth > 0) then
+  begin
+    AUiControl_SetWidth(AboutForm.NameText, MemoWidth);
     AUiControl_SetWidth(AboutForm.Memo, MemoWidth);
+  end;
 
   if (MemoHeight > 0) then
     AUiControl_SetHeight(AboutForm.Memo, MemoHeight);

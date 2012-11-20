@@ -2,7 +2,7 @@
 @Abstract AUi about form
 @Author Prof1983 <prof1983@ya.ru>
 @Created 04.04.2006
-@LastMod 16.11.2012
+@LastMod 20.11.2012
 }
 unit fAbout;
 
@@ -166,8 +166,8 @@ begin
 
   FAboutForm.NameText := AUiLabel_New(AControl(FAboutForm.Form));
   AUiControl_SetAnchors(FAboutForm.NameText, uiakLeft + uiakTop + uiakRight);
-  AUiControl_SetFont1P(FAboutForm.NameText, 'Arial', 11);
-  AUiControl_SetPosition(FAboutForm.NameText, 92, 0);
+  AUiControl_SetFont1P(FAboutForm.NameText, 'Times New Roman', 11);
+  AUiControl_SetPosition(FAboutForm.NameText, 96, 0);
   AUiControl_SetSize(FAboutForm.NameText, 250, 40);
   AUiLabel_SetAlignment(FAboutForm.NameText, uitaCenter + uitlCenter);
   AUiLabel_SetAutoSize(FAboutForm.NameText, False);

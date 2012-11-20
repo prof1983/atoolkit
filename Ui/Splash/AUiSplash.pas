@@ -2,14 +2,14 @@
 @Abstract AUi Splash
 @Author Prof1983 <prof1983@ya.ru>
 @Created 08.12.2009
-@LastMod 16.11.2012
+@LastMod 20.11.2012
 }
 unit AUiSplash;
 
 interface
 
 uses
-  ABase, ASettings, ASystemEvents, ASystemMain, AUi, AUiBase, AUtils;
+  ABase, ASettings, AStringUtils, ASystemEvents, ASystemMain, AUi, AUiBase, AUtils;
 
 {** Finalize splash }
 function AUiSplash_Fin(): AError; stdcall;
@@ -63,7 +63,7 @@ begin
   I := 1;
   repeat
     S := ASystem_ParamStrP(I);
-    if (AUtils.String_ToUpperWS(S) = '-NOSPLASH') then
+    if (AString_ToUpperP(S) = '-NOSPLASH') then
     begin
       Result := True;
       Exit;

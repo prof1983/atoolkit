@@ -2,16 +2,22 @@
 @Abstract ASystem resource
 @Author Prof1983 <prof1983@ya.ru>
 @Created 29.05.2011
-@LastMod 24.07.2012
+@LastMod 20.11.2012
 }
 unit ASystemResourceString;
 
 {$I A.inc}
 
+{$define AStdCall}
+
 interface
 
 uses
   ABase;
+
+function ASystem_GetResourceString(const Section, Name, Default: AString_Type; out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_GetResourceStringP(const Section, Name, Default: APascalString): APascalString; {$ifdef AStdCall}stdcall;{$endif}
 
 function Runtime_GetResourceString(const Section, Name, Default: APascalString): APascalString; stdcall;
 
@@ -26,24 +32,52 @@ const
   cModules = 'Modules';
 {$ENDIF}
 
+// --- ASystem ---
+
+function ASystem_GetResourceString(const Section, Name, Default: AString_Type; out Value: AString_Type): AInteger;
+var
+  Res: APascalString;
+begin
+  try
+    Res := ASystemResourceString.Runtime_GetResourceString(
+            AStrings.String_ToPascalString(Section),
+            AStrings.String_ToPascalString(Name),
+            AStrings.String_ToPascalString(Default));
+    Result := AStrings.String_AssignP(Value, Res);
+  except
+    Result := 0;
+  end;
+end;
+
+function ASystem_GetResourceStringP(const Section, Name, Default: APascalString): APascalString;
+begin
+  try
+    Result := Default;
+    if (Section = 'About') then
+    begin
+      if (Name = 'MenuText') then
+        Result := cAbout;
+    end
+    else if (Section = 'Tools') then
+    begin
+      if (Name = 'Options') then
+        Result := cSettings;
+    end
+    else if (Section = '') then
+    begin
+      if (Name = 'Modules') then
+        Result := cModules;
+    end;
+  except
+    Result := '';
+  end;
+end;
+
+// --- Runtime ---
+
 function Runtime_GetResourceString(const Section, Name, Default: APascalString): APascalString; stdcall;
 begin
-  Result := Default;
-  if (Section = 'About') then
-  begin
-    if (Name = 'MenuText') then
-      Result := cAbout;
-  end
-  else if (Section = 'Tools') then
-  begin
-    if (Name = 'Options') then
-      Result := cSettings;
-  end
-  else if (Section = '') then
-  begin
-    if (Name = 'Modules') then
-      Result := cModules;
-  end;
+  Result := ASystem_GetResourceStringP(Section, Name, Default);
 end;
 
 end.

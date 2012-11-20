@@ -2,7 +2,7 @@
 @Abstract ASystem function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.08.2009
-@LastMod 16.11.2012
+@LastMod 20.11.2012
 }
 unit ASystem;
 
@@ -1266,30 +1266,13 @@ begin
 end;
 
 function GetResourceString(const Section, Name, Default: AString_Type; out Value: AString_Type): AInteger; stdcall;
-var
-  Res: APascalString;
 begin
-  try
-    Res := ASystemResourceString.Runtime_GetResourceString(
-            AStrings.String_ToPascalString(Section),
-            AStrings.String_ToPascalString(Name),
-            AStrings.String_ToPascalString(Default));
-    Result := AStrings.String_AssignP(Value, Res);
-  except
-    Result := 0;
-  end;
+  Result := ASystem_GetResourceString(Section, Name, Default, Value);
 end;
 
 function GetResourceStringWS(const Section, Name, Default: AWideString): AWideString; stdcall;
 begin
-  try
-    Result := ASystemResourceString.Runtime_GetResourceString(
-            Section,
-            Name,
-            Default);
-  except
-    Result := '';
-  end;
+  Result := ASystem_GetResourceString(Section, Name, Default);
 end;
 
 function GetTitle(): APascalString; stdcall;

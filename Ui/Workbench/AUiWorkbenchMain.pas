@@ -9,7 +9,7 @@ unit AUiWorkbenchMain;
 interface
 
 uses
-  ABase; {ARuntime, AUi, AUiBase;}
+  ABase, AUiControlsA, AUiMain, AUiMainWindow, AUiBase, AUiPageControl;
 
 {** Creates a new tab in the main window of the program
     @return 0 - error, else identifier new page }
@@ -34,6 +34,10 @@ function AUiWorkbench_SetOnChange(OnChange: ACallbackProc): AError; stdcall;
 
 implementation
 
+var
+  FInitialized: Boolean;
+  FPageControl: AControl;
+
 // --- AUiWorkbench ---
 
 function AUiWorkbench_AddPage(const Name, Text: AString_Type): AControl;
@@ -43,7 +47,7 @@ end;
 
 function AUiWorkbench_AddPageP(const Name, Text: APascalString): AControl;
 begin
-  Result := AUI.PageControl_AddPageWS(FPageControl, Name, Text);
+  Result := AUiPageControl_AddPageP(FPageControl, Name, Text);
 end;
 
 function AUiWorkbench_AddPageWS(const Name, Text: AWideString): AControl;
@@ -69,14 +73,14 @@ begin
     Exit;
   end;
 
-  if (AUI.Init() < 0) then
+  if (AUi_Init() < 0) then
   begin
     Result := -2;
     Exit;
   end;
 
   try
-    FPageControl := AUI.PageControl_New(AUI.MainWindow_GetMainContainer());
+    FPageControl := AUiPageControl_New(AUiMainWindow_GetMainContainer());
     FInitialized := True;
     Result := 0;
   except
@@ -87,7 +91,7 @@ end;
 function AUiWorkbench_SetOnChange(OnChange: ACallbackProc): AError;
 begin
   if FInitialized then
-    AUI.Control_SetOnChange(FPageControl, OnChange);
+    AUiControl_SetOnChange(FPageControl, OnChange);
   Result := 0;
 end;
 

@@ -9,7 +9,7 @@ unit AUiWorkbench;
 interface
 
 uses
-  ABase, ARuntime, AUi, AUiBase;
+  ABase, AUiBase, AUiWorkbenchMain;
 
 // ----
 
@@ -26,10 +26,6 @@ function AddPageP(const Name, Text: APascalString): AControl; stdcall; deprecate
 function AddPageWS(const Name, Text: AWideString): AControl; stdcall; deprecated; // Use AUiWorkbench_AddPageWS()
 
 implementation
-
-var
-  FInitialized: Boolean;
-  FPageControl: AControl;
 
 { Public }
 

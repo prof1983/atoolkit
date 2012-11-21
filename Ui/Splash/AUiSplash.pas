@@ -9,7 +9,7 @@ unit AUiSplash;
 interface
 
 uses
-  ABase, ASettings, ASystem, AUi, AUiBase, AUtils;
+  ABase, ASettings, AStringUtils, ASystem, AUi, AUiBase, AUtils;
 
 {** Finalize splash }
 function AUiSplash_Fin(): AError; stdcall;
@@ -63,7 +63,7 @@ begin
   I := 1;
   repeat
     S := ASystem.ParamStrWS(I);
-    if (AUtils.String_ToUpperWS(S) = '-NOSPLASH') then
+    if (String_ToUpperWS(S) = '-NOSPLASH') then
     begin
       Result := True;
       Exit;

@@ -2,7 +2,7 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.01.2012
-@LastMod 27.08.2012
+@LastMod 21.11.2012
 }
 unit APluginsMain;
 
@@ -336,7 +336,11 @@ var
   SearchRec: TSearchRec;
 begin
   try
-    if (FindFirst(Path + '*', faDirectory, SearchRec) <> 0) then Exit;
+    if (FindFirst(Path + '*', faDirectory, SearchRec) <> 0) then
+    begin
+      Result := 1;
+      Exit;
+    end;
     if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
       PFind(Path+SearchRec.Name+'\');
     while (FindNext(SearchRec) = 0) do

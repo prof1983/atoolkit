@@ -2,7 +2,7 @@
 @Abstract AUi about form
 @Author Prof1983 <prof1983@ya.ru>
 @Created 04.04.2006
-@LastMod 27.08.2012
+@LastMod 21.11.2012
 }
 unit fAbout;
 
@@ -32,7 +32,7 @@ type
     lbName: TLabel;
     Memo: TMemo;
     procedure FormResize(Sender: TObject);
-  private
+  public
     ButtonsPanel: TPanel;
     OkButton: AControl{TBitBtn};
     UrlText: TLabel;
@@ -60,6 +60,10 @@ type
     // —сылка на сайт программы
     property Reference: APascalString read GetReference write SetReference;
   end;
+
+function AboutForm_LoadApplicationIcon(AboutForm: TAboutForm): AError;
+
+function AboutForm_SetReferenceP(AboutForm: TAboutForm; const Value: APascalString): AError;
 
 // Default MemoWidth=250, MemoHeight=115
 procedure ShowAboutWinA(MemoWidth, MemoHeight: Integer);
@@ -91,6 +95,18 @@ const
   {$ENDIF}
 
 { Public procs }
+
+function AboutForm_LoadApplicationIcon(AboutForm: TAboutForm): AError;
+begin
+  AboutForm.Image1.Picture.Assign(Application.Icon);
+  Result := 0;
+end;
+
+function AboutForm_SetReferenceP(AboutForm: TAboutForm; const Value: APascalString): AError;
+begin
+  AboutForm.UrlText.Caption := Value;
+  Result := 0;
+end;
 
 procedure ShowAboutWinA(MemoWidth, MemoHeight: Integer);
 var

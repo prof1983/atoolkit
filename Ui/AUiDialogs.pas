@@ -2,7 +2,7 @@
 @Abstract AUiDialogs
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 05.09.2012
+@LastMod 21.11.2012
 }
 unit AUiDialogs;
 
@@ -15,7 +15,7 @@ uses
   {$IFDEF USE_JEDI}JvBaseDlg, JvSelectDirectory,{$ENDIF}
   Controls, Dialogs, Forms,
   ABase, ABaseTypes, AStrings, ASystem,
-  AUiBase, AUiBox, AUiButtons, AUiConsts, AUiControls, AUiData, AUiWindows,
+  AUiAboutDialog1, AUiAboutDialog2, AUiBase, AUiBox, AUiButtons, AUiConsts, AUiControls, AUiData, AUiWindows,
   fAbout, fCalendar, fDateFilter, fError, fInputDialog, fLogin, fPasswordDialog;
 
 // --- AUi ---
@@ -99,6 +99,10 @@ function AUi_ExecuteSaveFileDialog2P(const InitialDir, DefExt, DefFileName, Filt
     var FilterIndex: AInteger): APascalString; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteSelectDirectoryDialogP(var Directory: APascalString): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUi_InitAboutDialog1(AboutDialog: AWindow): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUi_InitAboutDialog2(AboutDialog: AWindow): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_NewAboutDialog(): AWindow; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -754,6 +758,37 @@ begin
   {$ELSE}
   Result := False;
   {$ENDIF USE_JEDI}
+end;
+
+function AUi_InitAboutDialog1(AboutDialog: AWindow): AError;
+begin
+  if not(TObject(AboutDialog) is TAboutForm) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+
+  try
+    Result := AboutForm_Init1(TAboutForm(AboutDialog));
+  except
+    Result := -1;
+  end;
+end;
+
+function AUi_InitAboutDialog2(AboutDialog: AWindow): AError;
+begin
+  if not(TObject(AboutDialog) is TAboutForm) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+
+  try
+    Result := AboutForm_Init2(TAboutForm(AboutDialog), AUiAboutFlags_ShowAll + AUiAboutFlags_NoShowComment,
+        UiAboutWinMemoWidthDefault, UiAboutWinMemoHeightDefault);
+  except
+    Result := -1;
+  end;
 end;
 
 function AUi_NewAboutDialog(): AWindow;

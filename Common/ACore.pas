@@ -2,7 +2,7 @@
 @Abstract ACore
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.10.2009
-@LastMod 27.08.2012
+@LastMod 21.11.2012
 }
 unit ACore;
 
@@ -53,6 +53,7 @@ type
   ACore_Done = function: Integer; stdcall;
   {$ELSE} // A02
   A_Core_Boot_Proc = AProc;
+  A_Core_Fin_Proc = AProc;
   A_Core_Init_Proc = AProc;
   A_Core_Run_Proc = AProc;
   A_Core_Done_Proc = AProc;
@@ -77,6 +78,7 @@ var
   Core_Done: ACore_Done;
   {$ELSE}
   Core_Boot: A_Core_Boot_Proc;
+  Core_Fin: A_Core_Fin_Proc;
   Core_Init: A_Core_Init_Proc;
   Core_Run: A_Core_Run_Proc;
   Core_Done: A_Core_Done_Proc;
@@ -102,6 +104,7 @@ const
 function Core_Boot; external ACoreLibName;
 function Core_BootA; external ACoreLibName;
 function Core_BootXml; external ACoreLibName;
+function Core_Fin; external ACoreLibName;
 function Core_Init; external ACoreLibName;
 function Core_Run; external ACoreLibName;
 function Core_Done; external ACoreLibName;
@@ -158,6 +161,7 @@ begin
   if not(ALibrary_GetSymbol(FLib, 'Core_Done', Addr(Core_Done))) then Exit;
   {$ELSE} // A02
   if not(ALibrary_GetSymbolP(FLib, 'Core_Boot', Addr(Core_Boot))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'Core_Fin', Addr(Core_Fin))) then Exit;
   if not(ALibrary_GetSymbolP(FLib, 'Core_Init', Addr(Core_Init))) then Exit;
   if not(ALibrary_GetSymbolP(FLib, 'Core_Run', Addr(Core_Run))) then Exit;
   if not(ALibrary_GetSymbolP(FLib, 'Core_Done', Addr(Core_Done))) then Exit;

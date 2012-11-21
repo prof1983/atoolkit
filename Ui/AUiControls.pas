@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 05.09.2012
+@LastMod 21.11.2012
 }
 unit AUiControls;
 
@@ -50,6 +50,8 @@ function AUiControl_GetVisible(Control: AControl): ABoolean; {$ifdef AStdCall}st
 function AUiControl_GetWidth(Control: AControl): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetAlign(Control: AControl; Align: TUiAlign): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_SetAnchors(Control: AControl; Anchors: TUiAnchors): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetClientSize(Control: AControl; ClientWidth, ClientHeight: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -267,7 +269,10 @@ begin
   try
     S := AUiControl_GetHintP(Control);
     if (Length(S) < MaxLen) then
-      Move(S, Value, Length(S))
+    begin
+      Move(S, Value, Length(S));
+      Result := 0;
+    end
     else
       Result := -2;
   except
@@ -328,7 +333,10 @@ begin
   try
     S := AUiControl_GetNameP(Control);
     if (Length(S) < MaxLen) then
-      Move(S, Value, Length(S))
+    begin
+      Move(S, Value, Length(S));
+      Result := 0;
+    end
     else
       Result := -2;
   except
@@ -414,6 +422,28 @@ begin
   try
     if (TObject(Control) is TControl) then
       TControl(Control).Align := TAlign(Align);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiControl_SetAnchors(Control: AControl; Anchors: TUiAnchors): AError;
+var
+  A: TAnchors;
+begin
+  try
+    if (uiakLeft and Anchors = uiakLeft) then
+      A := A + [akLeft];
+    if (uiakTop and Anchors = uiakTop) then
+      A := A + [akTop];
+    if (uiakRight and Anchors = uiakRight) then
+      A := A + [akRight];
+    if (uiakBottom and Anchors = uiakBottom) then
+      A := A + [akBottom];
+
+    if (TObject(Control) is TControl) then
+      TControl(Control).Anchors := A;
     Result := 0;
   except
     Result := -1;

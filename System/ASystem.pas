@@ -2,7 +2,7 @@
 @Abstract ASystem function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.08.2009
-@LastMod 05.09.2012
+@LastMod 21.11.2012
 }
 unit ASystem;
 
@@ -423,7 +423,7 @@ function GetTitleWS(): AWideString; stdcall;
 
 function GetUrl(): APascalString; stdcall; deprecated;
 
-function GetDataDirectoryPathWS(): APascalString; stdcall;
+function GetDataDirectoryPathWS(): AWideString; stdcall;
 
 function GetDataPath: APascalString; stdcall; //deprecated; // Use GetDataDirectoryPathWS()
 
@@ -1246,7 +1246,7 @@ begin
   Result := FCopyright;
 end;
 
-function GetDataDirectoryPathWS(): APascalString; stdcall;
+function GetDataDirectoryPathWS(): AWideString; stdcall;
 begin
   Result := FDataPath;
 end;

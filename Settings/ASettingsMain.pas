@@ -26,7 +26,12 @@ function ASettings_ReadStringDefP(Config: AConfig; const Section, Name, DefValue
 
 function ASettings_WriteIntegerP(Config: AConfig; const Section, Name: APascalString; Value: AInteger): AError; stdcall;
 
+function ASettings_WriteStringP(Config: AConfig; const Section, Name, Value: APascalString): AError; stdcall;
+
 implementation
+
+uses
+  ASettings;
 
 // --- ASettings ---
 
@@ -105,6 +110,11 @@ begin
   except
     Result := -1;
   end;
+end;
+
+function ASettings_WriteStringP(Config: AConfig; const Section, Name, Value: APascalString): AError;
+begin
+  Result := Config_WriteStringP(Config, Section, Name, Value);
 end;
 
 end.

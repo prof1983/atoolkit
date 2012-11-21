@@ -2,7 +2,7 @@
 @Abstract The module for work with the settings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 14.08.2012
+@LastMod 21.11.2012
 }
 unit ASettings;
 
@@ -10,10 +10,6 @@ interface
 
 uses
   ABase, ACollectionsBase, ASettingsMain, AStrings;
-
-// --- ASettings ---
-
-function ASettings_WriteStringP(Config: AConfig; const Section, Name, Value: APascalString): AError; stdcall;
 
 // ----
 
@@ -219,13 +215,6 @@ implementation
 
 uses
   ASettingsConfig;
-
-// --- ASettings ---
-
-function ASettings_WriteStringP(Config: AConfig; const Section, Name, Value: APascalString): AError;
-begin
-  Result := Config_WriteStringP(Config, Section, Name, Value);
-end;
 
 { A_Settings }
 

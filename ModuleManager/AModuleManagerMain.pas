@@ -2,7 +2,7 @@
 @Abstract AModuleManager main functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.11.2012
-@LastMod 20.11.2012
+@LastMod 21.11.2012
 }
 unit AModuleManagerMain;
 
@@ -80,7 +80,7 @@ end;
 function AModuleManager_Init(): AError;
 var
   miHelp: AMenuItem;
-  SModules: string;
+  SModules: APascalString;
 begin
   if FInitialized then
   begin
@@ -115,7 +115,7 @@ begin
   end;
   {$ENDIF A03}
 
-  SModules := ASystem_GetResourceStringP('', 'Modules', 'Модули');
+  SModules := ASystem_GetResourceStringP('', 'Modules', 'Modules');
 
   miHelp := AUiMainWindow_AddMenuItemP('', 'Help', '?', nil, 0, 10000);
   {$IFDEF A02}

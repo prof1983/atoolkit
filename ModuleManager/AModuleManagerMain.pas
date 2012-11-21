@@ -15,7 +15,7 @@ uses
   ARuntimeMain,
   ASystemResourceString,
   AUiBase, AUiControls, AUiListBox, AUiMain, AUiMainWindow, AUiMenus, AUiWindows,
-  AUiWorkbenchMain, AUiWorkbenchModClient;
+  AUiWorkbenchMain;
 
 function AModuleManager_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -118,19 +118,20 @@ begin
   SModules := ASystem_GetResourceStringP('', 'Modules', 'Modules');
 
   miHelp := AUiMainWindow_AddMenuItemP('', 'Help', '?', nil, 0, 10000);
+
   {$IFDEF A02}
   AUiMenu_AddItem2WS02(miHelp, 'Modules', SModules, DoMenuModuleClick02, 0, 10);
   {$ELSE}
-  AUiMenu_AddItem2P(miHelp, 'Modules', SModules, DoMenuModuleClick, 0, 10);
+  AUiMenu_AddItem2P(miHelp, 'Modules', 'Modules'{SModules}, DoMenuModuleClick, 0, 10);
   {$ENDIF}
 
   // --- Init recomended modules ---
 
-  if AUiWorkbench_IsBoot then
+  //if AUiWorkbench_IsBoot then
   begin
     if (AUiWorkbench_Init() >= 0) then
     begin
-      FPage := AUiWorkbench_AddPageP('ModuleManager', SModules);
+      FPage := AUiWorkbench_AddPageP('ModuleManager', 'Modules'{SModules});
       FModuleManagerControl := ModuleManagerControl_New(FPage);
     end;
   end;

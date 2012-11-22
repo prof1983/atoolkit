@@ -15,7 +15,7 @@ uses
   ARuntimeMain,
   ASystemResourceString,
   AUiBase, AUiControls, AUiListBox, AUiMain, AUiMainWindow, AUiMenus, AUiWindows,
-  AUiWorkbenchMain, AUiWorkbenchModClient;
+  AUiWorkbenchMain;
 
 function AModuleManager_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -126,7 +126,7 @@ begin
 
   // --- Init recomended modules ---
 
-  if AUiWorkbench_IsBoot then
+  //if AUiWorkbench_IsBoot then
   begin
     if (AUiWorkbench_Init() >= 0) then
     begin

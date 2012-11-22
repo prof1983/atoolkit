@@ -2,7 +2,7 @@
 @Abstract AModuleManager main functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.11.2012
-@LastMod 20.11.2012
+@LastMod 22.11.2012
 }
 unit AModuleManagerMain;
 
@@ -80,7 +80,7 @@ end;
 function AModuleManager_Init(): AError;
 var
   miHelp: AMenuItem;
-  SModules: string;
+  SModules: APascalString;
 begin
   if FInitialized then
   begin
@@ -115,13 +115,13 @@ begin
   end;
   {$ENDIF A03}
 
-  SModules := ASystem_GetResourceStringP('', 'Modules', 'Модули');
+  SModules := ASystem_GetResourceStringP('', 'Modules', 'Modules');
 
   miHelp := AUiMainWindow_AddMenuItemP('', 'Help', '?', nil, 0, 10000);
   {$IFDEF A02}
-  AUiMenu_AddItem2WS02(miHelp, 'Modules', SModules, DoMenuModuleClick02, 0, 10);
+  AUiMenu_AddItem2WS02(miHelp, 'Modules', 'Modules'{SModules}, DoMenuModuleClick02, 0, 10);
   {$ELSE}
-  AUiMenu_AddItem2P(miHelp, 'Modules', SModules, DoMenuModuleClick, 0, 10);
+  AUiMenu_AddItem2P(miHelp, 'Modules', 'Modules'{SModules}, DoMenuModuleClick, 0, 10);
   {$ENDIF}
 
   // --- Init recomended modules ---
@@ -130,7 +130,7 @@ begin
   begin
     if (AUiWorkbench_Init() >= 0) then
     begin
-      FPage := AUiWorkbench_AddPageP('ModuleManager', SModules);
+      FPage := AUiWorkbench_AddPageP('ModuleManager', 'Modules'{SModules});
       FModuleManagerControl := ModuleManagerControl_New(FPage);
     end;
   end;

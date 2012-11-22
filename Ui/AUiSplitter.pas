@@ -2,7 +2,7 @@
 @Abstract AUi splitter
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.11.2012
-@LastMod 12.11.2012
+@LastMod 22.11.2012
 }
 unit AUiSplitter;
 
@@ -24,7 +24,7 @@ function AUiSplitter_New(Parent: AControl; SplitterType: AUiSplitterType): ACont
     1 - VSplitter (Align=alLeft)
     2 - HSplitter (Align=alBottom)
     3 - VSplitter (Align=alRight) }
-function UI_Splitter_New(Parent: AControl; SplitterType: AUiSplitterType): AControl; stdcall; deprecated;
+function UI_Splitter_New(Parent: AControl; SplitterType: AUiSplitterType): AControl; stdcall; deprecated; // Use AUiSplitter_New()
 
 implementation
 

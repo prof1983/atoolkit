@@ -2,7 +2,7 @@
 @abstract AUi PropertyBox
 @author Prof1983 <prof1983@ya.ru>
 @created 24.08.2009
-@lastmod 19.07.2012
+@lastmod 22.11.2012
 }
 unit AUiPropertyBox;
 
@@ -14,7 +14,65 @@ interface
 
 uses
   Controls, ExtCtrls, Forms, Graphics, StdCtrls, 
-  AUiBase;
+  ABase, AStrings, AUiBase;
+
+// --- AUiPropertyBox ---
+
+function AUiPropertyBox_Add(PropertyBox: AControl;
+    const Caption: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiPropertyBox_Add2(PropertyBox: AControl; const Caption, Text, Hint: AString_Type;
+    EditWidth: AInteger): AInt; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiPropertyBox_Add2P(PropertyBox: AControl; const Caption, Text, Hint: APascalString;
+    EditWidth: AInt): AInt; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiPropertyBox_AddP(PropertyBox: AControl;
+    const Caption: APascalString): AInt; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiPropertyBox_Item_GetValue(PropertyBox: AControl; Index: AInt;
+    out Value: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiPropertyBox_Item_GetValueP(PropertyBox: AControl;
+    Index: AInt): APascalString; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiPropertyBox_Item_SetValue(PropertyBox: AControl; Index: AInt;
+    const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiPropertyBox_Item_SetValueP(PropertyBox: AControl; Index: AInt;
+    const Value: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiPropertyBox_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
+
+// --- AUi_PropertyBox ---
+
+function AUi_PropertyBox_Add(PropertyBox: AControl;
+    const Caption: AString_Type): Integer; stdcall; deprecated; // Use AUiPropertyBox_Add()
+
+function AUi_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: AString_Type;
+    EditWidth: AInteger): AInteger; stdcall; deprecated; // Use AUiPropertyBox_Add2()
+
+function AUi_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer;
+    out Value: AString_Type): AInteger; stdcall; deprecated; // Use AUiPropertyBox_Item_GetValue()
+
+procedure AUi_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer;
+    const Value: AString_Type); stdcall; deprecated; // Use AUiPropertyBox_Item_SetValue()
+
+function AUi_PropertyBox_New(Parent: AControl): AControl; stdcall; // Use AUiPropertyBox_New()
+
+// --- UI_PropertyBox ---
+
+function UI_PropertyBox_Add(PropertyBox: AControl; const Caption: APascalString): Integer; stdcall; deprecated;
+
+function UI_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: APascalString; EditWidth: AInteger): AInteger; stdcall; deprecated;
+
+function UI_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer): APascalString; stdcall; deprecated;
+
+procedure UI_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; const Value: APascalString); stdcall; deprecated;
+
+function UI_PropertyBox_New(Parent: AControl): AControl; stdcall; deprecated;
+
+// --- Private ---
 
 type
   TPropertyBoxChangeProc = function(Sender: AControl; ItemIndex: Integer; const Value: string): Boolean;
@@ -95,6 +153,153 @@ type
   end;
 
 implementation
+
+// --- AUiPropertyBox ---
+
+function AUiPropertyBox_Add(PropertyBox: AControl; const Caption: AString_Type): AInt;
+begin
+  try
+    Result := AUiPropertyBox_AddP(PropertyBox, AStrings.String_ToPascalString(Caption));
+  except
+    Result := 0;
+  end;
+end;
+
+function AUiPropertyBox_Add2(PropertyBox: AControl; const Caption, Text, Hint: AString_Type;
+    EditWidth: AInt): AInt;
+begin
+  try
+    Result := AUiPropertyBox_Add2P(PropertyBox,
+        AStrings.String_ToWideString(Caption),
+        AStrings.String_ToWideString(Text),
+        AStrings.String_ToWideString(Hint),
+        EditWidth);
+  except
+    Result := 0;
+  end;
+end;
+
+function AUiPropertyBox_Add2P(PropertyBox: AControl; const Caption, Text, Hint: APascalString; EditWidth: AInt): AInt;
+begin
+  try
+    Result := TPropertyBox1(PropertyBox).AddNew2(Caption, Text, Hint, EditWidth);
+  except
+    Result := 0;
+  end;
+end;
+
+function AUiPropertyBox_AddP(PropertyBox: AControl; const Caption: APascalString): AInt;
+begin
+  try
+    Result := TPropertyBox1(PropertyBox).AddNew(Caption);
+  except
+    Result := 0;
+  end;
+end;
+
+function AUiPropertyBox_Item_GetValue(PropertyBox: AControl; Index: AInt;
+    out Value: AString_Type): AInt;
+begin
+  try
+    Result := AString_AssignP(Value, AUiPropertyBox_Item_GetValueP(PropertyBox, Index));
+  except
+    Result := 0;
+  end;
+end;
+
+function AUiPropertyBox_Item_GetValueP(PropertyBox: AControl; Index: AInt): APascalString;
+begin
+  try
+    Result := TPropertyBox1(PropertyBox).GetText(Index);
+  except
+    Result := '';
+  end;
+end;
+
+function AUiPropertyBox_Item_SetValue(PropertyBox: AControl; Index: AInt;
+    const Value: AString_Type): AError;
+begin
+  try
+    Result := AUiPropertyBox_Item_SetValueP(PropertyBox, Index, AStrings.String_ToWideString(Value));
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiPropertyBox_Item_SetValueP(PropertyBox: AControl; Index: AInt;
+    const Value: APascalString): AError;
+begin
+  try
+    TPropertyBox1(PropertyBox).SetText(Index, Value);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiPropertyBox_New(Parent: AControl): AControl;
+begin
+  try
+    Result := AControl(TPropertyBox1.Create(TWinControl(Parent)));
+  except
+    Result := 0;
+  end;
+end;
+
+// --- AUi_PropertyBox ---
+
+function AUi_PropertyBox_Add(PropertyBox: AControl; const Caption: AString_Type): AInt;
+begin
+  Result := AUiPropertyBox_Add(PropertyBox, Caption);
+end;
+
+function AUi_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: AString_Type;
+    EditWidth: AInt): AInt;
+begin
+  Result := AUiPropertyBox_Add2(PropertyBox, Caption, Text, Hint, EditWidth);
+end;
+
+function AUi_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: AInt; out Value: AString_Type): AInt;
+begin
+  Result := AUiPropertyBox_Item_GetValue(PropertyBox, Index, Value);
+end;
+
+procedure AUi_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: AInt; const Value: AString_Type);
+begin
+  AUiPropertyBox_Item_SetValue(PropertyBox, Index, Value);
+end;
+
+function AUi_PropertyBox_New(Parent: AControl): AControl;
+begin
+  Result := AUiPropertyBox_New(Parent);
+end;
+
+// --- UI_PropertyBox ---
+
+function UI_PropertyBox_Add(PropertyBox: AControl; const Caption: APascalString): Integer;
+begin
+  Result := AUiPropertyBox_AddP(PropertyBox, Caption);
+end;
+
+function UI_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: APascalString; EditWidth: AInteger): AInteger;
+begin
+  Result := AUiPropertyBox_Add2P(PropertyBox, Caption, Text, Hint, EditWidth);
+end;
+
+function UI_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer): APascalString;
+begin
+  Result := AUiPropertyBox_Item_GetValueP(PropertyBox, Index);
+end;
+
+procedure UI_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; const Value: APascalString);
+begin
+  AUiPropertyBox_Item_SetValueP(PropertyBox, Index, Value);
+end;
+
+function UI_PropertyBox_New(Parent: AControl): AControl;
+begin
+  Result := AUiPropertyBox_New(Parent);
+end;
 
 { TPropertyBox1 }
 

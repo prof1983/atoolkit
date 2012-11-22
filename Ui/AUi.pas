@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 16.11.2012
+@LastMod 22.11.2012
 }
 unit AUi;
 
@@ -41,14 +41,6 @@ uses
   AUiImages, AUiInit, AUiLabels, AUiListBox, AUiMain, AUiMainWindow, AUiMainWindow2,
   AUiPageControl, AUiReports, AUiSplitter, AUiTextView, AUiToolBar, AUiToolMenu, AUiTreeView,
   AUiWindows, AUiWindowSettings;
-
-// ---
-
-function AUi_PropertyBox_Add(PropertyBox: AControl; const Caption: AString_Type): Integer; stdcall;
-function AUi_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: AString_Type; EditWidth: AInteger): AInteger; stdcall;
-function AUi_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer; out Value: AString_Type): AInteger; stdcall;
-procedure AUi_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; const Value: AString_Type); stdcall;
-function AUi_PropertyBox_New(Parent: AControl): AControl; stdcall;
 
 // --- AUi_Report ---
 
@@ -703,13 +695,6 @@ function UI_MainTrayIcon: ATrayIcon; stdcall;
 function UI_ProgressBar_New(Parent: AControl; Max: AInteger): AControl;
 function UI_ProgressBar_StepIt(ProgressBar: AControl): AInteger; 
 
-function UI_PropertyBox_Add(PropertyBox: AControl; const Caption: APascalString): Integer; stdcall;
-function UI_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: APascalString; EditWidth: AInteger): AInteger; stdcall;
-function UI_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer): APascalString; stdcall;
-//function UI_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer; out Value: APascalString): AInteger; stdcall;
-procedure UI_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; const Value: APascalString); stdcall;
-function UI_PropertyBox_New(Parent: AControl): AControl; stdcall;
-
 function UI_SpinButton_New(Parent: AControl): AControl; stdcall;
 
 // Use ToolBar_AddButtonWS02()
@@ -835,7 +820,7 @@ uses
   {$IFDEF FPC}Interfaces,{$ELSE}Mask,{$ENDIF}
   Buttons, Classes, Controls, ComCtrls, Db, DbGrids, ExtCtrls, Forms, Graphics, Grids, Menus, StdCtrls, SysUtils,
   {$IFDEF MSWINDOWS}ShellApi, Windows,{$ENDIF}
-  AUiCalendar, AUiDialogs, AUiEdit, AUiGrids, {AUiForm,} AUiMenus, AUiPropertyBox, AUiSpin, AUiTrayIcon,
+  AUiCalendar, AUiDialogs, AUiEdit, AUiGrids, AUiMenus, AUiPropertyBox, AUiSpin, AUiTrayIcon,
   {$IFDEF MSWINDOWS}
   fError, fInputDialog, fLogin, fMessage, fPasswordDialog, fWait,
   {$ENDIF}
@@ -1034,57 +1019,6 @@ begin
   try
     UI_Shutdown();
   except
-  end;
-end;
-
-// --- AUi_PropertyBox ---
-
-function AUi_PropertyBox_Add(PropertyBox: AControl; const Caption: AString_Type): Integer;
-begin
-  try
-    Result := UI_PropertyBox_Add(PropertyBox, AStrings.String_ToWideString(Caption));
-  except
-    Result := 0;
-  end;
-end;
-
-function AUi_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: AString_Type;
-    EditWidth: AInteger): AInteger;
-begin
-  try
-    Result := UI_PropertyBox_AddA(PropertyBox,
-        AStrings.String_ToWideString(Caption),
-        AStrings.String_ToWideString(Text),
-        AStrings.String_ToWideString(Hint),
-        EditWidth);
-  except
-    Result := 0;
-  end;
-end;
-
-function AUi_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer; out Value: AString_Type): AInteger;
-begin
-  try
-    Result := AString_AssignP(Value, UI_PropertyBox_Item_GetValue(PropertyBox, Index));
-  except
-    Result := 0;
-  end;
-end;
-
-procedure AUi_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; const Value: AString_Type);
-begin
-  try
-    UI_PropertyBox_Item_SetValue(PropertyBox, Index, AStrings.String_ToWideString(Value));
-  except
-  end;
-end;
-
-function AUi_PropertyBox_New(Parent: AControl): AControl;
-begin
-  try
-    Result := UI_PropertyBox_New(Parent);
-  except
-    Result := 0;
   end;
 end;
 
@@ -2514,33 +2448,6 @@ function UI_ProgressBar_StepIt(ProgressBar: AControl): AInteger;
 begin
   TProgressBar(ProgressBar).StepIt;
   Result := TProgressBar(ProgressBar).Position;
-end;
-
-{ PropertyBox }
-
-function UI_PropertyBox_Add(PropertyBox: AControl; const Caption: APascalString): Integer; stdcall;
-begin
-  Result := TPropertyBox1(PropertyBox).AddNew(Caption);
-end;
-
-function UI_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: APascalString; EditWidth: AInteger): AInteger; stdcall;
-begin
-  Result := TPropertyBox1(PropertyBox).AddNew2(Caption, Text, Hint, EditWidth);
-end;
-
-function UI_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer): APascalString; stdcall;
-begin
-  Result := TPropertyBox1(PropertyBox).GetText(Index);
-end;
-
-procedure UI_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; const Value: APascalString); stdcall;
-begin
-  TPropertyBox1(PropertyBox).SetText(Index, Value);
-end;
-
-function UI_PropertyBox_New(Parent: AControl): AControl; stdcall;
-begin
-  Result := AControl(TPropertyBox1.Create(TWinControl(Parent)));
 end;
 
 { Report }

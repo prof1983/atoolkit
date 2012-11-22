@@ -52,39 +52,6 @@ procedure AUi_Report_SetText(Report: AReport; const Value: AString_Type); stdcal
 
 function AUi_SpinButton_New(Parent: AControl): AControl; stdcall;
 
-// --- AUi_Splitter ---
-
-{ SplitterType
-    0 - HSplitter (Align=alTop)
-    1 - VSplitter (Align=alLeft)
-    2 - HSplitter (Align=alBottom)
-    3 - VSplitter (Align=alRight) }
-function AUi_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl; stdcall;
-
-// --- AUi_TextView ---
-
-// Добавляет строку в элемент TextView
-function AUi_TextView_AddLine(TextView: AControl; const Text: AString_Type): AInteger; stdcall; deprecated; // Use AUiTextView_AddLine()
-
-{ Создает новый элемент редактирования текста
-  ViewType
-    0 - TMemo
-    1 - RichEdit }
-function AUi_TextView_New(Parent: AControl; ViewType: AInteger): AControl; stdcall; deprecated; // Use AUiTextView_New()
-
-procedure AUi_TextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger); stdcall; deprecated; // AUiTextView_SetFont()
-
-procedure AUi_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean); stdcall; deprecated; // Use AUiTextView_SetReadOnly()
-
-{ ScrollBars
-    0 - ssNone
-    1 - ssHorizontal
-    2 - ssVertical
-    3 - ssBoth }
-procedure AUi_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger); stdcall; deprecated; // Use AUiTextView_SetScrollBars()
-
-procedure AUi_TextView_SetWordWrap(TextView: AControl; Value: ABoolean); stdcall; deprecated; // Use AUiTextView_SetWordWrap()
-
 // --- AUi_TrayIcon ---
 
 {$IFNDEF UNIX}
@@ -1052,49 +1019,6 @@ begin
   end;
 end;
 
-// --- AUi_Splitter ---
-
-function AUi_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl;
-begin
-  try
-    Result := AUiSplitter_New(Parent, SplitterType);
-  except
-    Result := 0;
-  end;
-end;
-
-// --- AUi_TextView ---
-
-function AUi_TextView_AddLine(TextView: AControl; const Text: AString_Type): AInteger;
-begin
-  Result := AUiTextView_AddLineP(TextView, AStrings.String_ToWideString(Text));
-end;
-
-function AUi_TextView_New(Parent: AControl; ViewType: AInteger): AControl;
-begin
-  Result := AUiTextView_New(Parent, ViewType);
-end;
-
-procedure AUi_TextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger);
-begin
-  AUiTextView_SetFontP(TextView, AStrings.String_ToWideString(FontName), FontSize);
-end;
-
-procedure AUi_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean);
-begin
-  AUiTextView_SetReadOnly(TextView, ReadOnly);
-end;
-
-procedure AUi_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger);
-begin
-  AUiTextView_SetScrollBars(TextView, ScrollBars);
-end;
-
-procedure AUi_TextView_SetWordWrap(TextView: AControl; Value: ABoolean);
-begin
-  AUiTextView_SetWordWrap(TextView, Value);
-end;
-
 // --- AUi_TrayIcon ---
 
 function AUi_TrayIcon_GetMenuItems(TrayIcon: ATrayIcon): AMenuItem; stdcall;
@@ -2038,74 +1962,42 @@ end;
 
 function TextView_AddLineWS(TextView: AControl; const Text: AWideString): AInteger; stdcall;
 begin
-  try
-    Result := UI_TextView_AddLine(TextView, Text);
-  except
-    Result := -1;
-  end;
+  Result := AUiTextView_AddLineP(TextView, Text);
 end;
 
 function TextView_New(Parent: AControl; ViewType: AInteger): AControl; stdcall;
 begin
-  try
-    Result := UI_TextView_New(Parent, ViewType);
-  except
-    Result := 0;
-  end;
+  Result := AUiTextView_New(Parent, ViewType);
 end;
 
 function TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean): AError; stdcall;
 begin
-  try
-    UI_TextView_SetReadOnly(TextView, ReadOnly);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiTextView_SetReadOnly(TextView, ReadOnly);
 end;
 
 procedure TextView_SetReadOnly02(TextView: AControl; ReadOnly: ABoolean); stdcall;
 begin
-  try
-    UI_TextView_SetReadOnly(TextView, ReadOnly);
-  except
-  end;
+  AUiTextView_SetReadOnly(TextView, ReadOnly);
 end;
 
 function TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger): AError; stdcall;
 begin
-  try
-    UI_TextView_SetScrollBars(TextView, ScrollBars);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiTextView_SetScrollBars(TextView, ScrollBars);
 end;
 
 procedure TextView_SetScrollBars02(TextView: AControl; ScrollBars: AInteger); stdcall;
 begin
-  try
-    UI_TextView_SetScrollBars(TextView, ScrollBars);
-  except
-  end;
+  AUiTextView_SetScrollBars(TextView, ScrollBars);
 end;
 
 function TextView_SetWordWrap(TextView: AControl; Value: ABoolean): AError; stdcall;
 begin
-  try
-    UI_TextView_SetWordWrap(TextView, Value);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiTextView_SetWordWrap(TextView, Value);
 end;
 
 procedure TextView_SetWordWrap02(TextView: AControl; Value: ABoolean); stdcall;
 begin
-  try
-    UI_TextView_SetWordWrap(TextView, Value);
-  except
-  end;
+  AUiTextView_SetWordWrap(TextView, Value);
 end;
 
 { ToolBar }

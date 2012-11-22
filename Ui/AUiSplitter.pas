@@ -19,6 +19,15 @@ uses
         2 - HSplitter (Align=alBottom); 3 - VSplitter (Align=alRight) }
 function AUiSplitter_New(Parent: AControl; SplitterType: AUiSplitterType): AControl; stdcall;
 
+// --- AUi_Splitter ---
+
+{ SplitterType
+    0 - HSplitter (Align=alTop)
+    1 - VSplitter (Align=alLeft)
+    2 - HSplitter (Align=alBottom)
+    3 - VSplitter (Align=alRight) }
+function AUi_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl; stdcall;
+
 { SplitterType
     0 - HSplitter (Align=alTop)
     1 - VSplitter (Align=alLeft)
@@ -52,6 +61,17 @@ begin
     end
     else
       Result := 0;
+  except
+    Result := 0;
+  end;
+end;
+
+// --- AUi_Splitter ---
+
+function AUi_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl;
+begin
+  try
+    Result := AUiSplitter_New(Parent, SplitterType);
   except
     Result := 0;
   end;

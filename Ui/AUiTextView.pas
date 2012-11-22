@@ -2,7 +2,7 @@
 @Abstract AUi text view
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.11.2012
-@LastMod 16.11.2012
+@LastMod 22.11.2012
 }
 unit AUiTextView;
 
@@ -22,11 +22,11 @@ function AUiTextView_AddLine(TextView: AControl; const Text: AString_Type): AInt
 
 {** Создает новый элемент редактирования текста
     @param ViewType: 0 - TMemo; 1 - RichEdit }
-function AUiTextView_New(Parent: AControl; ViewType: AInteger): AControl; {$ifdef AStdCall}stdcall;{$endif}
+function AUiTextView_AddLineP(TextView: AControl; const Text: APascalString): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Создает новый элемент редактирования текста
     @param ViewType: 0 - TMemo; 1 - RichEdit }
-function AUiTextView_AddLineP(TextView: AControl; const Text: APascalString): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUiTextView_New(Parent: AControl; ViewType: AInteger): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiTextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -39,6 +39,30 @@ function AUiTextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean): AError
 function AUiTextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiTextView_SetWordWrap(TextView: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+// --- AUi_TextView ---
+
+// Добавляет строку в элемент TextView
+function AUi_TextView_AddLine(TextView: AControl; const Text: AString_Type): AInteger; stdcall; deprecated; // Use AUiTextView_AddLine()
+
+{ Создает новый элемент редактирования текста
+  ViewType
+    0 - TMemo
+    1 - RichEdit }
+function AUi_TextView_New(Parent: AControl; ViewType: AInteger): AControl; stdcall; deprecated; // Use AUiTextView_New()
+
+procedure AUi_TextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger); stdcall; deprecated; // AUiTextView_SetFont()
+
+procedure AUi_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean); stdcall; deprecated; // Use AUiTextView_SetReadOnly()
+
+{ ScrollBars
+    0 - ssNone
+    1 - ssHorizontal
+    2 - ssVertical
+    3 - ssBoth }
+procedure AUi_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger); stdcall; deprecated; // Use AUiTextView_SetScrollBars()
+
+procedure AUi_TextView_SetWordWrap(TextView: AControl; Value: ABoolean); stdcall; deprecated; // Use AUiTextView_SetWordWrap()
 
 { --- UI_TextView --- }
 
@@ -191,6 +215,38 @@ begin
   except
     Result := -1;
   end;
+end;
+
+// --- AUi_TextView ---
+
+function AUi_TextView_AddLine(TextView: AControl; const Text: AString_Type): AInteger;
+begin
+  Result := AUiTextView_AddLineP(TextView, AStrings.String_ToWideString(Text));
+end;
+
+function AUi_TextView_New(Parent: AControl; ViewType: AInteger): AControl;
+begin
+  Result := AUiTextView_New(Parent, ViewType);
+end;
+
+procedure AUi_TextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger);
+begin
+  AUiTextView_SetFontP(TextView, AStrings.String_ToWideString(FontName), FontSize);
+end;
+
+procedure AUi_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean);
+begin
+  AUiTextView_SetReadOnly(TextView, ReadOnly);
+end;
+
+procedure AUi_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger);
+begin
+  AUiTextView_SetScrollBars(TextView, ScrollBars);
+end;
+
+procedure AUi_TextView_SetWordWrap(TextView: AControl; Value: ABoolean);
+begin
+  AUiTextView_SetWordWrap(TextView, Value);
 end;
 
 { TextView }

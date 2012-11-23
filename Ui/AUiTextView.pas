@@ -2,7 +2,7 @@
 @Abstract AUi text view
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.11.2012
-@LastMod 22.11.2012
+@LastMod 23.11.2012
 }
 unit AUiTextView;
 
@@ -36,7 +36,7 @@ function AUiTextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean): AError
 
 {** Set scroll bars
     @param ScrollBars: 0 - ssNone; 1 - ssHorizontal; 2 - ssVertical; 3 - ssBoth }
-function AUiTextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiTextView_SetScrollBars(TextView: AControl; ScrollBars: AUiScrollStyle): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiTextView_SetWordWrap(TextView: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -187,7 +187,7 @@ begin
   end;
 end;
 
-function AUiTextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger): AError;
+function AUiTextView_SetScrollBars(TextView: AControl; ScrollBars: AUiScrollStyle): AError;
 begin
   try
     if (TObject(TextView) is TMemo) then

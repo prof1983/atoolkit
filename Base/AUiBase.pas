@@ -2,7 +2,7 @@
 @Abstract User Interface base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 15.11.2012
+@LastMod 23.11.2012
 }
 unit AUiBase;
 
@@ -89,6 +89,14 @@ const
   AUiProgramState_Default = 0;
   AUiProgramState_None = 1;
   AUiProgramState_HourGlass = 11;
+
+type
+  AUiScrollStyle = type AInteger;
+const
+  AUiScrollStyle_None = 0;
+  AUiScrollStyle_Horizontal = 1;
+  AUiScrollStyle_Vertical = 2;
+  AUiScrollStyle_Both = 3;
 
 type
   AUiSplitterType = type AInteger;

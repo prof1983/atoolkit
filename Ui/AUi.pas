@@ -675,20 +675,6 @@ function UI_TreeView_AddItem(TreeView: AControl; Parent: ATreeNode; Text: APasca
 // Use TreeView_New()
 function UI_TreeView_New(Parent: AControl): AControl; stdcall; deprecated;
 
-{ UI_Reports }
-
-function UI_Report_New(Parent: AControl): AReport;
-
-procedure UI_Report_SetText(Report: AReport; const Value: APascalString); stdcall;
-
-{ ReportWin }
-
-function UI_ReportWin_New(): AWindow;
-
-{ ReportWinType - Тип окна отчета: 0-TReportForm; 1-SimpleReport
-  Use ReportWin_New2P() }
-function UI_ReportWin_NewA(ReportWinType: AInteger; const Text: APascalString): AWindow; deprecated;
-
 { WaitWin }
 
 function UI_WaitWin_New(const Caption, Text: APascalString; MaxPosition: Integer): AWindow; stdcall;

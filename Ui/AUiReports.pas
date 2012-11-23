@@ -17,7 +17,7 @@ unit AUiReports;
 interface
 
 uses
-  Graphics, ABase,
+  Graphics, ABase, AStrings,
   {$IFDEF USE_REPORTS}fReport, fSimpleReport,{$ENDIF}
   AUiBase, AUiBox, AUiControls, AUiData, AUiTextView;
 
@@ -42,6 +42,12 @@ function AUiReportWin_ShowReportP(const Text: APascalString; Font: AFont): AErro
 function AUi_Report_New(Parent: AControl): AReport; stdcall; deprecated; // Use AUiReport_New()
 
 procedure AUi_Report_SetText(Report: AReport; const Value: AString_Type); stdcall; deprecated; // Use AUiReport_SetText()
+
+// --- UI_Report ---
+
+function UI_Report_New(Parent: AControl): AReport;
+
+procedure UI_Report_SetText(Report: AReport; const Value: APascalString); stdcall;
 
 // --- UI_ReportWin ---
 
@@ -72,7 +78,7 @@ begin
     AUiControl_SetAlign(FReports[I].ToolsPanel, uiAlignTop);
     FReports[I].TextView := AUiTextView_New(Parent, 1);
     AUiControl_SetAlign(FReports[I].TextView, uiAlignClient);
-    AUiTextView_SetScrollBars(FReports[I].TextView, AInteger(ssBoth));
+    AUiTextView_SetScrollBars(FReports[I].TextView, AUiScrollStyle_Both);
     AUiTextView_SetFontP(FReports[I].TextView, 'Courier New', 10);
     AUiTextView_SetReadOnly(FReports[I].TextView, True);
   except
@@ -156,7 +162,7 @@ begin
     try
       Form.Editor.Clear();
       Form.Editor.Text := Text;
-      if Assigned(Font) then
+      if (Font <> 0) then
         Form.Editor.Font.Assign(TFont(Font));
       Form.ShowModal();
     finally
@@ -197,7 +203,7 @@ end;
 
 function UI_ReportWin_New(): AWindow;
 begin
-  Result := AUiReportWin_New():
+  Result := AUiReportWin_New();
 end;
 
 function UI_ReportWin_NewA(ReportWinType: AInteger; const Text: APascalString): AWindow;
@@ -207,7 +213,7 @@ end;
 
 procedure UI_ReportWin_ShowReport(const Text: APascalString; Font: TFont);
 begin
-  Result := AUiReportWin_ShowReport(Text, Font);
+  AUiReportWin_ShowReportP(Text, AFont(Font));
 end;
 
 end.

@@ -2,7 +2,7 @@
 @Abstract ASystem function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.08.2009
-@LastMod 20.11.2012
+@LastMod 23.11.2012
 }
 unit ASystem;
 
@@ -439,7 +439,7 @@ function Runtime_GetExePath(): APascalString; stdcall; deprecated; // Use ASyste
 function Runtime_GetProductName(): APascalString; stdcall; deprecated;
 function Runtime_GetProductVersion(): APascalString; stdcall; deprecated;
 function Runtime_GetExeName(): APascalString; stdcall; deprecated;
-function Runtime_GetProgramName(): APascalString; stdcall; deprecated; deprecated; // Use ASystem_GetProgramNameP()
+function Runtime_GetProgramName(): APascalString; stdcall; deprecated; // Use ASystem_GetProgramNameP()
 function Runtime_GetProgramVersion(): APascalString; stdcall; deprecated;
 function Runtime_GetTitle(): APascalString; stdcall; deprecated;
 function Runtime_GetUrl(): APascalString; stdcall; deprecated;

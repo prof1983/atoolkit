@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Работа с Log. Классы для записи собщений программы в БД или файл или отображения в окне Log)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(16.08.2005)
-@LastMod(10.07.2012)
-@Version(0.5)
+@Abstract Работа с Log. Классы для записи собщений программы в БД или файл или отображения в окне Log
+@Author Prof1983 <prof1983@ya.ru>
+@Created 16.08.2005
+@LastMod 23.11.2012
 }
 unit ALogDocumentImpl;
 
@@ -11,7 +10,7 @@ interface
 
 uses
   Graphics, SysUtils, XmlIntf,
-  ADocumentImpl, ALogDocumentIntf, ALogNodeImpl, ALogNodeIntf, AMessageConst, ANodeIntf, ATypes;
+  ABase, ADocumentImpl, ALogDocumentIntf, ALogNodeImpl, ALogNodeIntf, AMessageConst, ANodeIntf, ATypes;
 
 type //** Документ работы с Log
   TALogDocument = class(TALogNode, IALogDocument)
@@ -46,7 +45,7 @@ type //** Документ работы с Log
         положительное число, если есть замечания;
         отрицательное число, если есть ошибки (открыть документ не удалось))
     }
-    function OpenDocument(): TProfError; safecall;
+    function OpenDocument(): AError; safecall;
   public // IALogDocument
     function GetDocumentElement(): ALogNode;
     function GetDocumentElement2(): IALogNode2;
@@ -63,9 +62,9 @@ type //** Документ работы с Log
       //** Сохранить конфигурации
     function ConfigureSave(): WordBool; virtual;
       //** Финализировать
-    function Finalize(): TProfError; virtual;
+    function Finalize(): AError; virtual;
       //** Инициализировать
-    function Initialize(): TProfError; virtual;
+    function Initialize(): AError; virtual;
   public
     function AddNode(ANode: TALogNode): Boolean;
     function GetFreeId(): Integer;
@@ -134,7 +133,7 @@ begin
   FDocumentElement := Self;
 end;
 
-function TALogDocument.Finalize(): TProfError;
+function TALogDocument.Finalize(): AError;
 begin
   FDocumentElement := nil;
   Result := 0;
@@ -180,7 +179,7 @@ begin
   Result := True;
 end;
 
-function TALogDocument.Initialize(): TProfError;
+function TALogDocument.Initialize(): AError;
 begin
   Result := 0;
 end;
@@ -198,7 +197,7 @@ begin
   AddNode(Result);
 end;
 
-function TALogDocument.OpenDocument(): TProfError;
+function TALogDocument.OpenDocument(): AError;
 begin
   Result := 0;
 end;

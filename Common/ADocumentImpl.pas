@@ -1,16 +1,15 @@
 ﻿{**
-@Abstract(Документ. Реализация интерфейса IProfDocument)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(11.04.2007)
-@LastMod(28.06.2012)
-@Version(0.5)
+@Abstract Документ. Реализация интерфейса IProfDocument
+@Author Prof1983 <prof1983@ya.ru>
+@Created 11.04.2007
+@LastMod 23.11.2012
 }
 unit ADocumentImpl;
 
 interface
 
 uses
-  ADocumentIntf, AEntityImpl, ATypes;
+  ABase, ADocumentIntf, AEntityImpl;
 
 type //** Документ. Реализация интерфейса IProfDocument
   TProfDocument = class(TANamedEntity, IProfDocument)
@@ -39,7 +38,7 @@ type //** Документ. Реализация интерфейса IProfDocum
         положительное число, если есть замечания;
         отрицательное число, если есть ошибки (открыть документ не удалось))
     }
-    function OpenDocument(): TProfError; safecall;
+    function OpenDocument(): AError; safecall;
   public
     {**
       Открыт ли документ?
@@ -63,7 +62,7 @@ begin
   Result := FIsOpened;
 end;
 
-function TProfDocument.OpenDocument(): TProfError;
+function TProfDocument.OpenDocument(): AError;
 begin
   FIsOpened := True;
 end;

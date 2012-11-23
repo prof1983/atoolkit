@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Базовый модуль основных типов для Delphi 5,7,9)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(06.06.2004)
-@LastMod(15.05.2012)
-@Version(0.5)
+@Abstract Базовый модуль основных типов для Delphi 5,7,9
+@Author Prof1983 <prof1983@ya.ru>
+@Created 06.06.2004
+@LastMod 23.11.2012
 }
 unit ABase2;
 
@@ -13,7 +12,7 @@ interface
 
 uses
   Classes,
-  ATypes;
+  ABase, ATypes;
 
 // Простые типы ----------------------------------------------------------------
 {$IFDEF VER130}
@@ -24,20 +23,19 @@ type
 type // Другие простые типы ----------------------------------------------------
   Char08 = Char;
   Char16 = WideChar;
-  Char008 = Char;
   Char016 = WideChar;
-  Int008 = Byte;
-  Int016 = Int16;
-  Int032 = Int32;
-  Int064 = Int64;
+  Int008 = AInt08;
+  Int016 = AInt16;
+  Int032 = AInt32;
+  Int064 = AInt64;
   Int128 = record I1, I2: Int064 end;
   Int256 = record I1, I2: Int128 end;
   Float32 = Single;
   Float64 = Double;
-  UInt008 = Byte;
-  UInt016 = UInt16;
-  UInt032 = UInt32;
-  UInt064 = UInt64;
+  UInt008 = AUInt08;
+  UInt016 = AUInt16;
+  UInt032 = AUInt32;
+  UInt064 = AUInt64;
   UInt128 = record I1, I2: UInt064 end;
   UInt256 = record I1, I2: UInt128 end;
 
@@ -53,11 +51,11 @@ type
 
 // Константы -------------------------------------------------------------------
 const
-  HighInt08 = High(Int08);
+  HighInt08 = High(AInt08);
   HighInt16 = High(Int16);
   HighInt32 = High(Int32);
   HighInt64 = High(Int64);
-  HighUInt08 = High(UInt08);
+  HighUInt08 = High(AUInt08);
   HighUInt16 = High(UInt16);
   HighUInt32 = High(UInt32);
   HighUInt64 = High(UInt64);

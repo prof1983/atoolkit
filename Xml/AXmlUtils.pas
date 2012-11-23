@@ -1,9 +1,8 @@
 ﻿{**
-@abstract(ProfXml)
-@author(Prof1983 prof1983@ya.ru)
-@created(15.02.2012)
-@lastmod(10.07.2012)
-@version(0.5)
+@Abstract ProfXml
+@Author Prof1983 <prof1983@ya.ru>
+@Created 15.02.2012
+@LastMod 23.11.2012
 }
 unit AXmlUtils;
 
@@ -17,8 +16,8 @@ function ProfXmlNode_GetAttribute(Node: IXmlNode; const AttrName: DOMString): Ol
 function ProfXmlNode_GetNodeByName(ANode: IXmlNode; const AName: WideString): IXmlNode;
 function ProfXmlNode_GetValueAsBool(ANode: IXmlNode; var Value: WordBool): WordBool;
 function ProfXmlNode_GetValueAsDateTime(ANode: IXmlNode; var Value: TDateTime): WordBool;
-function ProfXmlNode_GetValueAsFloat32(ANode: IXmlNode; var Value: Float32): WordBool;
-function ProfXmlNode_GetValueAsFloat64(ANode: IXmlNode; var Value: Float64): WordBool;
+function ProfXmlNode_GetValueAsFloat32(ANode: IXmlNode; var Value: AFloat32): WordBool;
+function ProfXmlNode_GetValueAsFloat64(ANode: IXmlNode; var Value: AFloat64): WordBool;
 function ProfXmlNode_GetValueAsInt32(ANode: IXmlNode; var Value: Int32): WordBool;
 function ProfXmlNode_GetValueAsInt64(ANode: IXmlNode; var Value: Int64): WordBool;
 function ProfXmlNode_GetValueAsString(Node: IXmlNode; var Value: WideString): WordBool;
@@ -26,9 +25,9 @@ function ProfXmlNode_ReadBool(ANode: IXmlNode; const AName: WideString; var Valu
 function ProfXmlNode_ReadBoolDef(ANode: IXmlNode; const AName: WideString; ADef: WordBool): WordBool;
 function ProfXmlNode_ReadDateTime(ANode: IXmlNode; const AName: WideString; var Value: TDateTime): WordBool;
 function ProfXmlNode_ReadDateTimeDef(ANode: IXmlNode; const AName: WideString; ADef: TDateTime): TDateTime;
-function ProfXmlNode_ReadFloat32(Node: IXmlNode; const Name: WideString; var Value: Float32): WordBool;
-function ProfXmlNode_ReadFloat64(Node: IXmlNode; const Name: WideString; var Value: Float64): WordBool;
-function ProfXmlNode_ReadFloatDef(ANode: IXmlNode; const AName: WideString; ADef: Float64): Float64;
+function ProfXmlNode_ReadFloat32(Node: IXmlNode; const Name: WideString; var Value: AFloat32): WordBool;
+function ProfXmlNode_ReadFloat64(Node: IXmlNode; const Name: WideString; var Value: AFloat64): WordBool;
+function ProfXmlNode_ReadFloatDef(ANode: IXmlNode; const AName: WideString; ADef: AFloat64): AFloat64;
 function ProfXmlNode_ReadInt(Node: IXmlNode; const Name: WideString; var Value: Integer): WordBool;
 function ProfXmlNode_ReadInt32(Node: IXmlNode; const Name: WideString; var Value: Int32): WordBool;
 function ProfXmlNode_ReadInt32Def(ANode: IXmlNode; const AName: WideString; ADef: Int32): Int32;
@@ -39,7 +38,7 @@ function ProfXmlNode_ReadStringDef(Node: IXmlNode; const Name, Def: APascalStrin
 function ProfXmlNode_WriteBool(Node: IXmlNode; const Name: APascalString; Value: ABool): ABool;
 function ProfXmlNode_WriteDateTime(Node: IXmlNode; const Name: APascalString; Value: TDateTime): ABool;
 function ProfXmlNode_WriteFloat32(Node: IXmlNode; const Name: APascalString; Value: AFloat32): ABool;
-function ProfXmlNode_WriteFloat64(Node: IXmlNode; const Name: WideString; Value: Float64): WordBool;
+function ProfXmlNode_WriteFloat64(Node: IXmlNode; const Name: WideString; Value: AFloat64): WordBool;
 function ProfXmlNode_WriteInt(Node: IXmlNode; const Name: APascalString; Value: AInt): WordBool;
 function ProfXmlNode_WriteInt32(Node: IXmlNode; const Name: APascalString; Value: AInt): WordBool;
 function ProfXmlNode_WriteInt64(Node: IXmlNode; const Name: APascalString; Value: AInt64): ABoolean;
@@ -101,7 +100,7 @@ begin
   end;
 end;
 
-function ProfXmlNode_GetValueAsFloat32(ANode: IXmlNode; var Value: Float32): WordBool;
+function ProfXmlNode_GetValueAsFloat32(ANode: IXmlNode; var Value: AFloat32): WordBool;
 var
   Code: Integer;
 begin
@@ -128,7 +127,7 @@ begin
   end;
 end;
 
-function ProfXmlNode_GetValueAsFloat64(ANode: IXmlNode; var Value: Float64): WordBool;
+function ProfXmlNode_GetValueAsFloat64(ANode: IXmlNode; var Value: AFloat64): WordBool;
 var
   s: string;
 begin
@@ -263,7 +262,7 @@ begin
   ProfXmlNode_ReadDateTime(ANode, AName, Result);
 end;
 
-function ProfXmlNode_ReadFloat32(Node: IXmlNode; const Name: WideString; var Value: Float32): WordBool;
+function ProfXmlNode_ReadFloat32(Node: IXmlNode; const Name: WideString; var Value: AFloat32): WordBool;
 var
   Node1: IXmlNode;
 begin
@@ -285,7 +284,7 @@ begin
   end;
 end;
 
-function ProfXmlNode_ReadFloat64(Node: IXmlNode; const Name: WideString; var Value: Float64): WordBool;
+function ProfXmlNode_ReadFloat64(Node: IXmlNode; const Name: WideString; var Value: AFloat64): WordBool;
 var
   Node1: IXmlNode;
 begin
@@ -307,7 +306,7 @@ begin
   end;
 end;
 
-function ProfXmlNode_ReadFloatDef(ANode: IXmlNode; const AName: WideString; ADef: Float64): Float64;
+function ProfXmlNode_ReadFloatDef(ANode: IXmlNode; const AName: WideString; ADef: AFloat64): AFloat64;
 begin
   Result := ADef;
   ProfXmlNode_ReadFloat64(ANode, AName, Result);
@@ -493,7 +492,7 @@ begin
   end;
 end;
 
-function ProfXmlNode_WriteFloat64(Node: IXmlNode; const Name: WideString; Value: Float64): WordBool;
+function ProfXmlNode_WriteFloat64(Node: IXmlNode; const Name: WideString; Value: AFloat64): WordBool;
 var
   Node1: IXmlNode;
 begin

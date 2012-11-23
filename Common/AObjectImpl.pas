@@ -2,7 +2,7 @@
 @Abstract Объект с логированием и конфигурациями
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.12.2005
-@LastMod 13.11.2012
+@LastMod 23.11.2012
 
 Uses
   @link ABase
@@ -46,24 +46,24 @@ type //** Объект с логированием и конфигурациям
       //** Срабатывает при уничтожении объекта
     procedure DoDestroy(); virtual; safecall;
       //** Срабатывает при финализации
-    function DoFinalize(): TProfError; virtual; safecall;
+    function DoFinalize(): AError; virtual; safecall;
       //** Срабатывает после успешной финализации
-    function DoFinalized(): TProfError; virtual; safecall;
+    function DoFinalized(): AError; virtual; safecall;
       //** Срабатывает при инициализации
-    function DoInitialize(): TProfError; virtual; safecall;
+    function DoInitialize(): AError; virtual; safecall;
       //** Срабатывает после успешнрй инициализации
-    function DoInitialized(): TProfError; virtual; safecall;
+    function DoInitialized(): AError; virtual; safecall;
   public // IProfObject
       //** Выполнить или передать дочерним объектам
     function AddMessage(const AMsg: WideString): Integer; virtual;
       //** Загрузить конфигурации
-    function ConfigureLoad(AConfig: IProfNode): TProfError; safecall;
+    function ConfigureLoad(AConfig: IProfNode): AError; safecall;
       //** Сохранить конфигурации
-    function ConfigureSave(AConfig: IProfNode): TProfError; safecall;
+    function ConfigureSave(AConfig: IProfNode): AError; safecall;
       //** Финализирует
-    function Finalize(): TProfError; virtual;
+    function Finalize(): AError; virtual;
       //** Инициализирует
-    function Initialize(): TProfError; virtual;
+    function Initialize(): AError; virtual;
       //** Передает сообщение
     function SendMessage(const AMsg: WideString): Integer; virtual; safecall;
   public // Переопределение функций TInterfacedObject
@@ -148,9 +148,9 @@ type //** Объект с логированием и конфигурациям
     //** Сохранить конфигурации
     function ConfigureSave2(AConfig: IXmlNode = nil): WordBool; virtual; safecall;
     //** Финализировать
-    function Finalize(): TProfError; virtual;
+    function Finalize(): AError; virtual;
     //** Инициализировать
-    function Initialize(): TProfError; virtual;
+    function Initialize(): AError; virtual;
     function Start(): WordBool; virtual; safecall;
     function Stop(): WordBool; virtual; safecall;
   public // Переопределение функций TInterfacedObject
@@ -239,12 +239,12 @@ begin
     AddToLog(lgGeneral, ltWarning, stNotInitialized);
 end;
 
-function TAObject.ConfigureLoad(AConfig: IProfNode): TProfError;
+function TAObject.ConfigureLoad(AConfig: IProfNode): AError;
 begin
   Result := 0;
 end;
 
-function TAObject.ConfigureSave(AConfig: IProfNode): TProfError;
+function TAObject.ConfigureSave(AConfig: IProfNode): AError;
 begin
   Result := 0;
 end;
@@ -275,27 +275,27 @@ procedure TAObject.DoDestroy();
 begin
 end;
 
-function TAObject.DoFinalize(): TProfError;
+function TAObject.DoFinalize(): AError;
 begin
   Result := 0;
 end;
 
-function TAObject.DoFinalized(): TProfError;
+function TAObject.DoFinalized(): AError;
 begin
   Result := 0;
 end;
 
-function TAObject.DoInitialize(): TProfError;
+function TAObject.DoInitialize(): AError;
 begin
   Result := 0;
 end;
 
-function TAObject.DoInitialized(): TProfError;
+function TAObject.DoInitialized(): AError;
 begin
   Result := 0;
 end;
 
-function TAObject.Finalize(): TProfError;
+function TAObject.Finalize(): AError;
 begin
   if not(FInitialized) then
   begin
@@ -325,7 +325,7 @@ begin
   Result := FLog;
 end;
 
-function TAObject.Initialize(): TProfError;
+function TAObject.Initialize(): AError;
 begin
   if FInitialized then
   begin
@@ -505,7 +505,7 @@ begin
   Result := True;
 end;
 
-function TProfObject2.Finalize(): TProfError;
+function TProfObject2.Finalize(): AError;
 begin
   {IFDEF NEW}
   {Stop();
@@ -546,7 +546,7 @@ begin
   Result := FLog;
 end;
 
-function TProfObject2.Initialize(): TProfError;
+function TProfObject2.Initialize(): AError;
 begin
   if FInitialized then
   begin

@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Модуль)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(28.08.2007)
-@LastMod(26.04.2012)
-@Version(0.5)
+@Abstract Модуль
+@Author Prof1983 <prof1983@ya.ru>
+@Created 28.08.2007
+@LastMod 23.11.2012
 
 -Модуль может иметь неограниченное число точек расширения (ExtensionPoint).
 Модуль может зависеть от других модулей (Dependences).
@@ -14,7 +13,7 @@ unit AModuleIntf;
 interface
 
 uses
-  AMessageIntf, AModuleInformationIntf, ATypes;
+  ABase, AMessageIntf, AModuleInformationIntf{, ATypes};
 
 type
   IProfModule = interface
@@ -26,8 +25,8 @@ type
 
     // Public methods
 
-    function Initialize(): TProfError;
-    function Finalize(): TProfError;
+    function Initialize(): AError;
+    function Finalize(): AError;
     function Start(): Integer;
     function Stop(): Integer;
     function Pause(): Integer;

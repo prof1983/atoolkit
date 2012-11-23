@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Базовый класс потока ввода/вывода)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(18.04.2004)
-@LastMod(19.06.2012)
-@Version(0.5)
+@Abstract Базовый класс потока ввода/вывода
+@Author Prof1983 <prof1983@ya.ru>
+@Created 18.04.2004
+@LastMod 23.11.2012
 }
 unit AStreamObj;
 
@@ -18,38 +17,38 @@ type //** Поток
   private
     FOpened: Boolean;
   public
-    function Clear(): TError; virtual;
-    function Close(): TError; virtual;
+    function Clear(): AError; virtual;
+    function Close(): AError; virtual;
     constructor Create();
     function GetPosition(): Integer;
     function GetSize(): UInt64; virtual;
-    function LoadFromFileN(FileName: String): TError; virtual;
+    function LoadFromFileN(FileName: String): AError; virtual;
     procedure Open(); virtual;
-    function ReadArray(var Value: TArrayByte; Count: UInt32): TError; virtual;
+    function ReadArray(var Value: TArrayByte; Count: UInt32): AError; virtual;
     function ReadBuf(var Buf; Size: AInt): AError; virtual;
-    function ReadInt08(var Value: Int08): TError; virtual;
-    function ReadInt16(var Value: Int16): TError; virtual;
-    function ReadInt32(var Value: Int32): TError; virtual;
-    function ReadInt64(var Value: Int64): TError; virtual;
-    function ReadStr(var Value: string): TError; virtual;
-    function ReadUInt08(var Value: UInt08): TError; virtual;
-    function ReadUInt16(var Value: UInt16): TError; virtual;
-    function ReadUInt32(var Value: UInt32): TError; virtual;
-    function ReadUInt64(var Value: UInt64): TError; virtual;
+    function ReadInt08(var Value: AInt08): AError; virtual;
+    function ReadInt16(var Value: Int16): AError; virtual;
+    function ReadInt32(var Value: Int32): AError; virtual;
+    function ReadInt64(var Value: Int64): AError; virtual;
+    function ReadStr(var Value: string): AError; virtual;
+    function ReadUInt08(var Value: AUInt08): AError; virtual;
+    function ReadUInt16(var Value: UInt16): AError; virtual;
+    function ReadUInt32(var Value: UInt32): AError; virtual;
+    function ReadUInt64(var Value: UInt64): AError; virtual;
     //function SaveToFile(F: TProfFile): Boolean; virtual; - Use AStream_SaveToFile()
-    function Seek(Offset: Int64; Mode: TStreamSeekMode): TError; virtual;
+    function Seek(Offset: Int64; Mode: TStreamSeekMode): AError; virtual;
     procedure SetPosition(Value: Integer);
     procedure SetSize(Value: UInt64);
     function WriteArray(A: TArrayByte; Count: UInt64): UInt64; virtual;
-    function WriteInt08(Value: Int08): TError; virtual;
-    function WriteInt16(Value: Int16): TError; virtual;
-    function WriteInt32(Value: Int32): TError; virtual;
-    function WriteInt64(Value: Int64): TError; virtual;
-    function WriteStr(const Value: string): TError; virtual;
-    function WriteUInt08(Value: UInt08): TError; virtual;
-    function WriteUInt16(Value: UInt16): TError; virtual;
-    function WriteUInt32(Value: UInt32): TError; virtual;
-    function WriteUInt64(Value: UInt64): TError; virtual;
+    function WriteInt08(Value: AInt08): AError; virtual;
+    function WriteInt16(Value: Int16): AError; virtual;
+    function WriteInt32(Value: Int32): AError; virtual;
+    function WriteInt64(Value: Int64): AError; virtual;
+    function WriteStr(const Value: string): AError; virtual;
+    function WriteUInt08(Value: AUInt08): AError; virtual;
+    function WriteUInt16(Value: UInt16): AError; virtual;
+    function WriteUInt32(Value: UInt32): AError; virtual;
+    function WriteUInt64(Value: UInt64): AError; virtual;
     function ReadInteger(var Value: Integer): WordBool; virtual;
     function WriteInteger(Value: Integer): WordBool;
   public
@@ -66,29 +65,29 @@ type //** Поток
     function Clear(): AError; override;
     function Close(): AError; override;
     function GetSize(): UInt64; override;
-    function LoadFromFileN(FileName: String): TError; override;
+    function LoadFromFileN(FileName: String): AError; override;
     procedure Open(); override;
-    function ReadArray(var Value: TArrayByte; Count: UInt32): TError; override;
+    function ReadArray(var Value: TArrayByte; Count: UInt32): AError; override;
     function ReadBuf(var Buf; Size: AInt): AError; override;
-    function ReadInt08(var Value: Int08): TError; override;
-    function ReadInt16(var Value: Int16): TError; override;
-    function ReadInt32(var Value: Int32): TError; override;
-    function ReadInt64(var Value: Int64): TError; override;
-    function ReadUInt08(var Value: UInt08): AError; override;
-    function ReadUInt16(var Value: UInt16): TError; override;
-    function ReadUInt32(var Value: UInt32): TError; override;
-    function ReadUInt64(var Value: UInt64): TError; override;
+    function ReadInt08(var Value: AInt08): AError; override;
+    function ReadInt16(var Value: Int16): AError; override;
+    function ReadInt32(var Value: Int32): AError; override;
+    function ReadInt64(var Value: Int64): AError; override;
+    function ReadUInt08(var Value: AUInt08): AError; override;
+    function ReadUInt16(var Value: UInt16): AError; override;
+    function ReadUInt32(var Value: UInt32): AError; override;
+    function ReadUInt64(var Value: UInt64): AError; override;
     //function SaveToFile(F: TProfFile{TMyFile}): TError; override; - Use AStream_SaveToFile()
-    function Seek(Offset: Int64; Mode: TStreamSeekMode): TError; override;
+    function Seek(Offset: Int64; Mode: TStreamSeekMode): AError; override;
     function WriteArray(A: TArrayByte; Count: UInt64): UInt64; override;
-    function WriteInt08(Value: Int08): TError; override;
-    function WriteInt16(Value: Int16): TError; override;
-    function WriteInt32(Value: Int32): TError; override;
-    function WriteInt64(Value: Int64): TError; override;
-    function WriteUInt08(Value: UInt08): TError; override;
-    function WriteUInt16(Value: UInt16): TError; override;
-    function WriteUInt32(Value: UInt32): TError; override;
-    function WriteUInt64(Value: UInt64): TError; override;
+    function WriteInt08(Value: AInt08): AError; override;
+    function WriteInt16(Value: Int16): AError; override;
+    function WriteInt32(Value: Int32): AError; override;
+    function WriteInt64(Value: Int64): AError; override;
+    function WriteUInt08(Value: AUInt08): AError; override;
+    function WriteUInt16(Value: UInt16): AError; override;
+    function WriteUInt32(Value: UInt32): AError; override;
+    function WriteUInt64(Value: UInt64): AError; override;
     function ReadInteger(var Value: Integer): WordBool; override;
   public
     constructor Create(Stream: TStream);
@@ -109,31 +108,31 @@ type //** Файл
     procedure Free();
     function GetStream(): TProfStream;
     //function Read(var A: TArrayByte; Count: UInt64): UInt64;
-    function ReadFloat32(var Value: Float32): TError;
-    function ReadFloat64(var Value: Float64): TError;
-    function ReadInt08(var Value: Int08): TError;
-    function ReadInt16(var Value: Int16): TError;
-    function ReadInt32(var Value: Int32): TError;
-    function ReadInt64(var Value: Int64): TError;
-    function ReadUInt08(var Value: UInt08): TError;
-    function ReadUInt16(var Value: UInt16): TError;
-    function ReadUInt32(var Value: UInt32): TError;
-    function ReadUInt64(var Value: UInt64): TError;
+    function ReadFloat32(var Value: AFloat32): AError;
+    function ReadFloat64(var Value: AFloat64): AError;
+    function ReadInt08(var Value: AInt08): AError;
+    function ReadInt16(var Value: Int16): AError;
+    function ReadInt32(var Value: Int32): AError;
+    function ReadInt64(var Value: Int64): AError;
+    function ReadUInt08(var Value: AUInt08): AError;
+    function ReadUInt16(var Value: UInt16): AError;
+    function ReadUInt32(var Value: UInt32): AError;
+    function ReadUInt64(var Value: UInt64): AError;
     function Open(FileName: String; Mode: TProfFileOpenMode): Boolean; virtual;
-    function OpenCreate(FileName: String): TError;
+    function OpenCreate(FileName: String): AError;
     //function Write(A: TArrayByte; Count: UInt64): UInt64;
-    function WriteFloat32(Value: Float32): TError;
-    function WriteFloat64(Value: Float64): TError;
-    function WriteInt08(Value: Int08): TError;
-    function WriteInt16(Value: Int16): TError;
-    function WriteInt32(Value: Int32): TError;
-    function WriteInt64(Value: Int64): TError;
-    function WriteUInt08(Value: UInt08): TError;
-    function WriteUInt16(Value: UInt16): TError;
-    function WriteUInt32(Value: UInt32): TError;
-    function WriteUInt64(Value: UInt64): TError;
-    function Seek(Offset: Int64; Origin: TStreamSeekMode = Prof_soBeginning): TError;
-    function SetStream(Value: TProfStream): TError;
+    function WriteFloat32(Value: AFloat32): AError;
+    function WriteFloat64(Value: AFloat64): AError;
+    function WriteInt08(Value: AInt08): AError;
+    function WriteInt16(Value: Int16): AError;
+    function WriteInt32(Value: Int32): AError;
+    function WriteInt64(Value: Int64): AError;
+    function WriteUInt08(Value: AUInt08): AError;
+    function WriteUInt16(Value: UInt16): AError;
+    function WriteUInt32(Value: UInt32): AError;
+    function WriteUInt64(Value: UInt64): AError;
+    function Seek(Offset: Int64; Origin: TStreamSeekMode = Prof_soBeginning): AError;
+    function SetStream(Value: TProfStream): AError;
   end;
 
   //** Директория (Папка)
@@ -142,7 +141,7 @@ type //** Файл
     FName: String;
   public
     function GetName(): String;
-    function SetName(Value: String): TError;
+    function SetName(Value: String): AError;
   end;
 
   //** Текстовый файл
@@ -151,17 +150,17 @@ type //** Файл
     F: TextFile;
     FFileName: String;
   public
-    function Append(FileName: String): TError;
-    function Close(): TError;
+    function Append(FileName: String): AError;
+    function Close(): AError;
     function Eof(): Boolean;
     procedure Free(); //override;
     function GetFileName(): String;
-    function Open(FileName: String): TError;
-    function OpenCreate(FileName: String): TError;
-    function Read(var S: String): TError;
-    function ReadLn(var S: String): TError;
-    function Write(const S: String): TError;
-    function WriteLn(const S: String): TError;
+    function Open(FileName: String): AError;
+    function OpenCreate(FileName: String): AError;
+    function Read(var S: String): AError;
+    function ReadLn(var S: String): AError;
+    function Write(const S: String): AError;
+    function WriteLn(const S: String): AError;
   end;
 
 {type //** Поток-файл
@@ -170,16 +169,16 @@ type //** Файл
 type //** Поток-память
   TProfMemoryStream = class(TProfStream)
   private
-    FBytes: array of UInt08;
+    FBytes: array of AUInt08;
   public
-    function Clear: TError; override;
-    function LoadFromFileN(FileName: String): TError; override;
+    function Clear(): AError; override;
+    function LoadFromFileN(FileName: String): AError; override;
   end;
   TProfStreamMemory = TProfMemoryStream;
 
 // Functions -------------------------------------------------------------------
 
-function AStream_SaveToFile(Stream: TProfStream; F: TProfFile): TError;
+function AStream_SaveToFile(Stream: TProfStream; F: TProfFile): AError;
 
 function AStream_Write(Stream: TProfStream; const Buffer; Count: Longint): Longint;
 
@@ -187,7 +186,7 @@ function AStream_Write(Stream: TProfStream; const Buffer; Count: Longint): Longi
 // Скопировать один файл
 procedure CopyOneFile(const Src, Target: String);
 
-function ProfStreamMemory_LoadFromFileN(const FileName: string): TError;
+function ProfStreamMemory_LoadFromFileN(const FileName: string): AError;
 
 implementation
 
@@ -211,11 +210,11 @@ begin
   end
 end;
 
-function ProfStreamMemory_LoadFromFileN(const FileName: string): TError;
+function ProfStreamMemory_LoadFromFileN(const FileName: string): AError;
 var
   Count: UInt32;
   F: file;
-  FBytes: array of UInt08;
+  FBytes: array of AUInt08;
 begin
   AssignFile(F, FileName);
   {$I-}Reset(F, 1);{$I+}
@@ -229,7 +228,7 @@ begin
   begin
     Inc(Count);
     SetLength(FBytes, Count);
-    BlockRead(F, FBytes[Count - 1], SizeOf(UInt08));
+    BlockRead(F, FBytes[Count - 1], SizeOf(AUInt08));
   end;
   CloseFile(F);
   Result := 0;
@@ -245,7 +244,7 @@ begin
     Result := -1;
 end;
 
-function AStream_SaveToFile(Stream: TProfStream; F: TProfFile): TError;
+function AStream_SaveToFile(Stream: TProfStream; F: TProfFile): AError;
 {const
   BufSize = 4096;
 var
@@ -346,7 +345,7 @@ begin
   Result := True;
 end;
 
-function TProfFile.OpenCreate(FileName: String): TError;
+function TProfFile.OpenCreate(FileName: String): AError;
 begin
   Result := 0;
   Close;
@@ -363,7 +362,7 @@ begin
     Result := 1;
 end;}
 
-function TProfFile.ReadFloat32(var Value: Float32): TError;
+function TProfFile.ReadFloat32(var Value: AFloat32): AError;
 begin
   {if Assigned(FStream) then
     Result := FStream.ReadFloat32(Value)
@@ -371,7 +370,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.ReadFloat64(var Value: Float64): TError;
+function TProfFile.ReadFloat64(var Value: AFloat64): AError;
 begin
   {if Assigned(FStream) then
     Result := FStream.ReadFloat64(Value)
@@ -379,7 +378,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.ReadInt08(var Value: Int08): TError;
+function TProfFile.ReadInt08(var Value: AInt08): AError;
 begin
   if Assigned(FStream) then
     Result := FStream.ReadInt08(Value)
@@ -387,7 +386,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.ReadInt16(var Value: Int16): TError;
+function TProfFile.ReadInt16(var Value: Int16): AError;
 begin
   if Assigned(FStream) then
     Result := FStream.ReadInt16(Value)
@@ -395,7 +394,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.ReadInt32(var Value: Int32): TError;
+function TProfFile.ReadInt32(var Value: Int32): AError;
 begin
   if Assigned(FStream) then
     Result := FStream.ReadInt32(Value)
@@ -403,7 +402,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.ReadInt64(var Value: Int64): TError;
+function TProfFile.ReadInt64(var Value: Int64): AError;
 begin
   if Assigned(FStream) then
     Result := FStream.ReadInt64(Value)
@@ -411,7 +410,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.ReadUInt08(var Value: UInt08): TError;
+function TProfFile.ReadUInt08(var Value: AUInt08): AError;
 begin
   if Assigned(FStream) then
     Result := FStream.ReadUInt08(Value)
@@ -419,7 +418,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.ReadUInt16(var Value: UInt16): TError;
+function TProfFile.ReadUInt16(var Value: UInt16): AError;
 begin
   if Assigned(FStream) then
     Result := FStream.ReadUInt16(Value)
@@ -427,7 +426,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.ReadUInt32(var Value: UInt32): TError;
+function TProfFile.ReadUInt32(var Value: UInt32): AError;
 begin
   if Assigned(FStream) then
     Result := FStream.ReadUInt32(Value)
@@ -435,7 +434,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.ReadUInt64(var Value: UInt64): TError;
+function TProfFile.ReadUInt64(var Value: UInt64): AError;
 begin
   if Assigned(FStream) then
     Result := FStream.ReadUInt64(Value)
@@ -443,7 +442,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.Seek(Offset: Int64; Origin: TStreamSeekMode = Prof_soBeginning): TError;
+function TProfFile.Seek(Offset: Int64; Origin: TStreamSeekMode = Prof_soBeginning): AError;
 {(soBeginning, soCurrent, soEnd)}
 begin
   Result := -1;
@@ -452,7 +451,7 @@ begin
   Result := 0;
 end;
 
-function TProfFile.SetStream(Value: TProfStream): TError;
+function TProfFile.SetStream(Value: TProfStream): AError;
 begin
   FStream := Value;
   Result := 0;
@@ -466,7 +465,7 @@ begin
     Result := False;
 end;}
 
-function TProfFile.WriteFloat32(Value: Float32): TError;
+function TProfFile.WriteFloat32(Value: AFloat32): AError;
 begin
   {if Assigned(FStream) then
     Result := FStream.WriteFloat32(A, Count)
@@ -474,7 +473,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.WriteFloat64(Value: Float64): TError;
+function TProfFile.WriteFloat64(Value: AFloat64): AError;
 begin
   {if Assigned(FStream) then
     Result := FStream.WriteFloat64(Value)
@@ -482,7 +481,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.WriteInt08(Value: Int08): TError;
+function TProfFile.WriteInt08(Value: AInt08): AError;
 begin
   if Assigned(FStream) then
     Result := FStream.WriteInt08(Value)
@@ -490,7 +489,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.WriteInt16(Value: Int16): TError;
+function TProfFile.WriteInt16(Value: Int16): AError;
 begin
   if Assigned(FStream) then
     Result := FStream.WriteInt16(Value)
@@ -498,7 +497,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.WriteInt32(Value: Int32): TError;
+function TProfFile.WriteInt32(Value: Int32): AError;
 begin
   if Assigned(FStream) then
     Result := FStream.WriteInt32(Value)
@@ -506,7 +505,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.WriteInt64(Value: Int64): TError;
+function TProfFile.WriteInt64(Value: Int64): AError;
 begin
   if Assigned(FStream) then
     Result := FStream.WriteInt64(Value)
@@ -514,7 +513,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.WriteUInt08(Value: UInt08): TError;
+function TProfFile.WriteUInt08(Value: AUInt08): AError;
 begin
   if Assigned(FStream) then
     Result := FStream.WriteUInt08(Value)
@@ -522,7 +521,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.WriteUInt16(Value: UInt16): TError;
+function TProfFile.WriteUInt16(Value: UInt16): AError;
 begin
   if Assigned(FStream) then
     Result := FStream.WriteUInt16(Value)
@@ -530,7 +529,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.WriteUInt32(Value: UInt32): TError;
+function TProfFile.WriteUInt32(Value: UInt32): AError;
 begin
   if Assigned(FStream) then
     Result := FStream.WriteUInt32(Value)
@@ -538,7 +537,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.WriteUInt64(Value: UInt64): TError;
+function TProfFile.WriteUInt64(Value: UInt64): AError;
 begin
   if Assigned(FStream) then
     Result := FStream.WriteUInt64(Value)
@@ -553,7 +552,7 @@ begin
   Result := FName;
 end;
 
-function TProfFileDir.SetName(Value: String): TError;
+function TProfFileDir.SetName(Value: String): AError;
 begin
   FName := Value;
   Result := 0;
@@ -561,7 +560,7 @@ end;
 
 { TProfFileText }
 
-function TProfFileText.Append(FileName: String): TError;
+function TProfFileText.Append(FileName: String): AError;
 begin
   {$I-}
   AssignFile(F, FileName);
@@ -582,7 +581,7 @@ begin
   {$I+}
 end;
 
-function TProfFileText.Close: TError;
+function TProfFileText.Close: AError;
 begin
   {$I-}CloseFile(F);{$I+}
   if (IOResult = 0) then
@@ -608,7 +607,7 @@ begin
   Result := FFileName;
 end;
 
-function TProfFileText.Open(FileName: String): TError;
+function TProfFileText.Open(FileName: String): AError;
 begin
   AssignFile(F, FileName);
   {$I-}Reset(F);{$I+}
@@ -619,7 +618,7 @@ begin
   FFileName := FileName;
 end;
 
-function TProfFileText.OpenCreate(FileName: String): TError;
+function TProfFileText.OpenCreate(FileName: String): AError;
 begin
   AssignFile(F, FileName);
   {$I-}Rewrite(F);{$I+}
@@ -630,7 +629,7 @@ begin
   FFileName := FileName;
 end;
 
-function TProfFileText.Read(var S: String): TError;
+function TProfFileText.Read(var S: String): AError;
 begin
   {$I-}System.Read(F, S);{$I+}
   if (IOResult = 0) then
@@ -639,7 +638,7 @@ begin
     Result := -1;
 end;
 
-function TProfFileText.ReadLn(var S: String): TError;
+function TProfFileText.ReadLn(var S: String): AError;
 begin
   {$I-}System.ReadLn(F, S);{$I+}
   if (IOResult = 0) then
@@ -648,7 +647,7 @@ begin
     Result := -1;
 end;
 
-function TProfFileText.Write(const S: String): TError;
+function TProfFileText.Write(const S: String): AError;
 begin
   {$I-}System.Write(F, S);{$I+}
   if (IOResult = 0) then
@@ -657,7 +656,7 @@ begin
     Result := -1;
 end;
 
-function TProfFileText.WriteLn(const S: String): TError;
+function TProfFileText.WriteLn(const S: String): AError;
 begin
   {$I-}System.WriteLn(F, S);{$I+}
   if (IOResult = 0) then
@@ -668,12 +667,12 @@ end;
 
 { TProfStream }
 
-function TProfStream.Clear(): TError;
+function TProfStream.Clear(): AError;
 begin
   Result := -1;
 end;
 
-function TProfStream.Close: TError;
+function TProfStream.Close: AError;
 begin
   Result := 0;
   FOpened := False;
@@ -695,7 +694,7 @@ begin
   Result := 0;
 end;
 
-function TProfStream.LoadFromFileN(FileName: String): TError;
+function TProfStream.LoadFromFileN(FileName: String): AError;
 begin
   Result := -1;
 end;
@@ -705,7 +704,7 @@ begin
   FOpened := True;
 end;
 
-function TProfStream.ReadArray(var Value: TArrayByte; Count: UInt32): TError;
+function TProfStream.ReadArray(var Value: TArrayByte; Count: UInt32): AError;
 begin
   Result := -1;
 end;
@@ -715,22 +714,22 @@ begin
   Result := -1;
 end;
 
-function TProfStream.ReadInt08(var Value: Int08): TError;
+function TProfStream.ReadInt08(var Value: AInt08): AError;
 begin
   Result := -1;
 end;
 
-function TProfStream.ReadInt16(var Value: Int16): TError;
+function TProfStream.ReadInt16(var Value: Int16): AError;
 begin
   Result := -1;
 end;
 
-function TProfStream.ReadInt32(var Value: Int32): TError;
+function TProfStream.ReadInt32(var Value: Int32): AError;
 begin
   Result := -1;
 end;
 
-function TProfStream.ReadInt64(var Value: Int64): TError;
+function TProfStream.ReadInt64(var Value: Int64): AError;
 begin
   Result := -1;
 end;
@@ -740,27 +739,27 @@ begin
   Result := False;
 end;
 
-function TProfStream.ReadStr(var Value: string): TError;
+function TProfStream.ReadStr(var Value: string): AError;
 begin
   Result := -1;
 end;
 
-function TProfStream.ReadUInt08(var Value: UInt08): TError;
+function TProfStream.ReadUInt08(var Value: AUInt08): AError;
 begin
   Result := -1;
 end;
 
-function TProfStream.ReadUInt16(var Value: UInt16): TError;
+function TProfStream.ReadUInt16(var Value: UInt16): AError;
 begin
   Result := -1;
 end;
 
-function TProfStream.ReadUInt32(var Value: UInt32): TError;
+function TProfStream.ReadUInt32(var Value: UInt32): AError;
 begin
   Result := -1;
 end;
 
-function TProfStream.ReadUInt64(var Value: UInt64): TError;
+function TProfStream.ReadUInt64(var Value: UInt64): AError;
 begin
   Result := -1;
 end;
@@ -788,7 +787,7 @@ begin
   Result := False;
 end;*)
 
-function TProfStream.Seek(Offset: Int64; Mode: TStreamSeekMode): TError;
+function TProfStream.Seek(Offset: Int64; Mode: TStreamSeekMode): AError;
 begin
   Result := -1;
 end;
@@ -807,22 +806,22 @@ begin
   Result := 0;
 end;
 
-function TProfStream.WriteInt08(Value: Int08): TError;
+function TProfStream.WriteInt08(Value: AInt08): AError;
 begin
   Result := -1;
 end;
 
-function TProfStream.WriteInt16(Value: Int16): TError;
+function TProfStream.WriteInt16(Value: Int16): AError;
 begin
   Result := -1;
 end;
 
-function TProfStream.WriteInt32(Value: Int32): TError;
+function TProfStream.WriteInt32(Value: Int32): AError;
 begin
   Result := -1;
 end;
 
-function TProfStream.WriteInt64(Value: Int64): TError;
+function TProfStream.WriteInt64(Value: Int64): AError;
 begin
   Result := -1;
 end;
@@ -832,27 +831,27 @@ begin
   Result := False;
 end;
 
-function TProfStream.WriteStr(const Value: string): TError;
+function TProfStream.WriteStr(const Value: string): AError;
 begin
   Result := -1;
 end;
 
-function TProfStream.WriteUInt08(Value: UInt08): TError;
+function TProfStream.WriteUInt08(Value: AUInt08): AError;
 begin
   Result := -1;
 end;
 
-function TProfStream.WriteUInt16(Value: UInt16): TError;
+function TProfStream.WriteUInt16(Value: UInt16): AError;
 begin
   Result := -1;
 end;
 
-function TProfStream.WriteUInt32(Value: UInt32): TError;
+function TProfStream.WriteUInt32(Value: UInt32): AError;
 begin
   Result := -1;
 end;
 
-function TProfStream.WriteUInt64(Value: UInt64): TError;
+function TProfStream.WriteUInt64(Value: UInt64): AError;
 begin
   Result := -1;
 end;
@@ -884,7 +883,7 @@ begin
   Result := FStream.Size;
 end;
 
-function TProfStreamAdapter.LoadFromFileN(FileName: String): TError;
+function TProfStreamAdapter.LoadFromFileN(FileName: String): AError;
 begin
   Result := -1;
 end;
@@ -894,7 +893,7 @@ begin
   FOpened := True;
 end;
 
-function TProfStreamAdapter.ReadArray(var Value: TArrayByte; Count: UInt32): TError;
+function TProfStreamAdapter.ReadArray(var Value: TArrayByte; Count: UInt32): AError;
 begin
   Result := -1;
 end;
@@ -907,7 +906,7 @@ begin
     Result := -2;
 end;
 
-function TProfStreamAdapter.ReadInt08(var Value: Int08): TError;
+function TProfStreamAdapter.ReadInt08(var Value: AInt08): AError;
 begin
   if (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value)) then
     Result := 0
@@ -915,7 +914,7 @@ begin
     Result := -1;
 end;
 
-function TProfStreamAdapter.ReadInt16(var Value: Int16): TError;
+function TProfStreamAdapter.ReadInt16(var Value: Int16): AError;
 begin
   if (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value)) then
     Result := 0
@@ -923,7 +922,7 @@ begin
     Result := -1;
 end;
 
-function TProfStreamAdapter.ReadInt32(var Value: Int32): TError;
+function TProfStreamAdapter.ReadInt32(var Value: Int32): AError;
 begin
   if (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value)) then
     Result := 0
@@ -931,7 +930,7 @@ begin
     Result := -1;
 end;
 
-function TProfStreamAdapter.ReadInt64(var Value: Int64): TError;
+function TProfStreamAdapter.ReadInt64(var Value: Int64): AError;
 begin
   if (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value)) then
     Result := 0
@@ -944,7 +943,7 @@ begin
   Result := (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value));
 end;
 
-function TProfStreamAdapter.ReadUInt08(var Value: UInt08): AError;
+function TProfStreamAdapter.ReadUInt08(var Value: AUInt08): AError;
 begin
   if (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value)) then
     Result := 0
@@ -952,7 +951,7 @@ begin
     Result :=  -1;
 end;
 
-function TProfStreamAdapter.ReadUInt16(var Value: UInt16): TError;
+function TProfStreamAdapter.ReadUInt16(var Value: UInt16): AError;
 begin
   if (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value)) then
     Result := 0
@@ -960,7 +959,7 @@ begin
     Result := -1;
 end;
 
-function TProfStreamAdapter.ReadUInt32(var Value: UInt32): TError;
+function TProfStreamAdapter.ReadUInt32(var Value: UInt32): AError;
 begin
   if (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value)) then
     Result := 0
@@ -968,7 +967,7 @@ begin
     Result := -1;
 end;
 
-function TProfStreamAdapter.ReadUInt64(var Value: UInt64): TError;
+function TProfStreamAdapter.ReadUInt64(var Value: UInt64): AError;
 begin
   if (FStream.Read(Value, SizeOf(Value)) = SizeOf(Value)) then
     Result := 0
@@ -976,7 +975,7 @@ begin
     Result := -1;
 end;
 
-function TProfStreamAdapter.Seek(Offset: Int64; Mode: TStreamSeekMode): TError;
+function TProfStreamAdapter.Seek(Offset: Int64; Mode: TStreamSeekMode): AError;
 begin
   if (FStream.Seek(Offset, Word(Mode)) = Offset) then
     Result := 0
@@ -989,55 +988,55 @@ begin
   Result := 0;
 end;
 
-function TProfStreamAdapter.WriteInt08(Value: Int08): TError;
+function TProfStreamAdapter.WriteInt08(Value: AInt08): AError;
 begin
   Result := -1;
 end;
 
-function TProfStreamAdapter.WriteInt16(Value: Int16): TError;
+function TProfStreamAdapter.WriteInt16(Value: Int16): AError;
 begin
   Result := -1;
 end;
 
-function TProfStreamAdapter.WriteInt32(Value: Int32): TError;
+function TProfStreamAdapter.WriteInt32(Value: Int32): AError;
 begin
   Result := -1;
 end;
 
-function TProfStreamAdapter.WriteInt64(Value: Int64): TError;
+function TProfStreamAdapter.WriteInt64(Value: Int64): AError;
 begin
   Result := -1;
 end;
 
-function TProfStreamAdapter.WriteUInt08(Value: UInt08): TError;
+function TProfStreamAdapter.WriteUInt08(Value: AUInt08): AError;
 begin
   Result := -1;
 end;
 
-function TProfStreamAdapter.WriteUInt16(Value: UInt16): TError;
+function TProfStreamAdapter.WriteUInt16(Value: UInt16): AError;
 begin
   Result := -1;
 end;
 
-function TProfStreamAdapter.WriteUInt32(Value: UInt32): TError;
+function TProfStreamAdapter.WriteUInt32(Value: UInt32): AError;
 begin
   Result := -1;
 end;
 
-function TProfStreamAdapter.WriteUInt64(Value: UInt64): TError;
+function TProfStreamAdapter.WriteUInt64(Value: UInt64): AError;
 begin
   Result := -1;
 end;
 
 { TProfStreamMemory }
 
-function TProfMemoryStream.Clear(): TError;
+function TProfMemoryStream.Clear(): AError;
 begin
   SetLength(FBytes, 0);
   Result := 0;
 end;
 
-function TProfMemoryStream.LoadFromFileN(FileName: String): TError;
+function TProfMemoryStream.LoadFromFileN(FileName: String): AError;
 var
   Count: UInt32;
   F: file;
@@ -1051,7 +1050,7 @@ begin
   begin
     Inc(Count);
     SetLength(FBytes, Count);
-    BlockRead(F, FBytes[Count - 1], SizeOf(UInt08));
+    BlockRead(F, FBytes[Count - 1], SizeOf(AUInt08));
   end;
   CloseFile(F);
   Result := 0;

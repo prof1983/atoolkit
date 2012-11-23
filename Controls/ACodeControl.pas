@@ -2,7 +2,7 @@
 @Abstract Контрол работы с кодом
 @Author Prof1983 <prof1983@ya.ru>
 @Created 09.11.2006
-@LastMod 13.11.2012
+@LastMod 23.11.2012
 }
 unit ACodeControl;
 
@@ -10,7 +10,7 @@ interface
 
 uses
   Classes, Controls, StdCtrls,
-  AControlImpl, ATypes;
+  ABase, AControlImpl;
 
 type //** Контрол работы с кодом
   TArCodeControl = class(TAControl)
@@ -19,7 +19,7 @@ type //** Контрол работы с кодом
     function GetLines(): TStrings;
   public
     procedure AddCode(ACode: WideString);
-    function Initialize(): TProfError; override;
+    function Initialize(): AError; override;
     procedure LoadFromFile(const FileName: WideString);
   public
     property Lines: TStrings read GetLines;
@@ -55,7 +55,7 @@ begin
     Result := FMemo.Lines;
 end;
 
-function TArCodeControl.Initialize(): TProfError;
+function TArCodeControl.Initialize(): AError;
 begin
   Result := inherited Initialize();
   FMemo := TMemo.Create(FControl);

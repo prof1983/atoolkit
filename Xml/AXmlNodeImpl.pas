@@ -1,8 +1,8 @@
 ﻿{**
-@Abstract(Класс работы с XML нодами)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(07.03.2007)
-@LastMod(18.07.2012)
+@Abstract Класс работы с XML нодами
+@Author Prof1983 <prof1983@ya.ru>
+@Created 07.03.2007
+@LastMod 23.11.2012
 }
 unit AXmlNodeImpl;
 
@@ -32,8 +32,8 @@ type //** Класс работы с XML нодами
   public
     function GetAsBool(): WordBool; safecall;
     function GetAsDateTime(): TDateTime; safecall;
-    function GetAsFloat32(): Float32; safecall;
-    function GetAsFloat64(): Float64; safecall;
+    function GetAsFloat32(): AFloat32; safecall;
+    function GetAsFloat64(): AFloat64; safecall;
     function GetAsInt32(): Integer; safecall;
     function GetAsInt64(): Int64; safecall;
     function GetAsString(): WideString; safecall;
@@ -58,8 +58,8 @@ type //** Класс работы с XML нодами
   public
     function GetValueAsBool(var Value: WordBool): WordBool; safecall;
     function GetValueAsDateTime(var Value: TDateTime): WordBool; safecall;
-    function GetValueAsFloat32(var Value: Float32): WordBool; safecall;
-    function GetValueAsFloat64(var Value: Float64): WordBool; safecall;
+    function GetValueAsFloat32(var Value: AFloat32): WordBool; safecall;
+    function GetValueAsFloat64(var Value: AFloat64): WordBool; safecall;
     function GetValueAsInt32(var Value: Integer): WordBool; safecall;
     function GetValueAsInt64(var AValue: Int64): WordBool; safecall;
     function GetValueAsString(var Value: WideString): WordBool; safecall;
@@ -67,7 +67,7 @@ type //** Класс работы с XML нодами
     procedure SetAsString(const Value: WideString); safecall;
   protected
     function SetValueAsBool(Value: WordBool): WordBool; safecall;
-    function SetValueAsFloat64(Value: Float64): WordBool; safecall;
+    function SetValueAsFloat64(Value: AFloat64): WordBool; safecall;
     function SetValueAsInt32(AValue: Integer): WordBool; safecall;
     function SetValueAsString(const AValue: WideString): WordBool; safecall;
     function SetValueAsUInt08(AValue: Byte): WordBool; safecall;
@@ -87,7 +87,7 @@ type //** Класс работы с XML нодами
   public
     function WriteBool(const AName: WideString; Value: WordBool): WordBool; safecall;
     function WriteDateTime(const AName: WideString; AValue: TDateTime): WordBool; safecall;
-    function WriteFloat64(const AName: WideString; Value: Float64): WordBool; safecall;
+    function WriteFloat64(const AName: WideString; Value: AFloat64): WordBool; safecall;
     function WriteInt32(const AName: WideString; Value: Int32): WordBool; safecall;
     function WriteInt64(const AName: WideString; Value: Int64): WordBool; safecall;
     function WriteString(const AName, Value: WideString): WordBool; safecall;
@@ -95,16 +95,16 @@ type //** Класс работы с XML нодами
   public
     class function GetAsBoolA(Node: IXmlNode): WordBool; safecall;
     class function GetAsDateTimeA(Node: IXmlNode): TDateTime; safecall;
-    class function GetAsFloat32A(Node: IXmlNode): Float32; safecall;
-    class function GetAsFloat64A(Node: IXmlNode): Float64; safecall;
+    class function GetAsFloat32A(Node: IXmlNode): AFloat32; safecall;
+    class function GetAsFloat64A(Node: IXmlNode): AFloat64; safecall;
     class function GetAsInt32A(Node: IXmlNode): Int32; safecall;
     class function GetAsInt64A(Node: IXmlNode): Int64; safecall;
     class function GetAsStringA(Node: IXmlNode): WideString; safecall;
   public
     class function GetValueAsBoolA(ANode: IXmlNode; var Value: WordBool): WordBool; safecall;
     class function GetValueAsDateTimeA(ANode: IXmlNode; var Value: TDateTime): WordBool; safecall;
-    class function GetValueAsFloat32A(ANode: IXmlNode; var Value: Float32): WordBool; safecall;
-    class function GetValueAsFloat64A(ANode: IXmlNode; var Value: Float64): WordBool; safecall;
+    class function GetValueAsFloat32A(ANode: IXmlNode; var Value: AFloat32): WordBool; safecall;
+    class function GetValueAsFloat64A(ANode: IXmlNode; var Value: AFloat64): WordBool; safecall;
     class function GetValueAsInt32A(ANode: IXmlNode; var Value: Integer): WordBool; safecall;
     class function GetValueAsInt64A(ANode: IXmlNode; var Value: Int64): WordBool; safecall;
     class function GetValueAsStringA(ANode: IXmlNode; var Value: WideString): WordBool; safecall;
@@ -114,9 +114,9 @@ type //** Класс работы с XML нодами
     class function ReadDateTimeA(ANode: IXmlNode; const AName: WideString;
         var Value: TDateTime): WordBool; safecall; deprecated; // Use ProfXmlNode_ReadDateTime()
     class function ReadFloat32A(ANode: IXmlNode; const AName: WideString;
-        var Value: Float32): WordBool; safecall; deprecated; // Use ProfXmlNode_ReadFloat32()
+        var Value: AFloat32): WordBool; safecall; deprecated; // Use ProfXmlNode_ReadFloat32()
     class function ReadFloat64A(ANode: IXmlNode; const AName: WideString;
-        var Value: Float64): WordBool; safecall; deprecated; // Use ProfXmlNode_ReadFloat64()
+        var Value: AFloat64): WordBool; safecall; deprecated; // Use ProfXmlNode_ReadFloat64()
     class function ReadInt32A(ANode: IXmlNode; const AName: WideString;
         var Value: Integer): WordBool; safecall; deprecated; // Use ProfXmlNode_ReadInt32()
     class function ReadInt64A(ANode: IXmlNode; const AName: WideString;
@@ -201,27 +201,27 @@ type //** Класс работы с XML нодами
     function GetValueAsInt64(var AValue: AInt64): WordBool; safecall;
     function GetValueAsInteger(var AValue: AInt): WordBool; safecall;
     function GetValueAsString(var Value: WideString): WordBool; safecall;
-    function GetValueAsUInt08(var Value: UInt08): WordBool; safecall;
+    function GetValueAsUInt08(var Value: AUInt08): WordBool; safecall;
     function GetValueAsUInt64(var Value: UInt64): WordBool; safecall;
   public // IProfXmlNode2
     function SetValueAsBool(Value: WordBool): WordBool; safecall;
-    function SetValueAsFloat64(Value: Float64): WordBool; safecall;
+    function SetValueAsFloat64(Value: AFloat64): WordBool; safecall;
     function SetValueAsInt32(Value: Int32): WordBool; safecall;
     function SetValueAsString(const Value: WideString): WordBool; safecall;
-    function SetValueAsUInt08(Value: UInt08): WordBool; safecall;
+    function SetValueAsUInt08(Value: AUInt08): WordBool; safecall;
     function SetValueAsUInt64(Value: UInt64): WordBool; safecall;
   public // IProfXmlNode2
     function ReadBool(const AName: WideString; var Value: WordBool): WordBool; virtual; safecall;
     function ReadDateTime(const AName: WideString; var Value: TDateTime): WordBool; virtual; safecall;
-    function ReadFloat32(const AName: WideString; var Value: Float32): WordBool; virtual; safecall;
-    function ReadFloat64(const AName: WideString; var Value: Float64): WordBool; virtual; safecall;
-    function ReadInt08(const AName: WideString; var Value: Int08): WordBool; virtual; safecall;
+    function ReadFloat32(const AName: WideString; var Value: AFloat32): WordBool; virtual; safecall;
+    function ReadFloat64(const AName: WideString; var Value: AFloat64): WordBool; virtual; safecall;
+    function ReadInt08(const AName: WideString; var Value: AInt08): WordBool; virtual; safecall;
     function ReadInt16(const AName: WideString; var Value: Int16): WordBool; virtual; safecall;
     function ReadInt32(const AName: WideString; var Value: Int32): WordBool; virtual; safecall;
     function ReadInt64(const AName: WideString; var Value: Int64): WordBool; virtual; safecall;
     function ReadInteger(const AName: WideString; var Value: Integer): WordBool; virtual; safecall;
     function ReadString(const AName: WideString; var Value: WideString): WordBool; virtual; safecall;
-    function ReadUInt08(const AName: WideString; var Value: UInt08): WordBool; virtual; safecall;
+    function ReadUInt08(const AName: WideString; var Value: AUInt08): WordBool; virtual; safecall;
     function ReadUInt16(const AName: WideString; var Value: UInt16): WordBool; virtual; safecall;
     function ReadUInt32(const AName: WideString; var Value: UInt32): WordBool; virtual; safecall;
     function ReadUInt64(const AName: WideString; var Value: AUInt64): WordBool; virtual; safecall;
@@ -229,13 +229,13 @@ type //** Класс работы с XML нодами
   public // IProfXmlNode2
     function WriteBool(const AName: WideString; Value: WordBool): WordBool; virtual; safecall;
     function WriteDateTime(const AName: WideString; Value: TDateTime): WordBool; virtual; safecall;
-    function WriteFloat32(const AName: WideString; Value: Float32): WordBool; virtual; safecall;
-    function WriteFloat64(const AName: WideString; Value: Float64): WordBool; virtual; safecall;
+    function WriteFloat32(const AName: WideString; Value: AFloat32): WordBool; virtual; safecall;
+    function WriteFloat64(const AName: WideString; Value: AFloat64): WordBool; virtual; safecall;
     function WriteInt32(const AName: WideString; Value: Int32): WordBool; virtual; safecall;
     function WriteInt64(const AName: WideString; Value: Int64): WordBool; virtual; safecall;
     function WriteInteger(const AName: WideString; Value: Integer): WordBool; virtual; safecall;
     function WriteString(const AName, Value: WideString): WordBool; virtual; safecall;
-    function WriteUInt08(const AName: WideString; Value: UInt08): WordBool; virtual; safecall;
+    function WriteUInt08(const AName: WideString; Value: AUInt08): WordBool; virtual; safecall;
     function WriteUInt64(const AName: WideString; Value: UInt64): WordBool; virtual; safecall;
     function WriteXml(const Name, Value: WideString): WordBool; virtual; safecall;
   public
@@ -267,7 +267,7 @@ type //** Класс работы с XML нодами
     procedure SetNodeName(const Value: WideString);
     procedure SetNodeValue(Value: OleVariant);
   public
-    function AddFromXml(Xml: TProfXmlNode2): TError;
+    function AddFromXml(Xml: TProfXmlNode2): AError;
     function Clear(): AError;
       {** @return TProfXmlNode1 }
     function FindNode(const Name: WideString): AProfXmlNode; deprecated;
@@ -299,7 +299,7 @@ type //** Класс работы с XML нодами
     class function ReadDateTimeDef(ANode: IXmlNode; const AName: WideString;
         ADef: TDateTime = 0): TDateTime; safecall; deprecated; // Use ProfXmlNode_ReadDateTimeDef()
     class function ReadFloatDef(ANode: IXmlNode; const AName: WideString;
-        ADef: Float64 = 0): Float64; safecall; deprecated; // Use ProfXmlNode_ReadFloatDef()
+        ADef: AFloat64 = 0): AFloat64; safecall; deprecated; // Use ProfXmlNode_ReadFloatDef()
     class function ReadInt32Def(ANode: IXmlNode; const AName: WideString;
         ADef: Int32 = 0): Int32; safecall; deprecated; // Use ProfXmlNode_ReadInt32Def()
     class function ReadInt64Def(ANode: IXmlNode; const AName: WideString;
@@ -501,15 +501,15 @@ begin
     Result := 0;
 end;
 
-function TProfXmlNode.GetAsFloat32(): Float32;
+function TProfXmlNode.GetAsFloat32(): AFloat32;
 begin
   Result := 0;
   GetValueAsFloat32(Result);
 end;
 
-class function TProfXmlNode.GetAsFloat32A(Node: IXmlNode): Float32;
+class function TProfXmlNode.GetAsFloat32A(Node: IXmlNode): AFloat32;
 var
-  Res: Float32;
+  Res: AFloat32;
 begin
   if ProfXmlNode_GetValueAsFloat32(Node, Res) then
     Result := Res
@@ -517,15 +517,15 @@ begin
     Result := 0;
 end;
 
-function TProfXmlNode.GetAsFloat64(): Float64;
+function TProfXmlNode.GetAsFloat64(): AFloat64;
 begin
   Result := 0;
   GetValueAsFloat64(Result);
 end;
 
-class function TProfXmlNode.GetAsFloat64A(Node: IXmlNode): Float64;
+class function TProfXmlNode.GetAsFloat64A(Node: IXmlNode): AFloat64;
 var
-  Res: Float64;
+  Res: AFloat64;
 begin
   if ProfXmlNode_GetValueAsFloat64(Node, Res) then
     Result := Res
@@ -662,22 +662,22 @@ begin
   Result := ProfXmlNode_GetValueAsDateTime(ANode, Value);
 end;
 
-function TProfXmlNode.GetValueAsFloat32(var Value: Float32): WordBool;
+function TProfXmlNode.GetValueAsFloat32(var Value: AFloat32): WordBool;
 begin
   Result := GetValueAsFloat32A(FNode, Value);
 end;
 
-class function TProfXmlNode.GetValueAsFloat32A(ANode: IXmlNode; var Value: Float32): WordBool;
+class function TProfXmlNode.GetValueAsFloat32A(ANode: IXmlNode; var Value: AFloat32): WordBool;
 begin
   Result := ProfXmlNode_GetValueAsFloat32(ANode, Value);
 end;
 
-function TProfXmlNode.GetValueAsFloat64(var Value: Float64): WordBool;
+function TProfXmlNode.GetValueAsFloat64(var Value: AFloat64): WordBool;
 begin
   Result := GetValueAsFloat64A(FNode, Value);
 end;
 
-class function TProfXmlNode.GetValueAsFloat64A(ANode: IXmlNode; var Value: Float64): WordBool;
+class function TProfXmlNode.GetValueAsFloat64A(ANode: IXmlNode; var Value: AFloat64): WordBool;
 begin
   Result := ProfXmlNode_GetValueAsFloat64(ANode, Value)
 end;
@@ -758,7 +758,7 @@ begin
 end;
 
 class function TProfXmlNode.ReadFloat32A(ANode: IXmlNode; const AName: WideString;
-    var Value: Float32): WordBool;
+    var Value: AFloat32): WordBool;
 begin
   Result := ProfXmlNode_ReadFloat32(ANode, AName, Value);
 end;
@@ -769,7 +769,7 @@ begin
 end;
 
 class function TProfXmlNode.ReadFloat64A(ANode: IXmlNode; const AName: WideString;
-    var Value: Float64): WordBool;
+    var Value: AFloat64): WordBool;
 begin
   Result := ProfXmlNode_ReadFloat64(ANode, AName, Value);
 end;
@@ -852,7 +852,7 @@ begin
   Result := (AXmlNode_SetValueAsBool(AXmlNode(Self), Value) >= 0);
 end;
 
-function TProfXmlNode.SetValueAsFloat64(Value: Float64): WordBool;
+function TProfXmlNode.SetValueAsFloat64(Value: AFloat64): WordBool;
 begin
   Result := (AXmlNode_SetValueAsFloat64(AXmlNode(Self), Value) >= 0);
 end;
@@ -961,7 +961,7 @@ end;
 
 { TProfXmlNode2 }
 
-function TProfXmlNode2.AddFromXml(Xml: TProfXmlNode2): TError;
+function TProfXmlNode2.AddFromXml(Xml: TProfXmlNode2): AError;
 begin
   if Self.LoadFromXml(AProfXmlNode(Xml)) then
     Result := 0
@@ -1223,7 +1223,7 @@ begin
   Result := (Res >= 0);
 end;
 
-function TProfXmlNode2.GetValueAsUInt08(var Value: UInt08): WordBool;
+function TProfXmlNode2.GetValueAsUInt08(var Value: AUInt08): WordBool;
 var
   Code: Integer;
 begin
@@ -1440,22 +1440,22 @@ begin
   Result := ProfXmlNode_ReadDateTimeDef(ANode, AName, ADef);
 end;
 
-function TProfXmlNode2.ReadFloat32(const AName: WideString; var Value: Float32): WordBool;
+function TProfXmlNode2.ReadFloat32(const AName: WideString; var Value: AFloat32): WordBool;
 begin
   Result := (AXmlNode_ReadFloat32(AXmlNode(Self), AName, Value) >= 0);
 end;
 
-function TProfXmlNode2.ReadFloat64(const AName: WideString; var Value: Float64): WordBool;
+function TProfXmlNode2.ReadFloat64(const AName: WideString; var Value: AFloat64): WordBool;
 begin
   Result := (AXmlNode_ReadFloat64(AXmlNode(Self), AName, Value) >= 0);
 end;
 
-class function TProfXmlNode2.ReadFloatDef(ANode: IXmlNode; const AName: WideString; ADef: Float64): Float64;
+class function TProfXmlNode2.ReadFloatDef(ANode: IXmlNode; const AName: WideString; ADef: AFloat64): AFloat64;
 begin
   Result := ProfXmlNode_ReadFloatDef(ANode, AName, ADef);
 end;
 
-function TProfXmlNode2.ReadInt08(const AName: WideString; var Value: Int08): WordBool;
+function TProfXmlNode2.ReadInt08(const AName: WideString; var Value: AInt08): WordBool;
 begin
   Result := (AXmlNode_ReadInt08(AXmlNode(Self), AName, Value) >= 0);
 end;
@@ -1567,7 +1567,7 @@ begin
   Result := ProfXmlNode_ReadStringDef(ANode, AName, ADef);
 end;
 
-function TProfXmlNode2.ReadUInt08(const AName: WideString; var Value: UInt08): WordBool;
+function TProfXmlNode2.ReadUInt08(const AName: WideString; var Value: AUInt08): WordBool;
 begin
   Result := (AXmlNode_ReadUInt08(AXmlNode(Self), AName, Value) >= 0);
 end;
@@ -1634,7 +1634,7 @@ begin
   Result := (AXmlNode_SetValueAsBool(AXmlNode(Self), Value) >= 0);
 end;
 
-function TProfXmlNode2.SetValueAsFloat64(Value: Float64): WordBool;
+function TProfXmlNode2.SetValueAsFloat64(Value: AFloat64): WordBool;
 begin
   Result := (AXmlNode_SetValueAsFloat64(AXmlNode(Self), Value) >= 0);
 end;
@@ -1649,7 +1649,7 @@ begin
   Result := (AXmlNode_SetValueAsString(AXmlNode(Self), Value) >= 0);
 end;
 
-function TProfXmlNode2.SetValueAsUInt08(Value: UInt08): WordBool;
+function TProfXmlNode2.SetValueAsUInt08(Value: AUInt08): WordBool;
 begin
   Result := (AXmlNode_SetValueAsUInt08(AXmlNode(Self), Value) >= 0);
 end;
@@ -1785,12 +1785,12 @@ begin
   Result := (AXmlNode_WriteDateTime(AXmlNode(Self), AName, Value) >= 0);
 end;
 
-function TProfXmlNode2.WriteFloat32(const AName: WideString; Value: Float32): WordBool;
+function TProfXmlNode2.WriteFloat32(const AName: WideString; Value: AFloat32): WordBool;
 begin
   Result := (AXmlNode_WriteFloat32(AXmlNode(Self), AName, Value) >= 0);
 end;
 
-function TProfXmlNode2.WriteFloat64(const AName: WideString; Value: Float64): WordBool;
+function TProfXmlNode2.WriteFloat64(const AName: WideString; Value: AFloat64): WordBool;
 begin
   Result := (AXmlNode_WriteFloat64(AXmlNode(Self), AName, Value) >= 0);
 end;
@@ -1815,7 +1815,7 @@ begin
   Result := (AXmlNode_WriteString(AXmlNode(Self), AName, Value) >= 0);
 end;
 
-function TProfXmlNode2.WriteUInt08(const AName: WideString; Value: UInt08): WordBool;
+function TProfXmlNode2.WriteUInt08(const AName: WideString; Value: AUInt08): WordBool;
 begin
   Result := (AXmlNode_WriteUInt08(AXmlNode(Self), AName, Value) >= 0);
 end;

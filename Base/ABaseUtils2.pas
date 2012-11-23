@@ -2,7 +2,7 @@
 @Abstract Базовый модуль основных типов и их преобразования. Базовые функции for Delphi 5,7,2005,2006
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.06.2004
-@LastMod 09.08.2012
+@LastMod 23.11.2012
 }
 unit ABaseUtils2;
 
@@ -10,26 +10,16 @@ interface
 
 uses
   Math, StrUtils, SysUtils, Windows,
-  ABase, ATypes;
+  ABase, ABase2, ATypes;
 
 // ---
 type // from unBase-20061023.pas
-  TDateTime64 = ATypes.TDateTime64;
-  Char008 = Char08;
-  Int008 = Int08;
-  Int016 = Int16;
-  Int032 = Int32;
-  Int064 = Int64;
-  UInt008 = UInt08;
-  UInt016 = UInt16;
-  UInt032 = UInt32;
-  UInt064 = UInt64;
   THandle32 = Integer;
 // ---
 
 type // Простые типы -----------------------------------------------------------
   //** Массив Char08
-  TArrayChar08 = array of Char08;
+  TArrayChar08 = array of AChar;
   //** Массив строк string
   TArrayStr    = array of string;
   //** Вид конвентарции: 0-Дата+Время, 1-Дата, 2-Время
@@ -111,9 +101,9 @@ function cBtnToStr(BtnCode: TWndRes): string;
 function cByteToStr(Value: Byte): string;
 function cChar08ToChar16(C: Char08): Char16;
 function cChar08ToHex(Value: Char): string;
-function cChar08ToUInt08(C: Char): UInt08; // cChar008ToUInt008
+function cChar08ToUInt08(C: Char): AUInt08;
 function cCharToByte(Value: Char): Byte;
-function cCharToUInt08(C: Char): UInt08; // cCharToUInt008
+function cCharToUInt08(C: Char): AUInt08;
 function cDateTime64ToStr(T: TDateTime): string;
 function cDateTime64ToStr2(T: TDateTime; Typ: TConvertDT): string;
 //** Конвертирует тип TDateTime064 в String
@@ -130,8 +120,8 @@ function cFloat64ToInt32(F: Float64): Int32;
 function cFloat64ToStrP(Value: Float64): string;
 function cFloat64ToUInt32(F: Float64): UInt32;
 function cHexToChar(H1, H2: Char): Char;
-function cHexToUInt08(H: Char): UInt08;
-function cInt08ToStr(I: Int08): string;
+function cHexToUInt08(H: Char): AUInt08;
+function cInt08ToStr(I: AInt08): string;
 function cInt16ToStr(I: Int16): string;
 function cInt32ToStr(Value: Int32): string;
 function cInt64ToStr(I: Int64): string;
@@ -164,16 +154,16 @@ function cStrToHtmlStr(Str: string): string;
 function cStrToInt32(Str: string): Int32; deprecated; // Use ABaseUtils3.pas
 function cStrToSingle(Value: string): Single;
 function cStrToTime(Str: string): TDateTime;
-function cStrToUInt08(Str: string): UInt08;
+function cStrToUInt08(Str: string): AUInt08;
 function cStrToUInt16(Str: string): UInt16;
 function cStrToUInt32(Str: string): UInt32;
 function cStrToUInt64(Str: string): UInt64;
 function cUInt064ToStr(Value: Integer): string; deprecated; // Use cUInt64ToStr()
-function cUInt08ToHex(I: UInt08): string;
+function cUInt08ToHex(I: AUInt08): string;
 function cUInt32ToStr(I: UInt32): string;
 function cUInt64ToInt32(Value: UInt64): Int32;
 function cUInt64ToStr(I: UInt64): string;
-function cUInt64ToUInt08(Value: UInt64): UInt08;
+function cUInt64ToUInt08(Value: UInt64): AUInt08;
 function cUInt64ToInt16(Value: UInt64): UInt16;
 function cUInt64ToUInt32(Value: UInt64): UInt32;
 function cUInt32ToArrayByte(Value: UInt32): TArrayByte;
@@ -213,18 +203,18 @@ function StrHtmlFromStr(Value: string): string;
 // SIn   - {in}{Исходная строка}
 // SOut  - {out}{Результат}
 // Level - {out}{Уровень заголовка}
-function strHtmlTagErraceH(SIn: String; var SOut: String; var Level: UInt32): TError;
+function strHtmlTagErraceH(SIn: String; var SOut: String; var Level: UInt32): AError;
 // Удаляет открывающий и закрывающий теги абзаца <p>
 // SIn  - {in}{Исходная строка}
 // SOut - {out}{Результат}
-function strHtmlTagErraceP(const SIn: String; var SOut: String): TError;
+function strHtmlTagErraceP(const SIn: String; var SOut: String): AError;
 function StrHtmlToStr(Value: WideString): WideString;
 //** Вставляет подстроку SubSt в строку St, начиная с символа с номеров Index
 procedure strInsert(var S: String; SubSt: String; Index: UInt32);
 //** Возвращает длину строки
 function strLength(const S: String): UInt32;
 //** Устанавливает новую длину строки
-function strLengthSet(var S: String; NewLength: UInt32): TError;
+function strLengthSet(var S: String; NewLength: UInt32): AError;
 //** Возвращает в строке St первое вхождение подстроки SubSt и возвращает номер позиции с которой она начинается. Если подстрока не найдена, возвращает ноль.
 function strPos(St: String; SubSt: String): UInt32;
 // Ищет в строке первое вхождение . ! ? ...
@@ -240,7 +230,7 @@ function StrPosEnd(const St: WideString; C: WideChar): Integer;
 function timeNow(): TDateTime;
 //** Преобразует символы, записанные в виде URLencoded
 function urlDecode(Value: string): string;
-function urlParamDecode(const InParams: TUrlParams; var Params: TURLParams2): TError;
+function urlParamDecode(const InParams: TUrlParams; var Params: TURLParams2): AError;
 function urlParamBack(const InParams: String): String;
 //** Возвращает значение атрибута заданного в качестве параметра функции из строки данных
 function urlParamByName(InParams: TUrlParams; Name: string): string;
@@ -248,18 +238,18 @@ function urlParamByName_UInt064(InParams: TUrlParams; Name: String): UInt64;
 function urlParamCount(InParams: String): UInt32;
 
 function ArrayByteInsert(var A: TArrayByte; const Source: TArrayByte; Offset: UInt32): UInt32;
-function cErrorToStr(Value: TError): String;
+function cErrorToStr(Value: AError): String;
 function MinInt32(Value1, Value2: Int32): Int32;
 
 function _StrToBool(const S: String; var Value: Boolean): Boolean;
 function _StrToDateTime(const S: String; var Value: TDateTime): Boolean;
 function _StrToFloat32(const S: String; var Value: Float32): UInt32;
 function _StrToFloat64(const S: String; var Value: Float64): UInt32;
-function _StrToInt08(const S: String; var Value: Int08): UInt32;
+function _StrToInt08(const S: String; var Value: AInt08): UInt32;
 function _StrToInt16(const S: String; var Value: Int16): UInt32;
 function _StrToInt32(const S: String; var Value: Int32): UInt32;
 function _StrToInt64(const S: String; var Value: Int64): UInt32;
-function _StrToUInt08(const S: String; var Value: UInt08): UInt32;
+function _StrToUInt08(const S: String; var Value: AUInt08): UInt32;
 function _StrToUInt16(const S: String; var Value: UInt16): UInt32;
 function _StrToUInt32(const S: String; var Value: UInt32): UInt32;
 function _StrToUInt64(const S: String; var Value: UInt64): UInt32;
@@ -267,16 +257,16 @@ function _StrToUInt64(const S: String; var Value: UInt64): UInt32;
 {**
   Удаление префиксных, постфиксных, повторяющихся пробелов и префиксных и поствиксных #13#10
 }
-function _StrDeleteSpace(var S: APascalString; Options: TDeleteSpaceOptionSet): TError;
+function _StrDeleteSpace(var S: APascalString; Options: TDeleteSpaceOptionSet): AError;
 
 function cBoolToStr(Value: Boolean): String;
 function cFloat64ToStr(Value: Float64): String;
-function cUInt08ToChar(I: UInt08): Char;
-function cUInt08ToStr(I: UInt08): String;
+function cUInt08ToChar(I: AUInt08): Char;
+function cUInt08ToStr(I: AUInt08): String;
 function cUInt16ToStr(I: UInt16): String;
 procedure strAdd(var Str: String; S2: String);
 function strCopy(SIn: String; Index, Count: Int32): String;
-function strDelete(var St: String; Index, Count: UInt32): TError;
+function strDelete(var St: String; Index, Count: UInt32): AError;
 
 {**
   Удаление префиксных, постфиксных, повторяющихся пробелов и префиксных и поствиксных #13#10
@@ -375,7 +365,7 @@ begin
   Result := cUInt08ToHex(Ord(Value));
 end;
 
-function cChar08ToUInt08(C: Char): UInt08;
+function cChar08ToUInt08(C: Char): AUInt08;
 begin
   Result := Ord(C);
 end;
@@ -385,7 +375,7 @@ begin
   Result := Ord(Value);
 end;
 
-function cCharToUInt08(C: Char): UInt08;
+function cCharToUInt08(C: Char): AUInt08;
 begin
   Result := Ord(C);
 end;
@@ -482,9 +472,9 @@ begin
   Result := cUInt08ToChar(cHexToUInt08(H1) * 16 + cHexToUInt08(H2));
 end;
 
-function cHexToUInt08(H: Char): UInt08;
+function cHexToUInt08(H: Char): AUInt08;
 var
-  B: UInt08;
+  B: AUInt08;
 begin
   B := cCharToUInt08(H);
   case H of
@@ -496,7 +486,7 @@ begin
   end;
 end;
 
-function cInt08ToStr(I: Int08): String;
+function cInt08ToStr(I: AInt08): String;
 begin
   Result := cInt32ToStr(I);
 end;
@@ -745,7 +735,7 @@ begin
   Result := StrToTime(Str);
 end;
 
-function cStrToUInt08(Str: String): UInt08;
+function cStrToUInt08(Str: String): AUInt08;
 var
   Code: Int32;
 begin
@@ -788,8 +778,9 @@ begin
   Result := IntToStr(Value);
 end;
 
-function cUInt08ToHex(I: UInt08): String;
-  function a(I: UInt08): Char08;
+function cUInt08ToHex(I: AUInt08): String;
+
+  function a(I: AUInt08): Char08;
   begin
     case I of
       0..9: Result := Chr(Ord('0') + I);
@@ -798,6 +789,7 @@ function cUInt08ToHex(I: UInt08): String;
       Result := '_';
     end;
   end;
+
 begin
   Result := a(I shr 4) + a(I and $0F);
 end;
@@ -842,10 +834,10 @@ begin
   Result := cInt64ToStr(I);
 end;
 
-function cUInt64ToUInt08(Value: UInt64): UInt08;
+function cUInt64ToUInt08(Value: UInt64): AUInt08;
 begin
-  if Value > High(UInt08) then
-    Result := High(UInt08)
+  if (Value > High(AUInt08)) then
+    Result := High(AUInt08)
   else if Value <= 0 then
     Result := 0
   else
@@ -1153,7 +1145,7 @@ begin
   end;
 end;
 
-function strHtmlTagErraceH(SIn: String; var SOut: String; var Level: UInt32): TError;
+function strHtmlTagErraceH(SIn: String; var SOut: String; var Level: UInt32): AError;
 {var
   I, L: UInt032;
   P: PChar;
@@ -1167,7 +1159,7 @@ begin
   memCopy(SIn, P, L + 1);
   strPos(P, '<', @I); strDelete(@P, 1, I);
   {if (_strLen(P) < 2) then goto L1;}
-  if (Char008(P^) <> 'h') and (Char008(P^) <> 'H') then goto L1;
+  if (AChar(P^) <> 'h') and (AChar(P^) <> 'H') then goto L1;
   strDelete(@P, 1, 1);
   strPos(P, '>', @I);
   if (Level <> nil) then Level^ := StrToUInt032(_strCopy(P, 1, I - 1));
@@ -1182,7 +1174,7 @@ L1:
   Result := 0;
 end;
 
-function strHtmlTagErraceP(const SIn: String; var SOut: String): TError;
+function strHtmlTagErraceP(const SIn: String; var SOut: String): AError;
 {var
   I: UInt032;}
 begin
@@ -1190,7 +1182,7 @@ begin
   strPos(SIn, '<', @I); strDelete(@SIn, 1, I);
   if (_strLen(SIn) < 2) then Exit;
   {strDelete(@SIn, 1, 1);}
-  if (Char008(SIn^) <> 'p') and (Char008(SIn^) <> 'P') then Exit;
+  if (AChar(SIn^) <> 'p') and (AChar(SIn^) <> 'P') then Exit;
   strPos(SIn, '>', @I); strDelete(@SIn, 1, I);
   strPos(SIn, '<', @I); strDelete(@SIn, I, _strLen(SIn) + 1 - I);
   {Result := strDeleteSpace(SIn, SOut);}
@@ -1237,7 +1229,7 @@ begin
   Result := Length(S);
 end;
 
-function strLengthSet(var S: String; NewLength: UInt32): TError;
+function strLengthSet(var S: String; NewLength: UInt32): AError;
 begin
   Result := 0;
   SetLength(S, NewLength);
@@ -1318,7 +1310,7 @@ begin
   end;
 end;
 
-function urlParamDecode(const InParams: TUrlParams; var Params: TURLParams2): TError;
+function urlParamDecode(const InParams: TUrlParams; var Params: TURLParams2): AError;
 var
   SS: String;
   ST: String;
@@ -1467,7 +1459,7 @@ begin
   Result := Ord(Value);
 end;}
 
-function cErrorToStr(Value: TError): String;
+function cErrorToStr(Value: AError): String;
 begin
   if Value = 0 then
     Result := 'Ok'
@@ -1552,7 +1544,7 @@ begin
   Val(S, Value, Result);
 end;
 
-function _StrToInt08(const S: String; var Value: Int08): UInt32;
+function _StrToInt08(const S: String; var Value: AInt08): UInt32;
 begin
   Val(S, Value, Result);
 end;
@@ -1572,7 +1564,7 @@ begin
   Val(S, Value, Result);
 end;
 
-function _StrToUInt08(const S: String; var Value: UInt08): UInt32;
+function _StrToUInt08(const S: String; var Value: AUInt08): UInt32;
 begin
   Val(S, Value, Result);
 end;
@@ -1592,7 +1584,7 @@ begin
   Val(S, Value, Result);
 end;
 
-function _StrDeleteSpace(var S: APascalString; Options: TDeleteSpaceOptionSet): TError;
+function _StrDeleteSpace(var S: APascalString; Options: TDeleteSpaceOptionSet): AError;
 // Удаление префиксных, постфиксных, повторяющихся пробелов и префиксных и поствиксных #13#10
 var
   B: Boolean;
@@ -1636,12 +1628,12 @@ begin
   until (B = False);
 end;
 
-function cUInt08ToChar(I: UInt08): Char;
+function cUInt08ToChar(I: AUInt08): Char;
 begin
   Result := Chr(I);
 end;
 
-function cUInt08ToStr(I: UInt08): String;
+function cUInt08ToStr(I: AUInt08): String;
 begin
   Result := cUInt32ToStr(I);
 end;
@@ -1661,7 +1653,7 @@ begin
   if Count <= 0 then Result := '' else Result := Copy(SIn, Index, Count);
 end;
 
-function strDelete(var St: String; Index, Count: UInt32): TError;
+function strDelete(var St: String; Index, Count: UInt32): AError;
 begin
   Delete(St, Index, Count);
   Result := 0;

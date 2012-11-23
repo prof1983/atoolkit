@@ -2,7 +2,7 @@
 @Abstract Реализация основной функциональности для главного объекта
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.05.2006
-@LastMod 17.08.2012
+@LastMod 23.11.2012
 }
 unit AProgramImpl;
 
@@ -78,9 +78,9 @@ type
       //** Срабатывает при уничтожении объекта
     procedure DoDestroy(); override; safecall;
       //** Срабатывает после успешной финализации
-    function DoFinalized(): TProfError; override; safecall;
+    function DoFinalized(): AError; override; safecall;
       //** Срабатывает при инициализации
-    function DoInitialize(): TProfError; override; safecall;
+    function DoInitialize(): AError; override; safecall;
       //** Срабатывает при событии таймера
     function DoTimer(): WordBool; virtual; safecall;
   public
@@ -92,7 +92,7 @@ type
     function GetDataPath(): APascalString;
     function GetTimeWork(): Integer;
       //** Инициализировать программу
-    function Initialize(): TProfError; override;
+    function Initialize(): AError; override;
   public
     constructor Create(); override;
     procedure Free(); override;
@@ -288,7 +288,7 @@ begin
   inherited DoDestroy();
 end;
 
-function TAProgram.DoFinalized(): TProfError;
+function TAProgram.DoFinalized(): AError;
 begin
   if Assigned(FLogJournal) then
   try
@@ -331,7 +331,7 @@ begin
   Result := inherited DoFinalized();
 end;
 
-function TAProgram.DoInitialize(): TProfError;
+function TAProgram.DoInitialize(): AError;
 var
   LogNode1: TALogNode;
 begin
@@ -434,7 +434,7 @@ begin
   Result := Round((Now - FDateStart) * 24 * 60);
 end;
 
-function TAProgram.Initialize(): TProfError;
+function TAProgram.Initialize(): AError;
 begin
   AddToLog(lgGeneral, ltInformation, 'Инициализация программы');
   Result := inherited Initialize;

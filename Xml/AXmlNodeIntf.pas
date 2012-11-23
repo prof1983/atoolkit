@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Класс работы с XML нодами)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(07.03.2007)
-@LastMod(02.07.2012)
-@Version(0.5)
+@Abstract Класс работы с XML нодами
+@Author Prof1983 <prof1983@ya.ru>
+@Created 07.03.2007
+@LastMod 23.11.2012
 }
 unit AXmlNodeIntf;
 
@@ -11,7 +10,7 @@ interface
 
 uses
   XmlIntf,
-  ABase, ANodeIntf, ATypes;
+  ABase, ANodeIntf;
 
 type //** @abstract(Интерфейс работы с нодами XML)
   IProfXmlNode = ANodeIntf.IProfNode;
@@ -60,7 +59,7 @@ type //** @abstract(Интерфейс работы с нодами XML)
     function GetValueAsInt64(var AValue: Int64): WordBool; safecall;
     function GetValueAsInteger(var AValue: Integer): WordBool; safecall;
     function GetValueAsString(var Value: WideString): WordBool; safecall;
-    function GetValueAsUInt08(var Value: UInt08): WordBool; safecall;
+    function GetValueAsUInt08(var Value: AUInt08): WordBool; safecall;
     function GetValueAsUInt64(var Value: UInt64): WordBool; safecall;
 
     procedure SetAsString(const Value: WideString);
@@ -69,19 +68,19 @@ type //** @abstract(Интерфейс работы с нодами XML)
     function SetValueAsFloat64(Value: AFloat64): WordBool; safecall;
     function SetValueAsInt32(AValue: Int32): WordBool; safecall;
     function SetValueAsString(const AValue: WideString): WordBool; safecall;
-    function SetValueAsUInt08(AValue: UInt08): WordBool; safecall;
+    function SetValueAsUInt08(AValue: AUInt08): WordBool; safecall;
     function SetValueAsUInt64(AValue: UInt64): WordBool; safecall;
 
     function ReadBool(const AName: WideString; var Value: WordBool): WordBool; safecall;
     function ReadDateTime(const AName: WideString; var Value: TDateTime): WordBool; safecall;
     function ReadFloat64(const AName: WideString; var Value: AFloat64): WordBool; safecall;
-    function ReadInt08(const AName: WideString; var Value: Int08): WordBool; safecall;
+    function ReadInt08(const AName: WideString; var Value: AInt08): WordBool; safecall;
     function ReadInt16(const AName: WideString; var Value: Int16): WordBool; safecall;
     function ReadInt32(const AName: WideString; var Value: Int32): WordBool; safecall;
     function ReadInt64(const AName: WideString; var AValue: Int64): WordBool; safecall;
     function ReadInteger(const AName: WideString; var AValue: Integer): WordBool; safecall;
     function ReadString(const AName: WideString; var Value: WideString): WordBool; safecall;
-    function ReadUInt08(const AName: WideString; var Value: UInt08): WordBool; safecall;
+    function ReadUInt08(const AName: WideString; var Value: AUInt08): WordBool; safecall;
     function ReadUInt16(const AName: WideString; var Value: UInt16): WordBool; safecall;
     function ReadUInt32(const AName: WideString; var Value: UInt32): WordBool; safecall;
     function ReadUInt64(const AName: WideString; var Value: AUInt64): WordBool; safecall;
@@ -89,12 +88,12 @@ type //** @abstract(Интерфейс работы с нодами XML)
 
     function WriteBool(const AName: WideString; Value: WordBool): WordBool; safecall;
     function WriteDateTime(const AName: WideString; AValue: TDateTime): WordBool; safecall;
-    function WriteFloat64(const AName: WideString; Value: Float64): WordBool; safecall;
+    function WriteFloat64(const AName: WideString; Value: AFloat64): WordBool; safecall;
     function WriteInt32(const AName: WideString; Value: Int32): WordBool; safecall;
     function WriteInt64(const AName: WideString; Value: Int64): WordBool; safecall;
     function WriteInteger(const AName: WideString; Value: Integer): WordBool; safecall;
     function WriteString(const AName, Value: WideString): WordBool; safecall;
-    function WriteUInt08(const AName: WideString; AValue: UInt08): WordBool; safecall;
+    function WriteUInt08(const AName: WideString; AValue: AUInt08): WordBool; safecall;
     function WriteUInt64(const AName: WideString; AValue: UInt64): WordBool; safecall;
     function WriteXml(const AName, Value: WideString): WordBool; safecall;
 
@@ -114,8 +113,8 @@ type //** @abstract(Интерфейс работы с нодами XML)
   IProfXmlNodeA = interface
     function GetAsBool(): WordBool; safecall;
     function GetAsDateTime(): TDateTime; safecall;
-    function GetAsFloat32(): Float32; safecall;
-    function GetAsFloat64(): Float64; safecall;
+    function GetAsFloat32(): AFloat32; safecall;
+    function GetAsFloat64(): AFloat64; safecall;
     function GetAsInt32(): Integer; safecall;
     function GetAsInt64(): Integer; safecall;
     function GetAsString(): WideString; safecall;
@@ -132,7 +131,7 @@ type //** @abstract(Интерфейс работы с нодами XML)
     procedure SetAsString(const Value: WideString); safecall;
 
     function SetValueAsBool(Value: WordBool): WordBool; safecall;
-    function SetValueAsFloat64(Value: Float64): WordBool; safecall;
+    function SetValueAsFloat64(Value: AFloat64): WordBool; safecall;
     function SetValueAsInt32(AValue: Integer): WordBool; safecall;
     function SetValueAsString(const AValue: WideString): WordBool; safecall;
     function SetValueAsUInt08(AValue: Byte): WordBool; safecall;
@@ -140,21 +139,21 @@ type //** @abstract(Интерфейс работы с нодами XML)
 
     function ReadBool(const AName: WideString; var Value: WordBool): WordBool; safecall;
     function ReadDateTime(const AName: WideString; var Value: TDateTime): WordBool; safecall;
-    function ReadFloat64(const AName: WideString; var Value: Float64): WordBool; safecall;
-    function ReadInt08(const AName: WideString; var Value: Int08): WordBool; safecall;
+    function ReadFloat64(const AName: WideString; var Value: AFloat64): WordBool; safecall;
+    function ReadInt08(const AName: WideString; var Value: AInt08): WordBool; safecall;
     function ReadInt16(const AName: WideString; var Value: Int16): WordBool; safecall;
     function ReadInt32(const AName: WideString; var Value: Int32): WordBool; safecall;
     function ReadInt64(const AName: WideString; var AValue: Int64): WordBool; safecall;
     //function ReadInteger(const AName: WideString; var AValue: Integer): WordBool; safecall;
     function ReadString(const AName: WideString; var Value: WideString): WordBool; safecall;
-    function ReadUInt08(const AName: WideString; var Value: UInt08): WordBool; safecall;
+    function ReadUInt08(const AName: WideString; var Value: AUInt08): WordBool; safecall;
     function ReadUInt16(const AName: WideString; var Value: UInt16): WordBool; safecall;
     function ReadUInt32(const AName: WideString; var Value: UInt32): WordBool; safecall;
     //function ReadUInt64(const AName: WideString; var Value: UInt64): WordBool; safecall;
 
     function WriteBool(const AName: WideString; Value: WordBool): WordBool; safecall;
     function WriteDateTime(const AName: WideString; AValue: TDateTime): WordBool; safecall;
-    function WriteFloat64(const AName: WideString; Value: Float64): WordBool; safecall;
+    function WriteFloat64(const AName: WideString; Value: AFloat64): WordBool; safecall;
     function WriteInt32(const AName: WideString; Value: Int32): WordBool; safecall;
     function WriteInt64(const AName: WideString; Value: Int64): WordBool; safecall;
     //function WriteInteger(const AName: WideString; Value: Integer): WordBool; safecall;

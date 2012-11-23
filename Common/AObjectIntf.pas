@@ -2,7 +2,7 @@
 @Abstract Общие интерфейсы для всех проектов
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.02.2007
-@LastMod 13.11.2012
+@LastMod 23.11.2012
 }
 unit AObjectIntf;
 
@@ -22,13 +22,13 @@ type //** Интерфейс для любого объекта
       //** Добавить (выполнить) сообщение
     function AddMessage(const Msg: WideString): Integer;
       //** Загрузить конфигурации
-    function ConfigureLoad(AConfig: IProfNode): TProfError; safecall;
+    function ConfigureLoad(AConfig: IProfNode): AError; safecall;
       //** Сохранить конфигурации
-    function ConfigureSave(AConfig: IProfNode): TProfError; safecall;
+    function ConfigureSave(AConfig: IProfNode): AError; safecall;
       //** Финализировать
-    function Finalize(): TProfError;
+    function Finalize(): AError;
       //** Инициализировать
-    function Initialize(): TProfError;
+    function Initialize(): AError;
       //** Передать сообщение
     function SendMessage(const Msg: WideString): Integer; safecall;
 
@@ -56,9 +56,9 @@ type //** Интерфейс для любого объекта
       //** Срабатывает при завершении процедуры остановки
     function DoStoped(AIsShutDown: WordBool): WordBool; safecall;
       //** Финализировать
-    function Finalize(): TProfError;
+    function Finalize(): AError;
       //** Инициализировать
-    function Initialize(): TProfError;
+    function Initialize(): AError;
 
     function GetConfig2(): IXmlNode; safecall;
     function GetLog(): ALogNode; safecall;

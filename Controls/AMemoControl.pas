@@ -2,7 +2,7 @@
 @Abstract AMemoControl
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.10.2006
-@LastMod 13.11.2012
+@LastMod 23.11.2012
 
 Uses
   @link ABase
@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, Controls, StdCtrls,
-  ABase, AControlImpl, ATypes;
+  ABase, AControlImpl;
 
 type
   TAMemoControl = class(TAControl)
@@ -29,11 +29,9 @@ type
     function SendMessage(const Msg: WideString): Integer; override; safecall;
   public
     function AddMessage(const Msg: WideString): AInt; override;
-    function Initialize(): TProfError; override; //safecall;
+    function Initialize(): AError; override;
     procedure LoadFromFile(const FileName: WideString);
   end;
-
-  //TProfMemoControl = TAMemoControl;
 
 implementation
 
@@ -44,7 +42,7 @@ begin
   Result := memMessages.Lines.Add('<-- ' + Msg);
 end;
 
-function TAMemoControl.Initialize(): TProfError;
+function TAMemoControl.Initialize(): AError;
 begin
   Result := inherited Initialize();
   memInput := TMemo.Create(FControl);

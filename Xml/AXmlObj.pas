@@ -1,8 +1,8 @@
 {**
-@Abstract(Xml)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(03.05.2012)
-@LastMod(20.07.2012)
+@Abstract Xml
+@Author Prof1983 <prof1983@ya.ru>
+@Created 03.05.2012
+@LastMod 23.11.2012
 }
 unit AXmlObj;
 
@@ -10,7 +10,7 @@ interface
 
 uses
   SysUtils,
-  ABase, ABaseUtils3, AStreamObj, ATypes, AXmlDocumentUtils, AXmlNodeUtils;
+  ABase, ABaseUtils3, AStreamObj, AXmlDocumentUtils, AXmlNodeUtils;
 
 type
   TParam = class
@@ -20,8 +20,8 @@ type
   public
     function GetName: String;
     function GetValue: String;
-    function SetName(Value: String): TError;
-    function SetValue(Value: String): TError;
+    function SetName(Value: String): AError;
+    function SetValue(Value: String): AError;
   end;
 
 type // Recover 03.05.2012 from AConfigObject2.TConfigFileText
@@ -31,15 +31,15 @@ type // Recover 03.05.2012 from AConfigObject2.TConfigFileText
     FXmlDocument: AXmlDocument;
     FXmlNode: AXmlNode;
   public
-    function Finalize(): TError; virtual;
-    function Initialize(): TError; virtual;
+    function Finalize(): AError; virtual;
+    function Initialize(): AError; virtual;
   public
     function AddParam(Param: TParam): Int32;
-    function Clear(): TError;
-    function Load(const FileName: String): TError;
-    function LoadFromXml(Xml: TProfXml): TError;
+    function Clear(): AError;
+    function Load(const FileName: String): AError;
+    function LoadFromXml(Xml: TProfXml): AError;
     function NewParam(Name, Value: String): Int32;
-    function Save(FileName: String): TError;
+    function Save(FileName: String): AError;
   public
     function GetCountParams(): UInt32;
     function GetParam(Index: UInt32): TParam;
@@ -50,35 +50,35 @@ type // Recover 03.05.2012 from AConfigObject2.TConfigFileText
     function GetParamValueByNameAsBoolean_(Name: String; var Value: Boolean): Boolean; virtual; deprecated; // Use ReadParamValueByNameAsBoolean()
     function GetParamValueByNameAsInt32(const Name: String): Int32;
     function GetParamValueByNameAsInt32_(Name: String; var Value: Int32): Boolean; virtual; deprecated; // Use ReadParamValueByNameAsInt32()
-    function GetParamValueByNameAsUInt08(const Name: APascalString; var Value: UInt08): Boolean; virtual; deprecated; // Use ReadParamValueByNameAsUInt08()
+    function GetParamValueByNameAsUInt08(const Name: APascalString; var Value: AUInt08): Boolean; virtual; deprecated; // Use ReadParamValueByNameAsUInt08()
     function GetParamValueByNameAsUInt64(const Name: String): UInt64;
     function GetParamValueByNameAsUInt64_(Name: String; var Value: UInt64): Boolean; virtual; deprecated; // Use ReadParamValueByNameAsUInt64()
   public
-    function ReadBool(Section, Name: String; var Value: Boolean): TError; virtual;
+    function ReadBool(Section, Name: String; var Value: Boolean): AError; virtual;
     function ReadInt32(const Section, Name: APascalString; var Value: AInt32): ABoolean; virtual;
     function ReadInt64(const Section, Name: APascalString; var Value: AInt64): ABoolean; virtual;
     function ReadStr(Name: String; var Value: String): Boolean; deprecated; // Use ReadString()
     function ReadString(Section, Name: String; var Value: String): Boolean; virtual;
-    function ReadUInt08(Name: String; var Value: UInt08): Boolean; virtual;
+    function ReadUInt08(Name: String; var Value: AUInt08): Boolean; virtual;
     function ReadUInt64(Section, Name: String; var Value: UInt64): Boolean; virtual;
     function ReadParamValueByName(const Name: String; var Value: String): Boolean;
     function ReadParamValueByNameAsBoolean(const Name: String; var Value: Boolean): Boolean;
     function ReadParamValueByNameAsDateTime(const Name: APascalString; var Value: TDateTime): Boolean;
     function ReadParamValueByNameAsInt32(const Name: String; var Value: Int32): Boolean;
     function ReadParamValueByNameAsInt64(const Name: APascalString; var Value: Int64): Boolean;
-    function ReadParamValueByNameAsUInt08(const Name: String; var Value: UInt08): Boolean;
+    function ReadParamValueByNameAsUInt08(const Name: String; var Value: AUInt08): Boolean;
     function ReadParamValueByNameAsUInt64(const Name: String; var Value: UInt64): Boolean;
-    function SetParamValueByName(Name, Value: String): TError; virtual;
-    function SetParamValueByNameAsBoolean(Name: String; Value: Boolean): TError; virtual;
-    function SetParamValueByNameAsInt32(Name: String; Value: Int32): TError; virtual;
-    function SetParamValueByNameAsUInt08(const Name: APascalString; Value: UInt08): TError; virtual;
-    function SetParamValueByNameAsUInt64(const Name: APascalString; Value: UInt64): TError; virtual;
-    function WriteBool(Section, Name: String; Value: Boolean): TError; virtual;
-    function WriteFloat64(Name: String; Value: Float64): TError; virtual;
-    function WriteInt32(Section, Name: String; Value: Int32): TError; virtual;
-    function WriteStr(Name, Value: String): TError; deprecated; // Use WriteString()
-    function WriteString(Section, Name, Value: String): TError; virtual;
-    function WriteUInt32(Name: String; Value: UInt32): TError; virtual;
+    function SetParamValueByName(Name, Value: String): AError; virtual;
+    function SetParamValueByNameAsBoolean(Name: String; Value: Boolean): AError; virtual;
+    function SetParamValueByNameAsInt32(Name: String; Value: Int32): AError; virtual;
+    function SetParamValueByNameAsUInt08(const Name: APascalString; Value: AUInt08): AError; virtual;
+    function SetParamValueByNameAsUInt64(const Name: APascalString; Value: UInt64): AError; virtual;
+    function WriteBool(Section, Name: String; Value: Boolean): AError; virtual;
+    function WriteFloat64(Name: String; Value: AFloat64): AError; virtual;
+    function WriteInt32(Section, Name: String; Value: Int32): AError; virtual;
+    function WriteStr(Name, Value: String): AError; deprecated; // Use WriteString()
+    function WriteString(Section, Name, Value: String): AError; virtual;
+    function WriteUInt32(Name: String; Value: UInt32): AError; virtual;
     function WriteUInt64(Section, Name: String; Value: UInt64): Boolean; virtual;
   public
     constructor Create1(XmlNode: AXmlNode);
@@ -100,13 +100,13 @@ begin
   Result := FValue;
 end;
 
-function TParam.SetName(Value: String): TError;
+function TParam.SetName(Value: String): AError;
 begin
   FName := Value;
   Result := 0;
 end;
 
-function TParam.SetValue(Value: String): TError;
+function TParam.SetValue(Value: String): AError;
 begin
   FValue := Value;
   Result := 0;
@@ -121,7 +121,7 @@ begin
   FParams[Result] := Param;
 end;
 
-function TProfXml.Clear(): TError;
+function TProfXml.Clear(): AError;
 var
   I: Int32;
 begin
@@ -144,7 +144,7 @@ begin
   FXmlNode := AXmlDocument_GetDocumentElement(FXmlDocument);
 end;
 
-function TProfXml.Finalize(): TError;
+function TProfXml.Finalize(): AError;
 begin
   Result := 0;
 end;
@@ -215,7 +215,7 @@ begin
   Result := ReadParamValueByNameAsInt32(Name, Value);
 end;
 
-function TProfXml.GetParamValueByNameAsUInt08(const Name: APascalString; var Value: UInt08): Boolean;
+function TProfXml.GetParamValueByNameAsUInt08(const Name: APascalString; var Value: AUInt08): Boolean;
 begin
   Result := Self.ReadParamValueByNameAsUInt08(Name, Value);
 end;
@@ -230,12 +230,12 @@ begin
   Result := Self.ReadParamValueByNameAsUInt64(Name, Value);
 end;
 
-function TProfXml.Initialize(): TError;
+function TProfXml.Initialize(): AError;
 begin
   Result := 0;
 end;
 
-function TProfXml.Load(const FileName: String): TError;
+function TProfXml.Load(const FileName: String): AError;
 var
   F: TProfFileText;
   Name: String;
@@ -266,7 +266,7 @@ begin
   end;
 end;
 
-function TProfXml.LoadFromXml(Xml: TProfXml): TError;
+function TProfXml.LoadFromXml(Xml: TProfXml): AError;
 begin
   Result := -1;
 end;
@@ -281,7 +281,7 @@ begin
   Result := AddParam(Param);
 end;
 
-function TProfXml.ReadBool(Section, Name: String; var Value: Boolean): TError;
+function TProfXml.ReadBool(Section, Name: String; var Value: Boolean): AError;
 begin
   Result := -1;
 end;
@@ -345,7 +345,7 @@ begin
   Value := StrToInt(S);
 end;
 
-function TProfXml.ReadParamValueByNameAsUInt08(const Name: String; var Value: UInt08): Boolean;
+function TProfXml.ReadParamValueByNameAsUInt08(const Name: String; var Value: AUInt08): Boolean;
 var
   S: String;
 begin
@@ -373,7 +373,7 @@ begin
   Result := ReadParamValueByName(Name, Value);
 end;
 
-function TProfXml.ReadUInt08(Name: String; var Value: UInt08): Boolean;
+function TProfXml.ReadUInt08(Name: String; var Value: AUInt08): Boolean;
 var
   S: String;
 begin
@@ -387,7 +387,7 @@ begin
   Result := False;
 end;
 
-function TProfXml.Save(FileName: String): TError;
+function TProfXml.Save(FileName: String): AError;
 var
   F: TProfFileText;
   I: Int32;
@@ -402,7 +402,7 @@ begin
   F.Free;
 end;
 
-function TProfXml.SetParamValueByName(Name, Value: String): TError;
+function TProfXml.SetParamValueByName(Name, Value: String): AError;
 var
   Param: TParam;
 begin
@@ -414,7 +414,7 @@ begin
   Result := 0;
 end;
 
-function TProfXml.SetParamValueByNameAsBoolean(Name: String; Value: Boolean): TError;
+function TProfXml.SetParamValueByNameAsBoolean(Name: String; Value: Boolean): AError;
 var
   S: String;
 begin
@@ -422,22 +422,22 @@ begin
   Result := SetParamValueByName(Name, S);
 end;
 
-function TProfXml.SetParamValueByNameAsInt32(Name: String; Value: Int32): TError;
+function TProfXml.SetParamValueByNameAsInt32(Name: String; Value: Int32): AError;
 begin
   Result := SetParamValueByName(Name, cInt32ToStr(Value));
 end;
 
-function TProfXml.SetParamValueByNameAsUInt08(const Name: APascalString; Value: UInt08): TError;
+function TProfXml.SetParamValueByNameAsUInt08(const Name: APascalString; Value: AUInt08): AError;
 begin
   Result := SetParamValueByName(Name, cInt32ToStr(Value));
 end;
 
-function TProfXml.SetParamValueByNameAsUInt64(const Name: APascalString; Value: UInt64): TError;
+function TProfXml.SetParamValueByNameAsUInt64(const Name: APascalString; Value: UInt64): AError;
 begin
   Result := SetParamValueByName(Name, cInt64ToStr(Value));
 end;
 
-function TProfXml.WriteBool(Section, Name: String; Value: Boolean): TError;
+function TProfXml.WriteBool(Section, Name: String; Value: Boolean): AError;
 var
   S: String;
 begin
@@ -445,27 +445,27 @@ begin
   Result := SetParamValueByName(Name, S);
 end;
 
-function TProfXml.WriteFloat64(Name: String; Value: Float64): TError;
+function TProfXml.WriteFloat64(Name: String; Value: AFloat64): AError;
 begin
   Result := SetParamValueByName(Name, cFloat64ToStr(Value));
 end;
 
-function TProfXml.WriteInt32(Section, Name: String; Value: Int32): TError;
+function TProfXml.WriteInt32(Section, Name: String; Value: Int32): AError;
 begin
   Result := SetParamValueByName(Name, cInt32ToStr(Value));
 end;
 
-function TProfXml.WriteStr(Name, Value: String): TError;
+function TProfXml.WriteStr(Name, Value: String): AError;
 begin
   Result := WriteString('', Name, Value);
 end;
 
-function TProfXml.WriteString(Section, Name, Value: String): TError;
+function TProfXml.WriteString(Section, Name, Value: String): AError;
 begin
   Result := SetParamValueByName(Name, Value);
 end;
 
-function TProfXml.WriteUInt32(Name: String; Value: UInt32): TError;
+function TProfXml.WriteUInt32(Name: String; Value: UInt32): AError;
 begin
   Result := SetParamValueByName(Name, cUInt32ToStr(Value));
 end;

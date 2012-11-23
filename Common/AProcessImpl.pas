@@ -2,14 +2,14 @@
 @Abstract Объект с логированием, конфигурациями и функциями Старт, Стоп и Пауза
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.12.2005
-@LastMod 13.11.2012
+@LastMod 23.11.2012
 }
 unit AProcessImpl;
 
 interface
 
 uses
-  AObjectImpl, ATypes;
+  ABase, AObjectImpl;
 
 type //** Объект с логированием, конфигурациями и функциями Старт, Стоп и Пауза
   TProfProcess = class(TAObject)
@@ -23,7 +23,7 @@ type //** Объект с логированием, конфигурациями
       //** Срабатывает при завершении процедуры остановки
     function DoStoped(AIsShutDown: WordBool): WordBool; virtual; safecall;
   public
-    function Finalize(): TProfError; override;
+    function Finalize(): AError; override;
     function Start(): WordBool; virtual;
     function Stop(): WordBool; virtual;
   end;
@@ -52,7 +52,7 @@ begin
   Result := True;
 end;
 
-function TProfProcess.Finalize(): TProfError;
+function TProfProcess.Finalize(): AError;
 begin
   Stop();
   Result := inherited Finalize();

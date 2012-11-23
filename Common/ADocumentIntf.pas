@@ -1,16 +1,15 @@
 ﻿{**
-@Abstract(Интерфейс для любых документов)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(11.04.2007)
-@LastMod(05.07.2012)
-@Version(0.5)
+@Abstract Интерфейс для любых документов
+@Author Prof1983 <prof1983@ya.ru>
+@Created 11.04.2007
+@LastMod 23.11.2012
 }
 unit ADocumentIntf;
 
 interface
 
 uses
-  AEntityIntf, ATypes;
+  ABase, AEntityIntf;
 
 type
   //** Интерфейс для любых документов
@@ -38,7 +37,7 @@ type
         положительное число, если есть замечания;
         отрицательное число, если есть ошибки (открыть документ не удалось))
     }
-    function OpenDocument(): TProfError; safecall;
+    function OpenDocument(): AError; safecall;
 
     {**
       Открыт ли документ?

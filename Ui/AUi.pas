@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 22.11.2012
+@LastMod 23.11.2012
 }
 unit AUi;
 
@@ -41,12 +41,6 @@ uses
   AUiImages, AUiInit, AUiLabels, AUiListBox, AUiMain, AUiMainWindow, AUiMainWindow2,
   AUiPageControl, AUiReports, AUiSplitter, AUiTextView, AUiToolBar, AUiToolMenu, AUiTreeView,
   AUiWindows, AUiWindowSettings;
-
-// --- AUi_Report ---
-
-function AUi_Report_New(Parent: AControl): AReport; stdcall;
-
-procedure AUi_Report_SetText(Report: AReport; const Value: AString_Type); stdcall;
 
 // --- AUi_SpinButton ---
 
@@ -891,22 +885,14 @@ end;
 {$IFDEF USE_EVENTS}
 function OnDone_Connect(Proc: ACallbackProc): AInteger; stdcall;
 begin
-  try
-    Result := AUiEvents1.UI_OnDone_Connect(Proc);
-  except
-    Result := 0;
-  end;
+  Result := AUi_OnDone_Connect(Proc);
 end;
 {$ENDIF}
 
 {$IFDEF USE_EVENTS}
 function OnDone_Disconnect(Proc: ACallbackProc): AInteger; stdcall;
 begin
-  try
-    Result := AUiEvents1.UI_OnDone_Disconnect(Proc);
-  except
-    Result := 0;
-  end;
+  Result := AUi_OnDone_Disconnect(Proc);
 end;
 {$ENDIF}
 
@@ -985,25 +971,6 @@ procedure Shutdown02(); stdcall;
 begin
   try
     UI_Shutdown();
-  except
-  end;
-end;
-
-// --- AUi_Report ---
-
-function AUi_Report_New(Parent: AControl): AReport;
-begin
-  try
-    Result := UI_Report_New(Parent);
-  except
-    Result := 0;
-  end;
-end;
-
-procedure AUi_Report_SetText(Report: AReport; const Value: AString_Type);
-begin
-  try
-    UI_Report_SetText(Report, AStrings.String_ToWideString(Value));
   except
   end;
 end;
@@ -1914,48 +1881,27 @@ end;
 
 function ReportWin_New(): AWindow; stdcall;
 begin
-  try
-    Result := UI_ReportWin_New();
-  except
-    Result := 0;
-  end;
+  Result := AUiReportWin_New();
 end;
 
 function ReportWin_New2P(ReportWinType: AInteger; const Text: APascalString): AWindow; stdcall;
 begin
-  try
-    Result := AUIReports.UI_ReportWin_NewA(ReportWinType, Text);
-  except
-    Result := 0;
-  end;
+  Result := AUiReportWin_New2P(ReportWinType, Text);
 end;
 
 function ReportWin_New2WS(ReportWinType: AInteger; const Text: AWideString): AWindow; stdcall;
 begin
-  try
-    Result := AUIReports.UI_ReportWin_NewA(ReportWinType, Text);
-  except
-    Result := 0;
-  end;
+  Result := AUiReportWin_New2P(ReportWinType, Text);
 end;
 
 function ReportWin_NewWS(ReportWinType: AInteger; const Text: AWideString): AWindow; stdcall;
 begin
-  try
-    Result := AUIReports.UI_ReportWin_NewA(ReportWinType, Text);
-  except
-    Result := 0;
-  end;
+  Result := AUiReportWin_New2P(ReportWinType, Text);
 end;
 
 function ReportWin_ShowReportP(const Text: APascalString; Font: AFont): AError; stdcall;
 begin
-  try
-    UI_ReportWin_ShowReport(Text, TFont(Font));
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiReportWin_ShowReportP(Text, Font);
 end;
 
 { TextView }
@@ -2340,43 +2286,6 @@ function UI_ProgressBar_StepIt(ProgressBar: AControl): AInteger;
 begin
   TProgressBar(ProgressBar).StepIt;
   Result := TProgressBar(ProgressBar).Position;
-end;
-
-{ Report }
-
-function UI_Report_New(Parent: AControl): AReport;
-var
-  I: Integer;
-begin
-  I := Length(FReports);
-  SetLength(FReports, I + 1);
-  Result := I+1;
-  FReports[I].Parent := Parent;
-  FReports[I].ToolsPanel := AUiBox_New(Parent, 0);
-  AUIControls.UI_Control_SetSize(FReports[I].ToolsPanel, 100, 25);
-  AUIControls.UI_Control_SetAlign(FReports[I].ToolsPanel, uiAlignTop);
-  FReports[I].TextView := UI_TextView_New(Parent, 1);
-  AUIControls.UI_Control_SetAlign(FReports[I].TextView, uiAlignClient);
-  UI_TextView_SetScrollBars(FReports[I].TextView, AInteger(ssBoth));
-  UI_TextView_SetFont(FReports[I].TextView, 'Courier New', 10);
-  UI_TextView_SetReadOnly(FReports[I].TextView, True);
-end;
-
-procedure UI_Report_SetText(Report: AReport; const Value: APascalString); stdcall;
-begin
-  AUIControls.UI_Control_SetTextP(FReports[Report-1].TextView, Value);
-end;
-
-{ ReportWin }
-
-function UI_ReportWin_New: AWindow;
-begin
-  Result := AUIReports.UI_ReportWin_NewA(0, '');
-end;
-
-function UI_ReportWin_NewA(ReportWinType: AInteger; const Text: APascalString): AWindow;
-begin
-  Result := AUIReports.UI_ReportWin_NewA(ReportWinType, Text);
 end;
 
 { SpinButton }

@@ -1,18 +1,14 @@
 ﻿{**
-@Abstract(Реализация основной функциональности для сервиса WindowsNT)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(17.05.2006)
-@LastMod(11.05.2012)
-@Version(0.5)
+@Abstract Реализация основной функциональности для сервиса WindowsNT
+@Author Prof1983 <prof1983@ya.ru>
+@Created 17.05.2006
+@LastMod 14.11.2012
 
 Возможные состояния сервиса для процедуры ReportStatus
   SERVICE_STOPPED        - сервис успешно остановлен
   SERVICE_START_PENDING  - сервис в процессе запуска
   SERVICE_STOP_PENDING   - сервис в процессе остановки
   SERVICE_RUNNING        - сервис работает
-
-0.0.5.7 - 21.07.2011
-[*] TProfService = class(TProfProcess) -> TProfService = class(TProfObject3)
 }
 unit AServiceImpl;
 
@@ -126,6 +122,14 @@ type // Вспомогательный обьект для работы с со�
   public
     constructor Create(Controller: TProfService);
   end;
+
+const // Для регистрации категории COM объектов
+  Ar_CategoryComDesc_409 = 'AReason OLE Automation';
+  Ar_CategoryComDesc_419 = 'AReason OLE Automation';
+  CATID_ArAppServer: TGUID = '{C3D94DD9-3B4A-4010-BE1D-0873DC0AF5A7}';
+
+const // Название группы в которой регистрируются все сервисы
+  LOAD_GROUP: PChar = 'AServices';
 
 const
   WM_STOP_USER     = WM_USER + 1;
@@ -398,20 +402,9 @@ begin
   inherited Create();
   if Assigned(ServiceNT) then
     raise Exception.Create(err_Server_Exists);
-  //inherited;
+
   ServiceNT := Self;
 
-  {try
-    OleCheck(LoadRegTypeLib(STD_TLB_GUID, 1, 0, 0, FStdTypeLib));
-  except
-    ShowError(0, 'ServiceNT', 'Ошибка в загрузке OleCheck(LoadRegTypeLib(STD_TLB_GUID, 1, 0, 0, FStdTypeLib))', []);
-  end;}
-//  try
-//    OleCheck(LoadRegTypeLib(LIBID_AR_Core, AR_CoreMajorVersion, AR_CoreMinorVersion, 0, FGlbTypeLib));
-//  except
-//    ShowError(0, 'ServiceNT', 'Ошибка в OleCheck(LoadRegTypeLib(LIBID_AR_Core, AR_CoreMajorVersion, AR_CoreMinorVersion, 0, FGlbTypeLib))', []);
-//  end;
-//  FSrvTypeLib := ComServer.TypeLib;
   InitializeCriticalSection(FCSReportStatus);
   FClientList := TThreadList.Create();
   FServiceProcHandle := 0;

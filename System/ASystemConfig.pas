@@ -2,7 +2,7 @@
 @Abstract ASystem config
 @Author Prof1983 <prof1983@ya.ru>
 @Created 29.05.2011
-@LastMod 19.07.2012
+@LastMod 16.11.2012
 }
 unit ASystemConfig;
 
@@ -24,14 +24,14 @@ implementation
 
 {$IFDEF USE_CONFIG}
 uses
-  ASettings;
+  ASettingsIni, ASettingsMain;
 {$ENDIF}
 
 {$IFDEF USE_CONFIG}
 function System_DoneConfig: AInteger;
 begin
   if (FConfig <> 0) then
-    ASettings.Config_Close(FConfig);
+    ASettings_Close(FConfig);
   Result := 0;
 end;
 {$ENDIF USE_CONFIG}
@@ -41,9 +41,9 @@ function System_InitConfig: AInteger;
 var
   S: APascalString;
 begin
-  FConfig := ASettings.IniConfig_NewP(FConfigPath+FProgramName+'.ini');
+  FConfig := ASettings_IniConfig_NewP(FConfigPath+FProgramName+'.ini');
 
-  S := ASettings.Config_ReadStringDefP(FConfig, 'App', 'DataPath', '');
+  S := ASettings_ReadStringDefP(FConfig, 'App', 'DataPath', '');
   if (S <> '') then
     FDataPath := NormalizePath(S);
   Result := 0;

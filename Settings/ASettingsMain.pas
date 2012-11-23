@@ -2,7 +2,7 @@
 @Abstract ASettings main functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.08.2012
-@LastMod 21.11.2012
+@LastMod 16.11.2012
 }
 unit ASettingsMain;
 
@@ -29,9 +29,6 @@ function ASettings_WriteIntegerP(Config: AConfig; const Section, Name: APascalSt
 function ASettings_WriteStringP(Config: AConfig; const Section, Name, Value: APascalString): AError; stdcall;
 
 implementation
-
-uses
-  ASettings;
 
 // --- ASettings ---
 
@@ -114,7 +111,20 @@ end;
 
 function ASettings_WriteStringP(Config: AConfig; const Section, Name, Value: APascalString): AError;
 begin
-  Result := Config_WriteStringP(Config, Section, Name, Value);
+  if (Config = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+
+  try
+    if TAbstractSettings(Config).WriteString(Section, Name, Value) then
+      Result := 0
+    else
+      Result := -2;
+  except
+    Result := -1;
+  end;
 end;
 
 end.

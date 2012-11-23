@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 06.09.2012
+@LastMod 23.11.2012
 }
 unit AUi;
 
@@ -21,6 +21,10 @@ unit AUi;
   {$DEFINE USE_EVENTS}
 {$ENDIF}
 
+{$IFNDEF NoRuntime}
+  {$DEFINE USE_RUNTIME}
+{$ENDIF}
+
 {$IFNDEF NoSettings}
   {$DEFINE USE_SETTINGS}
 {$ENDIF}
@@ -30,63 +34,17 @@ interface
 uses
   ABase, ABaseTypes,
   {$IFDEF USE_EVENTS}AEvents,{$ENDIF}
-  ARuntime,
+  {$IFDEF USE_RUNTIME}ARuntime,{$ENDIF}
   {$IFDEF USE_SETTINGS}ASettings,{$ENDIF}
   AStrings, ASystem,
   AUiBase, AUiBox, AUiButtons, AUiControls, AUiControlsA, AUiData, AUiEvents1, AUiEventsObj, AUiForm,
   AUiImages, AUiInit, AUiLabels, AUiListBox, AUiMain, AUiMainWindow, AUiMainWindow2,
-  AUiPageControl, AUiReports, AUiToolBar, AUiToolMenu, AUiTreeView, AUiWindows;
-
-// ---
-
-function AUi_PropertyBox_Add(PropertyBox: AControl; const Caption: AString_Type): Integer; stdcall;
-function AUi_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: AString_Type; EditWidth: AInteger): AInteger; stdcall;
-function AUi_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer; out Value: AString_Type): AInteger; stdcall;
-procedure AUi_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; const Value: AString_Type); stdcall;
-function AUi_PropertyBox_New(Parent: AControl): AControl; stdcall;
-
-// --- AUi_Report ---
-
-function AUi_Report_New(Parent: AControl): AReport; stdcall;
-
-procedure AUi_Report_SetText(Report: AReport; const Value: AString_Type); stdcall;
+  AUiPageControl, AUiReports, AUiSplitter, AUiTextView, AUiToolBar, AUiToolMenu, AUiTreeView,
+  AUiWindows, AUiWindowSettings;
 
 // --- AUi_SpinButton ---
 
 function AUi_SpinButton_New(Parent: AControl): AControl; stdcall;
-
-// --- AUi_Splitter ---
-
-{ SplitterType
-    0 - HSplitter (Align=alTop)
-    1 - VSplitter (Align=alLeft)
-    2 - HSplitter (Align=alBottom)
-    3 - VSplitter (Align=alRight) }
-function AUi_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl; stdcall;
-
-// --- AUi_TextView ---
-
-// Добавляет строку в элемент TextView
-function AUi_TextView_AddLine(TextView: AControl; const Text: AString_Type): AInteger; stdcall;
-
-{ Создает новый элемент редактирования текста
-  ViewType
-    0 - TMemo
-    1 - RichEdit }
-function AUi_TextView_New(Parent: AControl; ViewType: AInteger): AControl; stdcall;
-
-procedure AUi_TextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger); stdcall;
-
-procedure AUi_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean); stdcall;
-
-{ ScrollBars
-    0 - ssNone
-    1 - ssHorizontal
-    2 - ssVertical
-    3 - ssBoth }
-procedure AUi_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger); stdcall;
-
-procedure AUi_TextView_SetWordWrap(TextView: AControl; Value: ABoolean); stdcall;
 
 // --- AUi_TrayIcon ---
 
@@ -212,7 +170,9 @@ procedure DataSource_SetOnDataChange02(DataSource: PADataSource; OnDataChange: A
 
 function Dialog_About: AError; stdcall;
 
-function Dialog_About_New: AWindow; stdcall;
+function Dialog_About_New(): AWindow; stdcall;
+
+function Dialog_About_Init(AboutDialog: AWindow): AError; stdcall;
 
 function Dialog_AddButtonP(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
     OnClick: ACallbackProc): AControl; stdcall;
@@ -696,21 +656,7 @@ function UI_MainTrayIcon: ATrayIcon; stdcall;
 function UI_ProgressBar_New(Parent: AControl; Max: AInteger): AControl;
 function UI_ProgressBar_StepIt(ProgressBar: AControl): AInteger; 
 
-function UI_PropertyBox_Add(PropertyBox: AControl; const Caption: APascalString): Integer; stdcall;
-function UI_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: APascalString; EditWidth: AInteger): AInteger; stdcall;
-function UI_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer): APascalString; stdcall;
-//function UI_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer; out Value: APascalString): AInteger; stdcall;
-procedure UI_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; const Value: APascalString); stdcall;
-function UI_PropertyBox_New(Parent: AControl): AControl; stdcall;
-
 function UI_SpinButton_New(Parent: AControl): AControl; stdcall;
-
-{ SplitterType
-    0 - HSplitter (Align=alTop)
-    1 - VSplitter (Align=alLeft)
-    2 - HSplitter (Align=alBottom)
-    3 - VSplitter (Align=alRight) }
-function UI_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl; stdcall;
 
 // Use ToolBar_AddButtonWS02()
 function UI_ToolBar_AddButton(ToolBar: AControl; const Name, Text, Hint: APascalString;
@@ -728,20 +674,6 @@ function UI_TreeView_AddItem(TreeView: AControl; Parent: ATreeNode; Text: APasca
 
 // Use TreeView_New()
 function UI_TreeView_New(Parent: AControl): AControl; stdcall; deprecated;
-
-{ UI_Reports }
-
-function UI_Report_New(Parent: AControl): AReport;
-
-procedure UI_Report_SetText(Report: AReport; const Value: APascalString); stdcall;
-
-{ ReportWin }
-
-function UI_ReportWin_New(): AWindow;
-
-{ ReportWinType - Тип окна отчета: 0-TReportForm; 1-SimpleReport
-  Use ReportWin_New2P() }
-function UI_ReportWin_NewA(ReportWinType: AInteger; const Text: APascalString): AWindow; deprecated;
 
 { WaitWin }
 
@@ -803,35 +735,6 @@ procedure UI_Run02; stdcall;
 
 function UI_Shutdown: AInteger; stdcall;
 
-{ --- UI_TextView --- }
-
-//** Добавляет строку в элемент TextView.
-function UI_TextView_AddLine(TextView: AControl; const Text: APascalString): AInteger; stdcall;
-
-{ Создает новый элемент редактирования текста
-  ViewType
-    0 - TMemo
-    1 - RichEdit }
-function UI_TextView_New(Parent: AControl; ViewType: AInteger): AControl; stdcall;
-
-procedure UI_TextView_SetFont(TextView: AControl; const FontName: APascalString; FontSize: AInteger); stdcall;
-
-//** Устанавливает значение параметра "Только чтение".
-procedure UI_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean); stdcall;
-
-{**
-  Указывает какие ползунки отображать.
-  ScrollBars
-    0 - ssNone
-    1 - ssHorizontal
-    2 - ssVertical
-    3 - ssBoth
-}
-procedure UI_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger); stdcall;
-
-//** Задает параметр "переносить по словам".
-procedure UI_TextView_SetWordWrap(TextView: AControl; Value: ABoolean); stdcall;
-
 function UI_ShellExecute(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
 function UI_Object_Add(Value: AInteger): AInteger; stdcall;
 
@@ -864,7 +767,7 @@ uses
   {$IFDEF FPC}Interfaces,{$ELSE}Mask,{$ENDIF}
   Buttons, Classes, Controls, ComCtrls, Db, DbGrids, ExtCtrls, Forms, Graphics, Grids, Menus, StdCtrls, SysUtils,
   {$IFDEF MSWINDOWS}ShellApi, Windows,{$ENDIF}
-  AUiCalendar, AUiDialogs, AUiEdit, AUiGrids, {AUiForm,} AUiMenus, AUiPropertyBox, AUiSpin, AUiTrayIcon,
+  AUiCalendar, AUiDialogs, AUiEdit, AUiGrids, AUiMenus, AUiPropertyBox, AUiSpin, AUiTrayIcon,
   {$IFDEF MSWINDOWS}
   fError, fInputDialog, fLogin, fMessage, fPasswordDialog, fWait,
   {$ENDIF}
@@ -968,22 +871,14 @@ end;
 {$IFDEF USE_EVENTS}
 function OnDone_Connect(Proc: ACallbackProc): AInteger; stdcall;
 begin
-  try
-    Result := AUiEvents1.UI_OnDone_Connect(Proc);
-  except
-    Result := 0;
-  end;
+  Result := AUi_OnDone_Connect(Proc);
 end;
 {$ENDIF}
 
 {$IFDEF USE_EVENTS}
 function OnDone_Disconnect(Proc: ACallbackProc): AInteger; stdcall;
 begin
-  try
-    Result := AUiEvents1.UI_OnDone_Disconnect(Proc);
-  except
-    Result := 0;
-  end;
+  Result := AUi_OnDone_Disconnect(Proc);
 end;
 {$ENDIF}
 
@@ -1066,76 +961,6 @@ begin
   end;
 end;
 
-// --- AUi_PropertyBox ---
-
-function AUi_PropertyBox_Add(PropertyBox: AControl; const Caption: AString_Type): Integer;
-begin
-  try
-    Result := UI_PropertyBox_Add(PropertyBox, AStrings.String_ToWideString(Caption));
-  except
-    Result := 0;
-  end;
-end;
-
-function AUi_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: AString_Type;
-    EditWidth: AInteger): AInteger;
-begin
-  try
-    Result := UI_PropertyBox_AddA(PropertyBox,
-        AStrings.String_ToWideString(Caption),
-        AStrings.String_ToWideString(Text),
-        AStrings.String_ToWideString(Hint),
-        EditWidth);
-  except
-    Result := 0;
-  end;
-end;
-
-function AUi_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer; out Value: AString_Type): AInteger;
-begin
-  try
-    Result := AString_AssignP(Value, UI_PropertyBox_Item_GetValue(PropertyBox, Index));
-  except
-    Result := 0;
-  end;
-end;
-
-procedure AUi_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; const Value: AString_Type);
-begin
-  try
-    UI_PropertyBox_Item_SetValue(PropertyBox, Index, AStrings.String_ToWideString(Value));
-  except
-  end;
-end;
-
-function AUi_PropertyBox_New(Parent: AControl): AControl;
-begin
-  try
-    Result := UI_PropertyBox_New(Parent);
-  except
-    Result := 0;
-  end;
-end;
-
-// --- AUi_Report ---
-
-function AUi_Report_New(Parent: AControl): AReport;
-begin
-  try
-    Result := UI_Report_New(Parent);
-  except
-    Result := 0;
-  end;
-end;
-
-procedure AUi_Report_SetText(Report: AReport; const Value: AString_Type);
-begin
-  try
-    UI_Report_SetText(Report, AStrings.String_ToWideString(Value));
-  except
-  end;
-end;
-
 // --- AUi_SpinButton ---
 
 function AUi_SpinButton_New(Parent: AControl): AControl; stdcall;
@@ -1144,69 +969,6 @@ begin
     Result := UI_SpinButton_New(Parent);
   except
     Result := 0;
-  end;
-end;
-
-// --- AUi_Splitter ---
-
-function AUi_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl;
-begin
-  try
-    Result := UI_Splitter_New(Parent, SplitterType);
-  except
-    Result := 0;
-  end;
-end;
-
-// --- AUi_TextView ---
-
-function AUi_TextView_AddLine(TextView: AControl; const Text: AString_Type): AInteger;
-begin
-  try
-    Result := UI_TextView_AddLine(TextView, AStrings.String_ToWideString(Text));
-  except
-    Result := -1;
-  end;
-end;
-
-function AUi_TextView_New(Parent: AControl; ViewType: AInteger): AControl;
-begin
-  try
-    Result := UI_TextView_New(Parent, ViewType);
-  except
-    Result := 0;
-  end;
-end;
-
-procedure AUi_TextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger);
-begin
-  try
-    UI_TextView_SetFont(TextView, AStrings.String_ToWideString(FontName), FontSize);
-  except
-  end;
-end;
-
-procedure AUi_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean);
-begin
-  try
-    UI_TextView_SetReadOnly(TextView, ReadOnly);
-  except
-  end;
-end;
-
-procedure AUi_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger);
-begin
-  try
-    UI_TextView_SetScrollBars(TextView, ScrollBars);
-  except
-  end;
-end;
-
-procedure AUi_TextView_SetWordWrap(TextView: AControl; Value: ABoolean);
-begin
-  try
-    UI_TextView_SetWordWrap(TextView, Value);
-  except
   end;
 end;
 
@@ -1511,9 +1273,14 @@ begin
   Result := AUi_ExecuteAboutDialog();
 end;
 
-function Dialog_About_New: AWindow; stdcall;
+function Dialog_About_New(): AWindow;
 begin
   Result := AUi_NewAboutDialog();
+end;
+
+function Dialog_About_Init(AboutDialog: AWindow): AError;
+begin
+  Result := AUi_InitAboutDialog1(AboutDialog);
 end;
 
 function Dialog_AddButtonP(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
@@ -2100,122 +1867,69 @@ end;
 
 function ReportWin_New(): AWindow; stdcall;
 begin
-  try
-    Result := UI_ReportWin_New();
-  except
-    Result := 0;
-  end;
+  Result := AUiReportWin_New();
 end;
 
 function ReportWin_New2P(ReportWinType: AInteger; const Text: APascalString): AWindow; stdcall;
 begin
-  try
-    Result := AUIReports.UI_ReportWin_NewA(ReportWinType, Text);
-  except
-    Result := 0;
-  end;
+  Result := AUiReportWin_New2P(ReportWinType, Text);
 end;
 
 function ReportWin_New2WS(ReportWinType: AInteger; const Text: AWideString): AWindow; stdcall;
 begin
-  try
-    Result := AUIReports.UI_ReportWin_NewA(ReportWinType, Text);
-  except
-    Result := 0;
-  end;
+  Result := AUiReportWin_New2P(ReportWinType, Text);
 end;
 
 function ReportWin_NewWS(ReportWinType: AInteger; const Text: AWideString): AWindow; stdcall;
 begin
-  try
-    Result := AUIReports.UI_ReportWin_NewA(ReportWinType, Text);
-  except
-    Result := 0;
-  end;
+  Result := AUiReportWin_New2P(ReportWinType, Text);
 end;
 
 function ReportWin_ShowReportP(const Text: APascalString; Font: AFont): AError; stdcall;
 begin
-  try
-    UI_ReportWin_ShowReport(Text, TFont(Font));
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiReportWin_ShowReportP(Text, Font);
 end;
 
 { TextView }
 
 function TextView_AddLineWS(TextView: AControl; const Text: AWideString): AInteger; stdcall;
 begin
-  try
-    Result := UI_TextView_AddLine(TextView, Text);
-  except
-    Result := -1;
-  end;
+  Result := AUiTextView_AddLineP(TextView, Text);
 end;
 
 function TextView_New(Parent: AControl; ViewType: AInteger): AControl; stdcall;
 begin
-  try
-    Result := UI_TextView_New(Parent, ViewType);
-  except
-    Result := 0;
-  end;
+  Result := AUiTextView_New(Parent, ViewType);
 end;
 
 function TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean): AError; stdcall;
 begin
-  try
-    UI_TextView_SetReadOnly(TextView, ReadOnly);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiTextView_SetReadOnly(TextView, ReadOnly);
 end;
 
 procedure TextView_SetReadOnly02(TextView: AControl; ReadOnly: ABoolean); stdcall;
 begin
-  try
-    UI_TextView_SetReadOnly(TextView, ReadOnly);
-  except
-  end;
+  AUiTextView_SetReadOnly(TextView, ReadOnly);
 end;
 
 function TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger): AError; stdcall;
 begin
-  try
-    UI_TextView_SetScrollBars(TextView, ScrollBars);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiTextView_SetScrollBars(TextView, ScrollBars);
 end;
 
 procedure TextView_SetScrollBars02(TextView: AControl; ScrollBars: AInteger); stdcall;
 begin
-  try
-    UI_TextView_SetScrollBars(TextView, ScrollBars);
-  except
-  end;
+  AUiTextView_SetScrollBars(TextView, ScrollBars);
 end;
 
 function TextView_SetWordWrap(TextView: AControl; Value: ABoolean): AError; stdcall;
 begin
-  try
-    UI_TextView_SetWordWrap(TextView, Value);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiTextView_SetWordWrap(TextView, Value);
 end;
 
 procedure TextView_SetWordWrap02(TextView: AControl; Value: ABoolean); stdcall;
 begin
-  try
-    UI_TextView_SetWordWrap(TextView, Value);
-  except
-  end;
+  AUiTextView_SetWordWrap(TextView, Value);
 end;
 
 { ToolBar }
@@ -2320,8 +2034,8 @@ var
   I: Integer;
 begin
   try
-    PageControl := AUIPageControl.UI_PageControl_New(Parent);
-    UI_Control_SetAlign(PageControl, uiAlignTop);
+    PageControl := AUiPageControl_New(Parent);
+    AUiControl_SetAlign(PageControl, uiAlignTop);
     AUiControl_SetHeight(PageControl, 60);
 
     I := Length(FToolMenus);
@@ -2359,7 +2073,7 @@ end;}
 function TreeView_AddItemWS(TreeView: AControl; Parent: ATreeNode; Text: AWideString): ATreeNode; stdcall;
 begin
   try
-    Result := AUITreeView.UI_TreeView_AddItem(TreeView, Parent, Text);
+    Result := AUiTreeView_AddItemP(TreeView, Parent, Text);
   except
     Result := 0;
   end;
@@ -2368,7 +2082,7 @@ end;
 function TreeView_New(Parent: AControl): AControl; stdcall;
 begin
   try
-    Result := AUITreeView.UI_TreeView_New(Parent);
+    Result := AUiTreeView_New(Parent);
   except
     Result := 0;
   end;
@@ -2378,11 +2092,7 @@ end;
 
 function Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl; stdcall;
 begin
-  try
-    Result := UI_Splitter_New(Parent, SplitterType);
-  except
-    Result := 0;
-  end;
+  Result := AUiSplitter_New(Parent, SplitterType);
 end;
 
 { UI Public }
@@ -2564,70 +2274,6 @@ begin
   Result := TProgressBar(ProgressBar).Position;
 end;
 
-{ PropertyBox }
-
-function UI_PropertyBox_Add(PropertyBox: AControl; const Caption: APascalString): Integer; stdcall;
-begin
-  Result := TPropertyBox1(PropertyBox).AddNew(Caption);
-end;
-
-function UI_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: APascalString; EditWidth: AInteger): AInteger; stdcall;
-begin
-  Result := TPropertyBox1(PropertyBox).AddNew2(Caption, Text, Hint, EditWidth);
-end;
-
-function UI_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer): APascalString; stdcall;
-begin
-  Result := TPropertyBox1(PropertyBox).GetText(Index);
-end;
-
-procedure UI_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; const Value: APascalString); stdcall;
-begin
-  TPropertyBox1(PropertyBox).SetText(Index, Value);
-end;
-
-function UI_PropertyBox_New(Parent: AControl): AControl; stdcall;
-begin
-  Result := AControl(TPropertyBox1.Create(TWinControl(Parent)));
-end;
-
-{ Report }
-
-function UI_Report_New(Parent: AControl): AReport;
-var
-  I: Integer;
-begin
-  I := Length(FReports);
-  SetLength(FReports, I + 1);
-  Result := I+1;
-  FReports[I].Parent := Parent;
-  FReports[I].ToolsPanel := AUiBox_New(Parent, 0);
-  AUIControls.UI_Control_SetSize(FReports[I].ToolsPanel, 100, 25);
-  AUIControls.UI_Control_SetAlign(FReports[I].ToolsPanel, uiAlignTop);
-  FReports[I].TextView := UI_TextView_New(Parent, 1);
-  AUIControls.UI_Control_SetAlign(FReports[I].TextView, uiAlignClient);
-  UI_TextView_SetScrollBars(FReports[I].TextView, AInteger(ssBoth));
-  UI_TextView_SetFont(FReports[I].TextView, 'Courier New', 10);
-  UI_TextView_SetReadOnly(FReports[I].TextView, True);
-end;
-
-procedure UI_Report_SetText(Report: AReport; const Value: APascalString); stdcall;
-begin
-  AUIControls.UI_Control_SetTextP(FReports[Report-1].TextView, Value);
-end;
-
-{ ReportWin }
-
-function UI_ReportWin_New: AWindow;
-begin
-  Result := AUIReports.UI_ReportWin_NewA(0, '');
-end;
-
-function UI_ReportWin_NewA(ReportWinType: AInteger; const Text: APascalString): AWindow;
-begin
-  Result := AUIReports.UI_ReportWin_NewA(ReportWinType, Text);
-end;
-
 { SpinButton }
 
 function UI_SpinButton_New(Parent: AControl): AControl; stdcall;
@@ -2640,115 +2286,6 @@ begin
   Spin := TSpinButton.Create(TWinControl(Parent));
   Spin.Parent := TWinControl(Parent);
   Result := AControl(Spin);
-  {$ENDIF}
-end;
-
-{ Splitter }
-
-function UI_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl; stdcall;
-var
-  O: TObject;
-  Splitter: TSplitter;
-begin
-  O := AUIData.GetObject(Parent);
-  if Assigned(O) and (O is TWinControl) then
-  begin
-    Splitter := TSplitter.Create(TWinControl(O));
-    Splitter.Parent := TWinControl(O);
-    Splitter.Left := 200;
-    case SplitterType of
-      AUISplitter_HSplitter: Splitter.Align := alTop;
-      AUISplitter_VSplitter: Splitter.Align := alLeft;
-      AUISplitter_HSplitterBottom: Splitter.Align := alBottom;
-      AUISplitter_VSplitterRight: Splitter.Align := alRight;
-    end;
-    Result := AddObject(Splitter);
-  end
-  else
-    Result := 0;
-end;
-
-{ TextView }
-
-function UI_TextView_AddLine(TextView: AControl; const Text: APascalString): AInteger; stdcall;
-begin
-  if (TObject(TextView) is TMemo) then
-    Result := TMemo(TextView).Lines.Add(Text)
-  {$IFNDEF FPC}
-  else if (TObject(TextView) is TRichEdit) then
-    Result := TRichEdit(TextView).Lines.Add(Text)
-  {$ENDIF}
-  else
-    Result := -1;
-end;
-
-function UI_TextView_New(Parent: AControl; ViewType: AInteger): AControl; stdcall;
-var
-  Memo: TMemo;
-  {$IFNDEF FPC}
-  Rich: TRichEdit;
-  {$ENDIF}
-begin
-  if (ViewType = 0) then
-  begin
-    Memo := TMemo.Create(TWinControl(Parent));
-    Memo.Parent := TWinControl(Parent);
-    Result := AddObject(Memo);
-  end
-  else
-  begin
-    {$IFNDEF FPC}
-    Rich := TRichEdit.Create(TWinControl(Parent));
-    Rich.Parent := TWinControl(Parent);
-    Result := AddObject(Rich);
-    {$ENDIF}
-  end;
-end;
-
-procedure UI_TextView_SetFont(TextView: AControl; const FontName: APascalString; FontSize: AInteger); stdcall;
-
-  procedure SetFont(Font: TFont);
-  begin
-    if (FontName <> '') then
-      Font.Name := FontName;
-    if (FontSize <> 0) then
-      Font.Size := FontSize;
-  end;
-
-begin
-  {$IFNDEF FPC}
-  if (TObject(TextView) is TRichEdit) then
-    SetFont(TRichEdit(TextView).Font)
-  {$ENDIF}
-end;
-
-procedure UI_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean); stdcall;
-begin
-  if (TObject(TextView) is TMemo) then
-    TMemo(TextView).ReadOnly := ReadOnly
-  {$IFNDEF FPC}
-  else if (TObject(TextView) is TRichEdit) then
-    TRichEdit(TextView).ReadOnly := ReadOnly;
-  {$ENDIF}
-end;
-
-procedure UI_TextView_SetScrollBars(TextView: AControl; ScrollBars: AInteger); stdcall;
-begin
-  if (TObject(TextView) is TMemo) then
-    TMemo(TextView).ScrollBars := TScrollStyle(ScrollBars)
-  {$IFNDEF FPC}
-  else if (TObject(TextView) is TRichEdit) then
-    TRichEdit(TextView).ScrollBars := TScrollStyle(ScrollBars);
-  {$ENDIF}
-end;
-
-procedure UI_TextView_SetWordWrap(TextView: AControl; Value: ABoolean); stdcall;
-begin
-  if (TObject(TextView) is TMemo) then
-    TMemo(TextView).WordWrap := Value
-  {$IFNDEF FPC}
-  else if (TObject(TextView) is TRichEdit) then
-    TRichEdit(TextView).WordWrap := Value;
   {$ENDIF}
 end;
 
@@ -2901,22 +2438,14 @@ end;
 {$IFDEF USE_SETTINGS}
 function Window_LoadConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall;
 begin
-  try
-    Result := AUIForm.Form_LoadConfig(TForm(Window), Config);
-  except
-    Result := False;
-  end;
+  Result := (AUiWindow_LoadConfig(Window, Config) = 0);
 end;
 {$ENDIF}
 
 {$IFDEF USE_SETTINGS}
 function Window_LoadConfig2WS(Window: AWindow; Config: AConfig; const ConfigKey: AWideString): ABoolean; stdcall;
 begin
-  try
-    Result := Form_LoadConfig2(TForm(Window), Config, ConfigKey);
-  except
-    Result := False;
-  end;
+  Result := (AUiWindow_LoadConfig2P(Window, Config, ConfigKey) = 0);
 end;
 {$ENDIF}
 
@@ -2928,22 +2457,14 @@ end;
 {$IFDEF USE_SETTINGS}
 function Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall;
 begin
-  try
-    Result := AUIForm.Form_SaveConfig(TForm(Window), Config);
-  except
-    Result := False;
-  end;
+  Result := (AUiWindow_SaveConfig(Window, Config) = 0);
 end;
 {$ENDIF}
 
 {$IFDEF USE_SETTINGS}
 function Window_SaveConfig2WS(Window: AWindow; Config: AConfig; const ConfigKey: AWideString): ABoolean; stdcall;
 begin
-  try
-    Result := AUIForm.Form_SaveConfig2(TForm(Window), Config, ConfigKey);
-  except
-    Result := False;
-  end;
+  Result := (AUiWindow_SaveConfig2P(Window, Config, ConfigKey) = 0);
 end;
 {$ENDIF}
 

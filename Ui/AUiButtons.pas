@@ -2,9 +2,11 @@
 @Abstract AUi button functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.06.2011
-@LastMod 06.09.2011
+@LastMod 14.11.2011
 }
 unit AUiButtons;
+
+{$define AStdCall}
 
 interface
 
@@ -14,15 +16,11 @@ uses
 
 // --- AUiButton ---
 
-function AUiButton_New(Parent: AControl): AButton;
+function AUiButton_New(Parent: AControl): AButton; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiButton_SetKind(Button: AButton; Kind: TAUiButtonKind): AError;
+function AUiButton_LoadGlyphP(Button: AButton; const FileName: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-// --- UI_Button ---
-
-function UI_Button_New(Parent: AControl): AButton; deprecated; // Use AUiButton_New()
-
-procedure UI_Button_SetKind(Button: AButton; Kind: TAUIButtonKind); deprecated; // Use AUiButton_SetKind()
+function AUiButton_SetKind(Button: AButton; Kind: TAUiButtonKind): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
@@ -47,6 +45,25 @@ begin
   end;
 end;
 
+function AUiButton_LoadGlyphP(Button: AButton; const FileName: APascalString): AError;
+var
+  Obj: TObject;
+begin
+  try
+    Obj := GetObject(Button);
+    if not(Assigned(Obj)) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+    if (Obj is TBitBtn) then
+      TBitBtn(Obj).Glyph.LoadFromFile(FileName);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
 function AUiButton_SetKind(Button: AButton; Kind: TAUiButtonKind): AError;
 begin
   try
@@ -55,18 +72,6 @@ begin
   except
     Result := -1;
   end;
-end;
-
-{ UI_Button }
-
-function UI_Button_New(Parent: AControl): AButton;
-begin
-  Result := AUiButton_New(Parent);
-end;
-
-procedure UI_Button_SetKind(Button: AButton; Kind: TAUIButtonKind);
-begin
-  AUiButton_SetKind(Button, Kind);
 end;
 
 end.

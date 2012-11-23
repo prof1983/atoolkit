@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Пустая форма. Шаблон для создания форм в не визуальном режиме)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(17.03.2006)
-@LastMod(04.05.2012)
-@Version(0.5)
+@Abstract Пустая форма с картинками. Шаблон для создания форм в не визуальном режиме
+@Author Prof1983 <prof1983@ya.ru>
+@Created 17.03.2006
+@LastMod 12.11.2012
 }
 unit AShablonForm;
 

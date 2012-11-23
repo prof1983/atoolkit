@@ -1,8 +1,8 @@
 ﻿{**
-@Abstract(Объект с логированием и конфигурациями)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(22.12.2005)
-@LastMod(13.07.2012)
+@Abstract Объект с логированием и конфигурациями
+@Author Prof1983 <prof1983@ya.ru>
+@Created 22.12.2005
+@LastMod 13.11.2012
 
 Uses
   @link ABase
@@ -22,22 +22,16 @@ uses
   ABase, AEntityImpl, ALogGlobals, ALogNodeUtils, ANodeIntf, AObjectIntf, ATypes;
 
 type //** Объект с логированием и конфигурациями
-  TProfObject = class(TANamedEntity, IProfObject)
+  TAObject = class(TANamedEntity, IProfObject)
   protected
       //** Конфигурации
-    FConfig: AXmlNode{IProfNode};
-    //FConfig2: IXmlNode;
+    FConfig: AXmlNode;
       //** Инициализирован
     FInitialized: WordBool;
       //** Ветка логирования
-    FLog: ALogNode{IALogNode2};
-      //** Префикс лог-сообщений
-    //FLogPrefix: WideString;
-      //** Функция добавления в log
-    //FOnAddToLog: TProfAddToLog;
+    FLog: ALogNode;
       //** CallBack функция. Срабатывает при поступлении сообщения.
     FOnSendMessage: TProcMessageStr;
-    //FOnSendMessageX: TProcMessageX;
   protected
     function GetConfigNode(): AConfigNode; safecall;
     function GetLogNode(): ALogNode; safecall;
@@ -103,25 +97,20 @@ type //** Объект с логированием и конфигурациям
   public
       //** Конфигурации объекта
     property Config: AConfigNode read GetConfigNode write SetConfigNode;
-      //** Конфигурации объекта
-    //property ConfigNode: IProfNode read GetConfigNode write SetConfigNode;
       //** Инициализорован
     property Initialized: WordBool read FInitialized write SetInitialized;
       //** Ветка логирования
     property Log: ALogNode read GetLogNode write SetLogNode;
-      //** Ветка логирования
-    //property LogNode: IALogNode2 read GetLogNode write SetLogNode;
-      //** Префикс лог-сообщений
-    //property LogPrefix: WideString read FLogPrefix write FLogPrefix;
       //** CallBack функция функция. Срабатывает при поступлении лог-сообщения.
     property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
       //** CallBack функция передачи сообщения
     property OnSendMessage: TProcMessageStr read FOnSendMessage write FOnSendMessage;
-    //property OnSendMessageX: TProcMessageX read FOnSendMessageX write FOnSendMessageX;
   end;
 
+  //TProfObject = TAObject;
+
 type //** Объект с логированием и конфигурациями
-  TProfObject2 = class(TProfObject, IProfObject2)
+  TProfObject2 = class(TAObject, IProfObject2)
   protected
     function GetConfig2(): IXmlNode; safecall;
     function GetLog(): ALogNode; safecall;
@@ -183,24 +172,24 @@ const // Сообщения
 
 implementation
 
-{ TProfObject }
+{ TAObject }
 
-function TProfObject.AddMessage(const AMsg: WideString): Integer;
+function TAObject.AddMessage(const AMsg: WideString): Integer;
 begin
   Result := 0;
 end;
 
-function TProfObject.AddMessageStr(const AMsg: WideString): Integer;
+function TAObject.AddMessageStr(const AMsg: WideString): Integer;
 begin
   Result := 0;
 end;
 
-function TProfObject.AddMessageX(AMsg: IProfNode): Integer;
+function TAObject.AddMessageX(AMsg: IProfNode): Integer;
 begin
   Result := 0;
 end;
 
-function TProfObject.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+function TAObject.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
     const StrMsg: WideString): AInt;
 begin
   Result := -1;
@@ -214,19 +203,19 @@ begin
     Result := ALogNode_AddToLog(FLog, LogGroup, LogType, StrMsg);
 end;
 
-function TProfObject.AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+function TAObject.AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
     const StrMsg: string; Params: array of const): ABoolean;
 begin
   Result := (AddToLog(LogGroup, LogType, Format(StrMsg, Params)) > 0);
 end;
 
-procedure TProfObject.AfterConstruction();
+procedure TAObject.AfterConstruction();
 begin
   inherited AfterConstruction();
   DoCreated();
 end;
 
-function TProfObject.AssignedConfig(): Boolean;
+function TAObject.AssignedConfig(): Boolean;
 begin
   if (FConfig = 0) then
   begin
@@ -237,30 +226,30 @@ begin
   Result := True;
 end;
 
-procedure TProfObject.BeforeDestruction();
+procedure TAObject.BeforeDestruction();
 begin
   DoDestroy();
   inherited BeforeDestruction();
 end;
 
-function TProfObject.CheckInitialized(): Boolean;
+function TAObject.CheckInitialized(): Boolean;
 begin
   Result := FInitialized;
   if not(Result) then
     AddToLog(lgGeneral, ltWarning, stNotInitialized);
 end;
 
-function TProfObject.ConfigureLoad(AConfig: IProfNode): TProfError;
+function TAObject.ConfigureLoad(AConfig: IProfNode): TProfError;
 begin
   Result := 0;
 end;
 
-function TProfObject.ConfigureSave(AConfig: IProfNode): TProfError;
+function TAObject.ConfigureSave(AConfig: IProfNode): TProfError;
 begin
   Result := 0;
 end;
 
-constructor TProfObject.Create();
+constructor TAObject.Create();
 begin
   inherited Create();
   FConfig := 0;
@@ -268,45 +257,45 @@ begin
   //DoCreated();
 end;
 
-destructor TProfObject.Destroy();
+destructor TAObject.Destroy();
 begin
   if FInitialized then Finalize();
   inherited Destroy();
 end;
 
-procedure TProfObject.DoCreate();
+procedure TAObject.DoCreate();
 begin
 end;
 
-procedure TProfObject.DoCreated();
+procedure TAObject.DoCreated();
 begin
 end;
 
-procedure TProfObject.DoDestroy();
+procedure TAObject.DoDestroy();
 begin
 end;
 
-function TProfObject.DoFinalize(): TProfError;
-begin
-  Result := 0;
-end;
-
-function TProfObject.DoFinalized(): TProfError;
+function TAObject.DoFinalize(): TProfError;
 begin
   Result := 0;
 end;
 
-function TProfObject.DoInitialize(): TProfError;
+function TAObject.DoFinalized(): TProfError;
 begin
   Result := 0;
 end;
 
-function TProfObject.DoInitialized(): TProfError;
+function TAObject.DoInitialize(): TProfError;
 begin
   Result := 0;
 end;
 
-function TProfObject.Finalize(): TProfError;
+function TAObject.DoInitialized(): TProfError;
+begin
+  Result := 0;
+end;
+
+function TAObject.Finalize(): TProfError;
 begin
   if not(FInitialized) then
   begin
@@ -322,21 +311,21 @@ begin
   FInitialized := False;
 end;
 
-procedure TProfObject.Free();
+procedure TAObject.Free();
 begin
 end;
 
-function TProfObject.GetConfigNode(): AConfigNode;
+function TAObject.GetConfigNode(): AConfigNode;
 begin
   Result := FConfig;
 end;
 
-function TProfObject.GetLogNode(): ALogNode;
+function TAObject.GetLogNode(): ALogNode;
 begin
   Result := FLog;
 end;
 
-function TProfObject.Initialize(): TProfError;
+function TAObject.Initialize(): TProfError;
 begin
   if FInitialized then
   begin
@@ -353,7 +342,7 @@ begin
   FInitialized := True;
 end;
 
-function TProfObject.SendMessage(const AMsg: WideString): Integer;
+function TAObject.SendMessage(const AMsg: WideString): Integer;
 begin
   Result := 0;
   if Assigned(FOnSendMessage) then
@@ -363,12 +352,12 @@ begin
   end;
 end;
 
-function TProfObject.SendMessageX(Msg: AXmlNode): AInt;
+function TAObject.SendMessageX(Msg: AXmlNode): AInt;
 begin
   Result := 0;
 end;
 
-function TProfObject.SendMessageX1(Msg: IProfNode): AInt;
+function TAObject.SendMessageX1(Msg: IProfNode): AInt;
 begin
   Result := 0;
   {
@@ -380,12 +369,12 @@ begin
   }
 end;
 
-procedure TProfObject.SetConfigNode(Value: AXmlNode{IProfNode});
+procedure TAObject.SetConfigNode(Value: AXmlNode{IProfNode});
 begin
   FConfig := Value;
 end;
 
-procedure TProfObject.SetInitialized(Value: WordBool);
+procedure TAObject.SetInitialized(Value: WordBool);
 begin
   if FInitialized = Value then Exit;
   if Value then
@@ -394,24 +383,24 @@ begin
     Finalize();
 end;
 
-procedure TProfObject.SetLogNode(Value: ALogNode);
+procedure TAObject.SetLogNode(Value: ALogNode);
 begin
   FLog := Value;
 end;
 
-function TProfObject.ToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+function TAObject.ToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
     const StrMsg: WideString; Params: array of const): AInteger;
 begin
   Result := AddToLog(LogGroup, LogType, Format(StrMsg, Params));
 end;
 
-function TProfObject.ToLogA(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+function TAObject.ToLogA(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
     const StrMsg: WideString): AInteger;
 begin
   Result := AddToLog(LogGroup, LogType, StrMsg);
 end;
 
-function TProfObject.ToLogE(LogGroup: EnumGroupMessage; LogType: EnumTypeMessage;
+function TAObject.ToLogE(LogGroup: EnumGroupMessage; LogType: EnumTypeMessage;
     const StrMsg: WideString): AInteger;
 begin
   Result := AddToLog(ALogGlobals.IntToLogGroupMessage(LogGroup),

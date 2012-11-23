@@ -2,7 +2,7 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.01.2012
-@LastMod 21.11.2012
+@LastMod 16.11.2012
 }
 unit APluginsMain;
 

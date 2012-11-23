@@ -2,14 +2,14 @@
 @Abstract AUi form config functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.01.2010
-@LastMod 10.08.2012
+@LastMod 16.11.2012
 }
 unit AUiForm;
 
 interface
 
 uses
-  Forms, ABase, ASettings;
+  Forms, ABase, ASettingsMain; 
 
 function Form_LoadConfig(Form: TForm; Config: AConfig): ABoolean;
 function Form_LoadConfig2(Form: TForm; Config: AConfig; const ConfigKey: APascalString): ABoolean;
@@ -65,12 +65,12 @@ function Form_LoadConfig4(Form: TForm; Config: AConfig; const ConfigKey: APascal
 begin
   try
     Form.WindowState := wsNormal;
-    Form.Left := ASettings.Config_ReadIntegerDefP(Config, ConfigKey, SLeft, Form.Left);
-    Form.Top := ASettings.Config_ReadIntegerDefP(Config, ConfigKey, STop, Form.Top);
-    Form.Width := ASettings.Config_ReadIntegerDefP(Config, ConfigKey, SWidth, Form.Width);
-    Form.Height := ASettings.Config_ReadIntegerDefP(Config, ConfigKey, SHeight, Form.Height);
+    Form.Left := ASettings_ReadIntegerDefP(Config, ConfigKey, SLeft, Form.Left);
+    Form.Top := ASettings_ReadIntegerDefP(Config, ConfigKey, STop, Form.Top);
+    Form.Width := ASettings_ReadIntegerDefP(Config, ConfigKey, SWidth, Form.Width);
+    Form.Height := ASettings_ReadIntegerDefP(Config, ConfigKey, SHeight, Form.Height);
     //Form.WindowState := TWindowState(ASettings.Config_ReadIntegerDefP(Config, ConfigKey, SWindowState, Integer(DefWindowState)));
-    Form.WindowState := IntToWindowState(ASettings.Config_ReadIntegerDefP(Config, ConfigKey, SWindowState, DefWindowState));
+    Form.WindowState := IntToWindowState(ASettings_ReadIntegerDefP(Config, ConfigKey, SWindowState, DefWindowState));
     Result := True;
   except
     Result := False;
@@ -87,12 +87,12 @@ begin
   try
     if (Config <> 0) and (Form.WindowState <> wsMaximized) then
     begin
-      ASettings.Config_WriteIntegerP(Config, ConfigKey, SLeft, Form.Left);
-      ASettings.Config_WriteIntegerP(Config, ConfigKey, STop, Form.Top);
-      ASettings.Config_WriteIntegerP(Config, ConfigKey, SWidth, Form.Width);
-      ASettings.Config_WriteIntegerP(Config, ConfigKey, SHeight, Form.Height);
+      ASettings_WriteIntegerP(Config, ConfigKey, SLeft, Form.Left);
+      ASettings_WriteIntegerP(Config, ConfigKey, STop, Form.Top);
+      ASettings_WriteIntegerP(Config, ConfigKey, SWidth, Form.Width);
+      ASettings_WriteIntegerP(Config, ConfigKey, SHeight, Form.Height);
     end;
-    ASettings.Config_WriteIntegerP(Config, ConfigKey, SWindowState, Integer(Form.WindowState));
+    ASettings_WriteIntegerP(Config, ConfigKey, SWindowState, Integer(Form.WindowState));
     Result := True;
   except
     Result := False;

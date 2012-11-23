@@ -2,7 +2,7 @@
 @Abstract AUi about dialog win 1
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.11.2012
-@LastMod 21.11.2012
+@LastMod 20.11.2012
 }
 unit AUiAboutDialog2;
 
@@ -10,23 +10,26 @@ interface
 
 uses
   ABase, AConsts2, AUtils, ASystem,
-  AUiAboutDialog, AUiBase, AUiControls, AUiTextView,
+  AUiAboutDialog, AUiControls, AUiTextView,
   fAbout;
 
-function AboutForm_Init2(AboutForm: TAboutForm; Flags: AUiAboutFlags;
+function AboutForm_Init2(var AboutForm: TAboutFormRec; Flags: AUiAboutFlags;
     MemoWidth, MemoHeight: AInt): AError;
+
+// Default MemoWidth=250, MemoHeight=115
+//procedure ShowAboutWinA(MemoWidth, MemoHeight: Integer);
 
 implementation
 
 // --- Public ---
 
-function AboutForm_Init2(AboutForm: TAboutForm; Flags: AUiAboutFlags;
+function AboutForm_Init2(var AboutForm: TAboutFormRec; Flags: AUiAboutFlags;
     MemoWidth, MemoHeight: AInt): AError;
 
   procedure Print(const ParamName, ParamValue: APascalString);
   begin
     if (ParamValue <> '') then
-      AUiTextView_AddLineP(AControl(AboutForm.Memo), ParamName + ParamValue);
+      AUiTextView_AddLineP(AboutForm.Memo, ParamName + ParamValue);
   end;
 
 var
@@ -37,7 +40,7 @@ begin
   AboutForm_SetReferenceP(AboutForm, ASystem.Info_GetUrlP());
   S := ASystem.Info_GetProductNameP();
   if (S <> '') then
-    AUiControl_SetTextP(AControl(AboutForm.lbName), S);
+    AUiControl_SetTextP(AboutForm.NameText, S);
   S := ASystem.Info_GetProgramNameP();
   Print(cProgramName, S);
   S := ASystem.Info_GetProgramVersionStrP();
@@ -57,13 +60,13 @@ begin
     Print('', S);
   end;
 
-  AboutForm.Caption := cAboutCaption;
+  AboutForm.Form.Caption := cAboutCaption;
 
   S := ASystem.Info_GetDirectoryPathWS() + ASystem.Info_GetProgramNameWS() + '.bmp';
 
   if FileExistsP(S) then
   try
-    AboutForm.Image1.Picture.LoadFromFile(S);
+    AboutForm.Image.Picture.LoadFromFile(S);
   except
     AboutForm_LoadApplicationIcon(AboutForm);
   end
@@ -72,18 +75,31 @@ begin
 
   if (MemoWidth > 0) then
   begin
-    AUiControl_SetWidth(AControl(AboutForm.lbName), MemoWidth);
-    AUiControl_SetWidth(AControl(AboutForm.Memo), MemoWidth);
+    AUiControl_SetWidth(AboutForm.NameText, MemoWidth);
+    AUiControl_SetWidth(AboutForm.Memo, MemoWidth);
   end;
 
   if (MemoHeight > 0) then
-    AUiControl_SetHeight(AControl(AboutForm.Memo), MemoHeight);
+    AUiControl_SetHeight(AboutForm.Memo, MemoHeight);
 
-  AUiControl_GetPosition(AControl(AboutForm.Memo), I, J);
-  AboutForm.ClientWidth :=  I + AUiControl_GetWidth(AControl(AboutForm.Memo)) + 8;
-  AboutForm.ClientHeight := J + AUiControl_GetHeight(AControl(AboutForm.Memo)) + AboutForm.UrlText.Height + AboutForm.ButtonsPanel.Height + 8;
+  AUiControl_GetPosition(AboutForm.Memo, I, J);
+  AboutForm.Form.ClientWidth :=  I + AUiControl_GetWidth(AboutForm.Memo) + 8;
+  AboutForm.Form.ClientHeight := J + AUiControl_GetHeight(AboutForm.Memo) + AboutForm.UrlText.Height + AboutForm.ButtonsPanel.Height + 8;
 
   Result := 0;
 end;
+
+{procedure ShowAboutWinA(MemoWidth, MemoHeight: Integer);
+var
+  Form: TAboutForm;
+begin
+  Form := TAboutForm.Create(nil);
+  try
+    AboutForm_Init2(Form.FAboutForm, AUiAboutFlags_ShowAll + AUiAboutFlags_NoShowComment, MemoWidth, MemoHeight);
+    Form.ShowModal;
+  finally
+    Form.Free;
+  end;
+end;}
 
 end.

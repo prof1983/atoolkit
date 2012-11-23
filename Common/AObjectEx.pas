@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Объект с логированием и конфигурациями и функциями передачи ACL сообщений)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(13.04.2004)
-@LastMod(27.06.2012)
-@Version(0.5)
+@Abstract Объект с логированием и конфигурациями и функциями передачи ACL сообщений
+@Author Prof1983 <prof1983@ya.ru>
+@Created 13.04.2004
+@LastMod 13.11.2012
 }
 unit AObjectEx;
 
@@ -13,7 +12,7 @@ uses
   AIntfEx, AObjectImpl;
 
 type // Объект с логированием и конфигурациями и функциями передачи ACL сообщений
-  TProfObjectEx = class(TProfObject, IProfObjectEx)
+  TProfObjectEx = class(TAObject, IProfObjectEx)
   private
     //** CallBack функция. Срабатывает при поступлении сообщения.
 //    FOnSendMessageA: TProcMessageA;
@@ -27,7 +26,6 @@ type // Объект с логированием и конфигурациями
     //** CallBack функция. Срабатывает при поступлении сообщения.
 //    property OnSendMessageA: TProcMessageA read FOnSendMessageA write FOnSendMessageA;
   end;
-  TProfObjectEx3 = TProfObjectEx;
 
 implementation
 

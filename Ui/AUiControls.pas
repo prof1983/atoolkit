@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 21.11.2012
+@LastMod 16.11.2012
 }
 unit AUiControls;
 
@@ -42,6 +42,8 @@ function AUiControl_GetNameA(Control: AControl; Value: AStr; MaxLen: AInt): AErr
 function AUiControl_GetNameP(Control: AControl): APascalString; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_GetPosition(Control: AControl; out Left, Top: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_GetText(Control: AControl; out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_GetTextP(Control: AControl): APascalString; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -97,6 +99,8 @@ function AUiControl_SetOnClick03(Control: AControl; Value: ACallbackProc03): AEr
 function AUiControl_SetPosition(Control: AControl; Left, Top: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetSize(Control: AControl; Width, Height: Integer): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_SetTabStop(Control: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetText(Control: AControl; const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -176,12 +180,10 @@ function UI_Control_SetOnClick02(Control: AControl; Value: ACallbackProc02): AEr
 function UI_Control_SetOnClick03(Control: AControl; Value: ACallbackProc03): AError;
 
 //** Задает расположение элемента.
-function UI_Control_SetPosition(Control: AControl; Left, Top: AInteger): AError;
-//procedure UI_Control_SetPosition(Control: AControl; Left, Top: AInteger); stdcall; deprecated; // Use AUiControl_SetPosition()
+function UI_Control_SetPosition(Control: AControl; Left, Top: AInteger): AError; deprecated; // Use AUiControl_SetPosition()
 
 //** Задает внешний размер элемента.
-function UI_Control_SetSize(Control: AControl; Width, Height: Integer): AError;
-//procedure UI_Control_SetSize(Control: AControl; Width, Height: AInteger); stdcall; deprecated; // Use AUiControl_SetSize()
+function UI_Control_SetSize(Control: AControl; Width, Height: Integer): AError; deprecated; // Use AUiControl_SetSize()
 
 procedure UI_Control_SetText(Control: AControl; const Value: AWideString); stdcall; deprecated; // Use AUiControl_SetTextP()
 
@@ -378,10 +380,19 @@ begin
   end;
 end;
 
+function AUiControl_GetText(Control: AControl; out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, AUiControl_GetTextP(Control));
+end;
+
 function AUiControl_GetTextP(Control: AControl): APascalString;
 begin
   try
-    if (TObject(Control) is TForm) then
+    if (TObject(Control) is TButton) then
+      Result := TButton(Control).Caption
+    else if (TObject(Control) is TComboBox) then
+      Result := TComboBox(Control).Text
+    else if (TObject(Control) is TForm) then
       Result := TForm(Control).Caption
     else if (TObject(Control) is TMenuItem) then
       Result := TMenuItem(Control).Caption
@@ -474,6 +485,8 @@ begin
       else
         TLabel(Control).Font.Color := clBlack; //UI_Control_SetFont(ColorLineTipV, '', 0, $000000{clBlack}); *)
     end
+    else if (TObject(Control) is TMemo) then
+      TMemo(Control).Color := Color
     else if (TObject(Control) is TPanel) then
       TPanel(Control).Color := Color
     else if (TObject(Control) is TForm) then
@@ -728,6 +741,25 @@ begin
   end;
 end;
 
+function AUiControl_SetTabStop(Control: AControl; Value: ABoolean): AError;
+var
+  Obj: TObject;
+begin
+  try
+    Obj := GetObject(Control);
+    if not(Assigned(Obj)) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+    if (Obj is TWinControl) then
+      TWinControl(Obj).TabStop := Value;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
 function AUiControl_SetText(Control: AControl; const Value: AString_Type): AError;
 begin
   Result := AUiControl_SetTextP(Control, AString_ToPascalString(Value));
@@ -751,16 +783,18 @@ begin
     end;
     if (Obj is TControl) then
     begin
-      if (Obj is TForm) then
+      if (Obj is TBitBtn) then
+        TBitBtn(Obj).Caption := Value
+      else if (Obj is TButton) then
+        TButton(Obj).Caption := Value
+      else if (Obj is TComboBox) then
+        TComboBox(Obj).Text := Value
+      else if (Obj is TEdit) then
+        TEdit(Obj).Text := Value
+      else if (Obj is TForm) then
         TForm(Obj).Caption := Value
       else if (Obj is TLabel) then
         TLabel(Obj).Caption := Value
-      else if (Obj is TEdit) then
-        TEdit(Obj).Text := Value
-      else if (Obj is TButton) then
-        TButton(Obj).Caption := Value
-      else if (Obj is TBitBtn) then
-        TBitBtn(Obj).Caption := Value
       else if (Obj is TMemo) then
         TMemo(Obj).Text := Value
       {$IFNDEF FPC}

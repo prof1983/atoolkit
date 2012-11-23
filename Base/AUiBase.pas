@@ -2,7 +2,7 @@
 @Abstract User Interface base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 21.11.2012
+@LastMod 23.11.2012
 }
 unit AUiBase;
 
@@ -91,12 +91,20 @@ const
   AUiProgramState_HourGlass = 11;
 
 type
-  AUISplitterType = type AInteger;
+  AUiScrollStyle = type AInteger;
 const
-  AUISplitter_HSplitter = 0;       //(Align=alTop)
-  AUISplitter_VSplitter = 1;       //(Align=alLeft)
-  AUISplitter_HSplitterBottom = 2; //(Align=alBottom)
-  AUISplitter_VSplitterRight = 3;  //(Align=alRight)
+  AUiScrollStyle_None = 0;
+  AUiScrollStyle_Horizontal = 1;
+  AUiScrollStyle_Vertical = 2;
+  AUiScrollStyle_Both = 3;
+
+type
+  AUiSplitterType = type AInteger;
+const
+  AUiSplitter_HSplitter = 0;       //(Align=alTop)
+  AUiSplitter_VSplitter = 1;       //(Align=alLeft)
+  AUiSplitter_HSplitterBottom = 2; //(Align=alBottom)
+  AUiSplitter_VSplitterRight = 3;  //(Align=alRight)
 
 //type // = Controls.TMouseButton
 //  AUIMouseButton = (mbLeft, mbRight, mbMiddle);

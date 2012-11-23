@@ -2,9 +2,11 @@
 @Abstract User Interface box functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 11.08.2011
-@LastMod 29.08.2012
+@LastMod 13.11.2012
 }
 unit AUiBox;
+
+{$define AStdCall}
 
 interface
 
@@ -14,11 +16,7 @@ uses
 
 {** Creates a new panel
     @param BoxType: 0 - Simple; 1 - HBox; 2 - VBox }
-function AUiBox_New(Parent: AControl; BoxType: AInteger): AControl; stdcall;
-
-{** Creates a new panel
-    @param BoxType: 0 - Simple; 1 - HBox; 2 - VBox }
-function UI_Box_New(Parent: AControl; BoxType: AInteger): AControl; deprecated; // Use AUiBox_New()
+function AUiBox_New(Parent: AControl; BoxType: AInteger): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
@@ -34,11 +32,6 @@ begin
   except
     Result := 0;
   end;
-end;
-
-function UI_Box_New(Parent: AControl; BoxType: AInteger): AControl;
-begin
-  Result := AUiBox_New(Parent, BoxType);
 end;
 
 end.

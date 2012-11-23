@@ -2,7 +2,7 @@
 @abstract AUi ToolMenu
 @author Prof1983 <prof1983@ya.ru>
 @created 28.02.2012
-@lastmod 19.07.2012
+@lastmod 16.11.2012
 }
 unit AUiToolMenu;
 
@@ -66,7 +66,7 @@ begin
   if (Index >= 0) then
   begin
 
-    Page := UI_PageControl_AddPage(FToolMenus[Index].PageControl,
+    Page := AUiPageControl_AddPageP(FToolMenus[Index].PageControl,
         TPageControl(FToolMenus[Index].PageControl).Name+'_'+Name, Text);
     I := Length(FToolMenus);
     SetLength(FToolMenus, I + 1);
@@ -96,7 +96,7 @@ begin
 
   if (O is TMenu) then
   begin
-    Result := AToolMenu(UI_Menu_AddItem(AMenu(Parent), Name, Text, OnClick, ImageId, Weight));
+    Result := AToolMenu(AUiMenu_AddItem2P(AMenu(Parent), Name, Text, OnClick, ImageId, Weight));
     Exit;
   end;
 

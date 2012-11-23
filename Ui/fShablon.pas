@@ -1,9 +1,8 @@
 ﻿{**
-@abstract(Пустая форма с картинками. Шаблон для создания форм в не визуальном режиме)
-@author(Prof1983 prof1983@ya.ru)
-@created(17.03.2006)
-@lastmod(24.02.2012)
-@version(0.55)
+@Abstract Пустая форма с картинками. Шаблон для создания форм в не визуальном режиме
+@Author Prof1983 <prof1983@ya.ru>
+@Created 17.03.2006
+@LastMod 12.11.2012
 }
 unit fShablon;
 
@@ -11,10 +10,10 @@ interface
 
 uses
   Classes, Controls, Forms, ImgList,
-  AFormImpl;
+  AFormObj{AFormImpl};
 
 type //** Шаблон для создания форм в не визуальном режиме
-  TfmShablon = class(TProfForm)
+  TfmShablon = class(TAFormObject{TProfForm})
     RunImages: TImageList;
   protected
       //** Срабатывает при изменении размеров
@@ -24,12 +23,7 @@ type //** Шаблон для создания форм в не визуальн
     constructor Create(AOwner: TComponent); override;
   end;
 
-const // Константы номеров стандартных картинок в RunImages
-  IndexGrayBox    = 0;
-  IndexBlueBox    = 1;
-  IndexGreenBox   = 2;
-  IndexFuchsiaBox = 3; // Фиолетовый
-  IndexRedBox     = 4;
+  //TProfShablon3 = TfmShablon;
 
 implementation
 

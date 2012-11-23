@@ -2,9 +2,11 @@
 @Abstract AUi PageControl
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.02.2012
-@LastMod 06.09.2012
+@LastMod 15.11.2012
 }
 unit AUiPageControl;
+
+{$define AStdCall}
 
 interface
 
@@ -17,17 +19,17 @@ uses
 
 {** Создает новую вкладку
     @return 0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
-function AUiPageControl_AddPage(PageControl: AControl; const Name, Text: AString_Type): AControl; stdcall;
+function AUiPageControl_AddPage(PageControl: AControl; const Name, Text: AString_Type): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Создает новую вкладку
     @return 0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
-function AUiPageControl_AddPageA(PageControl: AControl; Name, Text: AStr): AControl; stdcall;
+function AUiPageControl_AddPageA(PageControl: AControl; Name, Text: AStr): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Создает новую вкладку
     @return 0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
-function AUiPageControl_AddPageP(PageControl: AControl; const Name, Text: APascalString): AControl; stdcall;
+function AUiPageControl_AddPageP(PageControl: AControl; const Name, Text: APascalString): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiPageControl_New(Parent: AControl): AControl; stdcall;
+function AUiPageControl_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 // --- UI_PageControl ---
 

@@ -2,7 +2,7 @@
 @Abstract ASystem
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.09.2011
-@LastMod 05.09.2012
+@LastMod 16.11.2012
 }
 unit ASystemMain;
 
@@ -31,15 +31,25 @@ function ASystem_GetConfig(): AConfig; stdcall;
 
 function ASystem_GetConfigDirectoryPathP(): APascalString; stdcall;
 
+function ASystem_GetDataDirectoryPath(out Value: AString_Type): AError; stdcall;
+
 function ASystem_GetDataDirectoryPathP(): APascalString; stdcall;
 
+function ASystem_GetDirectoryPath(out Value: AString_Type): AInteger; stdcall;
+
 function ASystem_GetExePathP(): APascalString; stdcall;
+
+function ASystem_GetProgramName(out Value: AString_Type): AInteger; stdcall;
 
 function ASystem_GetProgramNameP(): APascalString; stdcall;
 
 function ASystem_GetTitleP(): APascalString; stdcall;
 
 function ASystem_Init(): AError; stdcall;
+
+function ASystem_ParamStr(Index: AInteger; out Value: AString_Type): AInteger; stdcall;
+
+function ASystem_ParamStrP(Index: AInteger): APascalString; stdcall;
 
 function ASystem_Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
     const ProductName: APascalString; ProductVersion: AVersion;
@@ -111,14 +121,29 @@ begin
   Result := FConfigPath;
 end;
 
+function ASystem_GetDataDirectoryPath(out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, FDataPath);
+end;
+
 function ASystem_GetDataDirectoryPathP(): APascalString;
 begin
   Result := FDataPath;
 end;
 
+function ASystem_GetDirectoryPath(out Value: AString_Type): AInteger;
+begin
+  Result := AStrings.String_AssignP(Value, FExePath);
+end;
+
 function ASystem_GetExePathP(): APascalString;
 begin
   Result := FExePath;
+end;
+
+function ASystem_GetProgramName(out Value: AString_Type): AInteger;
+begin
+  Result := AString_AssignP(Value, FProgramName);
 end;
 
 function ASystem_GetProgramNameP(): APascalString;
@@ -136,6 +161,27 @@ begin
   Result := InitConfig();
 end;
 
+function ASystem_ParamStr(Index: AInteger; out Value: AString_Type): AInteger;
+var
+  Res: string;
+begin
+  try
+    Res := System.ParamStr(Index);
+    Result := AStrings.String_AssignP(Value, Res);
+  except
+    Result := -1;
+  end;
+end;
+
+function ASystem_ParamStrP(Index: AInteger): APascalString; 
+begin
+  try
+    Result := System.ParamStr(Index);
+  except
+    Result := '';
+  end;
+end;
+
 function ASystem_Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
     const ProductName: APascalString; ProductVersion: AVersion;
     const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString): AError;
@@ -145,7 +191,11 @@ begin
 end;
 
 function ASystem_ProcessMessages(): AError;
+var
+  R: AError;
 begin
+  R := 1;
+
   if Assigned(FOnProcessMessages02) then
   begin
     try
@@ -160,12 +210,12 @@ begin
   if Assigned(FOnProcessMessages03) then
   try
     FOnProcessMessages03;
-    Result := 0;
+    R := 0;
   except
-    Result := -1;
+    R := -1;
   end;
 
-  Result := 1;
+  Result := R;
   Exit;
 end;
 
@@ -231,19 +281,22 @@ begin
 end;
 
 function ASystem_ShowErrorP(const UserMessage, ExceptMessage: APascalString): AError; stdcall;
+var
+  R: AError;
 begin
   try
+    R := 1;
     if Assigned(FOnShowErrorA) then
     begin
       FOnShowErrorA(AStr(AnsiString(FTitle)), AStr(AnsiString(UserMessage)), AStr(AnsiString(ExceptMessage)));
-      Result := 0;
+      R := 0;
     end;
     if Assigned(FOnShowErrorWS) then
     begin
       FOnShowErrorWS(FTitle, UserMessage, ExceptMessage);
-      Result := 0;
+      R := 0;
     end;
-    Result := 0;
+    Result := R;
   except
     Result := -1;
   end;

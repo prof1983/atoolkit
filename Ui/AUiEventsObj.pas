@@ -2,15 +2,19 @@
 @Abstract AUi events object
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.06.2011
-@LastMod 10.08.2012
+@LastMod 12.11.2012
 }
 unit AUiEventsObj;
+
+{$ifndef NoRuntime}
+  {$define UseRuntime}
+{$endif}
 
 interface
 
 uses
   Db,
-  ABase, ASystem,
+  ABase, {$ifdef UseRuntime}ARuntime,{$endif} ASystem,
   AUiBase, AUiData;
 
 { Classes }
@@ -97,8 +101,12 @@ procedure TUI_.MainFormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   if FHideOnClose then
   begin
-    //CanClose := ARuntime.IsShutdown;
-    CanClose := ASystem.GetIsShutdown;
+    {$ifdef UseRuntime}
+    CanClose := ARuntime.IsShutdown;
+    {$else}
+    CanClose := True;
+    {$endif}
+    //CanClose := ASystem.GetIsShutdown;
     if not(CanClose) then
       FIsShowApp := False; //UI_IsShowApp_Set(False);
   end

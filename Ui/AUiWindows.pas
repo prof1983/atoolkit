@@ -2,11 +2,11 @@
 @Abstract User Interface window functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 11.08.2011
-@LastMod 21.11.2012
+@LastMod 27.08.2012
 }
 unit AUiWindows;
 
-{$define AStdCall}
+{$ifdef A04}{$define AStdCall}{$endif}
 
 interface
 

@@ -2,7 +2,7 @@
 @Abstract AUi about dialog win 2
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.11.2012
-@LastMod 21.11.2012
+@LastMod 14.11.2012
 }
 unit AUiAboutDialog1;
 
@@ -11,17 +11,16 @@ interface
 uses
   Forms,
   ABase, AProgramUtils,
-  AUiAboutDialog, AUiBase, AUiControls,
-  fAbout;
+  AUiAboutDialog, AUiControls;
 
-function AboutForm_Init1(AboutForm: TAboutForm): AError;
+function AboutForm_Init1(var AboutForm: TAboutFormRec): AError;
 
 implementation
 
-function AboutForm_Init1(AboutForm: TAboutForm): AError;
+function AboutForm_Init1(var AboutForm: TAboutFormRec): AError;
 begin
-  Result := AUiControl_SetTextP(AControl(AboutForm.Memo), GetProgramVersionInfoStr(ParamStr(0)));
-  AboutForm.Image1.Picture.Assign(Application.Icon);
+  Result := AUiControl_SetTextP(AboutForm.Memo, GetProgramVersionInfoStr(ParamStr(0)));
+  AboutForm.Image.Picture.Assign(Application.Icon);
 end;
 
 end.

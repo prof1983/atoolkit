@@ -2,7 +2,7 @@
 @Abstract ACore
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.10.2009
-@LastMod 21.11.2012
+@LastMod 22.11.2012
 }
 unit ACore;
 

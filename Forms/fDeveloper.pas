@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Главная форма для проектирования)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(08.11.2006)
-@LastMod(03.05.2012)
-@Version(0.5)
+@Abstract Главная форма для проектирования
+@Author Prof1983 <prof1983@ya.ru>
+@Created 08.11.2006
+@LastMod 13.11.2012
 }
 unit fDeveloper;
 
@@ -11,7 +10,7 @@ interface
 
 uses
   Classes, ComCtrls, Controls, ExtCtrls, Forms, Menus, ValEdit,
-  ABase, ANodeIntf, fAbout1, fShablon;
+  ABase, ANodeIntf, fAbout1, AShablonForm{fShablon};
 
 type
   //** @abstract(Тип вкладки главной области)
@@ -49,20 +48,6 @@ type
 const
   tvlNone     = $00000000;
   tvlUncnown  = $00008000;
-
-type
-  //** @abstract(Полоска изменения размера элемента)
-  TSplitterControl = class(TSplitter)
-  private
-    FControl: TControl;
-  protected
-    //** Срабатывает при двойном щелчке
-    procedure DoDblClick(ASender: TObject); virtual;
-  public
-    property Control: TControl read FControl write FControl;
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  end;
 
 type
   //** @abstract(Форма дизайнера с панелями и линейками)
@@ -517,25 +502,6 @@ begin
   Result := TTabSheet.Create(Self);
   TTabSheet(Result).PageControl := pcMessages;
   TTabSheet(Result).Caption := ACaption;
-end;
-
-{ TSplitterControl }
-
-constructor TSplitterControl.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  Self.OnDblClick := DoDblClick;
-end;
-
-destructor TSplitterControl.Destroy();
-begin
-  inherited Destroy();
-end;
-
-procedure TSplitterControl.DoDblClick(ASender: TObject);
-begin
-  if Assigned(FControl) then
-    FControl.Visible := not(FControl.Visible);
 end;
 
 end.

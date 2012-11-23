@@ -2,7 +2,7 @@
 @abstract ASystem exports
 @author Prof1983 <prof1983@ya.ru>
 @created 20.08.2007
-@lastmod 27.08.2012
+@lastmod 16.11.2012
 }
 unit ASystemExp;
 
@@ -13,23 +13,24 @@ unit ASystemExp;
 interface
 
 uses
-  ASystem;
+  ASystem, ASystemMain;
 
 exports
+  ASystem_GetConfig,
   ASystem.GetCompanyName name 'ASystem_GetCompanyName',
   ASystem.GetCopyright name 'ASystem_GetCopyright',
+  ASystem_GetDataDirectoryPath,
   ASystem.GetDescription name 'ASystem_GetDescription',
-  ASystem.GetDirectoryPath name 'ASystem_GetDirectoryPath',
+  ASystem_GetDirectoryPath,
   ASystem.GetExeName name 'ASystem_GetExeName',
   ASystem.GetExePath name 'ASystem_GetExePath',
   ASystem.GetProductName name 'ASystem_GetProductName',
   ASystem.GetProductVersion name 'ASystem_GetProductVersion',
-  ASystem.GetProgramName name 'ASystem_GetProgramName',
+  ASystem_GetProgramName,
   ASystem.GetProgramVersionWS name 'ASystem_GetProgramVersion',
   ASystem.GetTitle name 'ASystem_GetTitle',
   ASystem.GetUrl name 'ASystem_GetUrl',
   ASystem.GetResourceStringWS name 'ASystem_GetResourceString',
-  ASystem.GetConfig name 'ASystem_GetConfig',
   {$IFDEF USE_EVENTS}
   ASystem.OnAfterRun_Connect name 'ASystem_OnAfterRun_Connect',
   ASystem.OnAfterRun_Disconnect name 'ASystem_OnAfterRun_Disconnect',

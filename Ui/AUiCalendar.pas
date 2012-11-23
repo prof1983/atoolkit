@@ -2,9 +2,11 @@
 @Abstract AUi calendar
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.09.2012
-@LastMod 06.09.2012
+@LastMod 13.11.2012
 }
 unit AUiCalendar;
+
+{$define AStdCall}
 
 interface
 
@@ -14,11 +16,11 @@ uses
 
 // --- AUiCalendar ---
 
-function AUiCalendar_GetDate(Calendar: AControl): TDateTime; stdcall;
+function AUiCalendar_GetDate(Calendar: AControl): TDateTime; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiCalendar_New(Parent: AControl): AControl; stdcall;
+function AUiCalendar_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiCalendar_SetMonth(Calendar: AControl; Value: AInteger): AError; stdcall;
+function AUiCalendar_SetMonth(Calendar: AControl; Value: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 // --- UI_Calendar ---
 

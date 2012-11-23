@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Общие интерфейсы для всех проектов)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.02.2007)
-@LastMod(10.07.2012)
-@Version(0.5)
+@Abstract Общие интерфейсы для всех проектов
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.02.2007
+@LastMod 13.11.2012
 }
 unit AObjectIntf;
 
@@ -60,12 +59,6 @@ type //** Интерфейс для любого объекта
     function Finalize(): TProfError;
       //** Инициализировать
     function Initialize(): TProfError;
-      //** Функция логирования
-    {function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer; safecall;}
-      //** Функция логирования
-    {function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
-        const AStrMsg: WideString): Integer; safecall;}
 
     function GetConfig2(): IXmlNode; safecall;
     function GetLog(): ALogNode; safecall;
@@ -82,17 +75,14 @@ type //** Интерфейс для любого объекта
     function ConfigureSave(): WordBool; safecall;
     function Finalize(): WordBool; safecall;
     function Initialize(): WordBool; safecall;
-    function Get_Config(): AProfXmlNode2{IProfXmlNode2006}; safecall;
+    function Get_Config(): AProfXmlNode2; safecall;
     function Get_Log(): ILogNode2; safecall;
-    procedure Set_Config(const Value: AProfXmlNode2{IProfXmlNode2006}); safecall;
+    procedure Set_Config(const Value: AProfXmlNode2); safecall;
     procedure Set_Log(const Value: ILogNode2); safecall;
 
-    property Config: AProfXmlNode2{IProfXmlNode2006} read Get_Config write Set_Config;
+    property Config: AProfXmlNode2 read Get_Config write Set_Config;
     property Log: ILogNode2 read Get_Log write Set_Log;
   end;
-
-  IProfObjectA = IProfObject2;
-  IProfBaseObject = IProfObject;
 
 implementation
 

@@ -2,7 +2,7 @@
 @Abstract AUiDialogs
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 21.11.2012
+@LastMod 14.11.2012
 }
 unit AUiDialogs;
 
@@ -15,7 +15,8 @@ uses
   {$IFDEF USE_JEDI}JvBaseDlg, JvSelectDirectory,{$ENDIF}
   Controls, Dialogs, Forms,
   ABase, ABaseTypes, AStrings, ASystem,
-  AUiAboutDialog1, AUiAboutDialog2, AUiBase, AUiBox, AUiButtons, AUiConsts, AUiControls, AUiData, AUiWindows,
+  AUiAboutDialog, AUiAboutDialog1, AUiAboutDialog2, AUiBase, AUiBox, AUiButtons,
+  AUiConsts, AUiControls, AUiData, AUiWindows,
   fAbout, fCalendar, fDateFilter, fError, fInputDialog, fLogin, fPasswordDialog;
 
 // --- AUi ---
@@ -228,7 +229,7 @@ constructor TAUiDialog.Create();
 begin
   FWindow := AUiWindow_New();
 
-  FButtonsBox := AUIBox.UI_Box_New(FWindow, 0);
+  FButtonsBox := AUiBox_New(FWindow, 0);
   UI_Control_SetAlign(FButtonsBox, uiAlignBottom);
   AUIControls.UI_Control_SetSize(FButtonsBox, 100, 35);
 end;
@@ -280,13 +281,17 @@ end;
 // --- AUi ---
 
 function AUi_ExecuteAboutDialog(): AError;
+var
+  W: AWindow;
 begin
-  try
+  W := AUi_NewAboutDialog();
+  Result := AUi_InitAboutDialog2(W);
+  {try
     ShowAboutWinA(UiAboutWinMemoWidthDefault, UiAboutWinMemoHeightDefault);
     Result := 0;
   except
     Result := -1;
-  end;
+  end;}
 end;
 
 function AUi_ExecuteCalendarDialog(var Date: TDateTime; CenterX, CenterY: AInt): ABoolean;
@@ -769,7 +774,7 @@ begin
   end;
 
   try
-    Result := AboutForm_Init1(TAboutForm(AboutDialog));
+    Result := AboutForm_Init1(TAboutForm(AboutDialog).FAboutForm);
   except
     Result := -1;
   end;
@@ -784,7 +789,7 @@ begin
   end;
 
   try
-    Result := AboutForm_Init2(TAboutForm(AboutDialog), AUiAboutFlags_ShowAll + AUiAboutFlags_NoShowComment,
+    Result := AboutForm_Init2(TAboutForm(AboutDialog).FAboutForm, AUiAboutFlags_ShowAll + AUiAboutFlags_NoShowComment,
         UiAboutWinMemoWidthDefault, UiAboutWinMemoHeightDefault);
   except
     Result := -1;
@@ -797,12 +802,6 @@ var
 begin
   try
     Form := TAboutForm.Create(nil);
-    try
-      Form.InitA(UIAboutWinMemoWidthDefault, UIAboutWinMemoHeightDefault);
-    except
-      Form.Free;
-      Form := nil;
-    end;
     Result := AWindow(Form);
   except
     Result := 0;

@@ -2,7 +2,7 @@
 @Abstract AUiListBox
 @Author Prof1983 <prof1983@ya.ru>
 @Created 05.09.2012
-@LastMod 05.09.2012
+@LastMod 15.11.2012
 }
 unit AUiListBox;
 
@@ -30,6 +30,8 @@ function AUiListBox_GetCount(ListBox: AControl): AInteger; {$ifdef AStdCall}stdc
 
 function AUiListBox_GetItem(ListBox: AControl; Index: AInteger; out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiListBox_GetItemP(ListBox: AControl; Index: AInteger): APascalString; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiListBox_GetItemIndex(ListBox: AControl): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Создает новый элемент ListBox }
@@ -40,7 +42,13 @@ function AUiListBox_New2(Parent: AControl; Typ: AInteger): AControl; {$ifdef ASt
 
 function AUiListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiListBox_SetItemHeight(ListBox: AControl; Value: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiListBox_SetItemP(ListBox: AControl; Index: AInteger; const Value: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiListBox_SetItemIndex(ListBox: AControl; Index: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiListBox_SetOnDblClick(ListBox: AControl; Value: ACallbackProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 // --- AUi_ListBox ---
 
@@ -69,29 +77,29 @@ procedure AUi_ListBox_SetItemIndex(ListBox: AControl; Index: AInteger); stdcall;
 // --- UI_ListBox ---
 
 //** Добавляет строку в список.
-function UI_ListBox_Add(ListBox: AControl; const Text: APascalString): Integer; stdcall;
+function UI_ListBox_Add(ListBox: AControl; const Text: APascalString): Integer; stdcall; deprecated;
 
-procedure UI_ListBox_Clear(ListBox: AControl); stdcall;
+procedure UI_ListBox_Clear(ListBox: AControl); stdcall; deprecated;
 
 //** Создает новый элемент ListBox.
-function UI_ListBox_New(Parent: AControl): AControl; stdcall;
+function UI_ListBox_New(Parent: AControl): AControl; stdcall; deprecated;
 
 { Typ:
   0 - ListBox
   1 - RadioGroup }
-function UI_ListBox_NewA(Parent: AControl; Typ: AInteger): AControl; stdcall;
+function UI_ListBox_NewA(Parent: AControl; Typ: AInteger): AControl; stdcall; deprecated;
 
-function UI_ListBox_GetCount(ListBox: AControl): AInteger; stdcall;
+function UI_ListBox_GetCount(ListBox: AControl): AInteger; stdcall; deprecated;
 
-function UI_ListBox_GetItem(ListBox: AControl; Index: AInteger): APascalString; stdcall;
+function UI_ListBox_GetItem(ListBox: AControl; Index: AInteger): APascalString; stdcall; deprecated;
 
-function UI_ListBox_GetItemIndex(ListBox: AControl): AInteger; stdcall;
+function UI_ListBox_GetItemIndex(ListBox: AControl): AInteger; stdcall; deprecated;
 
-procedure UI_ListBox_SetItemIndex(ListBox: AControl; Index: AInteger); stdcall;
+procedure UI_ListBox_SetItemIndex(ListBox: AControl; Index: AInteger); stdcall; deprecated;
 
-procedure UI_ListBox_DeleteItem(ListBox: AControl; Index: AInteger); stdcall;
+procedure UI_ListBox_DeleteItem(ListBox: AControl; Index: AInteger); stdcall; deprecated;
 
-procedure UI_ListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: APascalString); stdcall;
+procedure UI_ListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: APascalString); stdcall; deprecated;
 
 implementation
 
@@ -124,9 +132,17 @@ begin
 end;
 
 function AUiListBox_Clear(ListBox: AControl): AError;
+var
+  O: TObject;
 begin
   try
-    UI_ListBox_Clear(ListBox);
+    O := AUIData.GetObject(ListBox);
+    if Assigned(O) and (O is TListBox) then
+      TListBox(O).Clear
+    else if Assigned(O) and (O is TRadioGroup) then
+      TRadioGroup(O).Items.Clear;
+    {if (ListBox <> 0) then
+      TListBox(ListBox).Clear;}
     Result := 0;
   except
     Result := -1;
@@ -136,7 +152,11 @@ end;
 function AUiListBox_DeleteItem(ListBox: AControl; Index: AInteger): AError;
 begin
   try
-    UI_ListBox_DeleteItem(ListBox, Index);
+    TListBox(ListBox).Items.Delete(Index);
+    if (TListBox(ListBox).Items.Count > Index) then
+      TListBox(ListBox).ItemIndex := Index
+    else
+      TListBox(ListBox).ItemIndex := Index-1;
     Result := 0;
   except
     Result := -1;
@@ -144,9 +164,17 @@ begin
 end;
 
 function AUiListBox_GetCount(ListBox: AControl): AInteger;
+var
+  Obj: TObject;
 begin
   try
-    Result := UI_ListBox_GetCount(ListBox);
+    Obj := AUIData.GetObject(ListBox);
+    if Assigned(Obj) and (Obj is TListBox) then
+      Result := TListBox(Obj).Items.Count
+    else if Assigned(Obj) and (Obj is TRadioGroup) then
+      Result := TRadioGroup(Obj).Items.Count
+    else
+      Result := 0;
   except
     Result := 0;
   end;
@@ -155,16 +183,37 @@ end;
 function AUiListBox_GetItem(ListBox: AControl; Index: AInteger; out Value: AString_Type): AInteger;
 begin
   try
-    Result := AString_AssignP(Value, UI_ListBox_GetItem(ListBox, Index));
+    Result := AString_AssignP(Value, AUiListBox_GetItemP(ListBox, Index));
   except
     Result := 0;
   end;
 end;
 
+function AUiListBox_GetItemP(ListBox: AControl; Index: AInteger): APascalString;
+var
+  O: TObject;
+begin
+  O := AUiData.GetObject(ListBox);
+  if Assigned(O) and (O is TListBox) then
+    Result := TListBox(O).Items[Index]
+  else if Assigned(O) and (O is TRadioGroup) then
+    Result := TRadioGroup(O).Items[Index]
+  else
+    Result := '';
+end;
+
 function AUiListBox_GetItemIndex(ListBox: AControl): AInteger;
+var
+  O: TObject;
 begin
   try
-    Result := UI_ListBox_GetItemIndex(ListBox);
+    O := AUiData.GetObject(ListBox);
+    if Assigned(O) and (O is TListBox) then
+      Result := TListBox(O).ItemIndex
+    else if Assigned(O) and (O is TRadioGroup) then
+      Result := TRadioGroup(O).ItemIndex
+    else
+      Result := 0;
   except
     Result := 0;
   end;
@@ -225,8 +274,34 @@ end;
 
 function AUiListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: AString_Type): AError;
 begin
+  Result := AUiListBox_SetItemP(ListBox, Index, AStrings.String_ToWideString(Value));
+end;
+
+function AUiListBox_SetItemHeight(ListBox: AControl; Value: AInt): AError;
+var
+  Obj: TObject;
+begin
   try
-    UI_ListBox_SetItem(ListBox, Index, AStrings.String_ToWideString(Value));
+    Obj := GetObject(ListBox);
+    if not(Assigned(Obj)) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+
+    if (Obj is TListBox) then
+      TListBox(Obj).ItemHeight := Value;
+
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiListBox_SetItemP(ListBox: AControl; Index: AInteger; const Value: APascalString): AError;
+begin
+  try
+    TListBox(ListBox).Items[Index] := Value;
     Result := 0;
   except
     Result := -1;
@@ -234,12 +309,32 @@ begin
 end;
 
 function AUiListBox_SetItemIndex(ListBox: AControl; Index: AInteger): AError;
+var
+  Obj: TObject;
 begin
   try
-    UI_ListBox_SetItemIndex(ListBox, Index);
+    Obj := AUIData.GetObject(ListBox);
+    if Assigned(Obj) and (Obj is TListBox) then
+      TListBox(Obj).ItemIndex := Index
+    else if Assigned(Obj) and (Obj is TRadioGroup) then
+      TRadioGroup(Obj).ItemIndex := Index;
     Result := 0;
   except
     Result := -1;
+  end;
+end;
+
+function AUiListBox_SetOnDblClick(ListBox: AControl; Value: ACallbackProc): AError;
+var
+  I: AInt;
+begin
+  try
+    I := FindListBox(ListBox);
+    if (I >= 0) then
+      FListBoxs[I].OnDblClick := Value;
+    Result := 0;
+  except
+    Result := -2;
   end;
 end;
 
@@ -297,96 +392,54 @@ end;
 
 { ListBox }
 
-function UI_ListBox_Add(ListBox: AControl; const Text: APascalString): Integer; stdcall;
+function UI_ListBox_Add(ListBox: AControl; const Text: APascalString): Integer;
 begin
   Result := AUiListBox_AddP(ListBox, Text);
 end;
 
-procedure UI_ListBox_Clear(ListBox: AControl); stdcall;
-var
-  O: TObject;
+procedure UI_ListBox_Clear(ListBox: AControl);
 begin
-  O := AUIData.GetObject(ListBox);
-  if Assigned(O) and (O is TListBox) then
-    TListBox(O).Clear
-  else if Assigned(O) and (O is TRadioGroup) then
-    TRadioGroup(O).Items.Clear;
-  {if (ListBox <> 0) then
-    TListBox(ListBox).Clear;}
+  AUiListBox_Clear(ListBox);
 end;
 
-procedure UI_ListBox_DeleteItem(ListBox: AControl; Index: AInteger); stdcall;
+procedure UI_ListBox_DeleteItem(ListBox: AControl; Index: AInteger);
 begin
-  TListBox(ListBox).Items.Delete(Index);
-  if (TListBox(ListBox).Items.Count > Index) then
-    TListBox(ListBox).ItemIndex := Index
-  else
-    TListBox(ListBox).ItemIndex := Index-1;
+  AUiListBox_DeleteItem(ListBox, Index);
 end;
 
-function UI_ListBox_GetCount(ListBox: AControl): AInteger; stdcall;
-var
-  Obj: TObject;
+function UI_ListBox_GetCount(ListBox: AControl): AInteger;
 begin
-  Obj := AUIData.GetObject(ListBox);
-  if Assigned(Obj) and (Obj is TListBox) then
-    Result := TListBox(Obj).Items.Count
-  else if Assigned(Obj) and (Obj is TRadioGroup) then
-    Result := TRadioGroup(Obj).Items.Count
-  else
-    Result := 0;
+  Result := AUiListBox_GetCount(ListBox);
 end;
 
-function UI_ListBox_GetItem(ListBox: AControl; Index: AInteger): APascalString; stdcall;
-var
-  O: TObject;
+function UI_ListBox_GetItem(ListBox: AControl; Index: AInteger): APascalString;
 begin
-  O := AUIData.GetObject(ListBox);
-  if Assigned(O) and (O is TListBox) then
-    Result := TListBox(O).Items[Index]
-  else if Assigned(O) and (O is TRadioGroup) then
-    Result := TRadioGroup(O).Items[Index]
-  else
-    Result := '';
+  Result := AUiListBox_GetItemP(ListBox, Index);
 end;
 
-function UI_ListBox_GetItemIndex(ListBox: AControl): AInteger; stdcall;
-var
-  O: TObject;
+function UI_ListBox_GetItemIndex(ListBox: AControl): AInteger;
 begin
-  O := AUIData.GetObject(ListBox);
-  if Assigned(O) and (O is TListBox) then
-    Result := TListBox(O).ItemIndex
-  else if Assigned(O) and (O is TRadioGroup) then
-    Result := TRadioGroup(O).ItemIndex
-  else
-    Result := 0;
+  Result := AUiListBox_GetItemIndex(ListBox);
 end;
 
-function UI_ListBox_New(Parent: AControl): AControl; stdcall;
+function UI_ListBox_New(Parent: AControl): AControl;
 begin
   Result := AUiListBox_New(Parent);
 end;
 
-function UI_ListBox_NewA(Parent: AControl; Typ: AInteger): AControl; stdcall;
+function UI_ListBox_NewA(Parent: AControl; Typ: AInteger): AControl;
 begin
   Result := AUiListBox_New2(Parent, Typ);
 end;
 
-procedure UI_ListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: APascalString); stdcall;
+procedure UI_ListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: APascalString);
 begin
-  TListBox(ListBox).Items[Index] := Value;
+  AUiListBox_SetItemP(ListBox, Index, Value);
 end;
 
-procedure UI_ListBox_SetItemIndex(ListBox: AControl; Index: AInteger); stdcall;
-var
-  Obj: TObject;
+procedure UI_ListBox_SetItemIndex(ListBox: AControl; Index: AInteger);
 begin
-  Obj := AUIData.GetObject(ListBox);
-  if Assigned(Obj) and (Obj is TListBox) then
-    TListBox(Obj).ItemIndex := Index
-  else if Assigned(Obj) and (Obj is TRadioGroup) then
-    TRadioGroup(Obj).ItemIndex := Index;
+  AUiListBox_SetItemIndex(ListBox, Index);
 end;
 
 end.

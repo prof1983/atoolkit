@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Интерфейс для модулей импорта, экспорта и синхронизации)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(06.04.2006)
-@LastMod(04.07.2012)
-@Version(0.5)
+@Abstract Интерфейс для модулей импорта, экспорта и синхронизации
+@Author Prof1983 <prof1983@ya.ru>
+@Created 06.04.2006
+@LastMod 14.11.2012
 
   Команды формарования строк вставки и обновления данных (SqlInsert, SqlUpdate)
   %OutTableName%   - Имя внешней таблици
@@ -119,6 +118,11 @@ type // Общий класс для модулей импорта, экспор
   end;
 
 implementation
+
+const // Константы для файлов настроек
+  FILE_EXT_SETTING = '.stg';
+  //** Имя файла настроек
+  FILE_NAME_SETTING = 'settings' + FILE_EXT_SETTING;
 
 { TDataModule2 }
 

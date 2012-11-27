@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Configurations in XML)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(04.01.2006)
-@LastMod(11.07.2012)
-@Version(0.5)
+@Abstract Configurations in XML
+@Author Prof1983 <prof1983@ya.ru>
+@Created 04.01.2006
+@LastMod 27.11.2012
 }
 unit AConfig2007;
 
@@ -104,10 +103,10 @@ function ProcessLoadObject(AConfig: IXmlNode; AObj: TObject): Boolean;
   begin
     if Assigned(APropInfo.SetProc) then
     begin
-      if TProfXmlNode.ReadIntegerA(AConfig, APropInfo.Name, tmpInt) then
+      if ProfXmlNode_ReadInt(AConfig, APropInfo.Name, tmpInt) then
         SetOrdProp(AObj, APropInfo.Name, tmpInt)
       else
-        TProfXmlNode.WriteIntegerA(AConfig, APropInfo.Name, GetOrdProp(AObj, APropInfo.Name));
+        ProfXmlNode_WriteInt(AConfig, APropInfo.Name, GetOrdProp(AObj, APropInfo.Name));
     end;
   end;
 
@@ -117,10 +116,10 @@ function ProcessLoadObject(AConfig: IXmlNode; AObj: TObject): Boolean;
   begin
     if Assigned(APropInfo.SetProc) then
     begin
-      if TProfXmlNode.ReadFloat64A(AConfig, APropInfo.Name, tmpFloat) then
+      if ProfXmlNode_ReadFloat64(AConfig, APropInfo.Name, tmpFloat) then
         SetFloatProp(AObj, APropInfo.Name, tmpFloat)
       else
-        TProfXmlNode.WriteFloat64A(AConfig, APropInfo.Name, GetFloatProp(AObj, APropInfo.Name));
+        ProfXmlNode_WriteFloat64(AConfig, APropInfo.Name, GetFloatProp(AObj, APropInfo.Name));
     end;
   end;
 
@@ -130,10 +129,10 @@ function ProcessLoadObject(AConfig: IXmlNode; AObj: TObject): Boolean;
   begin
     if (APropInfo.SetProc <> nil) then
     begin
-      if TProfXmlNode.ReadStringA(AConfig, APropInfo.Name, tmpStr) then
+      if ProfXmlNode_ReadString(AConfig, APropInfo.Name, tmpStr) then
         SetStrProp(AObj, APropInfo.Name, tmpStr)
       else
-        TProfXmlNode.WriteStringA(AConfig, APropInfo.Name, GetStrProp(AObj, APropInfo.Name));
+        ProfXmlNode_WriteString(AConfig, APropInfo.Name, GetStrProp(AObj, APropInfo.Name));
     end;
   end;
 

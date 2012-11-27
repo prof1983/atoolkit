@@ -1,8 +1,8 @@
 {**
-@Abstract(AXmlNode functions)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(28.06.2012)
-@LastMod(13.07.2012)
+@Abstract AXmlNode functions
+@Author Prof1983 <prof1983@ya.ru>
+@Created 28.06.2012
+@LastMod 27.11.2012
 
 Uses
   @link ABase
@@ -357,7 +357,7 @@ begin
         Exit;
       end;
       // Create node shell
-      Result := AXmlNode2_New(Child);
+      Result := AXmlNode_New2(Child);
     end
     else
     begin
@@ -390,6 +390,7 @@ begin
         end;
       except
         AXmlNodeList_Clear(Nodes);
+        Result := 0;
         Exit;
       end;
       Result := AXmlNodeList_GetNodeByName1(Nodes, Name)
@@ -711,6 +712,7 @@ var
 begin
   Res := TProfXmlNode.Create();
   Res.SetNode(Node);
+  Result := AXmlNode(Res);
 end;
 
 function AXmlNode_New0(): AXmlNode;
@@ -1595,7 +1597,7 @@ begin
     else
     begin
       Child := AXmlNode_GetChildNodeByName(Node, Name);
-      Result := AXmlNode_SetValueAsUInt64(Node, Value);
+      Result := AXmlNode_SetValueAsUInt64(Child, Value);
     end;
   end
   else

@@ -2,7 +2,7 @@
 @Abstract Xml
 @Author Prof1983 <prof1983@ya.ru>
 @Created 03.05.2012
-@LastMod 23.11.2012
+@LastMod 27.11.2012
 }
 unit AXmlObj;
 
@@ -325,6 +325,7 @@ begin
     Exit;
   end;
   Value := StrToDateTime(S);
+  Result := True;
 end;
 
 function TProfXml.ReadParamValueByNameAsInt32(const Name: String; var Value: Int32): Boolean;
@@ -377,7 +378,7 @@ function TProfXml.ReadUInt08(Name: String; var Value: AUInt08): Boolean;
 var
   S: String;
 begin
-  Result := ReadStr(Name, S);
+  Result := ReadString('', Name, S);
   if not(Result) then Exit;
   Result := (_StrToUInt08(S, Value) = 0);
 end;

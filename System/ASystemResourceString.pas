@@ -2,7 +2,7 @@
 @Abstract ASystem resource
 @Author Prof1983 <prof1983@ya.ru>
 @Created 29.05.2011
-@LastMod 20.11.2012
+@LastMod 27.11.2012
 }
 unit ASystemResourceString;
 
@@ -40,10 +40,10 @@ var
 begin
   try
     Res := ASystemResourceString.Runtime_GetResourceString(
-            AStrings.String_ToPascalString(Section),
-            AStrings.String_ToPascalString(Name),
-            AStrings.String_ToPascalString(Default));
-    Result := AStrings.String_AssignP(Value, Res);
+            AString_ToPascalString(Section),
+            AString_ToPascalString(Name),
+            AString_ToPascalString(Default));
+    Result := AString_AssignP(Value, Res);
   except
     Result := 0;
   end;

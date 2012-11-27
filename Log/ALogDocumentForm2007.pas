@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Показывать Log в окне)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(22.10.2005)
-@LastMod(12.07.2012)
-@Version(0.5)
+@Abstract Показывать Log в окне
+@Author Prof1983 <prof1983@ya.ru>
+@Created 22.10.2005
+@LastMod 27.11.2012
 }
 unit ALogDocumentForm2007;
 
@@ -115,7 +114,7 @@ var
 begin
   Id := GetFreeId;
   FFormLog.AddNode(AType, Id, AParent, APrefix);
-  Result := TALogNode.Create2(ALogDocument2(Self), AParent, APrefix, Id);
+  Result := TALogNode.Create2(ALogDocument(Self), AParent, APrefix, Id);
   AddNode(Result);
 end;
 

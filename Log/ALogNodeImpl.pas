@@ -1,17 +1,18 @@
 {**
-@Abstract(Implementation of interfaces IALogNode)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(16.08.2005)
-@LastMod(09.07.2012)
-@Version(0.5)
+@Abstract Implementation of interfaces IALogNode
+@Author Prof1983 <prof1983@ya.ru>
+@Created 16.08.2005
+@LastMod 27.11.2012
 }
 unit ALogNodeImpl;
+
+Use ALogNodeObj.pas
 
 interface
 
 uses
   SysUtils,
-  ABase, ALogDocumentIntf, ALogGlobals, ALogNodeIntf, AMessageConst, ATypes;
+  ABase, ALogDocumentIntf, ALogGlobals, ALogNodeIntf, ALogNodeObj, AMessageConst, ATypes;
 
 type //** Нод логирования - элемент дерева логирования
   TALogNode = class(TInterfacedObject, IALogNode2)
@@ -31,9 +32,9 @@ type //** Нод логирования - элемент дерева логирования
     FGroup: TLogGroupMessage;
   protected
       //** Документ логирования к которому принадлежит этот нод
-    FLogDoc: ALogDocument2;
+    FLogDoc: ALogDocument;
       //** Родительский нод логирования к которому принадлежит этот нод
-    FParent: IALogNode2{Integer};
+    FParent: IALogNode2;
       //** Статус нода
     FStatus: TLogNodeStatus;
   protected
@@ -78,7 +79,7 @@ type //** Нод логирования - элемент дерева логирования
         const AStrMsg: WideString): Integer; virtual; deprecated; // Use AddToLog()
   public
     constructor Create(ALogDoc: IALogNode2; ALogPrefix: string; AID: Integer);
-    constructor Create2(LogDoc: ALogDocument2; Parent: Integer; LogPrefix: string; Id: Integer);
+    constructor Create2(LogDoc: ALogDocument; Parent: Integer; LogPrefix: string; Id: Integer);
   public
     property Id: Integer read FId write FId;
     property Msg: WideString read FMsg write FMsg;
@@ -88,9 +89,6 @@ type //** Нод логирования - элемент дерева логирования
     property Status: TLogNodeStatus read FStatus write SetStatus;
     property Typ: TLogTypeMessage read FType write FType;
   end;
-
-  //TALogNode2 = TALogNode;
-  //TLogNode = TALogNode;
 
 implementation
 
@@ -178,7 +176,7 @@ begin
   FStatus := lsNone;
 end;
 
-constructor TALogNode.Create2(LogDoc: ALogDocument2; Parent: Integer; LogPrefix: string; Id: Integer);
+constructor TALogNode.Create2(LogDoc: ALogDocument; Parent: Integer; LogPrefix: string; Id: Integer);
 begin
   inherited Create();
   FDTCreate := Now;
@@ -217,11 +215,6 @@ function TALogNode.Get_Id(): Integer;
 begin
   Result := FId;
 end;
-
-{function TALogNode.Get_LogDocument(): ILogDocument2;
-begin
-  Result := Get_Document();
-end;}
 
 function TALogNode.Get_LogType(): EnumTypeMessage;
 begin
@@ -276,11 +269,6 @@ procedure TALogNode.Set_Id(Value: Integer);
 begin
   FId := Value;
 end;
-
-{procedure TALogNode.Set_LogDocument(const Value: ILogDocument2);
-begin
-  //FLogDoc := Value;
-end;}
 
 procedure TALogNode.Set_LogType(Value: EnumTypeMessage);
 var

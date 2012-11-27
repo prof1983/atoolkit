@@ -2,9 +2,11 @@
 @Abstract Работа с Log. Классы для записи собщений программы в БД или файл или отображения в окне Log
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2005
-@LastMod 23.11.2012
+@LastMod 27.11.2012
 }
 unit ALogDocumentImpl;
+
+Use ALogDocumentObj.pas
 
 interface
 
@@ -73,7 +75,7 @@ type //** Документ работы с Log
     function NewNode(LogType: TLogTypeMessage; const Msg: WideString; Parent: Integer = 0; Id: Integer = 0): TALogNode; virtual;
   public
     constructor Create(ALogType: TLogType; AName: WideString = ''; AParent: TALogDocument = nil);
-    constructor Create2(ALogType: TLogType; AName: WideString = ''; AParent: ALogDocument2 = 0);
+    constructor Create2(ALogType: TLogType; AName: WideString = ''; AParent: ALogDocument = 0);
   published
     property Config: IProfNode read FConfig write FConfig;
       //** Тип лог-документа
@@ -127,7 +129,7 @@ begin
   //inherited Create(lNone);
 end;
 
-constructor TALogDocument.Create2(ALogType: TLogType; AName: WideString = ''; AParent: ALogDocument2 = 0);
+constructor TALogDocument.Create2(ALogType: TLogType; AName: WideString = ''; AParent: ALogDocument = 0);
 begin
   inherited Create2(AParent, 0, AName, 0);
   FDocumentElement := Self;
@@ -193,7 +195,7 @@ begin
   S := S + ' ' + Msg;
   if (Id = 0) then
     Id := GetFreeId;
-  Result := TALogNode.Create2(ALogDocument2(Self), Parent, S, Id);
+  Result := TALogNode.Create2(ALogDocument(Self), Parent, S, Id);
   AddNode(Result);
 end;
 

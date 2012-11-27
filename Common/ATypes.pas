@@ -1,8 +1,8 @@
-{**
+﻿{**
 @Abstract Globals types
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.02.2007
-@LastMod 16.11.2012
+@LastMod 27.11.2012
 }
 unit ATypes;
 
@@ -369,20 +369,9 @@ type //** Command params
 const
   STR_SWITCH: array[TSwitch] of string = ('TEST', 'DEBUG', 'SILENT', 'CONSOLE', 'INSTALL', 'UNINSTALL', 'START', 'STOP', 'NOSPLASH', 'TEACH', 'DEMO');
 
-{
 type
-  TClientType = (
-                  cltUnknown,
-                  cltInfo,
-                  cltConfig,
-                  cltWork
-                );
-  TClientTypeSet = set of TClientType;
-}
-
-type
-  ALogDocument = type AInt; // = TALogDocument
-  ALogDocument2 = ALogDocument;
+  ALogDocument = type AInt; // = TALogDocument or TALogDocumentObject
+  ALogNode = type AInt; // = TALogNode or TALogNodeObject
 
 // --- Entity ---
 
@@ -415,8 +404,6 @@ type
   end;
 
   TAttributes = array of TAttribute;
-
-  ALogNode = type AInt; // =TALogNode
 
 implementation
 

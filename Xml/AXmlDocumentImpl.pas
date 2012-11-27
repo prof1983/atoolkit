@@ -1,24 +1,26 @@
 ﻿{**
-@Abstract(Класс работы с XML документом)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(07.03.2007)
-@LastMod(18.07.2012)
+@Abstract Класс работы с XML документом
+@Author Prof1983 <prof1983@ya.ru>
+@Created 07.03.2007
+@LastMod 27.11.2012
 }
 unit AXmlDocumentImpl;
+
+{define ADepr}
 
 interface
 
 uses
   SysUtils, XmlDoc, XmlIntf,
   ABase, ABaseUtils2, AConsts2, ADocumentImpl, ATypes,
-  AXmlDocumentIntf, AXmlDocumentUtils, AXmlNodeUtils;
+  {$ifdef ADepr}AXmlDocumentIntf,{$endif} AXmlDocumentUtils, AXmlNodeUtils;
 
 type
   {**
     XML документ.
     Класс реализует интерфейс IProfXmlDocument
   }
-  TProfXmlDocument = class(TInterfacedObject, IProfXmlDocument)
+  TProfXmlDocument = class{$ifdef ADepr}(TInterfacedObject, IProfXmlDocument){$endif}
   public
       //** XML документ
     FDocument: IXmlDocument; //FDocument: TXmlDocument;
@@ -60,8 +62,10 @@ type
     function LoadFromFile(const AFileName: WideString): WordBool;
       //** Загрузить из строки (Не рекомендуется использовать)
     function LoadFromString(const Value1: WideString): WordBool;
+    {$ifdef ADepr}
       //** Сохранить в файл
     function SaveToFile(const FileName: WideString = ''): WordBool; deprecated; // Use XmlDocument_SaveToFile()
+    {$endif}
     function SaveToString(var Value: WideString): Boolean;
       //** Открыть документ
     function OpenDocument(): AError; safecall;
@@ -96,15 +100,6 @@ type
     property StandAlone: WideString read FStandAlone write FStandAlone;
     property Version: WideString read FVersion write FVersion;
   end;
-
-  TProfXmlDocument1 = TProfXmlDocument;
-
-  {TProfXmlDocument1 = class(TXmlDocument)
-  protected
-    //function GetChildNodeClass(const Node: IDOMNode): TXMLNodeClass; override;
-    //function GetDocumentElement(): IProfXmlNode; safecall;
-    //function Get_DocumentElement(): TProfXmlNode2;
-  end;}
 
 implementation
 
@@ -479,42 +474,12 @@ begin
   GetDocumentElement();
 end;
 
+{$ifdef ADepr}
 function TProfXmlDocument.SaveToFile(const FileName: WideString): WordBool;
-var
-  F: TextFile;
-  TmpFileName: WideString;
-  S: WideString;
 begin
-  if (FileName = '') then
-    TmpFileName := FFileName
-  else
-    TmpFileName := FileName;
-
-  if Assigned(FDocument) and FDocument.Active then
-  begin
-    try
-      FDocument.SaveToFile(TmpFileName);
-      Result := True;
-    except
-      on E: Exception do
-      begin
-        AddToLog(lgGeneral, ltError, err_SaveToFile, [TmpFileName, E.Message]);
-        Result := False;
-      end;
-    end;
-    Exit;
-  end;
-
-  SaveToString(S);
-
-  AssignFile(F, TmpFileName);
-  {$I-}
-  Rewrite(F);
-  WriteLn(F, String(S));
-  CloseFile(F);
-  {$I+}
-  Result := (IOResult = 0);
+  Result := ProfXmlDocument_SaveToFileP(AXmlDocument(Self), FileName);
 end;
+{$endif}
 
 function TProfXmlDocument.SaveToString(var Value: WideString): Boolean;
 begin
@@ -547,54 +512,5 @@ procedure TProfXmlDocument.SetFileName(const Value: WideString);
 begin
   FFileName := Value;
 end;
-
-{ TProfXmlDocument1 }
-
-{function TProfXmlDocument.CreateNode(const NameOrData: DOMString; NodeType: TNodeType = ntElement;
-    const AddlData: DOMString = ''): IXmlNode;
-begin
-  Result := TProfXmlNode.Create(CreateDOMNode(DOMDocument, NameOrData,
-    NodeType, AddlData), nil, Self);
-end;}
-
-{function TProfXmlDocument2.GetChildNodeClass(const Node: IDOMNode): TXMLNodeClass;
-begin
-  Result := TProfXmlNode;
-end;}
-
-{function TProfXmlDocument2.GetDocumentElement(): IProfXmlNode;
-begin
-  Result := IProfXmlNode(DocumentElement);
-end;}
-
-{function TProfXmlDocument2.Get_DocumentElement(): TProfXmlNode;
-begin
-  Result := TProfXmlNode(DocumentElement);
-end;}
-
-{function TProfXmlDocument.NewNode(const ADomNode: IDOMNode; const AParentNode: TXMLNode;
-    const OwnerDoc: TXMLDocument): TXmlNode;
-begin
-  Result := TProfXmlNode.Create(ADomNode, AParentNode, OwnerDoc);
-end;}
-
-(*function TProfXmlDocument.SaveToFile(const AFileName: WideString): WordBool;
-begin
-  {try
-    FDocument.SaveToFile(AFileName);
-    Result := True;
-  except
-    on E: Exception do begin
-      AddToLog(lgGeneral, ltError, err_SaveToFile, [AFileName, E.Message]);
-      Result := False;
-    end;
-  end;}
-  Result := False;
-  try
-    inherited SaveToFile(AFileName);
-    Result := True;
-  except
-  end;
-end;*)
 
 end.

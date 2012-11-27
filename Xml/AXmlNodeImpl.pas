@@ -2,7 +2,7 @@
 @Abstract Класс работы с XML нодами
 @Author Prof1983 <prof1983@ya.ru>
 @Created 07.03.2007
-@LastMod 23.11.2012
+@LastMod 27.11.2012
 }
 unit AXmlNodeImpl;
 
@@ -26,7 +26,7 @@ type //** Класс работы с XML нодами
     FChildNodes: AXmlNodeList; //FNodes: array of TProfXmlNode;
   protected // --- from TProfXmlNode1 ---
     FCollection: AXmlNodeCollection;
-    FDocument: TProfXmlDocument1;
+    FDocument: TProfXmlDocument;
     FName: WideString;
     FValue: WideString;
   public
@@ -270,7 +270,7 @@ type //** Класс работы с XML нодами
     function AddFromXml(Xml: TProfXmlNode2): AError;
     function Clear(): AError;
       {** @return TProfXmlNode1 }
-    function FindNode(const Name: WideString): AProfXmlNode; deprecated;
+    function FindNode(const Name: WideString): AProfXmlNode; deprecated; // Use GetNodeByName1()
     function Load(): Boolean; virtual;
       {** @param Xml - TProfXmlNode4 or TProfXmlNode2 }
     function LoadFromXml(Xml: AProfXmlNode{TProfXmlNode1}): Boolean;
@@ -322,11 +322,11 @@ type //** Класс работы с XML нодами
       {** Коллекция вложеных нодов }
     property Collection: AXmlNodeCollection read GetCollection;
     property Controller: IXmlNode read FNode write FNode {implements IXmlNode};
-    property Document: TProfXmlDocument1 read FDocument;
+    property Document: TProfXmlDocument read FDocument;
     property Node: IXmlNode read FNode; //implements IXmlNode;
     property NodeName: WideString read GetNodeName write SetNodeName;
     property NodeValue: OleVariant read GetNodeValue write SetNodeValue;
-    property OwnerDocument: TProfXmlDocument1 read FDocument;
+    property OwnerDocument: TProfXmlDocument read FDocument;
     property ValueStr: WideString read FValue write FValue;
     //property Xml: WideString read GetXml write SetXml;
     property XmlB: WideString read GetXmlB write SetXmlB;
@@ -334,53 +334,6 @@ type //** Класс работы с XML нодами
 
   TProfXmlNode1 = TProfXmlNode2;
   TProfXmlNode4 = TProfXmlNode2;
-  (*TProfXmlNode4 = class(TProfXmlNode2, IXmlNode)
-  public // IXmlNode
-    function GetAttribute(const AttrName: DOMString): OleVariant;
-    function GetAttributeNodes: IXMLNodeList;
-    function GetChildNodes: IXMLNodeList;
-    function GetChildValue(const IndexOrName: OleVariant): OleVariant;
-    function GetCollection: IXMLNodeCollection;
-    function GetDOMNode: IDOMNode;
-    function GetHasChildNodes: Boolean;
-    function GetIsTextElement: Boolean;
-    function GetLocalName: DOMString;
-    function GetNamespaceURI: DOMString;
-    function GetNodeName: DOMString;
-    function GetNodeType: TNodeType;
-    function GetNodeValue: OleVariant;
-    function GetOwnerDocument: IXMLDocument;
-    function GetParentNode: IXMLNode;
-    function GetPrefix: DOMString;
-    function GetReadOnly: Boolean;
-    function GetText: DOMString;
-    function GetXML: DOMString;
-    procedure SetAttribute(const AttrName: DOMString; const Value: OleVariant);
-    procedure SetChildValue(const IndexOrName: OleVariant; const Value: OleVariant);
-    procedure SetNodeValue(const Value: OleVariant);
-    procedure SetReadOnly(const Value: Boolean);
-    procedure SetText(const Value: DOMString);
-    { Methods }
-    function AddChild(const TagName: DOMString; Index: Integer = -1): IXMLNode; overload;
-    function AddChild(const TagName, NamespaceURI: DOMString;
-      GenPrefix: Boolean = False; Index: Integer = -1): IXMLNode; overload;
-    function CloneNode(Deep: Boolean): IXMLNode;
-    procedure DeclareNamespace(const Prefix, URI: DOMString);
-    function FindNamespaceURI(const TagOrPrefix: DOMString): DOMString;
-    function FindNamespaceDecl(const NamespaceURI: DOMString): IXMLNode;
-    function GetAttributeNS(const AttrName, NamespaceURI: DOMString): OleVariant;
-    function HasAttribute(const Name: DOMString): Boolean; overload;
-    function HasAttribute(const Name, NamespaceURI: DOMString): Boolean; overload;
-    function NextSibling: IXMLNode;
-    procedure Normalize;
-    function PreviousSibling: IXMLNode;
-    procedure Resync;
-    procedure SetAttributeNS(const AttrName, NamespaceURI: DOMString; const Value: OleVariant);
-    procedure TransformNode(const stylesheet: IXMLNode; var output: WideString); overload;
-    procedure TransformNode(const stylesheet: IXMLNode; const output: IXMLDocument); overload;
-  public
-    property XmlB: WideString read GetXmlB write SetXmlB;
-  end;*)
 
 implementation
 
@@ -390,7 +343,6 @@ implementation
   Выделить имя и атрибуты их строки "tag attr1="value1" attr2="value2""
 }
 procedure _GetNameAndAttributes(Value: WideString; var FAttributes: TAttributes; var FName: WideString);
-//procedure GetNameAndAttributes(Value: WideString; var FAttributes: TAttributes; var FName: WideString);
 var
   I: Integer;
   AName: WideString;
@@ -1006,7 +958,7 @@ begin
   FNode := nil;
   Self._AddRef();
   FCollection := AXmlNodeCollection_New1(AProfXmlNode1(Self));
-  FDocument := TProfXmlDocument1(Document);
+  FDocument := TProfXmlDocument(Document);
   FName := '';
   FValue := '';
 end;
@@ -1112,21 +1064,6 @@ begin
   else
     Result := nil;
 end;
-
-(*function TProfXmlNode2.GetNodeByName2(const Name: WideString): IProfXmlNode;
-var
-  Node: IXmlNode;
-begin
-  {
-  // Поиск XML нода
-  Node := ChildNodes.FindNode(AName);
-  // Если нету - создание XML нода
-  if not(Assigned(Node)) then
-    Node := AddChild(AName);
-  Result := Node as IProfXmlNode;
-  }
-  Result := nil;
-end;*)
 
 class function TProfXmlNode2.GetNodeByNameA(Node: IXmlNode; const Name: APascalString): IXmlNode;
 begin
@@ -1384,7 +1321,7 @@ begin
   for I := 0 to Xml1.GetCountNodes do
   begin
     ANode := Xml1.GetNode(I);
-    TProfXmlNode2(GetNodeByName(ANode.GetName)).LoadFromXml(AProfXmlNode(ANode));
+    TProfXmlNode2(GetNodeByName(ANode.GetNodeName())).LoadFromXml(AProfXmlNode(ANode));
   end;
   Result := True;
 end;
@@ -1398,7 +1335,7 @@ begin
     Result := AProfXmlNode(TProfXmlNode2.Create(FNode.AddChild(ANodeName)))
   else if Assigned(Self.FDocument) then
   begin
-    Node := AXmlNode1_New(AXmlDocument(Self.FDocument));
+    Node := AXmlNode_New1(AXmlDocument(Self.FDocument));
     Nodes := AXmlNode_GetChildNodes(AXmlNode(Self));
     Result := AXmlNodeList_Add(Nodes, Node);
   end
@@ -1411,7 +1348,7 @@ end;
 
 function TProfXmlNode2.NodeExist(AName: WideString): Boolean;
 begin
-  Result := (FindNode(AName) <> 0);
+  Result := (GetNodeByName1(AName) <> nil);
 end;
 
 function TProfXmlNode2.ReadBool(const AName: WideString; var Value: WordBool): WordBool;
@@ -1600,7 +1537,7 @@ end;
 
 procedure TProfXmlNode2.SetDocument_Priv(Document: AXmlDocument);
 begin
-  FDocument := TProfXmlDocument1(Document);
+  FDocument := TProfXmlDocument(Document);
 end;
 
 procedure TProfXmlNode2.SetAsString(const Value: WideString);
@@ -1863,210 +1800,5 @@ procedure TProfXmlNode2._SetValueAsString(Value: WideString);
 begin
   SetValueAsString(Value);
 end;
-
-{ TProfXmlNode4 }
-
-(*
-function TProfXmlNode4.GetAttribute(const AttrName: DOMString): OleVariant;
-begin
-  Result := FNode.Attributes[AttrName];
-end;
-
-function TProfXmlNode4.GetAttributeNodes: IXMLNodeList;
-begin
-  Result := FNode.AttributeNodes;
-end;
-
-function TProfXmlNode4.GetChildNodes: IXMLNodeList;
-begin
-  Result := FNode.ChildNodes;
-end;
-
-function TProfXmlNode4.GetChildValue(const IndexOrName: OleVariant): OleVariant;
-begin
-  Result := FNode.ChildValues[IndexOrName];
-end;
-
-function TProfXmlNode4.GetCollection: IXMLNodeCollection;
-begin
-  Result := FNode.Collection;
-end;
-
-function TProfXmlNode4.GetDOMNode: IDOMNode;
-begin
-  Result := FNode.DOMNode;
-end;
-
-function TProfXmlNode4.GetHasChildNodes: Boolean;
-begin
-  Result := FNode.HasChildNodes;
-end;
-
-function TProfXmlNode4.GetIsTextElement: Boolean;
-begin
-  Result := FNode.IsTextElement;
-end;
-
-function TProfXmlNode4.GetLocalName: DOMString;
-begin
-  Result := FNode.LocalName;
-end;
-
-function TProfXmlNode4.GetNamespaceURI: DOMString;
-begin
-  Result := FNode.NamespaceURI;
-end;
-
-function TProfXmlNode4.GetNodeName: DOMString;
-begin
-  Result := FNode.NodeName;
-end;
-
-function TProfXmlNode4.GetNodeType: TNodeType;
-begin
-  Result := FNode.NodeType;
-end;
-
-function TProfXmlNode4.GetNodeValue: OleVariant;
-begin
-  Result := FNode.NodeValue;
-end;
-
-function TProfXmlNode4.GetOwnerDocument: IXMLDocument;
-begin
-  Result := FNode.OwnerDocument;
-end;
-
-function TProfXmlNode4.GetParentNode: IXMLNode;
-begin
-  Result := FNode.ParentNode;
-end;
-
-function TProfXmlNode4.GetPrefix: DOMString;
-begin
-  Result := FNode.Prefix;
-end;
-
-function TProfXmlNode4.GetReadOnly: Boolean;
-begin
-  Result := FNode.ReadOnly;
-end;
-
-function TProfXmlNode4.GetText: DOMString;
-begin
-  Result := FNode.Text;
-end;
-
-function TProfXmlNode4.GetXML: DOMString;
-begin
-  Result := FNode.XML;
-end;
-
-procedure TProfXmlNode4.SetAttribute(const AttrName: DOMString; const Value: OleVariant);
-begin
-  FNode.Attributes[AttrName] := Value;
-end;
-
-procedure TProfXmlNode4.SetChildValue(const IndexOrName: OleVariant; const Value: OleVariant);
-begin
-  FNode.ChildValues[IndexOrName] := Value;
-end;
-
-procedure TProfXmlNode4.SetNodeValue(const Value: OleVariant);
-begin
-  FNode.NodeValue := Value;
-end;
-
-procedure TProfXmlNode4.SetReadOnly(const Value: Boolean);
-begin
-  FNode.ReadOnly := Value;
-end;
-
-procedure TProfXmlNode4.SetText(const Value: DOMString);
-begin
-  FNode.Text := Value;
-end;
-
-function TProfXmlNode4.AddChild(const TagName: DOMString; Index: Integer = -1): IXMLNode;
-begin
-  Result := FNode.AddChild(TagName, Index);
-end;
-
-function TProfXmlNode4.AddChild(const TagName, NamespaceURI: DOMString;
-  GenPrefix: Boolean = False; Index: Integer = -1): IXMLNode;
-begin
-  Result := FNode.AddChild(TagName, NamespaceURI, GenPrefix, Index);
-end;
-
-function TProfXmlNode4.CloneNode(Deep: Boolean): IXMLNode;
-begin
-  Result := FNode.CloneNode(Deep);
-end;
-
-procedure TProfXmlNode4.DeclareNamespace(const Prefix, URI: DOMString);
-begin
-  FNode.DeclareNamespace(Prefix, URI);
-end;
-
-function TProfXmlNode4.FindNamespaceURI(const TagOrPrefix: DOMString): DOMString;
-begin
-  Result := FNode.FindNamespaceURI(TagOrPrefix);
-end;
-
-function TProfXmlNode4.FindNamespaceDecl(const NamespaceURI: DOMString): IXMLNode;
-begin
-  Result := FNode.FindNamespaceDecl(NamespaceURI);
-end;
-
-function TProfXmlNode4.GetAttributeNS(const AttrName, NamespaceURI: DOMString): OleVariant;
-begin
-  Result := FNode.GetAttributeNS(AttrName, NamespaceURI);
-end;
-
-function TProfXmlNode4.HasAttribute(const Name: DOMString): Boolean;
-begin
-  Result := FNode.HasAttribute(Name);
-end;
-
-function TProfXmlNode4.HasAttribute(const Name, NamespaceURI: DOMString): Boolean;
-begin
-  Result := FNode.HasAttribute(Name, NamespaceURI);
-end;
-
-function TProfXmlNode4.NextSibling: IXMLNode;
-begin
-  Result := FNode.NextSibling();
-end;
-
-procedure TProfXmlNode4.Normalize;
-begin
-  FNode.Normalize();
-end;
-
-function TProfXmlNode4.PreviousSibling: IXMLNode;
-begin
-  Result := FNode.PreviousSibling();
-end;
-
-procedure TProfXmlNode4.Resync;
-begin
-  FNode.Resync();
-end;
-
-procedure TProfXmlNode4.SetAttributeNS(const AttrName, NamespaceURI: DOMString; const Value: OleVariant);
-begin
-  FNode.SetAttributeNS(AttrName, NamespaceURI, Value);
-end;
-
-procedure TProfXmlNode4.TransformNode(const stylesheet: IXMLNode; var output: WideString);
-begin
-  FNode.TransformNode(Stylesheet, Output);
-end;
-
-procedure TProfXmlNode4.TransformNode(const stylesheet: IXMLNode; const output: IXMLDocument);
-begin
-  FNode.TransformNode(Stylesheet, Output);
-end;
-*)
 
 end.

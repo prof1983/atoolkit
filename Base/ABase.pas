@@ -2,7 +2,7 @@
 @abstract Base types and consts
 @author Prof1983 <prof1983@ya.ru>
 @created 06.03.2008
-@lastmod 08.08.2012
+@lastmod 27.11.2012
 }
 unit ABase;
 
@@ -202,9 +202,9 @@ type
   AIterator = type AInt; // =TAEntityIterator (=IAIterator)
 
   AXmlNodeCollection = type AInt; // TProfXmlCollection
-  AXmlDocument = ADocument; // AXmlDocumentImpl.TProfXmlDocument or TProfXmlDocument1
-  AProfXmlDocument = type AXmlDocument; // AXmlDocumentImpl.TProfXmlDocument
-  AProfXmlDocument1 = type Integer; // TProfXmlDocument1
+  AXmlDocument = ADocument; // AXmlDocumentImpl.TProfXmlDocument
+  AProfXmlDocument = AXmlDocument; // deprecated
+  AProfXmlDocument1 = AXmlDocument; // deprecated
   AXmlNode = ANode; // TProfXmlNode or TProfXmlNode1 or TProfXmlNode2 or TANode
   AProfXmlNode = type AXmlNode; // AXmlNodeImpl.TProfXmlNode or TProfXmlNode2
   AProfXmlNode1 = type AProfXmlNode; // TProfXmlNode1

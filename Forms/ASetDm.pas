@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Настройки импорта/экспотра и синхронизации справочкиков БД)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(24.04.2006)
-@LastMod(04.07.2012)
-@Version(0.5)
+@Abstract Настройки импорта/экспотра и синхронизации справочкиков БД
+@Author Prof1983 <prof1983@ya.ru>
+@Created 24.04.2006
+@LastMod 27.11.2012
 }
 unit ASetDm;
 
@@ -484,10 +483,10 @@ procedure TfrSetDM.btLoadClick(Sender: TObject);
 
   procedure Load(const AFileName: WideString);
   var
-    xd: TProfXmlDocument1;
+    xd: TProfXmlDocument;
     OldName: WideString;
   begin
-    xd := TProfXmlDocument1.Create(AFileName);
+    xd := TProfXmlDocument.Create(AFileName);
     try
       // Загрузить все, кроме имени
       OldName := FDM.Name;
@@ -534,9 +533,9 @@ procedure TfrSetDM.btSaveClick(Sender: TObject);
 
   procedure Save(const AFileName: WideString);
   var
-    xd: TProfXmlDocument1;
+    xd: TProfXmlDocument;
   begin
-    xd := TProfXmlDocument1.Create(AFileName);
+    xd := TProfXmlDocument.Create(AFileName);
     FDM.ConfigureSave(xd.DocumentElement);
     xd.SaveToFile();
     xd.Free();

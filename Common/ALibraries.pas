@@ -2,7 +2,7 @@
 @Abstract ALibraries (.dll, .so)
 @Author Prof1983 <prof1983@ya.ru>
 @Created 02.10.2005
-@LastMod 13.08.2012
+@LastMod 27.11.2012
 }
 unit ALibraries;
 
@@ -250,11 +250,7 @@ end;
 
 function ALibrary_OpenWS(const FileName: AWideString; Flags: ALibraryFlags): ALibrary;
 begin
-  try
-    Result := ALibraries.Library_Open(FileName, Flags);
-  except
-    Result := 0;
-  end;
+  Result := ALibrary_OpenP(FileName, Flags);
 end;
 
 // --- Library ---

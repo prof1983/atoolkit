@@ -2,7 +2,7 @@
 @Abstract Класс работы с XML нодами
 @Author Prof1983 <prof1983@ya.ru>
 @Created 07.03.2007
-@LastMod 27.11.2012
+@LastMod 28.11.2012
 }
 unit AXmlNodeImpl;
 
@@ -389,7 +389,7 @@ begin
     else
       AValue := ''; // Пустое значение
     // Создание атрибута
-    AXmlAttributes_SetAttribute(FAttributes, AName, AValue);
+    AXmlAttributes_SetAttributeP(FAttributes, AName, AValue);
   until Length(Value) = 0;
 end;
 
@@ -542,7 +542,7 @@ begin
       Result := '';
   end
   else
-    Result := AXmlAttribures_GetAttribute(FAttributes1, Name, UpperCase);
+    Result := AXmlAttributes_GetAttributeP(FAttributes1, Name, UpperCase);
 end;
 
 function TProfXmlNode.GetAttributes(): IProfAttributes;
@@ -1667,7 +1667,7 @@ end;
 
 procedure TProfXmlNode2.Set_Attribute(const Name, Value: WideString);
 begin
-  AXmlAttributes_SetAttribute(FAttributes1, Name, Value); //FNode.SetAttribute(Name, Value);
+  AXmlAttributes_SetAttributeP(FAttributes1, Name, Value);
 end;
 
 procedure TProfXmlNode2.Set_NodeName(const Value: WideString);

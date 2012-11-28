@@ -2,7 +2,7 @@
 @Abstract Класс работы с XML документом
 @Author Prof1983 <prof1983@ya.ru>
 @Created 07.03.2007
-@LastMod 27.11.2012
+@LastMod 28.11.2012
 }
 unit AXmlDocumentImpl;
 
@@ -273,7 +273,7 @@ begin
   end;
 
   // DocumentElement
-  FDocumentElement := AXmlNode2_New(FDocument.DocumentElement);
+  FDocumentElement := AXmlNode_New2(FDocument.DocumentElement);
 
   FInitialized := True;
 end;
@@ -391,7 +391,7 @@ begin
       Value := Copy(Value, I, Length(Value));
       //S := strDeleteSpace(S);
 
-      Node := AXmlNode1_New(0);
+      Node := AXmlNode_New1(0);
       AXmlNode_SetXml(Node, '<' + S + '/>');
       if (AnsiUpperCase(AXmlNode_GetName(Node)) = 'XML') then
       begin

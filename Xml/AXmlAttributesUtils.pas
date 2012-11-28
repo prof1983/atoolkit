@@ -1,9 +1,8 @@
 {**
-@Abstract(AXmlAttributes functions)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(29.06.2012)
-@LastMod(12.07.2012)
-@Version(0.5)
+@Abstract AXmlAttributes functions
+@Author Prof1983 <prof1983@ya.ru>
+@Created 29.06.2012
+@LastMod 28.11.2012
 }
 unit AXmlAttributesUtils;
 
@@ -28,15 +27,43 @@ function SetAttribute(var Attributes: TAttributes;
 
 // --- AXmlAttribures ---
 
-function AXmlAttribures_GetAttribute(Attributes: TAttributes;
+function AXmlAttributes_GetAttributeP(const Attributes: TAttributes;
     const Name: APascalString; UpperCase: ABoolean): APascalString;
-function AXmlAttributes_SetAttribute(var Attributes: TAttributes;
+
+function AXmlAttributes_SetAttributeP(var Attributes: TAttributes;
     const Name, Value: APascalString): AError;
+
+// --- Deprecated ---
+
+function AXmlAttribures_GetAttribute(const Attributes: TAttributes;
+    const Name: APascalString; UpperCase: ABoolean): APascalString; deprecated; // Use AXmlAttributes_GetAttributeP()
+
+function AXmlAttributes_SetAttribute(var Attributes: TAttributes;
+    const Name, Value: APascalString): AError; deprecated; // Use AXmlAttributes_SetAttributeP()
 
 implementation
 
 function GetAttribute(var Attributes: TAttributes; const Name: WideString;
     UpperCase: Boolean = False): WideString;
+begin
+  Result := AXmlAttributes_GetAttributeP(Attributes, Name, UpperCase);
+end;
+
+function SetAttribute(var Attributes: TAttributes; const Name, Value: WideString): AError;
+begin
+  Result := AXmlAttributes_SetAttributeP(Attributes, Name, Value);
+end;
+
+// --- AXmlAttribures ---
+
+function AXmlAttribures_GetAttribute(const Attributes: TAttributes;
+    const Name: APascalString; UpperCase: ABoolean): APascalString;
+begin
+  Result := AXmlAttributes_GetAttributeP(Attributes, Name, UpperCase);
+end;
+
+function AXmlAttributes_GetAttributeP(const Attributes: TAttributes; const Name: APascalString;
+    UpperCase: ABoolean): APascalString;
 var
   I: Integer;
 begin
@@ -65,7 +92,14 @@ begin
   end;
 end;
 
-function SetAttribute(var Attributes: TAttributes; const Name, Value: WideString): AError;
+function AXmlAttributes_SetAttribute(var Attributes: TAttributes;
+    const Name, Value: APascalString): AError;
+begin
+  Result := AXmlAttributes_SetAttributeP(Attributes, Name, Value);
+end;
+
+function AXmlAttributes_SetAttributeP(var Attributes: TAttributes;
+    const Name, Value: APascalString): AError;
 var
   I: Integer;
 begin
@@ -80,6 +114,7 @@ begin
     if (Attributes[I].Name = Name) then
     begin
       Attributes[I].Value := Value;
+      Result := 1;
       Exit;
     end;
   end;
@@ -89,20 +124,6 @@ begin
   Attributes[I].Name := Name;
   Attributes[I].Value := Value;
   Result := 0;
-end;
-
-// --- AXmlAttribures ---
-
-function AXmlAttribures_GetAttribute(Attributes: TAttributes; const Name: APascalString;
-    UpperCase: ABoolean): APascalString;
-begin
-  Result := GetAttribute(Attributes, Name, UpperCase);
-end;
-
-function AXmlAttributes_SetAttribute(var Attributes: TAttributes;
-    const Name, Value: APascalString): AError;
-begin
-  Result := SetAttribute(Attributes, Name, Value);
 end;
 
 end.

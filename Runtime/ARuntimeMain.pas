@@ -2,7 +2,7 @@
 @Abstract ARuntime
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.08.2012
-@LastMod 15.11.2012
+@LastMod 28.11.2012
 }
 unit ARuntimeMain;
 
@@ -11,7 +11,7 @@ unit ARuntimeMain;
 interface
 
 uses
-  ABase, ABaseTypes, ARuntimeBase, ARuntimeData;
+  ABase, ABaseTypes, ARuntimeBase, ARuntimeData, AStringBaseUtils;
 
 // --- ARuntime ---
 
@@ -316,16 +316,20 @@ function ARuntime_GetModuleNameByUid(Uid: AInteger; Name: AStr; MaxLen: AInteger
 var
   Index: Integer;
 begin
+  if (MaxLen <= 0) then
+  begin
+    Result := 0;
+    Exit;
+  end;
   Index := ARuntime_FindModuleByUid(Uid);
   if (Index >= 0) and (Index < Length(FModules)) then
   begin
     Result := Length(FModules[Index].Name);
-    if (Result < MaxLen) then
-      Name := PAnsiChar(FModules[Index].Name);
+    AStr_AssignA(Name, FModules[Index].Name, MaxLen);
   end
   else
   begin
-    Name := PAnsiChar('');
+    Name[0] := #0;
     Result := 0;
   end;
 end;

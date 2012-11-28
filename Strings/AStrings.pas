@@ -2,7 +2,7 @@
 @Abstract AStrings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.05.2011
-@LastMod 05.09.2012
+@LastMod 28.11.2012
 }
 unit AStrings;
 
@@ -10,15 +10,7 @@ interface
 
 uses
   SysUtils,
-  ABase;
-
-// --- AStr ---
-
-function AStr_AssignP(S: AStr; const Source: APascalString; MaxLen: AInt): AError;
-
-function AStr_GetLength(S: AStr): AInt;
-
-function AStr_ToPascalString(S: AStr): APascalString;
+  ABase, AStringBaseUtils;
 
 // --- AString ---
 
@@ -83,145 +75,11 @@ function Str_CopyA({var} S: AString; {const} Value: PAnsiChar): ASize; stdcall;
 function Str_CopyW({var} S: AString; {const} Value: PWideChar): ASize; stdcall;
 function Str_CopyWS({var} S: AString; const Value: WideString): ASize; stdcall;
 function Str_Length({const} S: AString): AInteger; stdcall;
-// Use String_ToPascalString()
-function Str_ToP({const} S: AString): APascalString; stdcall;
-// Use String_ToUtf8String()
-function Str_ToUtf8String({const} S: AString): UTF8String; stdcall;
-//function Str_ToWS({const} S: AString): WideString; stdcall;
+function Str_ToP({const} S: AString): APascalString; stdcall; deprecated; // Use String_ToPascalString()
+function Str_ToUtf8String({const} S: AString): UTF8String; stdcall; deprecated; // Use String_ToUtf8String()
 function Str_Free({var} S: AString): AError; stdcall;
 
-(*
-{$IFDEF A03}
-function A_String_AssignW(var S: AString; const Value: WideString): ASize;
-function A_String_Clear(var S: AString_Type): AInteger; stdcall;
-function A_String_Copy(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
-function A_String_CopyA(var S: AString_Type; const Value: string{AnsiString}): ASize; stdcall;
-function A_String_CopyUtf8(var S: AString_Type; const Value: UTF8String{UnicodeString}): ASize; stdcall;
-//function A_String_CopyUtf32(var S: AString_Type; const Value: UCS4String{UnicodeString}): ASize; stdcall;
-function A_String_CopyW(var S: AString_Type; const Value: WideString): ASize; stdcall;
-function A_String_Free(var S: AString_Type): AInteger; stdcall;
-function A_String_Length(const S: AString_Type): AInteger; stdcall;
-function A_String_Realloc(var S: AString_Type; NewAllocSize: ASize): ASize; stdcall;
-function A_String_ToUtf8String(const S: AString_Type): UTF8String; stdcall;
-function A_String_ToWideString(const S: AString_Type): WideString; stdcall;
-{$ENDIF A03}
-*)
-
-{ StrLCopy copies at most MaxLen characters from Source to Dest and returns Dest. }
-function StrLCopy(Dest: PAnsiChar; const Source: PAnsiChar; MaxLen: Cardinal): PAnsiChar;
-
-{ StrPLCopy copies at most MaxLen characters from the Pascal style string
-  Source into Dest and returns Dest. }
-function StrPLCopy(Dest: PAnsiChar; const Source: AnsiString; MaxLen: Cardinal): PAnsiChar;
-
-function StrCopyLWP(Dest: PWideChar; const Source: WideString; MaxLen: AUInt): PWideChar;
-
 implementation
-
-{ Str }
-
-function StrCopyLWP(Dest: PWideChar; const Source: WideString; MaxLen: AUInt): PWideChar;
-begin
-  if (Length(Source) > Integer(MaxLen)) then
-    Move(Source, Dest^, (MaxLen+1)*2)
-  else
-    Move(Source, Dest^, (Length(Source)+1)*2);
-  Result := Dest;
-end;
-
-// From DelphiXE2
-function StrLCopy(Dest: PAnsiChar; const Source: PAnsiChar; MaxLen: Cardinal): PAnsiChar;
-var
-  Len: Cardinal;
-begin
-  Result := Dest;
-  Len := StrLen(Source);
-  if Len > MaxLen then
-    Len := MaxLen;
-  Move(Source^, Dest^, Len * SizeOf(AnsiChar));
-  Dest[Len] := #0;
-end;
-// from SysUtils (Delphi7)
-{function StrLCopy(Dest: PAnsiChar; const Source: PAnsiChar; MaxLen: Cardinal): PAnsiChar; assembler;
-asm
-        PUSH    EDI
-        PUSH    ESI
-        PUSH    EBX
-        MOV     ESI,EAX
-        MOV     EDI,EDX
-        MOV     EBX,ECX
-        XOR     AL,AL
-        TEST    ECX,ECX
-        JZ      @@1
-        REPNE   SCASB
-        JNE     @@1
-        INC     ECX
-@@1:    SUB     EBX,ECX
-        MOV     EDI,ESI
-        MOV     ESI,EDX
-        MOV     EDX,EDI
-        MOV     ECX,EBX
-        SHR     ECX,2
-        REP     MOVSD
-        MOV     ECX,EBX
-        AND     ECX,3
-        REP     MOVSB
-        STOSB
-        MOV     EAX,EDX
-        POP     EBX
-        POP     ESI
-        POP     EDI
-end;}
-
-{ From DelphiXE2
-  The initial developer of the original code is Fastcode.
-  Portions created by the initial developer are Copyright (C) 2002-2007 the initial developer.
-  Contributor(s): Pierre le Riche }
-function StrLen(const Str: PAnsiChar): Cardinal;
-asm //StackAlignSafe
-        {Check the first byte}
-        CMP BYTE PTR [EAX], 0
-        JE @ZeroLength
-        {Get the negative of the string start in edx}
-        MOV EDX, EAX
-        NEG EDX
-        {Word align}
-        ADD EAX, 1
-        AND EAX, -2
-@ScanLoop:
-        MOV CX, [EAX]
-        ADD EAX, 2
-        TEST CL, CH
-        JNZ @ScanLoop
-        TEST CL, CL
-        JZ @ReturnLess2
-        TEST CH, CH
-        JNZ @ScanLoop
-        LEA EAX, [EAX + EDX - 1]
-        RET
-@ReturnLess2:
-        LEA EAX, [EAX + EDX - 2]
-        RET
-@ZeroLength:
-        XOR EAX, EAX
-end;
-// from SysUtils (Delphi7)
-{function StrLen(const Str: PChar): Cardinal; assembler;
-asm
-        MOV     EDX,EDI
-        MOV     EDI,EAX
-        MOV     ECX,0FFFFFFFFH
-        XOR     AL,AL
-        REPNE   SCASB
-        MOV     EAX,0FFFFFFFEH
-        SUB     EAX,ECX
-        MOV     EDI,EDX
-end;}
-
-function StrPLCopy(Dest: PAnsiChar; const Source: AnsiString; MaxLen: Cardinal): PAnsiChar;
-begin
-  Result := StrLCopy(Dest, PAnsiChar(Source), MaxLen);
-end;
 
 { Public }
 
@@ -243,28 +101,6 @@ begin
     Result := S[Index]
   else
     Result := #0;
-end;
-
-// --- AStr ---
-
-function AStr_AssignP(S: AStr; const Source: APascalString; MaxLen: AInt): AError;
-begin
-  try
-    StrPLCopy(S, AnsiString(Source), MaxLen);
-    Result := 0;
-  except
-    Result := -1;
-  end;
-end;
-
-function AStr_GetLength(S: AStr): AInt;
-begin
-  Result := StrLen(S);
-end;
-
-function AStr_ToPascalString(S: AStr): APascalString;
-begin
-  Result := AnsiString(S);
 end;
 
 // --- AString ---

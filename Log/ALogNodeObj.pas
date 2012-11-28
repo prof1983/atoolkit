@@ -2,7 +2,7 @@
 @Abstract ALogNode object
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2005
-@LastMod 27.11.2012
+@LastMod 28.11.2012
 }
 unit ALogNodeObj;
 
@@ -90,6 +90,7 @@ function TALogNodeObject.AddMsg(const AMsg: WideString): Integer;
 var
   LogDoc: TALogDocumentObject;
 begin
+  xxx
   if Assigned(TObject(FLogNode.LogDoc)) then
   begin
     LogDoc := TObject(FLogNode.LogDoc) as TALogDocumentObject;

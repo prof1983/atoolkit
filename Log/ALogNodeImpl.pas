@@ -2,21 +2,21 @@
 @Abstract Implementation of interfaces IALogNode
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2005
-@LastMod 27.11.2012
+@LastMod 28.11.2012
 }
 unit ALogNodeImpl;
-
-Use ALogNodeObj.pas
 
 interface
 
 uses
   SysUtils,
-  ABase, ALogDocumentIntf, ALogGlobals, ALogNodeIntf, ALogNodeObj, AMessageConst, ATypes;
+  ABase, ALogGlobals, ALogNodeIntf, ALogNodeObj, AMessageConst, ATypes;
 
 type //** Нод логирования - элемент дерева логирования
   TALogNode = class(TInterfacedObject, IALogNode2)
   protected
+    FLogNode: TALogNodeObject;
+    {
       //** Дата создания
     FDTCreate: TDateTime;
       //** Identifier
@@ -37,18 +37,16 @@ type //** Нод логирования - элемент дерева логирования
     FParent: IALogNode2;
       //** Статус нода
     FStatus: TLogNodeStatus;
+    }
   protected
-    //function Get_Document(): ILogDocument2;
     function Get_GroupEnum(): EnumGroupMessage;
     function Get_Id(): Integer;
-    //function Get_LogDocument(): ILogDocument2;
     function Get_LogType(): EnumTypeMessage;
     function Get_Parent(): Integer;
     function Get_StatusEnum(): StatusNodeEnum;
     function Get_StrMsg(): WideString;
     procedure Set_GroupEnum(Value: EnumGroupMessage);
     procedure Set_Id(Value: Integer);
-    //procedure Set_LogDocument(const Value: ILogDocument2);
     procedure Set_LogType(Value: EnumTypeMessage);
     procedure Set_Parent(Value: Integer);
     procedure Set_StatusEnum(Value: StatusNodeEnum);
@@ -81,13 +79,16 @@ type //** Нод логирования - элемент дерева логирования
     constructor Create(ALogDoc: IALogNode2; ALogPrefix: string; AID: Integer);
     constructor Create2(LogDoc: ALogDocument; Parent: Integer; LogPrefix: string; Id: Integer);
   public
-    property Id: Integer read FId write FId;
-    property Msg: WideString read FMsg write FMsg;
-    property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
-    property Params: WideString read FParams write FParams;
-    property Group: TLogGroupMessage read FGroup write FGroup;
-    property Status: TLogNodeStatus read FStatus write SetStatus;
-    property Typ: TLogTypeMessage read FType write FType;
+    property Id: Integer read Get_Id write Set_Id;
+    property LogNode: TALogNodeObject read FLogNode;
+    property Msg: WideString read Get_StrMsg write Set_StrMsg;
+    {
+    property OnAddToLog: TAddToLogProc read GetOnAddToLog write SetOnAddToLog;
+    property Params: WideString read GetParams write SetParams;
+    property Group: TLogGroupMessage read GetGroup write SetGroup;
+    property Status: TLogNodeStatus read GetStatus write SetStatus;
+    property Typ: TLogTypeMessage read GetType write SetType;
+    }
   end;
 
 implementation
@@ -98,108 +99,38 @@ uses
 { TALogNode }
 
 function TALogNode.AddMsg(const AMsg: WideString): Integer;
-var
-  LogDoc: TALogDocument;
 begin
-  if Assigned(TObject(FLogDoc)) then
-  begin
-    LogDoc := TObject(FLogDoc) as TALogDocument;
-    LogDoc.AddMsg(AMsg);
-  end;
-  Result := 0;
-  if Assigned(FParent) then
-    FParent.AddMsg(AMsg);
+  Result := FLogNode.AddMsg(AMsg);
 end;
 
 function TALogNode.AddStr(const AStr: WideString): Integer;
-var
-  LogDoc: TALogDocument;
 begin
-  if Assigned(TObject(FLogDoc)) then
-  begin
-    LogDoc := TObject(FLogDoc) as TALogDocument;
-    LogDoc.AddStr(AStr);
-  end;
-  Result := 0;
-  if Assigned(FParent) then
-    FParent.AddStr(AStr);
+  Result := FLogNode.AddStr(AStr);
 end;
 
 function TALogNode.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
     const StrMsg: WideString): AInteger;
-var
-  LogDoc: TALogDocument;
 begin
-  Result := -1;
-
-  if Assigned(FOnAddToLog) then
-  try
-    Result := FOnAddToLog(LogGroup, LogType, StrMsg);
-  except
-  end;
-
-  if Assigned(TObject(FLogDoc)) then
-  try
-    LogDoc := TObject(FLogDoc) as TALogDocument;
-    Result := LogDoc.AddToLog(LogGroup, LogType, StrMsg)
-  except
-  end;
-
-  if Assigned(FParent) then
-  try
-    Result := FParent.AddToLog(LogGroup, LogType, StrMsg);
-  except
-  end;
+  Result := FLogNode.AddToLog(LogGroup, LogType, StrMsg);
 end;
 
 function TALogNode.AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
     const StrMsg: string; Params: array of const): Boolean;
-var
-  S: WideString;
 begin
-  try
-    S := Format(StrMsg, Params);
-  except
-    S := StrMsg;
-  end;
-  Result := (AddToLog(LogGroup, LogType, S) > 0);
+  Result := FLogNode.AddToLog2(LogGroup, LogType, StrMsg, Params);
 end;
 
 constructor TALogNode.Create(ALogDoc: IALogNode2; ALogPrefix: string; AID: Integer);
 begin
   inherited Create();
-  FDTCreate := Now;
-  FID := AID;
-  FLogDoc := 0;
-  FParent := ALogDoc;
-  FMsg := ALogPrefix;
-  FStatus := lsNone;
+  FLogNode := TALogNodeObject.Create(0, 0, ALogPrefix, AID);
 end;
 
 constructor TALogNode.Create2(LogDoc: ALogDocument; Parent: Integer; LogPrefix: string; Id: Integer);
 begin
   inherited Create();
-  FDTCreate := Now;
-  FId := Id;
-  FLogDoc := LogDoc;
-  FParent := nil;
-  FMsg := LogPrefix;
-  FStatus := lsNone;
+  FLogNode := TALogNodeObject.Create(LogDoc, Parent, LogPrefix, Id);
 end;
-
-{function TALogNode.Get_Document(): ILogDocument2;
-var
-  LogDoc: TALogDocument;
-begin
-  if not(Assigned(TObject(FLogDoc))) then
-  begin
-    Result := nil;
-    Exit;
-  end;
-
-  LogDoc := TObject(FLogDoc) as TALogDocument;
-  Result := TObject(LogDoc) as ILogDocument;
-end;}
 
 function TALogNode.GetSelf(): ALogNode;
 begin
@@ -208,33 +139,32 @@ end;
 
 function TALogNode.Get_GroupEnum(): EnumGroupMessage;
 begin
-  Result := OLE_GROUP_MESSAGE[FGroup];
+  Result := OLE_GROUP_MESSAGE[FLogNode.GetGroup()];
 end;
 
 function TALogNode.Get_Id(): Integer;
 begin
-  Result := FId;
+  Result := FLogNode.GetId();
 end;
 
 function TALogNode.Get_LogType(): EnumTypeMessage;
 begin
-  Result := OLE_TYPE_MESSAGE[FType];
+  Result := OLE_TYPE_MESSAGE[FLogNode.GetLogType()];
 end;
 
 function TALogNode.Get_Parent(): Integer;
 begin
-  //Result := FParent;
-  Result := 0;
+  Result := FLogNode.GetParent();
 end;
 
 function TALogNode.Get_StatusEnum(): StatusNodeEnum;
 begin
-  Result := OLE_NODE_STATUS[FStatus];
+  Result := OLE_NODE_STATUS[FLogNode.GetStatus()];
 end;
 
 function TALogNode.Get_StrMsg(): WideString;
 begin
-  Result := FMsg;
+  Result := FLogNode.GetStrMsg();
 end;
 
 procedure TALogNode.Hide();
@@ -243,15 +173,12 @@ end;
 
 function TALogNode.Prefix(): string;
 begin
-  if (FMsg <> '') then
-    Result := FMsg + ': '
-  else
-    Result := '';
+  Result := FLogNode.Prefix();
 end;
 
 procedure TALogNode.SetStatus(Value: TLogNodeStatus);
 begin
-  FStatus := Value;
+  FLogNode.SetStatus(Value);
 end;
 
 procedure TALogNode.Set_GroupEnum(Value: EnumGroupMessage);
@@ -260,14 +187,17 @@ var
 begin
   for Group := Low(TLogGroupMessage) to High(TLogGroupMessage) do
   begin
-    if OLE_GROUP_MESSAGE[Group] = Value then
-      FGroup := Group;
+    if (OLE_GROUP_MESSAGE[Group] = Value) then
+    begin
+      FLogNode.SetGroup(Group);
+      Exit;
+    end;
   end;
 end;
 
 procedure TALogNode.Set_Id(Value: Integer);
 begin
-  FId := Value;
+  FLogNode.SetId(Value);
 end;
 
 procedure TALogNode.Set_LogType(Value: EnumTypeMessage);
@@ -278,7 +208,7 @@ begin
   begin
     if OLE_MESSAGE_TYPE[Typ] = Value then
     begin
-      FType := Typ;
+      FLogNode.SetLogType(Typ);
       Exit;
     end;
   end;
@@ -286,7 +216,7 @@ end;
 
 procedure TALogNode.Set_Parent(Value: Integer);
 begin
-  //FParent := Value;
+  FLogNode.SetParent(Value);
 end;
 
 procedure TALogNode.Set_StatusEnum(Value: StatusNodeEnum);
@@ -297,7 +227,7 @@ begin
   begin
     if OLE_NODE_STATUS[Status] = Value then
     begin
-      FStatus := Status;
+      FLogNode.SetStatus(Status);
       Exit;
     end;
   end;
@@ -305,7 +235,7 @@ end;
 
 procedure TALogNode.Set_StrMsg(const Value: WideString);
 begin
-  FMsg := Value;
+  FLogNode.SetStrMsg(Value);
 end;
 
 procedure TALogNode.Show();
@@ -315,19 +245,19 @@ end;
 function TALogNode.ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
     const AStrMsg: WideString; AParams: array of const): Integer;
 begin
-  Result := AddToLog(AGroup, AType, Format(lcNewNode, [Self.ID, Format(AStrMsg, AParams)]));
+  Result := FLogNode.AddToLog(AGroup, AType, Format(lcNewNode, [Self.ID, Format(AStrMsg, AParams)]));
 end;
 
 function TALogNode.ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
     const AStrMsg: WideString): Integer;
 begin
-  Result := AddToLog(AGroup, AType, AStrMsg);
+  Result := FLogNode.AddToLog(AGroup, AType, AStrMsg);
 end;
 
 function TALogNode.ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
     const AStrMsg: WideString): Integer;
 begin
-  Result := AddToLog(IntToLogGroupMessage(AGroup), IntToLogTypeMessage(AType), AStrMsg);
+  Result := FLogNode.AddToLog(IntToLogGroupMessage(AGroup), IntToLogTypeMessage(AType), AStrMsg);
 end;
 
 end.

@@ -1,8 +1,8 @@
 {**
-@Abstract(AXmlNodeList functions)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(29.06.2012)
-@LastMod(18.07.2012)
+@Abstract AXmlNodeList functions
+@Author Prof1983 <prof1983@ya.ru>
+@Created 29.06.2012
+@LastMod 28.11.2012
 }
 unit AXmlNodeListUtils;
 
@@ -174,7 +174,7 @@ begin
 
   Node := AXmlNodeList_GetNodeByName2(XmlNodeList, Name);
   if Assigned(Node) then
-    Result := AXmlNode2_New(Node)
+    Result := AXmlNode_New2(Node)
   else
     Result := 0;
 end;

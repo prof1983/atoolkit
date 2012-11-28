@@ -1,9 +1,8 @@
 {**
-@Abstract(XML)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(09.10.2005)
-@LastMod(03.07.2012)
-@Version(0.5)
+@Abstract XML
+@Author Prof1983 <prof1983@ya.ru>
+@Created 09.10.2005
+@LastMod 28.11.2012
 }
 unit AXmlNodeCollectionImpl;
 
@@ -52,18 +51,8 @@ begin
 end;
 
 function TProfXmlCollection.AddNode(Node: AProfXmlNode): AInt;
-{var
-  I: Int32;
-  Document: AXmlDocument;}
 begin
   Result := AXmlNodeList_Add(FNodes, Node);
-  {I := Length(FNodes);
-  SetLength(FNodes, I + 1);
-  FNodes[I] := Node;
-
-  // Only if (TObject(Node) is TProfXmlNode1) then
-  Document := AXmlNode_GetDocument(FOwner);
-  AXmlNode_SetDocument(FNodes[I], Document);}
 end;
 
 procedure TProfXmlCollection.Clear();
@@ -126,13 +115,13 @@ begin
     Result := 0;
     Exit;
   end;
-  Result := FindNode(Name);
+  Result := AXmlNodeList_FindNode(FNodes, Name);
   if (Result <> 0) then Exit;
   Document := AXmlNode_GetDocument(FOwner);
-  Res := AXmlNode1_New(Document);
+  Res := AXmlNode_New1(Document);
   AXmlNode_SetName(Res, Name);
-  AddNode(AProfXmlNode1(Res));
-  Result := AProfXmlNode1(Res);
+  AXmlNodeList_Add(FNodes, Res);
+  Result := Res;
 end;
 
 {function TProfXmlCollection.Get_Node(Index: Integer): AProfXmlNode2;
@@ -154,10 +143,10 @@ var
   Document: AXmlDocument;
 begin
   Document := AXmlNode_GetDocument(FOwner);
-  Res := AXmlNode1_New(Document);
+  Res := AXmlNode_New1(Document);
   AXmlNode_SetName(Res, Name);
-  AddNode(AProfXmlNode1(Res));
-  Result := AProfXmlNode1(Res);
+  AXmlNodeList_Add(FNodes, Res);
+  Result := Res;
 end;
 
 end.

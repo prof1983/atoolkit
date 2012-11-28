@@ -2,7 +2,7 @@
 @Abstract Базовый модуль основных типов и их преобразования. Базовые функции for Delphi 5,7,2005,2006
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.06.2004
-@LastMod 23.11.2012
+@LastMod 28.11.2012
 }
 unit ABaseUtils2;
 
@@ -542,10 +542,10 @@ begin
   Result := SysUtils.StrToDateTime(String(S));
 end;
 
-function cPCharToInt32cPCharToInt32(Str: PChar): Int32;
+{function cPCharToInt32cPCharToInt32(Str: PChar): Int32;
 begin
   Result := cStrToInt32(String(Str));
-end;
+end;}
 
 function cPCharToUInt32cPCharToUInt32(Str: PChar): UInt32;
 var

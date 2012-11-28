@@ -10,7 +10,7 @@ interface
 
 uses
   SysUtils,
-  ABase, ALogGlobals, AMessageConst, ATypes;
+  ABase, ALogGlobals, AMessageConst, ALogNodeUtils, ATypes;
 
 type
   ALogNode_Type = record
@@ -37,7 +37,7 @@ type
 
   //** Нод логирования - элемент дерева логирования
   TALogNodeObject = class
-  protected
+  public
     FLogNode: ALogNode_Type;
   public
     function GetGroup(): TLogGroupMessage;
@@ -87,59 +87,19 @@ uses
 { TALogNodeObject }
 
 function TALogNodeObject.AddMsg(const AMsg: WideString): Integer;
-var
-  LogDoc: TALogDocumentObject;
 begin
-  xxx
-  if Assigned(TObject(FLogNode.LogDoc)) then
-  begin
-    LogDoc := TObject(FLogNode.LogDoc) as TALogDocumentObject;
-    LogDoc.AddMsg(AMsg);
-  end;
-  Result := 0;
-  if (FLogNode.Parent <> 0) then
-    TALogNodeObject(FLogNode.Parent).AddMsg(AMsg);
+  Result := ALogNode_AddToLogP(ALogNode(Self), lgNone, ltNone, AMsg);
 end;
 
 function TALogNodeObject.AddStr(const AStr: WideString): Integer;
-var
-  LogDoc: TALogDocumentObject;
 begin
-  if Assigned(TObject(FLogNode.LogDoc)) then
-  begin
-    LogDoc := TObject(FLogNode.LogDoc) as TALogDocumentObject;
-    LogDoc.AddStr(AStr);
-  end;
-  Result := 0;
-  if (FLogNode.Parent <> 0) then
-    TALogNodeObject(FLogNode.Parent).AddStr(AStr);
+  Result := ALogNode_AddToLogP(ALogNode(Self), lgNone, ltNone, AStr);
 end;
 
 function TALogNodeObject.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
     const StrMsg: WideString): AInteger;
-var
-  LogDoc: TALogDocumentObject;
 begin
-  Result := -1;
-
-  if Assigned(FLogNode.OnAddToLog) then
-  try
-    Result := FLogNode.OnAddToLog(LogGroup, LogType, StrMsg);
-  except
-  end;
-
-  if Assigned(TObject(FLogNode.LogDoc)) then
-  try
-    LogDoc := TObject(FLogNode.LogDoc) as TALogDocumentObject;
-    Result := LogDoc.AddToLog(LogGroup, LogType, StrMsg)
-  except
-  end;
-
-  if (FLogNode.Parent <> 0) then
-  try
-    Result := TALogNodeObject(FLogNode.Parent).AddToLog(LogGroup, LogType, StrMsg);
-  except
-  end;
+  Result := ALogNode_AddToLogP(ALogNode(Self), LogGroup, LogType, StrMsg);
 end;
 
 function TALogNodeObject.AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
@@ -152,7 +112,7 @@ begin
   except
     S := StrMsg;
   end;
-  Result := (AddToLog(LogGroup, LogType, S) > 0);
+  Result := (ALogNode_AddToLogP(ALogNode(Self), LogGroup, LogType, S) > 0);
 end;
 
 constructor TALogNodeObject.Create(LogDoc: ALogDocument; Parent: AInt; LogPrefix: APascalString; Id: AInt);

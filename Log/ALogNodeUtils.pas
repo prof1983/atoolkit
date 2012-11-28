@@ -6,15 +6,19 @@
 }
 unit ALogNodeUtils;
 
+{$ifndef NoLogImpl}
+  {$define UseLogImpl}
+{$endif}
+
 interface
 
 uses
   ABase, ATypes;
 
-function ALogNode_AddToLog(LogNode: ALogNode; LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+function ALogNode_AddToLogP(LogNode: ALogNode; LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
     const StrMsg: APascalString): AInt;
 
-function ALogNode_AddStr(LogNode: ALogNode; const Str: APascalString): AInt;
+function ALogNode_AddStrP(LogNode: ALogNode; const Str: APascalString): AInt;
 
 function ALogNode_Free(LogNode: ALogNode): AError;
 
@@ -28,9 +32,9 @@ function ALogNode_Show(LogNode: ALogNode): AError;
 implementation
 
 uses
-  ALogNodeImpl;
+  ALogDocumentUtils, {$ifdef UseLogImpl}ALogNodeImpl,{$endif} ALogNodeObj;
 
-function ALogNode_AddToLog(LogNode: ALogNode; LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+function ALogNode_AddToLogP(LogNode: ALogNode; LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
     const StrMsg: APascalString): AInt;
 var
   N: TALogNodeObject;
@@ -40,53 +44,53 @@ begin
     Result := -2;
     Exit;
   end;
-  if (TObject(LogNode) is TALogNode) then
-    N := TALogNode(LogNode).LogNode
-  else if (TObject(LogNode) is TALogNodeObject) then
+  if (TObject(LogNode) is TALogNodeObject) then
     N := TALogNodeObject(LogNode)
+  {$ifdef UseLogImpl}
+  else if (TObject(LogNode) is TALogNode) then
+    N := TALogNode(LogNode).LogNode
+  {$endif}
   else
   begin
     Result := -3;
     Exit;
   end;
   try
-    Result := N.AddToLog(LogGroup, LogType, StrMsg);
+    Result := -1;
+
+    if Assigned(N.FLogNode.OnAddToLog) then
+    try
+      Result := N.FLogNode.OnAddToLog(LogGroup, LogType, StrMsg);
+    except
+    end;
+
+    if (N.FLogNode.LogDoc <> 0) then
+      Result := ALogDocument_AddToLogP(N.FLogNode.LogDoc, LogGroup, LogType, StrMsg);
+
+    if (N.FLogNode.Parent <> 0) then
+    try
+      Result := TALogNodeObject(N.FLogNode.Parent).AddToLog(LogGroup, LogType, StrMsg);
+    except
+    end;
   except
     Result := -1;
   end;
 end;
 
-function ALogNode_AddStr(LogNode: ALogNode; const Str: APascalString): AInt;
-var
-  N: TALogNodeObject;
+function ALogNode_AddStrP(LogNode: ALogNode; const Str: APascalString): AInt;
 begin
-  if (LogNode = 0) then
-  begin
-    Result := -2;
-    Exit;
-  end;
-  if (TObject(LogNode) is TALogNode) then
-    N := TALogNode(LogNode).LogNode
-  else if (TObject(LogNode) is TALogNodeObject) then
-    N := TALogNodeObject(LogNode)
-  else
-  begin
-    Result := -3;
-    Exit;
-  end;
-  try
-    N.AddStr(Str);
-  except
-    Result := -1;
-  end;
+  Result := ALogNode_AddToLogP(LogNode, lgNone, ltNone, Str);
 end;
 
 function ALogNode_Free(LogNode: ALogNode): AError;
 begin
   try
+    {$ifdef UseLogImpl}
     if (TObject(LogNode) is TALogNode) then
       IInterface(TALogNode(LogNode))._Release()
-    else if (TObject(LogNode) is TALogNodeObject) then
+    else
+    {$endif}
+    if (TObject(LogNode) is TALogNodeObject) then
       TALogNodeObject(LogNode).Free();
     Result := 0;
   except
@@ -109,20 +113,28 @@ begin
     Result := -2;
     Exit;
   end;
-  if (TObject(LogNode) is TALogNode) then
-    N := TALogNode(LogNode).LogNode
-  else if (TObject(LogNode) is TALogNodeObject) then
+  if (TObject(LogNode) is TALogNodeObject) then
     N := TALogNodeObject(LogNode)
+  {$ifdef UseLogImpl}
+  else if (TObject(LogNode) is TALogNode) then
+    N := TALogNode(LogNode).LogNode
+  {$endif}
   else
   begin
     Result := -3;
     Exit;
   end;
-  N.OnAddToLog := OnAddToLog;
+  try
+    N.FLogNode.OnAddToLog := OnAddToLog;
+    Result := 0;
+  except
+    Result := -1;
+  end;
 end;
 
 function ALogNode_Show(LogNode: ALogNode): AError;
 begin
+  {$ifdef UseLogImpl}
   if (LogNode = 0) then
   begin
     Result := -2;
@@ -139,6 +151,9 @@ begin
   except
     Result := -1;
   end;
+  {$else}
+  Result := 0;
+  {$endif}
 end;
 
 end.

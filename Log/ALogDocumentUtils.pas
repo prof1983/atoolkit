@@ -5,6 +5,10 @@
 }
 unit ALogDocumentUtils;
 
+{$ifndef NoLogImpl}
+  {$define UseLogImpl}
+{$endif}
+
 interface
 
 uses
@@ -26,17 +30,20 @@ function ALogDocument_NewNodeP(LogDoc: ALogDocument; LogType: TLogTypeMessage;
 implementation
 
 uses
-  ALogDocumentImpl, ALogDocumentObj, ALogNodeImpl, ALogNodeObj;
+  {$ifdef UseLogImpl}ALogDocumentImpl,{$endif} ALogDocumentObj,
+  {$ifdef UseLogImpl}ALogNodeImpl,{$endif} ALogNodeObj;
 
 function ALogDocument_AddNode(LogDoc: ALogDocument; Node: ALogNode): AError;
 var
   D: TALogDocumentObject;
   I: Integer;
 begin
-  if (TObject(LogDoc) is TALogDocument) then
-    D := TALogDocument(LogDoc).LogDoc
-  else if (TObject(LogDoc) is TALogDocumentObject) then
+  if (TObject(LogDoc) is TALogDocumentObject) then
     D := TALogDocumentObject(LogDoc)
+  {$ifdef UseLogImpl}
+  else if (TObject(LogDoc) is TALogDocument) then
+    D := TALogDocument(LogDoc).LogDoc
+  {$endif}
   else
   begin
     Result := -2;
@@ -58,30 +65,40 @@ function ALogDocument_AddToLogP(LogDoc: ALogDocument; LogGroup: TLogGroupMessage
 var
   D: TALogDocumentObject;
 begin
-  if (TObject(LogDoc) is TALogDocument) then
-    D := TALogDocument(LogDoc).LogDoc
-  else if (TObject(LogDoc) is TALogDocumentObject) then
+  if (TObject(LogDoc) is TALogDocumentObject) then
     D := TALogDocumentObject(LogDoc)
+  {$ifdef UseLogImpl}
+  else if (TObject(LogDoc) is TALogDocument) then
+    D := TALogDocument(LogDoc).LogDoc
+  {$endif}
   else
   begin
     Result := 0;
     Exit;
   end;
 
-  if Assigned(D.FOnAddToLog) then
-    Result := D.FOnAddToLog(LogGroup, LogType, StrMsg)
-  else
+  if not(Assigned(D.FOnAddToLog)) then
+  begin
     Result := 0;
+    Exit;
+  end;
+  try
+    Result := D.FOnAddToLog(LogGroup, LogType, StrMsg)
+  except
+    Result := 0;
+  end;
 end;
 
 function ALogDocument_GetFreeId(LogDoc: ALogDocument): AInt;
 var
   D: TALogDocumentObject;
 begin
-  if (TObject(LogDoc) is TALogDocument) then
-    D := TALogDocument(LogDoc).LogDoc
-  else if (TObject(LogDoc) is TALogDocumentObject) then
+  if (TObject(LogDoc) is TALogDocumentObject) then
     D := TALogDocumentObject(LogDoc)
+  {$ifdef UseLogImpl}
+  else if (TObject(LogDoc) is TALogDocument) then
+    D := TALogDocument(LogDoc).LogDoc
+  {$endif}
   else
   begin
     Result := 0;
@@ -97,10 +114,12 @@ var
   I: Integer;
   N: TALogNodeObject;
 begin
-  if (TObject(LogDoc) is TALogDocument) then
-    D := TALogDocument(LogDoc).LogDoc
-  else if (TObject(LogDoc) is TALogDocumentObject) then
+  if (TObject(LogDoc) is TALogDocumentObject) then
     D := TALogDocumentObject(LogDoc)
+  {$ifdef UseLogImpl}
+  else if (TObject(LogDoc) is TALogDocument) then
+    D := TALogDocument(LogDoc).LogDoc
+  {$endif}
   else
   begin
     Result := 0;
@@ -109,10 +128,12 @@ begin
 
   for I := 0 to High(D.FNodes) do
   begin
-    if (TObject(D.FNodes[I]) is TALogNode) then
-      N := TALogNode(D.FNodes[I]).LogNode
-    else if (TObject(D.FNodes[I]) is TALogNodeObject) then
+    if (TObject(D.FNodes[I]) is TALogNodeObject) then
       N := TALogNodeObject(D.FNodes[I])
+    {$ifdef UseLogImpl}
+    else if (TObject(D.FNodes[I]) is TALogNode) then
+      N := TALogNode(D.FNodes[I]).LogNode
+    {$endif}
     else
       N := nil;
 
@@ -132,10 +153,12 @@ var
   S: string;
   N: ALogNode;
 begin
-  if (TObject(LogDoc) is TALogDocument) then
-    D := TALogDocument(LogDoc).LogDoc
-  else if (TObject(LogDoc) is TALogDocumentObject) then
+  if (TObject(LogDoc) is TALogDocumentObject) then
     D := TALogDocumentObject(LogDoc)
+  {$ifdef UseLogImpl}
+  else if (TObject(LogDoc) is TALogDocument) then
+    D := TALogDocument(LogDoc).LogDoc
+  {$endif}
   else
   begin
     Result := 0;

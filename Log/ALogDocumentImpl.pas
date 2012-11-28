@@ -6,6 +6,10 @@
 }
 unit ALogDocumentImpl;
 
+{$ifdef NoLogImpl}
+  {$message Error 'Do not use this file'}
+{$endif}
+
 interface
 
 uses

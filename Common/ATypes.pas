@@ -1,8 +1,8 @@
-﻿{**
+{**
 @Abstract Globals types
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.02.2007
-@LastMod 27.11.2012
+@LastMod 11.12.2012
 }
 unit ATypes;
 
@@ -307,20 +307,6 @@ const
       'Windows 2000',
       'Windows XP',
       'Windows 2003');
-  {
-  STR_GROUP_LOG: array[TLogGroupMessage] of string = (
-      'все',
-      'сеть',
-      'настройки',
-      'общее',
-      'база данных',
-      'ключ',
-      'оборудование',
-      'алгоритм',
-      'система',
-      'пользователь',
-      'lgAgent');
-  }
   STR_GROUP_LOG_ENG: array[TLogGroupMessage] of string = (
       ' none     ',
       ' network  ',
@@ -333,15 +319,6 @@ const
       ' system   ',
       ' user     ',
       ' lgAgent  ');
-  {
-  STR_TYPE_LOG: array[TLogTypeMessage] of string = (
-      'неизвестно',
-      'ошибка',
-      'предупреждение',
-      'сообщение',
-      'ok',
-      'cancel');
-  }
   STR_TYPE_LOG_ENG: array[TLogTypeMessage] of string = (
       ' none  ',
       ' error ',

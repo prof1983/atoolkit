@@ -2,14 +2,14 @@
 @Abstract The module for work with the settings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 16.11.2012
+@LastMod 11.12.2012
 }
 unit ASettings;
 
 interface
 
 uses
-  ABase, ACollectionsBase, ASettingsIni, ASettingsMain, ASettingsReg, AStrings;
+  ABase, ACollectionsBase, ASettingsIni, ASettingsMain, ASettingsReg, AStringBaseUtils, AStrings;
 
 // ----
 
@@ -729,7 +729,7 @@ begin
   try
     Result := ASettingsConfig.Settings_ReadString(Config, AnsiString(Section), AnsiString(Name), S);
     if (Result > 0) then
-      AStrings.StrPLCopy(Value, AnsiString(S), MaxLen);
+      AStringBaseUtils.StrPLCopy(Value, AnsiString(S), MaxLen);
   except
     Result := -1;
   end;
@@ -758,7 +758,7 @@ var
 begin
   try
     S := ASettings_ReadStringDefP(Config, AnsiString(Section), AnsiString(Name), AnsiString(DefValue));
-    AStrings.StrPLCopy(Value, AnsiString(S), MaxLen);
+    AStringBaseUtils.StrPLCopy(Value, AnsiString(S), MaxLen);
     Result := Length(S);
   except
     Result := -1;
@@ -790,7 +790,7 @@ begin
   try
     S := ASettings_ReadStringDefP(Config, WideString(Section), WideString(Name), WideString(DefValue));
     Result := Length(S);
-    AStrings.StrCopyLWP(Value, S, MaxLen)
+    AStringBaseUtils.StrCopyLWP(Value, S, MaxLen)
   except
     Result := -1;
   end;
@@ -830,7 +830,7 @@ begin
   try
     Result := ASettingsConfig.Settings_ReadString(Config, WideString(Section), WideString(Name), S);
     if (Result > 0) then
-      AStrings.StrCopyLWP(Value, S, MaxLen);
+      AStringBaseUtils.StrCopyLWP(Value, S, MaxLen);
   except
     Result := -1;
   end;

@@ -2,7 +2,7 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.01.2012
-@LastMod 16.11.2012
+@LastMod 11.12.2012
 }
 unit APluginsMain;
 
@@ -10,7 +10,7 @@ interface
 
 uses
   SysUtils,
-  ABase, ALibraries, ASettings, ASystem;
+  ABase, ALibraries, ARuntimeBase, ARuntimeMain, ASettings, ASystem;
 
 type
   TCheckPluginProc = function(Lib: ALibrary): ABoolean; stdcall;
@@ -75,7 +75,7 @@ const
 implementation
 
 type
-  //APluginBootProc = function(Runtime: ARuntimeProcs): Integer; stdcall;
+  APlugin_Boot05_Proc = function(GetProcByName: ARuntime_GetProcByName_Proc): AError; stdcall;
   APluginInitProc = function(): AInteger; stdcall;
   APluginDoneProc = function(): AInteger; stdcall;
   APluginVersionProc = function(): AInteger; stdcall;
@@ -174,21 +174,21 @@ begin
   DoAfterRun(Obj, Data);
 end;
 
-{function DoCheckPlugin(Lib: ALibrary): ABoolean; stdcall;
+function DoCheckPlugin(Lib: ALibrary): ABoolean; stdcall;
 var
-  PluginBootProc: APluginBootProc;
+  PluginBootProc: APlugin_Boot05_Proc;
 begin
-  if not(ASystem.Library_GetSymbolW(Lib, 'Plugin_Boot', @PluginBootProc)) then
+  if not(ALibrary_GetSymbolP(Lib, 'Plugin_Boot05', @PluginBootProc)) then
   begin
     Result := False;
     Exit;
   end;
   try
-    Result := (PluginBootProc(Addr(ARuntime)) >= 0);
+    Result := (PluginBootProc(Addr(ARuntime_GetProcByName)) >= 0);
   except
     Result := False;
   end;
-end;}
+end;
 
 // --- APlugins ---
 
@@ -482,6 +482,6 @@ initialization
   PluginsVersionMask := PluginsVersionMaskDef;
   PluginsVersionValue1 := PluginsVersionValue1Def;
   PluginsVersionValue2 := PluginsVersionValue2Def;
-  //Plugins_SetOnCheckPlugin(DoCheckPlugin);
+  Plugins_SetOnCheckPlugin(DoCheckPlugin);
 end.
  

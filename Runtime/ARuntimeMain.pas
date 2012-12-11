@@ -2,7 +2,7 @@
 @Abstract ARuntime
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.08.2012
-@LastMod 28.11.2012
+@LastMod 11.12.2012
 }
 unit ARuntimeMain;
 
@@ -57,6 +57,8 @@ function ARuntime_GetModuleUidByIndex(Index: AInteger): AModuleUid; {$ifdef AStd
 function ARuntime_GetOnAfterRun(): AProc; {$ifdef AStdCall}stdcall;{$endif}
 
 function ARuntime_GetOnBeforeRun(): AProc; {$ifdef AStdCall}stdcall;{$endif}
+
+function ARuntime_GetProcByName(ModuleName, ProcName: AStr): Pointer; {$ifdef AStdCall}stdcall;{$endif}
 
 function ARuntime_InitModuleByName(Name: AStr): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -372,6 +374,72 @@ begin
   try
     Result := FOnBeforeRun;
   except
+    Result := nil;
+  end;
+end;
+
+function ARuntime_GetProcByName(ModuleName, ProcName: AStr): Pointer;
+begin
+  if (ModuleName = 'ARuntime') then
+  begin
+    if ProcName = 'ARuntime_AddModule' then
+      Result := Addr(ARuntime_AddModule)
+    else if ProcName = 'ARuntime_DeleteModuleByIndex' then
+      Result := Addr(ARuntime_DeleteModuleByIndex)
+    else if ProcName = 'ARuntime_DeleteModuleByName' then
+      Result := Addr(ARuntime_DeleteModuleByName)
+    else if ProcName = 'ARuntime_DeleteModuleByUid' then
+      Result := Addr(ARuntime_DeleteModuleByUid)
+    else if ProcName = 'ARuntime_Fin' then
+      Result := Addr(ARuntime_Fin)
+    else if ProcName = 'ARuntime_FindModuleByName' then
+      Result := Addr(ARuntime_FindModuleByName)
+    else if ProcName = 'ARuntime_FindModuleByUid' then
+      Result := Addr(ARuntime_FindModuleByUid)
+    else if ProcName = 'ARuntime_GetIsShutdown' then
+      Result := Addr(ARuntime_GetIsShutdown)
+    else if ProcName = 'ARuntime_GetModuleByName' then
+      Result := Addr(ARuntime_GetModuleByName)
+    else if ProcName = 'ARuntime_GetModuleByUid' then
+      Result := Addr(ARuntime_GetModuleByUid)
+    else if ProcName = 'ARuntime_GetModuleNameByIndex' then
+      Result := Addr(ARuntime_GetModuleNameByIndex)
+    else if ProcName = 'ARuntime_GetModuleNameByUid' then
+      Result := Addr(ARuntime_GetModuleNameByUid)
+    else if ProcName = 'ARuntime_GetModuleProcsByUid' then
+      Result := Addr(ARuntime_GetModuleProcsByUid)
+    else if ProcName = 'ARuntime_GetModulesCount' then
+      Result := Addr(ARuntime_GetModulesCount)
+    else if ProcName = 'ARuntime_GetModuleUidByIndex' then
+      Result := Addr(ARuntime_GetModuleUidByIndex)
+    else if ProcName = 'ARuntime_GetOnAfterRun' then
+      Result := Addr(ARuntime_GetOnAfterRun)
+    else if ProcName = 'ARuntime_GetOnBeforeRun' then
+      Result := Addr(ARuntime_GetOnBeforeRun)
+    else if ProcName = 'ARuntime_InitModuleByName' then
+      Result := Addr(ARuntime_InitModuleByName)
+    else if ProcName = 'ARuntime_InitModuleByUid' then
+      Result := Addr(ARuntime_InitModuleByUid)
+    else if ProcName = 'ARuntime_RegisterModule' then
+      Result := Addr(ARuntime_RegisterModule)
+    else if ProcName = 'ARuntime_Run' then
+      Result := Addr(ARuntime_Run)
+    else if ProcName = 'ARuntime_SetOnAfterRun' then
+      Result := Addr(ARuntime_SetOnAfterRun)
+    else if ProcName = 'ARuntime_SetOnBeforeRun' then
+      Result := Addr(ARuntime_SetOnBeforeRun)
+    else if ProcName = 'ARuntime_SetOnRun' then
+      Result := Addr(ARuntime_SetOnRun)
+    else if ProcName = 'ARuntime_SetOnShutdown' then
+      Result := Addr(ARuntime_SetOnShutdown)
+    else if ProcName = 'ARuntime_Shutdown' then
+      Result := Addr(ARuntime_Shutdown)
+    else
+      Result := nil;
+  end
+  else
+  begin
+    //I := _FindModuleByName(ModuleName);
     Result := nil;
   end;
 end;

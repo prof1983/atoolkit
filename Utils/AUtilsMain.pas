@@ -2,7 +2,7 @@
 @Abstract AUtils - Main
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.09.2011
-@LastMod 05.09.2012
+@LastMod 29.11.2012
 }
 unit AUtilsMain;
 
@@ -435,7 +435,7 @@ function AUtils_FloatToStrBP(Value: AFloat; DigitsAfterComma: AInteger): APascal
 begin
   try
     Result := AUtilsMain.Utils_ReplaceComma(AUtils_FloatToStrAP(Value, DigitsAfterComma), '.');
-  finally
+  except
     Result := '';
   end;
 end;

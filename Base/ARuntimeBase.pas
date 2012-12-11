@@ -2,7 +2,7 @@
 @Abstract ARuntime base consts and types
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.12.2011
-@LastMod 01.08.2012
+@LastMod 11.12.2012
 }
 unit ARuntimeBase;
 
@@ -96,6 +96,8 @@ type
     Procs: Pointer;
   end;
   {$ENDIF}
+
+  ARuntime_GetProcByName_Proc = function(ModuleName, ProcName: AStr): Pointer; stdcall;
 
 implementation
 

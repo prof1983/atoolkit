@@ -1,151 +1,141 @@
 ﻿/*
-Author(Prof1983 prof1983@ya.ru)
-Created(17.06.2011)
-LastMod(17.06.2011)
-Version(0.5)
+Author Prof1983 <prof1983@ya.ru>
+Created 17.06.2011
+LastMod 10.12.2012
 */
 
 #ifndef ARuntime_H
 #define ARuntime_H
 
-#include "ABase.h"
+#include "ABase2.h"
 
 // --- Types ---------------------------------------------------------------------------------------
 
 // Уникальный идентификатор модуля.
 // Записывается в формате $YYMMDDxx, где YY - год, MM-месяц, DD-день, xx-порядковый номер }
 typedef AInteger AModuleUid;
+typedef char* PAnsiChar;
+typedef AInt AModuleDescription;
+typedef void* Pointer;
 
-typedef int AModule;
-/*
-type // Module (8x4)
-  AModule = ^AModule_Type;
-  AModule_Type = packed record
-	Version: AVersion;         // Module version ($AABBCCDD). AA=00h, BB=03h.
-	Uid: AModuleUid;           // Module unique identificator $YYMMDDxx YY - Year, MM - Month, DD - Day
-	Name: PChar;               // Module unuque name
-	Description: AModuleDescription; // Module information and description
-	Init: AModuleInitProc;     // Init proc
-	Done: AModuleDoneProc;     // Done proc
-	Reserved06: AInteger;      //Delete: AModuleDeleteProc;
-	Procs: Pointer;
-  end;
-*/
+//typedef int AModule;
+
+typedef AError AFunction (*AModuleFinProc)();
+typedef AError AFunction (*AModuleInitProc)();
+typedef Pointer (*AModuleGetProc)(AStr ProcName);
+
+typedef struct AModule_Type {
+    /** Module version ($AABBCCDD) */
+    AVersion Version;
+    /** Module unique identificator $YYMMDDxx YY - Year, MM - Month, DD - Day */
+    AModuleUid Uid;
+    /** Module unuque name */
+    PAnsiChar Name;
+    /** Module information and description */
+    AModuleDescription Description;
+    /** Initialize proc */
+    AModuleInitProc Init;
+    /** Finalize proc */
+    AModuleFinProc Fin;
+    /** Get proc address */
+    AModuleGetProc GetProc;
+    /** Module proc list */
+    Pointer Procs;
+};
+
+typedef struct AModule_Type * AModule;
 
 // --- Procs ---------------------------------------------------------------------------------------
 
 // --- Set event functions ---
 
-// A_Runtime_OnRun_Set_Proc = procedure(Value: ARuntimeProc); stdcall;
-typedef AProc (*A_Runtime_OnRun_Set_Proc)(AProc Value);
+typedef AError AFunction (*ARuntime_SetOnRun_Proc)(AProc Value);
 
-// A_Runtime_OnShutdown_Set_Proc = procedure(Value: ARuntimeProc); stdcall;
-typedef AProc (*A_Runtime_OnShutdown_Set_Proc)(AProc Value);
+typedef AError AFunction (*ARuntime_SetOnShutdown_Proc)(AProc Value);
 
-// A_Runtime_OnAfterRun_Set_Proc = procedure(Value: ARuntimeProc); stdcall;
-typedef AProc (*A_Runtime_OnAfterRun_Set_Proc)(AProc Value);
+typedef AError AFunction (*ARuntime_SetOnAfterRun_Proc)(AProc Value);
 
-// A_Runtime_OnBeforeRun_Set_Proc = procedure(Value: ARuntimeProc); stdcall;
-typedef AProc (*A_Runtime_OnBeforeRun_Set_Proc)(AProc Value);
+typedef AError AFunction (*ARuntime_SetOnBeforeRun_Proc)(AProc Value);
 
 // --- Module ---
 
-// A_Runtime_Module_Register_Proc = function(Module: AModule): AInteger; stdcall;
-typedef AInteger AFunction (*A_Runtime_Module_Register_Proc)(AModule Module);
+typedef AInteger AFunction (*ARuntime_RegisterModule_Proc)(AModule Module);
 
 // --- Modules ---
 
-// A_Runtime_Modules_AddModule_Proc = function(Module: AModule): AInteger; stdcall;
-typedef AInteger AFunction (*A_Runtime_Modules_AddModule_Proc)(AModule Module);
+typedef AInteger AFunction (*ARuntime_AddModule_Proc)(AModule Module);
 
-// A_Runtime_Modules_Count_Proc = function: AInteger; stdcall;
-typedef AInteger AFunction (*A_Runtime_Modules_Count_Proc)();
+typedef AInteger AFunction (*ARuntime_GetModulesCount_Proc)();
 
-// A_Runtime_Modules_DeleteByName_Proc = function(Name: PChar): AInteger; stdcall;
-typedef AInteger AFunction (*A_Runtime_Modules_DeleteByName_Proc)(AAnsiString Name);
+typedef AInteger AFunction (*ARuntime_DeleteModuleByName_Proc)(AAnsiString Name);
 
-// A_Runtime_Modules_DeleteByUid_Proc = function(Uid: AModuleUid): AInteger; stdcall;
-typedef AInteger AFunction (*A_Runtime_Modules_DeleteByUid_Proc)(AModuleUid Uid);
+typedef AInteger AFunction (*ARuntime_DeleteModuleByUid_Proc)(AModuleUid Uid);
 
-// A_Runtime_Modules_FindByName_Proc = function(Name: PChar): AInteger; stdcall;
-typedef AInteger AFunction (*A_Runtime_Modules_FindByName_Proc)(AAnsiString Name);
+typedef AInteger AFunction (*ARuntime_FindModuleByName_Proc)(AAnsiString Name);
 
-// A_Runtime_Modules_FindByUid_Proc = function(Uid: AModuleUid): AInteger; stdcall;
-typedef AInteger AFunction (*A_Runtime_Modules_FindByUid_Proc)(AModuleUid Uid);
+typedef AInteger AFunction (*ARuntime_FindModuleByUid_Proc)(AModuleUid Uid);
 
-// A_Runtime_Modules_GetByName_Proc = function(Name: PChar; Module: AModule): AInteger; stdcall;
-typedef AInteger AFunction (*A_Runtime_Modules_GetByName_Proc)(AAnsiString Name, AModule Module);
+typedef AInteger AFunction (*ARuntime_GetModuleByName_Proc)(AAnsiString Name, AModule Module);
 
-// Возвращает индекс модуля в массиве или -1 если не найден.
-// A_Runtime_Modules_GetByUid_Proc = function(Uid: AModuleUid; Module: AModule): AInteger; stdcall;
-typedef AInteger AFunction (*A_Runtime_Modules_GetByUid_Proc)(AModuleUid Uid, AModule Module);
+typedef AInteger AFunction (*ARuntime_GetModuleByUid_Proc)(AModuleUid Uid, AModule Module);
 
-// Инициализирует модуль по имени. Возврашает:
-// 0 - инициализация прошла успешно, >0 - имеются замечания, <0 - произошла ошибка при инициализации
-// A_Runtime_Modules_InitByName_Proc = function(Name: PChar): AInteger; stdcall;
-typedef AInteger AFunction (*A_Runtime_Modules_InitByName_Proc)(AAnsiString Name);
+typedef AInteger AFunction (*ARuntime_InitModuleByName_Proc)(AAnsiString Name);
 
-// Инициализирует модуль по уникальному идентификатору. Возврашает:
-// 0 - инициализация прошла успешно, >0 - имеются замечания, <0 - произошла ошибка при инициализации
-// A_Runtime_Modules_InitByUid_Proc = function(Uid: AModuleUid): AInteger; stdcall;
-typedef AInteger AFunction (*A_Runtime_Modules_InitByUid_Proc)(AModuleUid Uid);
+typedef AInteger AFunction (*ARuntime_InitModuleByUid_Proc)(AModuleUid Uid);
 
-// A_Runtime_Modules_GetNameByIndex_Proc = function(Index: AInteger; Name: PChar; MaxLen: AInteger): AInteger; stdcall;
-typedef AInteger AFunction (*A_Runtime_Modules_GetNameByIndex_Proc)(AInteger Index, AAnsiString Name, AInteger MaxLen);
+typedef AInteger AFunction (*ARuntime_GetModuleNameByIndex_Proc)(AInteger Index, AAnsiString Name, AInteger MaxLen);
 
-// A_Runtime_Modules_GetProcsByUid_Proc = function(Uid: AModuleUid): Pointer; stdcall;
-typedef APointer AFunction (*A_Runtime_Modules_GetProcsByUid_Proc)(AModuleUid Uid);
+typedef APointer AFunction (*ARuntime_GetModuleProcsByUid_Proc)(AModuleUid Uid);
 
-// A_Runtime_Modules_GetUidByIndex_Proc = function(Index: AInteger): AModuleUid; stdcall;
-typedef AModuleUid AFunction (*A_Runtime_Modules_GetUidByIndex_Proc)(AInteger Index);
+typedef AModuleUid AFunction (*ARuntime_GetModuleUidByIndex_Proc)(AInteger Index);
 
 // --- System ---
 
-// A_Runtime_IsShutdown_Proc = function: ABoolean; stdcall;
-typedef ABoolean AFunction (*A_Runtime_IsShutdown_Proc)();
+typedef ABoolean AFunction (*ARuntime_GetIsShutdown_Proc)();
 
-// A_Runtime_Shutdown_Proc = function: AInteger; stdcall;
-typedef AInteger AFunction (*A_Runtime_Shutdown_Proc)();
+typedef AError AFunction (*ARuntime_Run_Proc)();
+
+typedef AInteger AFunction (*ARuntime_Shutdown_Proc)();
 
 // --- ARuntimeProcs_Type --------------------------------------------------------------------------
 
-struct ARuntimeProcs_Type
+typedef struct ARuntimeProcs_Type
 {
 	// --- Set event functions ---
-	A_Runtime_OnAfterRun_Set_Proc       OnAfterRun_Set;
-	A_Runtime_OnBeforeRun_Set_Proc      OnBeforeRun_Set;
-	A_Runtime_OnRun_Set_Proc            OnRun_Set;
-	A_Runtime_OnShutdown_Set_Proc       OnShutdown_Set;
+	ARuntime_SetOnAfterRun_Proc SetOnAfterRun;
+	ARuntime_SetOnBeforeRun_Proc SetOnBeforeRun;
+	ARuntime_SetOnRun_Proc SetOnRun;
+	AInt Reserved03;
 
-	A_Runtime_Modules_AddModule_Proc    Modules_AddModule;
-	A_Runtime_Modules_Count_Proc        Modules_Count;
-	A_Runtime_Modules_FindByName_Proc   Modules_FindByName;
-	A_Runtime_Modules_FindByUid_Proc    Modules_FindByUid;
-	A_Runtime_Modules_DeleteByName_Proc Modules_DeleteByName;
-	A_Runtime_Modules_DeleteByUid_Proc  Modules_DeleteByUid;
-	A_Runtime_Modules_GetByName_Proc    Modules_GetByName;
-	A_Runtime_Modules_GetByUid_Proc     Modules_GetByUid;
-	A_Runtime_Modules_GetNameByIndex_Proc Modules_GetNameByIndex;
-	A_Runtime_Modules_GetUidByIndex_Proc  Modules_GetUidByIndex;
-	A_Runtime_Modules_InitByName_Proc   Modules_InitByName;
-	A_Runtime_Modules_InitByUid_Proc    Modules_InitByUid;
+	ARuntime_AddModule_Proc AddModule;
+	ARuntime_GetModulesCount_Proc GetModulesCount;
+	ARuntime_FindModuleByName_Proc FindModuleByName;
+	ARuntime_FindModuleByUid_Proc FindModuleByUid;
+	ARuntime_DeleteModuleByName_Proc DeleteModuleByName;
+	ARuntime_DeleteModuleByUid_Proc DeleteModuleByUid;
+	ARuntime_GetModuleByName_Proc GetModuleByName;
+	ARuntime_GetModuleByUid_Proc GetModuleByUid;
+	ARuntime_GetModuleNameByIndex_Proc GetModuleNameByIndex;
+	ARuntime_GetModuleUidByIndex_Proc GetModuleUidByIndex;
+	ARuntime_InitModuleByName_Proc InitModuleByName;
+	ARuntime_InitModuleByUid_Proc InitModuleByUid;
 
-	A_Runtime_IsShutdown_Proc           IsShutdown;
-	A_Runtime_Shutdown_Proc             Shutdown;
-	A_Runtime_Module_Register_Proc      Module_Register;
-	A_Runtime_Modules_GetProcsByUid_Proc Modules_GetProcsByUid;
-	AInteger                            Reserved20;
-	AInteger                            Reserved21;
-	AInteger                            Reserved22;
-	AInteger                            Reserved23;
-	AInteger                            Reserved24;
-	AInteger                            Reserved25;
-	AInteger                            Reserved26;
-	AInteger                            Reserved27;
-	AInteger                            Reserved28;
-	AInteger                            Reserved29;
-	AInteger                            Reserved30;
-	AInteger                            Reserved31;
+	ARuntime_GetIsShutdown_Proc GetIsShutdown;
+	ARuntime_Shutdown_Proc Shutdown;
+	ARuntime_RegisterModule_Proc RegisterModule;
+	ARuntime_GetModuleProcsByUid_Proc GetModuleProcsByUid;
+    ARuntime_Run_Proc Run;
+    ARuntime_SetOnShutdown_Proc SetOnShutdown;
+	AInteger Reserved22;
+	AInteger Reserved23;
+	AInteger Reserved24;
+	AInteger Reserved25;
+	AInteger Reserved26;
+	AInteger Reserved27;
+	AInteger Reserved28;
+	AInteger Reserved29;
+	AInteger Reserved30;
+	AInteger Reserved31;
 
 	AInteger Reserved32;
 	AInteger Reserved33;

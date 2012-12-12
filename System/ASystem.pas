@@ -2,7 +2,7 @@
 @Abstract ASystem function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.08.2009
-@LastMod 23.11.2012
+@LastMod 12.12.2012
 }
 unit ASystem;
 
@@ -1438,7 +1438,7 @@ end;
 
 procedure SetOnShowMessage(Value: TAShowMessageWSProc); stdcall;
 begin
-  FOnShowMessageWS := Value;
+  ASystem_SetOnShowMessageWS(Value);
 end;
 
 function ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; stdcall;

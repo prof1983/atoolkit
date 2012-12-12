@@ -2,11 +2,13 @@
 @Abstract ASystem
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.09.2011
-@LastMod 16.11.2012
+@LastMod 12.12.2012
 }
 unit ASystemMain;
 
 {$I Defines.inc}
+
+{$define AStdCall}
 
 {$IFNDEF NoRuntime}
   {$DEFINE USE_RUNTIME}
@@ -25,29 +27,35 @@ uses
 
 // --- ASystem ---
 
-function ASystem_Fin(): AError; stdcall;
+function ASystem_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function ASystem_GetConfig(): AConfig; stdcall;
+function ASystem_GetConfig(): AConfig; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_GetConfigDirectoryPath(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_GetConfigDirectoryPathP(): APascalString; stdcall;
 
-function ASystem_GetDataDirectoryPath(out Value: AString_Type): AError; stdcall;
+function ASystem_GetDataDirectoryPath(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_GetDataDirectoryPathP(): APascalString; stdcall;
 
-function ASystem_GetDirectoryPath(out Value: AString_Type): AInteger; stdcall;
+function ASystem_GetDirectoryPath(out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_GetExePath(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_GetExePathP(): APascalString; stdcall;
 
-function ASystem_GetProgramName(out Value: AString_Type): AInteger; stdcall;
+function ASystem_GetProgramName(out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_GetProgramNameP(): APascalString; stdcall;
 
+function ASystem_GetTitle(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function ASystem_GetTitleP(): APascalString; stdcall;
 
-function ASystem_Init(): AError; stdcall;
+function ASystem_Init(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function ASystem_ParamStr(Index: AInteger; out Value: AString_Type): AInteger; stdcall;
+function ASystem_ParamStr(Index: AInteger; out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_ParamStrP(Index: AInteger): APascalString; stdcall;
 
@@ -55,31 +63,33 @@ function ASystem_Prepare3P(const Title, ProgramName: APascalString; ProgramVersi
     const ProductName: APascalString; ProductVersion: AVersion;
     const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString): AError; stdcall;
 
-function ASystem_ProcessMessages(): AError; stdcall;
+function ASystem_ProcessMessages(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function ASystem_SetOnProcessMessages(Value: AProc): AError; stdcall;
+function ASystem_SetOnProcessMessages(Value: AProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function ASystem_SetOnShowErrorA(Value: AShowErrorA_Proc): AError; stdcall;
+function ASystem_SetOnShowErrorA(Value: AShowErrorA_Proc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function ASystem_SetOnShowMessageA(Value: AShowMessageA_Proc): AError; stdcall;
+function ASystem_SetOnShowMessageA(Value: AShowMessageA_Proc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function ASystem_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; stdcall;
+function ASystem_SetOnShowMessageWS(Value: TAShowMessageWSProc): AError;
+
+function ASystem_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
 
-function ASystem_ShowError(const UserMessage, ExceptMessage: AString_Type): AError; stdcall;
+function ASystem_ShowError(const UserMessage, ExceptMessage: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function ASystem_ShowErrorA(UserMessage, ExceptMessage: AStr): AError; stdcall;
+function ASystem_ShowErrorA(UserMessage, ExceptMessage: AStr): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_ShowErrorP(const UserMessage, ExceptMessage: APascalString): AError; stdcall;
 
-function ASystem_ShowMessage(const Msg: AString_Type): ADialogBoxCommands; stdcall;
+function ASystem_ShowMessage(const Msg: AString_Type): ADialogBoxCommands; {$ifdef AStdCall}stdcall;{$endif}
 
-function ASystem_ShowMessageA(Msg: AStr): ADialogBoxCommands; stdcall;
+function ASystem_ShowMessageA(Msg: AStr): ADialogBoxCommands; {$ifdef AStdCall}stdcall;{$endif}
 
-function ASystem_ShowMessageEx(const Text, Caption: AString_Type; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+function ASystem_ShowMessageEx(const Text, Caption: AString_Type; Flags: AMessageBoxFlags): ADialogBoxCommands; {$ifdef AStdCall}stdcall;{$endif}
 
-function ASystem_ShowMessageExA(Text, Caption: AStr; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+function ASystem_ShowMessageExA(Text, Caption: AStr; Flags: AMessageBoxFlags): ADialogBoxCommands; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_ShowMessageExP(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 
@@ -90,7 +100,7 @@ function ASystem_ShowMessageP(const Msg: APascalString): ADialogBoxCommands; std
 function ASystem_ShowMessageWS(const Msg: AWideString): ADialogBoxCommands; stdcall;
 
 {$IFDEF USE_RUNTIME}
-function ASystem_Shutdown(): AError; stdcall;
+function ASystem_Shutdown(): AError; {$ifdef AStdCall}stdcall;{$endif}
 {$ENDIF}
 
 // --- System ---
@@ -116,6 +126,11 @@ begin
   Result := FConfig;
 end;
 
+function ASystem_GetConfigDirectoryPath(out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, FConfigPath);
+end;
+
 function ASystem_GetConfigDirectoryPathP(): APascalString;
 begin
   Result := FConfigPath;
@@ -136,6 +151,11 @@ begin
   Result := AStrings.String_AssignP(Value, FExePath);
 end;
 
+function ASystem_GetExePath(out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, FExePath);
+end;
+
 function ASystem_GetExePathP(): APascalString;
 begin
   Result := FExePath;
@@ -149,6 +169,11 @@ end;
 function ASystem_GetProgramNameP(): APascalString;
 begin
   Result := FProgramName;
+end;
+
+function ASystem_GetTitle(out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, FTitle);
 end;
 
 function ASystem_GetTitleP(): APascalString;
@@ -234,6 +259,12 @@ end;
 function ASystem_SetOnShowMessageA(Value: AShowMessageA_Proc): AError;
 begin
   FOnShowMessageA := Value;
+  Result := 0;
+end;
+
+function ASystem_SetOnShowMessageWS(Value: TAShowMessageWSProc): AError;
+begin
+  FOnShowMessageWS := Value;
   Result := 0;
 end;
 

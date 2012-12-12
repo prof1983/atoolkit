@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 23.11.2012
+@LastMod 12.12.2012
 }
 unit AUi;
 
@@ -796,36 +796,7 @@ end;
 
 function Done: AError; stdcall;
 begin
-  {$IFDEF USE_EVENTS}
-  AEvents.Event_Invoke(FOnDone, 0);
-  {$ENDIF}
-
-  try
-    if (FMainTrayIcon <> 0) then
-    begin
-      {$IFNDEF FPC}
-      TrayIcon_Free(FMainTrayIcon);
-      {$ENDIF}
-      FMainTrayIcon := 0;
-    end;
-    SetLength(FObjects, 0);
-    SetLength(FMenuItems, 0);
-  except
-  end;
-
-  _MainWindow_Shutdown;
-
-  ASystem.SetOnProcessMessages(nil);
-  ASystem.SetOnShowMessage(nil);
-  ARuntime.SetOnShutdown(nil);
-  ARuntime.SetOnRun(nil);
-
-  {$IFDEF USE_EVENTS}
-  AEvents.Event_Free(FOnDone);
-  {$ENDIF}
-  FOnDone := 0;
-
-  Result := 0;
+  Result := AUi_Fin();
 end;
 
 function Done04(): AError; stdcall;
@@ -1937,11 +1908,7 @@ end;
 function ToolBar_AddButtonWS(ToolBar: AControl; const Name, Text, Hint: AWideString;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AButton; stdcall;
 begin
-  try
-    Result := AUIToolBar.UI_ToolBar_AddButton(ToolBar, Name, Text, Hint, OnClick, ImageId, Weight);
-  except
-    Result := 0;
-  end;
+  Result := AUiToolBar_AddButtonP(ToolBar, Name, Text, Hint, OnClick, ImageId, Weight);
 end;
 
 function ToolBar_AddButtonWS02(ToolBar: AControl; const Name, Text, Hint: AWideString;
@@ -1966,11 +1933,7 @@ end;
 
 function ToolBar_New(Parent: AControl): AControl; stdcall;
 begin
-  try
-    Result := AUIToolBar.UI_ToolBar_New(Parent);
-  except
-    Result := 0;
-  end;
+  Result := AUiToolBar_New(Parent);
 end;
 
 // --- ToolMenu ---
@@ -1978,95 +1941,37 @@ end;
 function ToolMenu_AddButtonWS(ToolMenu: AToolMenu; const Name, Text, Hint: AWideString;
     OnClick: ACallbackProc03; ImageId, Weight: AInteger): AButton; stdcall;
 begin
-  try
-    Result := AUIToolBar.UI_ToolBar_AddButton03(ToolMenu, Name, Text, Hint, OnClick, ImageId, Weight);
-  except
-    Result := 0;
-  end;
+  Result := AUiToolBar_AddButtonP(ToolMenu, Name, Text, Hint, OnClick, ImageId, Weight);
 end;
 
 function ToolMenu_AddNewItemWS(Parent: AToolMenu; const Name, Text: AWideString;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu; stdcall;
 begin
-  try
-    Result := UI_ToolMenu_AddNewItem(Parent, Name, Text, OnClick, ImageId, Weight);
-  except
-    Result := 0;
-  end;
+  Result := AUiToolMenu_AddNewItemP(Parent, Name, Text, OnClick, ImageId, Weight);
 end;
 
 function ToolMenu_AddNewSubMenu(Parent: AToolMenu; const Name, Text: AString_Type;
     ImageId, Weight: AInteger): AToolMenu; stdcall;
 begin
-  try
-    Result := UI_ToolMenu_AddNewSubMenu(Parent,
-        AString_ToPascalString(Name),
-        AString_ToPascalString(Text),
-        ImageId, Weight);
-  except
-    Result := 0;
-  end;
+  Result := AUiToolMenu_AddNewSubMenu(Parent, Name, Text, ImageId, Weight);
 end;
 
 function ToolMenu_AddNewSubMenuWS(Parent: AToolMenu; const Name, Text: AWideString;
     ImageId, Weight: AInteger): AToolMenu; stdcall;
 begin
-  try
-    Result := UI_ToolMenu_AddNewSubMenu(Parent, Name, Text, ImageId, Weight);
-  except
-    Result := 0;
-  end;
+  Result := AUiToolMenu_AddNewSubMenuP(Parent, Name, Text, ImageId, Weight);
 end;
 
 function ToolMenu_GetSubMenuWS(Parent: AToolMenu; const Name, Text: AWideString;
     ImageId, Weight: AInteger): AToolMenu; stdcall;
 begin
-  try
-    Result := UI_ToolMenu_GetSubMenu(Parent, Name, Text, ImageId, Weight);
-  except
-    Result := 0;
-  end;
+  Result := AUiToolMenu_GetSubMenuP(Parent, Name, Text, ImageId, Weight);
 end;
 
 function ToolMenu_New(Parent: AControl): AToolMenu; stdcall;
-var
-  PageControl: AControl;
-  I: Integer;
 begin
-  try
-    PageControl := AUiPageControl_New(Parent);
-    AUiControl_SetAlign(PageControl, uiAlignTop);
-    AUiControl_SetHeight(PageControl, 60);
-
-    I := Length(FToolMenus);
-    SetLength(FToolMenus, I + 1);
-    FToolMenus[I].PageControl := PageControl;
-
-    Result := PageControl;
-  except
-    Result := 0;
-  end;
+  Result := AUiToolMenu_New(Parent);
 end;
-
-{function ToolMenu_New2A(Parent: AControl; const MainPageText: PAnsiChar): AToolMenu; stdcall;
-var
-  PageControl: AControl;
-  I: Integer;
-begin
-  try
-    PageControl := AUIPageControl.UI_PageControl_New(Parent);
-    UI_Control_SetAlign(PageControl, uiAlignTop);
-    AUIControls.UI_Control_SetHeight(PageControl, 50);
-
-    I := Length(FToolMenus);
-    SetLength(FToolMenus, I + 1);
-    FToolMenus[I].PageControl := PageControl;
-
-    Result := AUIPageControl.UI_PageControl_AddPage(PageControl, '', AnsiString(MainPageText));
-  except
-    Result := 0;
-  end;
-end;}
 
 { TreeView }
 

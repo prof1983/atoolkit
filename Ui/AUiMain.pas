@@ -2,23 +2,40 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 19.11.2012
+@LastMod 12.12.2012
 }
 unit AUiMain;
 
+{$I A.inc}
+{$I Defines.inc}
+
 {$define AStdCall}
+
+{$IFDEF OLDMAINFORM2}
+  {$DEFINE OLDMAINFORM}
+{$ENDIF}
+
+{$ifndef NoEvents}
+  {$DEFINE USE_EVENTS}
+{$endif}
+
+{$ifndef NoSettings}
+  {$DEFINE USE_SETTINGS}
+{$endif}
 
 interface
 
 uses
   Controls, Forms, ShellApi, SysUtils, Windows,
-  ABase, ABaseTypes, ARuntimeMain, AStrings, ASystemMain, AUtilsMain,
+  ABase, ABaseTypes, AEvents, ARuntimeMain, ASettings, AStrings, ASystemMain, AUtilsMain,
   {$IFDEF OLDMAINFORM}fMain,{$ENDIF}
-  AUiBase, AUiData, AUiDialogs, AUiEventsObj, AUiMainWindow;
+  AUiBase, AUiData, AUiDialogs, AUiEventsObj, AUiMainWindow, AUiTrayIcon;
 
 // --- AUi ---
 
 function AUi_CreateMainForm(): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUi_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_GetMainMenuItem(): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -126,6 +143,42 @@ begin
     MainForm.OnCloseQuery := UI_.MainFormCloseQuery;
   {$ENDIF}
   AddObject(MainForm.Menu);
+  Result := 0;
+end;
+
+function AUi_Fin(): AError;
+begin
+  {$IFDEF USE_EVENTS}
+  AEvents.Event_Invoke(FOnDone, 0);
+  {$ENDIF}
+
+  try
+    if (FMainTrayIcon <> 0) then
+    begin
+      {$IFNDEF FPC}
+      TrayIcon_Free(FMainTrayIcon);
+      {$ENDIF}
+      FMainTrayIcon := 0;
+    end;
+    SetLength(FObjects, 0);
+    SetLength(FMenuItems, 0);
+  except
+  end;
+
+  _MainWindow_Shutdown;
+
+  ASystem_SetOnProcessMessages(nil);
+  ASystem_SetOnShowErrorA(nil);
+  ASystem_SetOnShowMessageA(nil);
+  ASystem_SetOnShowMessageWS(nil);
+  ARuntime_SetOnShutdown(nil);
+  ARuntime_SetOnRun(nil);
+
+  {$IFDEF USE_EVENTS}
+  AEvents.Event_Free(FOnDone);
+  {$ENDIF}
+  FOnDone := 0;
+
   Result := 0;
 end;
 

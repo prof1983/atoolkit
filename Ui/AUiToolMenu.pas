@@ -2,24 +2,50 @@
 @abstract AUi ToolMenu
 @author Prof1983 <prof1983@ya.ru>
 @created 28.02.2012
-@lastmod 16.11.2012
+@lastmod 12.12.2012
 }
 unit AUiToolMenu;
+
+{$define AStdCall}
 
 interface
 
 uses
   ComCtrls, Menus,
-  ABase, AUiBase, AUiData, AUiMenus, AUiPageControl;
+  ABase, AStrings, AUiBase, AUiControls, AUiData, AUiMenus, AUiPageControl;
 
-function UI_ToolMenu_AddNewItem(Parent: AToolMenu; const Name, Text: AWideString;
+// --- AUiToolMenu ---
+
+function AUiToolMenu_AddNewItem(Parent: AToolMenu; const Name, Text: AString_Type;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiToolMenu_AddNewItemP(Parent: AToolMenu; const Name, Text: APascalString;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu;
 
-function UI_ToolMenu_AddNewSubMenu(Parent: AToolMenu; const Name, Text: APascalString;
+function AUiToolMenu_AddNewSubMenu(Parent: AToolMenu; const Name, Text: AString_Type;
+    ImageId, Weight: AInteger): AToolMenu; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiToolMenu_AddNewSubMenuP(Parent: AToolMenu; const Name, Text: APascalString;
     ImageId, Weight: AInteger): AToolMenu;
 
-function UI_ToolMenu_GetSubMenu(Parent: AToolMenu; const Name, Text: APascalString;
+function AUiToolMenu_GetSubMenu(Parent: AToolMenu; const Name, Text: AString_Type;
+    ImageId, Weight: AInteger): AToolMenu; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiToolMenu_GetSubMenuP(Parent: AToolMenu; const Name, Text: APascalString;
     ImageId, Weight: AInteger): AToolMenu;
+
+function AUiToolMenu_New(Parent: AControl): AToolMenu; {$ifdef AStdCall}stdcall;{$endif}
+
+// --- UI_ToolMenu ---
+
+function UI_ToolMenu_AddNewItem(Parent: AToolMenu; const Name, Text: AWideString;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu; deprecated; // Use AUiToolMenu_AddNewItemP()
+
+function UI_ToolMenu_AddNewSubMenu(Parent: AToolMenu; const Name, Text: APascalString;
+    ImageId, Weight: AInteger): AToolMenu; deprecated; // Use AUiToolMenu_AddNewSubMenuP()
+
+function UI_ToolMenu_GetSubMenu(Parent: AToolMenu; const Name, Text: APascalString;
+    ImageId, Weight: AInteger): AToolMenu; deprecated; // Use AUiToolMenu_GetSubMenuP()
 
 implementation
 
@@ -45,9 +71,21 @@ begin
   Result := -1;
 end;
 
-// --- Public ---
+// --- AUiToolMenu ---
 
-function UI_ToolMenu_AddNewItem(Parent: AToolMenu; const Name, Text: AWideString;
+function AUiToolMenu_AddNewItem(Parent: AToolMenu; const Name, Text: AString_Type;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu;
+begin
+  Result := AUiToolMenu_AddNewItemP(
+      Parent,
+      AString_ToPascalString(Name),
+      AString_ToPascalString(Text),
+      OnClick,
+      ImageId,
+      Weight);
+end;
+
+function AUiToolMenu_AddNewItemP(Parent: AToolMenu; const Name, Text: APascalString;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu;
 var
   Index: AInteger;
@@ -62,71 +100,141 @@ begin
     Exit;
   end;
 
-  Index := AUIData.FindToolMenu(Parent);
-  if (Index >= 0) then
-  begin
+  try
+    Index := AUiData.FindToolMenu(Parent);
+    if (Index >= 0) then
+    begin
 
-    Page := AUiPageControl_AddPageP(FToolMenus[Index].PageControl,
-        TPageControl(FToolMenus[Index].PageControl).Name+'_'+Name, Text);
+      Page := AUiPageControl_AddPageP(FToolMenus[Index].PageControl,
+          TPageControl(FToolMenus[Index].PageControl).Name+'_'+Name, Text);
+      I := Length(FToolMenus);
+      SetLength(FToolMenus, I + 1);
+      FToolMenus[I].PageControl := FToolMenus[Index].PageControl;
+      FToolMenus[I].Page := Page;
+
+      {
+      CoolBar := TCoolBar.Create(TComponent(Page));
+      CoolBar.Parent := TWinControl(Page);
+      CoolBar.Align := alClient;
+
+      UI_ToolBar_New(AControl(CoolBar));
+      }
+
+      Result := Page;
+      Exit;
+    end;
+
+    Index := AUiData.FindMenuItem(Parent);
+    if (Index >= 0) then
+    begin
+      Result := AToolMenu(AUIMenus.UI_MenuItem_Add(AMenuItem(Parent), Name, Text, OnClick, ImageId, Weight, 0));
+      Exit;
+    end;
+
+    O := TObject(Parent);
+
+    if (O is TMenu) then
+    begin
+      Result := AToolMenu(AUiMenu_AddItem2P(AMenu(Parent), Name, Text, OnClick, ImageId, Weight));
+      Exit;
+    end;
+
+    if (O is TToolBar) then
+    begin
+      Result := Parent;
+      Exit;
+    end;
+
+    Result := 0;
+  except
+    Result := 0;
+  end;
+end;
+
+function AUiToolMenu_AddNewSubMenu(Parent: AToolMenu; const Name, Text: AString_Type;
+    ImageId, Weight: AInteger): AToolMenu;
+begin
+  Result := AUiToolMenu_AddNewSubMenuP(
+      Parent,
+      AString_ToPascalString(Name),
+      AString_ToPascalString(Text),
+      ImageId,
+      Weight);
+end;
+
+function AUiToolMenu_AddNewSubMenuP(Parent: AToolMenu; const Name, Text: APascalString;
+    ImageId, Weight: AInteger): AToolMenu;
+begin
+  Result := AUiToolMenu_AddNewItemP(Parent, Name, Text, nil, ImageId, Weight);
+end;
+
+function AUiToolMenu_GetSubMenu(Parent: AToolMenu; const Name, Text: AString_Type;
+    ImageId, Weight: AInteger): AToolMenu;
+begin
+  Result := AUiToolMenu_GetSubMenuP(
+      Parent,
+      AString_ToPascalString(Name),
+      AString_ToPascalString(Text),
+      ImageId,
+      Weight);
+end;
+
+function AUiToolMenu_GetSubMenuP(Parent: AToolMenu; const Name, Text: APascalString;
+    ImageId, Weight: AInteger): AToolMenu;
+var
+  Index: Integer;
+begin
+  try
+    Index := _FindToolMenuByName(Parent, Name);
+    if (Index >= 0) then
+    begin
+      Result := FToolMenus[Index].Page;
+      Exit;
+    end;
+    Result := AUiToolMenu_AddNewSubMenuP(Parent, Name, Text, ImageId, Weight);
+  except
+    Result := 0;
+  end;
+end;
+
+function AUiToolMenu_New(Parent: AControl): AToolMenu;
+var
+  PageControl: AControl;
+  I: Integer;
+begin
+  try
+    PageControl := AUiPageControl_New(Parent);
+    AUiControl_SetAlign(PageControl, uiAlignTop);
+    AUiControl_SetHeight(PageControl, 60);
+
     I := Length(FToolMenus);
     SetLength(FToolMenus, I + 1);
-    FToolMenus[I].PageControl := FToolMenus[Index].PageControl;
-    FToolMenus[I].Page := Page;
+    FToolMenus[I].PageControl := PageControl;
 
-    {
-    CoolBar := TCoolBar.Create(TComponent(Page));
-    CoolBar.Parent := TWinControl(Page);
-    CoolBar.Align := alClient;
-
-    UI_ToolBar_New(AControl(CoolBar));
-    }
-
-    Result := Page;
-    Exit;
+    Result := PageControl;
+  except
+    Result := 0;
   end;
+end;
 
-  Index := AUIData.FindMenuItem(Parent);
-  if (Index >= 0) then
-  begin
-    Result := AToolMenu(AUIMenus.UI_MenuItem_Add(AMenuItem(Parent), Name, Text, OnClick, ImageId, Weight, 0));
-    Exit;
-  end;
+// --- UI_ToolMenu ---
 
-  O := TObject(Parent);
-
-  if (O is TMenu) then
-  begin
-    Result := AToolMenu(AUiMenu_AddItem2P(AMenu(Parent), Name, Text, OnClick, ImageId, Weight));
-    Exit;
-  end;
-
-  if (O is TToolBar) then
-  begin
-    Result := Parent;
-    Exit;
-  end;
-
-  Result := 0;
+function UI_ToolMenu_AddNewItem(Parent: AToolMenu; const Name, Text: AWideString;
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu;
+begin
+  Result := AUiToolMenu_AddNewItemP(Parent, Name, Text, OnClick, ImageId, Weight);
 end;
 
 function UI_ToolMenu_AddNewSubMenu(Parent: AToolMenu; const Name, Text: APascalString;
     ImageId, Weight: AInteger): AToolMenu;
 begin
-  Result := UI_ToolMenu_AddNewItem(Parent, Name, Text, nil, ImageId, Weight);
+  Result := AUiToolMenu_AddNewSubMenuP(Parent, Name, Text, ImageId, Weight);
 end;
 
 function UI_ToolMenu_GetSubMenu(Parent: AToolMenu; const Name, Text: APascalString;
     ImageId, Weight: AInteger): AToolMenu;
-var
-  Index: Integer;
 begin
-  Index := _FindToolMenuByName(Parent, Name);
-  if (Index >= 0) then
-  begin
-    Result := FToolMenus[Index].Page;
-    Exit;
-  end;
-  Result := UI_ToolMenu_AddNewSubMenu(Parent, Name, Text, ImageId, Weight);
+  Result := AUiToolMenu_GetSubMenuP(Parent, Name, Text, ImageId, Weight);
 end;
 
 end.

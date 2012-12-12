@@ -1,7 +1,7 @@
 {**
-Author Prof1983 <prof1983@ya.ru>
-Created 22.11.2012
-LastMod 22.11.2012
+@Author Prof1983 <prof1983@ya.ru>
+@Created 22.11.2012
+@LastMod 12.12.2012
 }
 unit AUiProgressBar;
 
@@ -57,7 +57,7 @@ end;
 
 function UI_ProgressBar_New(Parent: AControl; Max: AInteger): AControl;
 begin
-  Result := AuiProgressBar_New(Parent, Max);
+  Result := AUiProgressBar_New(Parent, Max);
 end;
 
 function UI_ProgressBar_StepIt(ProgressBar: AControl): AInteger;

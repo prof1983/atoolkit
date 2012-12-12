@@ -37,20 +37,12 @@ uses
   {$IFDEF USE_RUNTIME}ARuntime,{$ENDIF}
   {$IFDEF USE_SETTINGS}ASettings,{$ENDIF}
   AStrings, ASystem,
-  AUiBase, AUiBox, AUiButtons, AUiControls, AUiControlsA, AUiData, AUiEvents1, AUiEventsObj, AUiForm,
+  AUiBase, AUiBox, AUiButtons, AUiControls, AUiControlsA,
+  AUiData, AUiDataSource, AUiEvents1, AUiEventsObj, AUiForm,
   AUiImages, AUiInit, AUiLabels, AUiListBox, AUiMain, AUiMainWindow, AUiMainWindow2,
-  AUiPageControl, AUiReports, AUiSplitter, AUiTextView, AUiToolBar, AUiToolMenu, AUiTreeView,
-  AUiWindows, AUiWindowSettings;
-
-// --- AUi_SpinButton ---
-
-function AUi_SpinButton_New(Parent: AControl): AControl; stdcall;
-
-// --- AUi_TrayIcon ---
-
-{$IFNDEF UNIX}
-function AUi_TrayIcon_GetMenuItems(TrayIcon: ATrayIcon): AMenuItem; stdcall;
-{$ENDIF}
+  AUiPageControl, AUiProgressBar, AUiReports, AUiSplitter,
+  AUiTextView, AUiToolBar, AUiToolMenu, AUiTreeView,
+  AUiWaitWin, AUiWindows, AUiWindowSettings;
 
 // --- Procs ---
 
@@ -645,41 +637,9 @@ function Window_ShowModal(Window: AWindow): ABoolean; stdcall;
 // Заглушка. Реальная функция находится в .\Modules\AUI.pas.
 function UI_Boot(): AError;
 
-function UI_DataSource_New: PADataSource; stdcall;
-//procedure UI_DataSource_SetDataSet(DataSource: PADataSource; Value: PADataSet); stdcall;
-procedure UI_DataSource_SetOnDataChange(DataSource: PADataSource; OnDataChange: ACallbackProc02); stdcall;
-
 // ---
 
 function UI_MainTrayIcon: ATrayIcon; stdcall;
-
-function UI_ProgressBar_New(Parent: AControl; Max: AInteger): AControl;
-function UI_ProgressBar_StepIt(ProgressBar: AControl): AInteger; 
-
-function UI_SpinButton_New(Parent: AControl): AControl; stdcall;
-
-// Use ToolBar_AddButtonWS02()
-function UI_ToolBar_AddButton(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    OnClick: ACallbackProc; ImageID, Weight: AInteger): AButton; stdcall; deprecated;
-
-// Use ToolBar_New()
-function UI_ToolBar_New(Parent: AControl): AControl; stdcall; deprecated;
-
-{$IFNDEF UNIX}
-function UI_TrayIcon_GetMenuItems(TrayIcon: ATrayIcon): AMenuItem; stdcall;
-{$ENDIF}
-
-// Use TreeView_AddItem()
-function UI_TreeView_AddItem(TreeView: AControl; Parent: ATreeNode; Text: APascalString): ATreeNode; stdcall; deprecated;
-
-// Use TreeView_New()
-function UI_TreeView_New(Parent: AControl): AControl; stdcall; deprecated;
-
-{ WaitWin }
-
-function UI_WaitWin_New(const Caption, Text: APascalString; MaxPosition: Integer): AWindow; stdcall;
-
-function UI_WaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger; stdcall;
 
 { Testing }
 
@@ -725,7 +685,7 @@ procedure UI_SetIsShowApp(Value: ABoolean); stdcall;
 // Use SetOnMainFormCreate()
 procedure UI_OnMainFormCreate_Set(Value: AProc); stdcall; deprecated;
 
-function UI_ProcessMessages: AInteger; stdcall;
+function UI_ProcessMessages: AInteger; stdcall; deprecated; // Use AUi_ProcessMessages()
 
 procedure UI_ProcessMessages02(); stdcall;
 
@@ -929,28 +889,6 @@ begin
   try
     UI_Shutdown();
   except
-  end;
-end;
-
-// --- AUi_SpinButton ---
-
-function AUi_SpinButton_New(Parent: AControl): AControl; stdcall;
-begin
-  try
-    Result := UI_SpinButton_New(Parent);
-  except
-    Result := 0;
-  end;
-end;
-
-// --- AUi_TrayIcon ---
-
-function AUi_TrayIcon_GetMenuItems(TrayIcon: ATrayIcon): AMenuItem; stdcall;
-begin
-  try
-    Result := UI_TrayIcon_GetMenuItems(TrayIcon);
-  except
-    Result := 0;
   end;
 end;
 
@@ -1807,20 +1745,12 @@ end;
 
 function ProgressBar_New(Parent: AControl; Max: AInteger): AControl; stdcall;
 begin
-  try
-    Result := UI_ProgressBar_New(Parent, Max);
-  except
-    Result := 0;
-  end;
+  Result := AUiProgressBar_New(Parent, Max);
 end;
 
 function ProgressBar_StepIt(ProgressBar: AControl): AInteger; stdcall;
 begin
-  try
-    Result := UI_ProgressBar_StepIt(ProgressBar);
-  except
-    Result := 0;
-  end;
+  Result := AUiProgressBar_StepIt(ProgressBar);
 end;
 
 { Report }
@@ -2037,23 +1967,14 @@ begin
   SetOnMainFormCreate(Value);
 end;
 
-// Use AUi_ProcessMessages()
 function UI_ProcessMessages: AInteger; stdcall;
 begin
-  try
-    Application.ProcessMessages;
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUi_ProcessMessages();
 end;
 
 procedure UI_ProcessMessages02(); stdcall;
 begin
-  try
-    Application.ProcessMessages();
-  except
-  end;
+  AUi_ProcessMessages();
 end;
 
 function UI_Run: AInteger; stdcall;
@@ -2109,37 +2030,6 @@ begin
   Result := AUi_Shutdown();
 end;
 
-{ DataSource }
-
-function UI_DataSource_New: PADataSource; stdcall;
-var
-  DataSource: TDataSource;
-  i: Integer;
-begin
-  DataSource := TDataSource.Create(nil);
-  DataSource.OnDataChange := UI_.DataSourceDataChange;
-  Result := PADataSource(DataSource);
-  i := Length(FDataSources);
-  SetLength(FDataSources, i + 1);
-  FDataSources[i].DataSource := Result;
-end;
-
-{procedure UI_DataSource_SetDataSet(DataSource: PADataSource; Value: PADataSet);
-begin
-  TDataSource(DataSource).DataSet := TDataSet(DataSet);
-end;}
-
-procedure UI_DataSource_SetOnDataChange(DataSource: PADataSource; OnDataChange: ACallbackProc02); stdcall;
-var
-  i: Integer;
-begin
-  i := FindDataSource(DataSource);
-  if (i >= 0) then
-  begin
-    FDataSources[i].OnDataChange02 := OnDataChange;
-  end;
-end;
-
 { UI_MainMenuItem }
 
 function UI_MainMenuItem: AMenuItem; stdcall;
@@ -2161,140 +2051,21 @@ begin
   Result := AddObject(TObject(Value));
 end;
 
-{ ProgressBar }
-
-function UI_ProgressBar_New(Parent: AControl; Max: AInteger): AControl;
-var
-  ProgressBar: TProgressBar;
-begin
-  ProgressBar := TProgressBar.Create(TWinControl(Parent));
-  ProgressBar.Parent := TWinControl(Parent);
-  ProgressBar.Max := Max;
-  Result := AddObject(ProgressBar);
-end;
-
-function UI_ProgressBar_StepIt(ProgressBar: AControl): AInteger;
-begin
-  TProgressBar(ProgressBar).StepIt;
-  Result := TProgressBar(ProgressBar).Position;
-end;
-
-{ SpinButton }
-
-function UI_SpinButton_New(Parent: AControl): AControl; stdcall;
-{$IFNDEF FPC}
-var
-  Spin: TSpinButton;
-{$ENDIF}
-begin
-  {$IFNDEF FPC}
-  Spin := TSpinButton.Create(TWinControl(Parent));
-  Spin.Parent := TWinControl(Parent);
-  Result := AControl(Spin);
-  {$ENDIF}
-end;
-
-{ ToolBar }
-
-function UI_ToolBar_AddButton(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    OnClick: ACallbackProc; ImageID, Weight: AInteger): AButton; stdcall;
-begin
-  {$IFDEF A02}
-  Result := AUIToolBar.UI_ToolBar_AddButton02(ToolBar, Name, Text, Hint, OnClick, ImageID, Weight);
-  {$ELSE}
-  Result := AUIToolBar.UI_ToolBar_AddButton03(ToolBar, Name, Text, Hint, OnClick, ImageID, Weight);
-  {$ENDIF A02}
-end;
-
-function UI_ToolBar_New(Parent: AControl): AControl; stdcall;
-begin
-  Result := AUIToolBar.UI_ToolBar_New(Parent);
-end;
-
-{ TrayIcon }
-
-{$IFNDEF UNIX}
-function UI_TrayIcon_GetMenuItems(TrayIcon: ATrayIcon): AMenuItem; stdcall;
-var
-  Tray: TAUITrayIcon;
-begin
-  Tray := TAUITrayIcon(TrayIcon);
-  if Assigned(Tray) then
-  begin
-    if not(Assigned(Tray.PopupMenu)) then
-      Tray.PopupMenu := TPopupMenu.Create(nil);
-    Result := AMenuItem(Tray.PopupMenu.Items);
-  end
-  else
-    Result := 0;
-end;
-{$ENDIF}
-
-{ UI_TreeView }
-
-function UI_TreeView_AddItem(TreeView: AControl; Parent: ATreeNode; Text: APascalString): ATreeNode; stdcall;
-begin
-  Result := AUITreeView.UI_TreeView_AddItem(TreeView, Parent, Text);
-end;
-
-function UI_TreeView_New(Parent: AControl): AControl; stdcall;
-begin
-  Result := AUITreeView.UI_TreeView_New(Parent);
-end;
-
-{ UI_WaitWin }
-
-function UI_WaitWin_New(const Caption, Text: APascalString; MaxPosition: Integer): AWindow; stdcall;
-{IFNDEF FPC}
-var
-  WaitForm: TWaitForm;
-{ENDIF}
-begin
-  {IFNDEF FPC}
-  WaitForm := TWaitForm.Create(nil);
-  WaitForm.Init(Caption, Text, MaxPosition);
-  AUIData.AddObject(WaitForm);
-  Result := AWindow(WaitForm);
-  {ENDIF}
-end;
-
-procedure UI_WaitWin_SetText(Window: AWindow; const Text: AWideString); stdcall;
-begin
-  TWaitForm(Window).lblText.Caption := Text;
-end;
-
-function UI_WaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger; stdcall;
-begin
-  {IFNDEF FPC}
-  TWaitForm(Window).Step;
-  Result := 0;
-  {ENDIF}
-end;
-
 { WaitWin }
 
 function WaitWin_NewWS(const Caption, Text: AWideString; MaxPosition: Integer): AWindow; stdcall;
 begin
-  try
-    Result := UI_WaitWin_New(Caption, Text, MaxPosition);
-  except
-    Result := 0;
-  end;
+  Result := AUiWaitWin_NewP(Caption, Text, MaxPosition);
 end;
 
 function WaitWin_SetMaxPosition(WaitWin: AWindow; MaxPosition: AInteger): AError; stdcall;
 begin
-  try
-    TWaitForm(WaitWin).ProgressBar.Max := MaxPosition;
-    UI_ProcessMessages();
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiWaitWin_SetMaxPosition(WaitWin, MaxPosition);
 end;
 
 function WaitWin_SetPosition(WaitWin: AWindow; Position: AInteger): AError; stdcall;
 begin
+  xxx
   try
     TWaitForm(WaitWin).ProgressBar.Position := Position;
     Result := 0;
@@ -2305,6 +2076,7 @@ end;
 
 function WaitWin_SetTextWS(Window: AWindow; const Text: AWideString): AError; stdcall;
 begin
+  xxx
   try
     UI_WaitWin_SetText(Window, Text);
     UI_ProcessMessages();
@@ -2316,6 +2088,7 @@ end;
 
 function WaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger; stdcall;
 begin
+  xxx
   try
     Result := UI_WaitWin_StepBy(Window, Step);
   except

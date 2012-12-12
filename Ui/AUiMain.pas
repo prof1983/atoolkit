@@ -48,6 +48,8 @@ function AUi_GetMainWindow(): AWindow; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_Init(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUi_ProcessMessages(): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUi_Run(): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_SetHideOnClose(Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -293,6 +295,16 @@ begin
   }
 
   Result := 0;
+end;
+
+function AUi_ProcessMessages(): AError;
+begin
+  try
+    Application.ProcessMessages;
+    Result := 0;
+  except
+    Result := -1;
+  end;
 end;
 
 function AUi_Run(): AInteger;

@@ -1,22 +1,35 @@
 {**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(12.12.2009)
-@LastMod(18.06.2011)
-@Version(0.5)
+@Author Prof1983 <prof1983@ya.ru>
+@Created 12.12.2009
+@LastMod 12.12.2012
 }
 unit AUiSpin;
 
 {$I A.inc}
 
+{$define AStdCall}
+
 interface
 
 uses
   {$IFDEF FPC}
-  Spin;
+  Spin,
   {$ELSE}
-  Buttons, Classes, Controls, ExtCtrls, Forms, Graphics, Menus, Messages, StdCtrls, SysUtils, Windows;
+  Buttons, Classes, Controls, ExtCtrls, Forms, Graphics, Menus, Messages, StdCtrls, SysUtils, Windows,
   {$ENDIF}
+  AUiBase;
+
+// --- AUiSpinButton ---
+
+function AUiSpinButton_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
+
+// --- AUi_SpinButton ---
+
+function AUi_SpinButton_New(Parent: AControl): AControl; stdcall;
+
+// --- UI_SpinButton ---
+
+function UI_SpinButton_New(Parent: AControl): AControl; stdcall;
 
 {$IFDEF FPC}
 
@@ -206,6 +219,41 @@ uses
   Themes;
 
 {$R SPIN}
+
+// --- AUiSpinButton ---
+
+function AUiSpinButton_New(Parent: AControl): AControl;
+{$IFNDEF FPC}
+var
+  Spin: TSpinButton;
+{$ENDIF}
+begin
+  {$IFDEF FPC}
+  Result := 0;
+  {$ELSE}
+  try
+    Spin := TSpinButton.Create(TWinControl(Parent));
+    Spin.Parent := TWinControl(Parent);
+    Result := AControl(Spin);
+  except
+    Result := 0;
+  end;
+  {$ENDIF}
+end;
+
+// --- AUi_SpinButton ---
+
+function AUi_SpinButton_New(Parent: AControl): AControl; 
+begin
+  Result := AUiSpinButton_New(Parent);
+end;
+
+// --- UI_SpinButton ---
+
+function UI_SpinButton_New(Parent: AControl): AControl;
+begin
+  Result := AUiSpinButton_New(Parent);
+end;
 
 { TSpinButton }
 

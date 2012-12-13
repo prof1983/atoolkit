@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 12.12.2012
+@LastMod 13.12.2012
 }
 unit AUi;
 
@@ -2065,35 +2065,17 @@ end;
 
 function WaitWin_SetPosition(WaitWin: AWindow; Position: AInteger): AError; stdcall;
 begin
-  xxx
-  try
-    TWaitForm(WaitWin).ProgressBar.Position := Position;
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiWaitWin_SetPosition(WaitWin, Position);
 end;
 
 function WaitWin_SetTextWS(Window: AWindow; const Text: AWideString): AError; stdcall;
 begin
-  xxx
-  try
-    UI_WaitWin_SetText(Window, Text);
-    UI_ProcessMessages();
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiWaitWin_SetTextP(Window, Text);
 end;
 
 function WaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger; stdcall;
 begin
-  xxx
-  try
-    Result := UI_WaitWin_StepBy(Window, Step);
-  except
-    Result := -1;
-  end;
+  Result := AUiWaitWin_StepBy(Window, Step);
 end;
 
 { Window }

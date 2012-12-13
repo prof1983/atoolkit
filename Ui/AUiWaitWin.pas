@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.12.2012
-@LastMod 12.12.2012
+@LastMod 13.12.2012
 }
 unit AUiWaitWin;
 
@@ -19,6 +19,12 @@ function AUiWaitWin_New(const Caption, Text: AString_Type; MaxPosition: AInteger
 function AUiWaitWin_NewP(const Caption, Text: APascalString; MaxPosition: AInteger): AWindow;
 
 function AUiWaitWin_SetMaxPosition(WaitWin: AWindow; MaxPosition: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiWaitWin_SetPosition(WaitWin: AWindow; Position: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiWaitWin_SetText(Window: AWindow; const Text: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiWaitWin_SetTextP(Window: AWindow; const Text: APascalString): AError;
 
 function AUiWaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -68,6 +74,32 @@ begin
   end;
 end;
 
+function AUiWaitWin_SetPosition(WaitWin: AWindow; Position: AInteger): AError;
+begin
+  try
+    TWaitForm(WaitWin).ProgressBar.Position := Position;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiWaitWin_SetText(Window: AWindow; const Text: AString_Type): AError;
+begin
+  Result := AUiWaitWin_SetTextP(Window, AString_ToPascalString(Text));
+end;
+
+function AUiWaitWin_SetTextP(Window: AWindow; const Text: APascalString): AError;
+begin
+  try
+    TWaitForm(Window).lblText.Caption := Text;
+    AUi_ProcessMessages();
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
 function AUiWaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger;
 begin
   try
@@ -82,11 +114,6 @@ end;
 function UI_WaitWin_New(const Caption, Text: APascalString; MaxPosition: AInteger): AWindow;
 begin
   Result := AUiWaitWin_NewP(Caption, Text, MaxPosition);
-end;
-
-procedure UI_WaitWin_SetText(Window: AWindow; const Text: AWideString);
-begin
-  TWaitForm(Window).lblText.Caption := Text;
 end;
 
 function UI_WaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger;

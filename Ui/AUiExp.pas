@@ -2,7 +2,7 @@
 @Abstract User Interface exports
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.04.2011
-@LastMod 16.11.2012
+@LastMod 13.12.2012
 }
 unit AUiExp;
 
@@ -11,7 +11,8 @@ interface
 uses
   AUi, AUiBox, AUiCalendar, AUiComboBox, AUiControls, AUiDialogs, AUiEdit,
   AUiGrids, AUiImages, AUiInit, AUiLabels, AUiListBox,
-  AUiMain, AUiMainWindow, AUiMainWindow2, AUiMenus, AUiPageControl, AUiSpinEdit, AUiSplitter;
+  AUiMain, AUiMainWindow, AUiMainWindow2, AUiMenus, AUiPageControl,
+  AUiSpin, AUiSpinEdit, AUiSplitter, AUiWaitWin;
 
 exports
   //A_UI_ApplicationHandle,
@@ -151,7 +152,7 @@ exports
   AUiPageControl_AddPageA,
   AUiPageControl_New,
 
-  UI_SpinButton_New name 'A_UI_SpinButton_New',
+  AUiSpinButton_New,
 
   AUiSpinEdit_New,
   AUiSpinEdit_NewEx,
@@ -160,7 +161,7 @@ exports
 
   AUI.ToolBar_AddButtonWS name 'A_UI_ToolBar_AddButtonWS',
   AUI.TreeView_New name 'A_UI_TreeView_New',
-  UI_WaitWin_New name 'A_UI_WaitWin_New',
+  AUiWaitWin_New,
   AUI.WaitWin_StepBy name 'A_UI_WaitWin_StepBy',
 
   AUI.Window_Free name 'A_UI_Window_Free',

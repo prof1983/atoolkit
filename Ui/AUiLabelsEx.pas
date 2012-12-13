@@ -2,7 +2,7 @@
 @Abstract AUiLabel extended functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.11.2012
-@LastMod 14.11.2012
+@LastMod 13.12.2012
 }
 unit AUiLabelsEx;
 
@@ -25,7 +25,7 @@ begin
   if (Typ = 0) then
     Result := AUiLabel_New(Parent)
   else if (Typ = 1) then
-    AUiTextView_New(Parent, 0)
+    Result := AUiTextView_New(Parent, 0)
   else
     Result := 0;
 end;

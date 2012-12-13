@@ -2,7 +2,7 @@
 @Abstract AUi MainWindow2
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.06.2011
-@LastMod 06.09.2012
+@LastMod 13.12.2012
 }
 unit AUiMainWindow2;
 
@@ -152,18 +152,18 @@ begin
   Items := AMenu(TForm(FMainWindow).Menu.Items);
   if (ParentItemName = '') then
   begin
-    Result := UI_MenuItem_FindByName(Items, 'mi'+Name);
+    Result := AUiMenu_FindItemByNameP(Items, 'mi'+Name);
     Parent := Items;
   end
   else
   begin
-    Parent := UI_MenuItem_FindByName(Items, 'mi'+ParentItemName);
+    Parent := AUiMenu_FindItemByNameP(Items, 'mi'+ParentItemName);
     if (Parent = 0) then
     begin
       Result := 0;
       Exit;
     end;
-    Result := UI_MenuItem_FindByName(Parent, 'mi'+Name)
+    Result := AUiMenu_FindItemByNameP(Parent, 'mi'+Name)
   end;
 
   if (Result = 0) then
@@ -190,22 +190,22 @@ begin
   Items := AMenu(TForm(FMainWindow).Menu.Items);
   if (ParentItemName = '') then
   begin
-    Result := UI_MenuItem_FindByName(Items, 'mi'+Name);
+    Result := AUiMenu_FindItemByNameP(Items, 'mi'+Name);
     Parent := Items;
   end
   else
   begin
-    Parent := UI_MenuItem_FindByName(Items, 'mi'+ParentItemName);
+    Parent := AUiMenu_FindItemByNameP(Items, 'mi'+ParentItemName);
     if (Parent = 0) then
     begin
       Result := 0;
       Exit;
     end;
-    Result := UI_MenuItem_FindByName(Parent, 'mi'+Name)
+    Result := AUiMenu_FindItemByNameP(Parent, 'mi'+Name)
   end;
 
   if (Result = 0) then
-    Result := AUIMenus.UI_MenuItem_Add03(Parent, Name, Text, OnClick, ImageID, Weight, 0);
+    Result := AUiMenu_AddItem3WS03(Parent, Name, Text, OnClick, ImageId, Weight, 0);
 end;
 
 end.

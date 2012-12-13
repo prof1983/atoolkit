@@ -18,7 +18,7 @@ uses
 
 // --- AUi ---
 
-function AUi_InitMainTrayIcon(): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUi_InitMainTrayIcon(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_InitMenus(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -72,7 +72,7 @@ end;
 
 // --- AUi ---
 
-function AUi_InitMainTrayIcon(): AInteger;
+function AUi_InitMainTrayIcon(): AError;
 begin
   {IFNDEF UNIX}
   if (FMainTrayIcon = 0) then
@@ -86,7 +86,14 @@ begin
     FMainTrayIcon := 0;
   end;
   {ENDIF}
-  Result := FMainTrayIcon;
+  try
+    if (FMainTrayIcon <> 0) then
+      Result := 0
+    else
+      Result := -2;
+  except
+    Result := -1;
+  end;
 end;
 
 function AUi_InitMenus(): AError;

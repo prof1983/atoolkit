@@ -318,7 +318,7 @@ begin
       Exit;
     end;
 
-    Value := UI_MenuItem_FindByName(ParentMenuItem, 'mi'+Name);
+    Value := AUiMenu_FindItemByNameP(ParentMenuItem, 'mi'+Name);
 
     if (Value <> 0) then
     begin

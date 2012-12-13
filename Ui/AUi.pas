@@ -735,32 +735,17 @@ end;
 
 function InitMainTrayIcon(): AError; stdcall;
 begin
-  try
-    if (UI_InitMainTrayIcon() <> 0) then
-      Result := 0
-    else
-      Result := -2;
-  except
-    Result := -1;
-  end;
+  Result := AUi_InitMainTrayIcon();
 end;
 
 function InitMenus: AError; stdcall;
 begin
-  try
-    UI_InitMenus;
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUi_InitMenus();
 end;
 
 procedure InitMenus02(); stdcall;
 begin
-  try
-    UI_InitMenus();
-  except
-  end;
+  AUi_InitMenus();
 end;
 
 {$IFDEF USE_EVENTS}

@@ -2,7 +2,7 @@
 @Abstract AUi Menus
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2011
-@LastMod 20.11.2012
+@LastMod 13.12.2012
 }
 unit AUiMenus;
 
@@ -23,13 +23,13 @@ function AUiMenu_AddItem1(Menu: AMenu; const Name, Text: AString_Type;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem1P(Menu: AMenu; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
+    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem;
 
 function AUiMenu_AddItem2(Parent: AMenuItem; const Name, Text: AString_Type;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem2P(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight: Integer): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
+    OnClick: ACallbackProc; ImageId, Weight: Integer): AMenuItem;
 
 function AUiMenu_AddItem2WS(Parent: AMenuItem; const Name, Text: AWideString;
     OnClick: ACallbackProc; ImageId, Weight: Integer): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
@@ -50,16 +50,20 @@ function AUiMenu_AddItem3WS03(Parent: AMenuItem; const Name, Text: AWideString;
     OnClick: ACallbackProc03; ImageId, Weight, Tag: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem4P(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight, Tag: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
+    OnClick: ACallbackProc; ImageId, Weight, Tag: AInteger): AMenuItem;
 
 function AUiMenu_AddItemExP(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
-    ImageId, Weight, Tag: AInteger; out ResIndex: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+    ImageId, Weight, Tag: AInteger; out ResIndex: AInteger): AError;
+
+function AUiMenu_Clear(MenuItem: AMenuItem): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_GetItems(Menu: AMenu): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_FindItemByNameP(MenuItem: AMenuItem; const Name: APascalString): AMenuItem;
 
 function AUiMenu_New(MenuType: AInteger): AMenu; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiMenu_SetChecked(MenuItem: AMenuItem; Checked: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 // --- UI_Menu ---
 
@@ -87,7 +91,7 @@ function UI_MenuItem_Add2(Parent: AMenuItem; MenuItem: AMenuItem;
 function UI_MenuItem_AddEx(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
     ImageID, Weight, Tag: AInteger; out ResIndex: AInteger): AError; deprecated; // Use AUiMenu_AddItemExP()
 
-function UI_MenuItem_FindByName(MenuItem: AMenuItem; const Name: APascalString): AMenuItem;
+function UI_MenuItem_FindByName(MenuItem: AMenuItem; const Name: APascalString): AMenuItem; deprecated; // Use AUiMenu_FindItemByNameP()
 
 implementation
 
@@ -357,6 +361,16 @@ begin
   end;
 end;
 
+function AUiMenu_Clear(MenuItem: AMenuItem): AError;
+begin
+  try
+    TMenuItem(MenuItem).Clear();
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
 function AUiMenu_GetItems(Menu: AMenu): AMenuItem;
 var
   O: TObject;
@@ -393,6 +407,16 @@ function AUiMenu_New(MenuType: AInteger): AMenu;
 begin
   try
     Result := AMenu(TPopupMenu.Create(nil));
+  except
+    Result := 0;
+  end;
+end;
+
+function AUiMenu_SetChecked(MenuItem: AMenuItem; Checked: ABoolean): AError;
+begin
+  try
+    TMenuItem(MenuItem).Checked := Checked;
+    Result := -1;
   except
     Result := 0;
   end;

@@ -37,11 +37,11 @@ uses
   {$IFDEF USE_RUNTIME}ARuntime,{$ENDIF}
   {$IFDEF USE_SETTINGS}ASettings,{$ENDIF}
   AStrings, ASystem,
-  AUiBase, AUiBox, AUiButtons, AUiControls, AUiControlsA,
-  AUiData, AUiDataSource, AUiEvents1, AUiEventsObj, AUiForm,
-  AUiImages, AUiInit, AUiLabels, AUiListBox, AUiMain, AUiMainWindow, AUiMainWindow2,
-  AUiPageControl, AUiProgressBar, AUiReports, AUiSplitter,
-  AUiTextView, AUiToolBar, AUiToolMenu, AUiTreeView,
+  AUiBase, AUiBox, AUiButtons, AUiCalendar, AUiControls, AUiControlsA,
+  AUiData, AUiDataSource, AUiDialogs, AUiEdit, AUiEvents1, AUiEventsObj, AUiForm, AUiGrids,
+  AUiImages, AUiInit, AUiLabels, AUiListBox, AUiMain, AUiMainWindow, AUiMainWindow2, AUiMenus,
+  AUiPageControl, AUiProgressBar, AUiPropertyBox, AUiReports, AUiSpin, AUiSplitter,
+  AUiTextView, AUiToolBar, AUiToolMenu, AUiTrayIcon, AUiTreeView,
   AUiWaitWin, AUiWindows, AUiWindowSettings;
 
 // --- Procs ---
@@ -637,10 +637,6 @@ function Window_ShowModal(Window: AWindow): ABoolean; stdcall;
 // Заглушка. Реальная функция находится в .\Modules\AUI.pas.
 function UI_Boot(): AError;
 
-// ---
-
-function UI_MainTrayIcon: ATrayIcon; stdcall;
-
 { Testing }
 
 function SetAboutMemoDefaultSize(Width, Height: AInteger): AError; stdcall;
@@ -666,41 +662,8 @@ function Shutdown(): AError; stdcall;
 
 procedure Shutdown02(); stdcall;
 
-{ UI }
-
-function UI_InitMainMenu(): AInteger; stdcall;
-
-function UI_InitMainTrayIcon: AInteger; stdcall;
-
-procedure UI_InitMenus; stdcall;
-
-function UI_MainMenuItem: AMenuItem; stdcall;
-
-function UI_GetIsShowApp: ABoolean; stdcall;
-
-procedure UI_SetHideOnClose(Value: ABoolean); stdcall;
-
-procedure UI_SetIsShowApp(Value: ABoolean); stdcall;
-
-// Use SetOnMainFormCreate()
-procedure UI_OnMainFormCreate_Set(Value: AProc); stdcall; deprecated;
-
-function UI_ProcessMessages: AInteger; stdcall; deprecated; // Use AUi_ProcessMessages()
-
-procedure UI_ProcessMessages02(); stdcall;
-
-function UI_Run: AInteger; stdcall;
-
-procedure UI_Run02; stdcall;
-
-function UI_Shutdown: AInteger; stdcall;
-
-function UI_ShellExecute(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
-function UI_Object_Add(Value: AInteger): AInteger; stdcall;
-
 { Protected }
 
-function UI_Init(): AError; stdcall; deprecated; // Use AUi_Init()
 function Done04(): AError; stdcall;
 
 {$IFDEF USE_EVENTS}
@@ -717,6 +680,7 @@ procedure ProcessMessages02(); stdcall;
 
 implementation
 
+(*
 uses
   //LResources,
   {$IFDEF UNIX}
@@ -727,13 +691,13 @@ uses
   {$IFDEF FPC}Interfaces,{$ELSE}Mask,{$ENDIF}
   Buttons, Classes, Controls, ComCtrls, Db, DbGrids, ExtCtrls, Forms, Graphics, Grids, Menus, StdCtrls, SysUtils,
   {$IFDEF MSWINDOWS}ShellApi, Windows,{$ENDIF}
-  AUiCalendar, AUiDialogs, AUiEdit, AUiGrids, AUiMenus, AUiPropertyBox, AUiSpin, AUiTrayIcon,
   {$IFDEF MSWINDOWS}
   fError, fInputDialog, fLogin, fMessage, fPasswordDialog, fWait,
   {$ENDIF}
   {$IFNDEF FPC}fCalendar, fDateFilter,{$ENDIF}
   {$IFDEF OLDMAINFORM}fMain,{$ENDIF}
   fAbout;
+*)
 
 { Events }
 
@@ -815,19 +779,12 @@ end;
 
 function ProcessMessages(): AError; stdcall;
 begin
-  try
-    Result := UI_ProcessMessages();
-  except
-    Result := -1;
-  end;
+  Result := AUi_ProcessMessages();
 end;
 
 procedure ProcessMessages02(); stdcall;
 begin
-  try
-    UI_ProcessMessages();
-  except
-  end;
+  AUi_ProcessMessages();
 end;
 
 function SetAboutMemoDefaultSize(Width, Height: AInteger): AError;
@@ -845,7 +802,7 @@ end;
 
 procedure SetOnMainFormCreate(Value: AProc); stdcall;
 begin
-  FOnMainFormCreate := Value;
+  AUi_SetOnMainFormCreate(Value);
 end;
 
 procedure SetOnMainFormCreate02(Value: AProc02); stdcall;
@@ -877,19 +834,12 @@ end;
 
 function Shutdown(): AError; stdcall;
 begin
-  try
-    Result := UI_Shutdown();
-  except
-    Result := -1;
-  end;
+  Result := AUi_Shutdown();
 end;
 
 procedure Shutdown02(); stdcall;
 begin
-  try
-    UI_Shutdown();
-  except
-  end;
+  AUi_Shutdown();
 end;
 
 { Box }
@@ -1621,31 +1571,17 @@ end;
 
 function MenuItem_Clear(MenuItem: AMenuItem): AError; stdcall;
 begin
-  try
-    TMenuItem(MenuItem).Clear();
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiMenu_Clear(MenuItem);
 end;
 
 function MenuItem_FindByName(MenuItem: AMenuItem; const Name: APascalString): AMenuItem; stdcall;
 begin
-  try
-    Result := UI_MenuItem_FindByName(MenuItem, Name);
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_FindItemByNameP(MenuItem, Name);
 end;
 
 function MenuItem_SetChecked(MenuItem: AMenuItem; Checked: ABoolean): AError; stdcall;
 begin
-  try
-    TMenuItem(MenuItem).Checked := Checked;
-    Result := -1;
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_SetChecked(MenuItem, Checked);
 end;
 
 // --- Menu ---
@@ -1757,11 +1693,7 @@ end;
 
 function Report_New(Parent: AControl): AReport; stdcall;
 begin
-  try
-    Result := UI_Report_New(Parent);
-  except
-    Result := 0;
-  end;
+  Result := AUiReport_New(Parent);
 end;
 
 { ReportWin }
@@ -1935,120 +1867,6 @@ end;
 function UI_Boot(): AError;
 begin
   Result := 0;
-end;
-
-function UI_GetIsShowApp: ABoolean; stdcall;
-begin
-  Result := FIsShowApp;
-end;
-
-function UI_Init(): AError; stdcall;
-begin
-  Result := AUi_Init();
-end;
-
-function UI_InitMainMenu(): AInteger; stdcall;
-begin
-  Result := 0;
-end;
-
-function UI_InitMainTrayIcon: AInteger; stdcall;
-begin
-  Result := AUi_InitMainTrayIcon();
-end;
-
-procedure UI_InitMenus; stdcall;
-begin
-  AUi_InitMenus();
-end;
-
-procedure UI_OnMainFormCreate_Set(Value: AProc); stdcall;
-begin
-  SetOnMainFormCreate(Value);
-end;
-
-function UI_ProcessMessages: AInteger; stdcall;
-begin
-  Result := AUi_ProcessMessages();
-end;
-
-procedure UI_ProcessMessages02(); stdcall;
-begin
-  AUi_ProcessMessages();
-end;
-
-function UI_Run: AInteger; stdcall;
-begin
-  Result := AUi_Run();
-end;
-
-procedure UI_Run02; stdcall;
-begin
-  AUi_Run();
-end;
-
-procedure UI_SetHideOnClose(Value: Boolean); stdcall;
-begin
-  FHideOnClose := Value;
-end;
-
-procedure UI_SetIsShowApp(Value: ABoolean); stdcall;
-begin
-  if (Value <> FIsShowApp) then
-    FIsShowApp := Value;
-
-  if Value then
-  begin
-    {$IFNDEF FPC}
-    ShowWindow(Application.Handle, SW_SHOW);
-    {$ENDIF}
-    Application.Restore;
-    Application.ShowMainForm := True;
-    if Assigned(Application.MainForm) then
-      Application.MainForm.Show;
-    Application.BringToFront;
-  end
-  else
-  begin
-    if Assigned(Application.MainForm) then
-      Application.MainForm.Hide;
-    Application.ShowMainForm := False;
-    Application.Minimize;
-    {$IFNDEF FPC}
-    ShowWindow(Application.Handle, SW_HIDE);
-    {$ENDIF}
-  end;
-end;
-
-function UI_ShellExecute(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
-begin
-  Result := AUi_ShellExecuteP(Operation, FileName, Parameters, Directory);
-end;
-
-function UI_Shutdown: AInteger; stdcall;
-begin
-  Result := AUi_Shutdown();
-end;
-
-{ UI_MainMenuItem }
-
-function UI_MainMenuItem: AMenuItem; stdcall;
-begin
-  Result := miMain;
-end;
-
-{ UI_MainTrayIcon }
-
-function UI_MainTrayIcon: ATrayIcon;
-begin
-  Result := FMainTrayIcon;
-end;
-
-{ Objects }
-
-function UI_Object_Add(Value: AInteger): AInteger; stdcall;
-begin
-  Result := AddObject(TObject(Value));
 end;
 
 { WaitWin }

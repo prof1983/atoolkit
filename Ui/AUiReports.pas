@@ -2,7 +2,7 @@
 @Abstract AUiReports
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 23.11.2012
+@LastMod 13.12.2012
 }
 unit AUiReports;
 
@@ -45,9 +45,9 @@ procedure AUi_Report_SetText(Report: AReport; const Value: AString_Type); stdcal
 
 // --- UI_Report ---
 
-function UI_Report_New(Parent: AControl): AReport;
+function UI_Report_New(Parent: AControl): AReport; deprecated; // Use AUiReport_New()
 
-procedure UI_Report_SetText(Report: AReport; const Value: APascalString); stdcall;
+procedure UI_Report_SetText(Report: AReport; const Value: APascalString); stdcall; deprecated; // Use AUiReport_SetText()
 
 // --- UI_ReportWin ---
 

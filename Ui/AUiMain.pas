@@ -2,7 +2,7 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 12.12.2012
+@LastMod 13.12.2012
 }
 unit AUiMain;
 
@@ -54,9 +54,13 @@ function AUi_Run(): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_SetHideOnClose(Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-procedure AUi_SetHideOnClose_Old(Value: ABoolean); {$ifdef AStdCall}stdcall;{$endif}
+procedure AUi_SetHideOnClose_Old(Value: ABoolean); {$ifdef AStdCall}stdcall;{$endif} deprecated; // Use AUi_SetHideOnClose()
+
+function AUi_SetIsShowApp(Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_SetMainToolBar(ToolBar: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUi_SetOnMainFormCreate(Value: AProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_SetProgramState(State: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -64,7 +68,7 @@ function AUi_ShellExecute(const Operation, FileName, Parameters, Directory: AStr
 
 function AUi_ShellExecuteA(Operation, FileName, Parameters, Directory: AStr): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUi_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUi_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger;
 
 {** Отображает справочную информацию }
 function AUi_ShowHelp(): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -72,7 +76,7 @@ function AUi_ShowHelp(): AError; {$ifdef AStdCall}stdcall;{$endif}
 function AUi_ShowHelp2(const FileName: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Отображает справочную информацию }
-function AUi_ShowHelp2P(const FileName: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUi_ShowHelp2P(const FileName: APascalString): AError; 
 
 {** Отображает справочную информацию }
 function AUi_ShowHelp2WS(const FileName: AWideString): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -81,9 +85,38 @@ function AUi_Shutdown(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 // --- UI ---
 
+function UI_GetIsShowApp(): ABoolean; stdcall;
+
+function UI_Init(): AError; stdcall; deprecated; // Use AUi_Init()
+
+function UI_MainMenuItem(): AMenuItem; stdcall; deprecated; // Use AUi_GetMainMenuItem()
+
+function UI_MainTrayIcon(): ATrayIcon; stdcall; deprecated; // Use AUi_GetMainTrayIcon()
+
+function UI_Object_Add(Value: AInteger): AInteger; stdcall;
+
+procedure UI_OnMainFormCreate_Set(Value: AProc); stdcall; deprecated; // Use AUi_SetOnMainFormCreate()
+
+function UI_ProcessMessages: AInteger; stdcall; deprecated; // Use AUi_ProcessMessages()
+
+procedure UI_ProcessMessages02(); stdcall; deprecated; // Use AUi_ProcessMessages()
+
+function UI_Run(): AInteger; stdcall; deprecated; // Use AUi_Run()
+
+procedure UI_Run02(); stdcall; deprecated; // Use AUi_Run()
+
+procedure UI_SetHideOnClose(Value: ABoolean); stdcall; deprecated; // Use AUi_SetHideOnClose()
+
+procedure UI_SetIsShowApp(Value: ABoolean); stdcall; deprecated; // Use AUi_SetIsShowApp()
+
+function UI_ShellExecute(const Operation, FileName, Parameters,
+    Directory: APascalString): AInteger; stdcall; deprecated; // Use AUi_ShellExecuteP()
+
 procedure UI_ShowHelp(); deprecated; // Use AUi_ShowHelp()
 
 procedure UI_ShowHelp2(const FileName: string); deprecated; // Use AUi_ShowHelp2()
+
+function UI_Shutdown(): AInteger; stdcall; deprecated; // Use AUi_Shutdown()
 
 implementation
 
@@ -329,6 +362,39 @@ begin
   FHideOnClose := Value;
 end;
 
+function AUi_SetIsShowApp(Value: ABoolean): AError;
+begin
+  try
+    if (Value <> FIsShowApp) then
+      FIsShowApp := Value;
+
+    if Value then
+    begin
+      {$IFNDEF FPC}
+      ShowWindow(Application.Handle, SW_SHOW);
+      {$ENDIF}
+      Application.Restore;
+      Application.ShowMainForm := True;
+      if Assigned(Application.MainForm) then
+        Application.MainForm.Show;
+      Application.BringToFront;
+    end
+    else
+    begin
+      if Assigned(Application.MainForm) then
+        Application.MainForm.Hide;
+      Application.ShowMainForm := False;
+      Application.Minimize;
+      {$IFNDEF FPC}
+      ShowWindow(Application.Handle, SW_HIDE);
+      {$ENDIF}
+    end;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
 function AUi_SetMainToolBar(ToolBar: AControl): AError;
 begin
   try
@@ -337,6 +403,12 @@ begin
   except
     Result := -1;
   end;
+end;
+
+function AUi_SetOnMainFormCreate(Value: AProc): AError;
+begin
+  FOnMainFormCreate := Value;
+  Result := 0;
 end;
 
 function AUi_SetProgramState(State: AInteger): AError;
@@ -424,6 +496,71 @@ end;
 
 // --- UI ---
 
+function UI_GetIsShowApp(): ABoolean;
+begin
+  Result := FIsShowApp;
+end;
+
+function UI_Init(): AError;
+begin
+  Result := AUi_Init();
+end;
+
+function UI_MainMenuItem(): AMenuItem;
+begin
+  Result := AUi_GetMainMenuItem();
+end;
+
+function UI_MainTrayIcon(): ATrayIcon;
+begin
+  Result := AUi_GetMainTrayIcon();
+end;
+
+function UI_Object_Add(Value: AInteger): AInteger;
+begin
+  Result := AddObject(TObject(Value));
+end;
+
+procedure UI_OnMainFormCreate_Set(Value: AProc);
+begin
+  AUi_SetOnMainFormCreate(Value);
+end;
+
+function UI_ProcessMessages(): AInteger;
+begin
+  Result := AUi_ProcessMessages();
+end;
+
+procedure UI_ProcessMessages02();
+begin
+  AUi_ProcessMessages();
+end;
+
+function UI_Run(): AInteger;
+begin
+  Result := AUi_Run();
+end;
+
+procedure UI_Run02();
+begin
+  AUi_Run();
+end;
+
+procedure UI_SetHideOnClose(Value: ABoolean);
+begin
+  AUi_SetHideOnClose(Value);
+end;
+
+procedure UI_SetIsShowApp(Value: ABoolean);
+begin
+  AUi_SetIsShowApp(Value);
+end;
+
+function UI_ShellExecute(const Operation, FileName, Parameters, Directory: APascalString): AInteger;
+begin
+  Result := AUi_ShellExecuteP(Operation, FileName, Parameters, Directory);
+end;
+
 procedure UI_ShowHelp();
 begin
   AUi_ShowHelp();
@@ -432,6 +569,11 @@ end;
 procedure UI_ShowHelp2(const FileName: string);
 begin
   AUi_ShowHelp2P(FileName);
+end;
+
+function UI_Shutdown(): AInteger;
+begin
+  Result := AUi_Shutdown();
 end;
 
 end.

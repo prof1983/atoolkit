@@ -2,7 +2,7 @@
 @Abstract AUi
 @Author Prof1983 <prof1983@ya.ru>
 @Created 03.09.2012
-@LastMod 03.09.2012
+@LastMod 13.12.2012
 }
 unit AUiInit;
 
@@ -16,9 +16,19 @@ uses
   ABase, ASystemMain,
   AUiConsts, AUiData, AUiDialogs, AUiMenus, AUiTrayIcon;
 
+// --- AUi ---
+
 function AUi_InitMainTrayIcon(): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_InitMenus(): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+// --- UI ---
+
+function UI_InitMainMenu(): AInteger; stdcall;
+
+function UI_InitMainTrayIcon(): AInteger; stdcall; deprecated; // Use AUi_InitMainTrayIcon()
+
+procedure UI_InitMenus(); stdcall; deprecated; // Use AUi_InitMenus()
 
 implementation
 
@@ -106,6 +116,23 @@ begin
   {$ENDIF A01}
 
   Result := 0;
+end;
+
+// --- UI ---
+
+function UI_InitMainMenu(): AInteger;
+begin
+  Result := 0;
+end;
+
+function UI_InitMainTrayIcon(): AInteger;
+begin
+  Result := AUi_InitMainTrayIcon();
+end;
+
+procedure UI_InitMenus();
+begin
+  AUi_InitMenus();
 end;
 
 end.

@@ -11,7 +11,7 @@ interface
 uses
   ABase,
   AUiBase,
-  AUiSettingsBase;
+  AUiSettingsBase, AUiSettingsMain;
 
 // ----
 

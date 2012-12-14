@@ -74,8 +74,14 @@ function AUi_ExecuteInputBox4P(const Caption, Prompt: APascalString;
 function AUi_ExecuteInputQueryP(const Caption, Prompt: APascalString;
     var Value: APascalString): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUi_ExecuteLoginDialog(var UserName, Password: AString_Type;
+    IsSave: ABoolean): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUi_ExecuteLoginDialogP(var UserName, Password: APascalString;
     IsSave: ABoolean): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUi_ExecuteMessageDialog1(const Text, Caption: AString_Type;
+    Flags: AMessageBoxFlags): ADialogBoxCommands; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteMessageDialog1A(Text, Caption: AStr;
     Flags: AMessageBoxFlags): ADialogBoxCommands; {$ifdef AStdCall}stdcall;{$endif}
@@ -89,10 +95,16 @@ function AUi_ExecuteMessageDialog2P(const Msg: APascalString; MsgDlgTypeFlag: AM
 function AUi_ExecuteOpenDialogP(const InitialDir, Filter, DefaultExt, Title: APascalString;
     var FileName: APascalString; var FilterIndex: AInteger): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUi_ExecuteOpenFileDialog(const InitialDir, Filter, Title: AString_Type;
+    var FileName: AString_Type): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUi_ExecuteOpenFileDialogP(const InitialDir, Filter, Title: APascalString;
     var FileName: APascalString): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecutePrinterSetupDialog(): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUi_ExecuteSaveFileDialog1(const InitialDir, DefExt, DefFileName: AString_Type;
+      out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteSaveFileDialog1P(const InitialDir, DefExt, DefFileName: APascalString): APascalString; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -110,6 +122,9 @@ function AUi_NewAboutDialog(): AWindow; {$ifdef AStdCall}stdcall;{$endif}
 function AUi_NewDialog(Buttons: AUiWindowButtons): ADialog; {$ifdef AStdCall}stdcall;{$endif}
 
 // --- AUiDialog ---
+
+function AUiDialog_AddButton(Win: AWindow; Left, Width: AInt;
+      const Text: AString_Type; OnClick: ACallbackProc): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiDialog_AddButton02(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
     OnClick: ACallbackProc02): AControl; {$ifdef AStdCall}stdcall;{$endif}
@@ -560,6 +575,12 @@ begin
   end;
 end;
 
+function AUi_ExecuteLoginDialog(var UserName, Password: AString_Type;
+    IsSave: ABoolean): ABoolean;
+begin
+  xxx
+end;
+
 function AUi_ExecuteLoginDialogP(var UserName, Password: APascalString; IsSave: ABoolean): ABoolean;
 {$IFNDEF FPC}
 var
@@ -586,6 +607,12 @@ begin
     Result := False;
   end;
   {$ENDIF}
+end;
+
+function AUi_ExecuteMessageDialog1(const Text, Caption: AString_Type;
+    Flags: AMessageBoxFlags): ADialogBoxCommands;
+begin
+  xxx
 end;
 
 function AUi_ExecuteMessageDialog1A(Text, Caption: AStr;
@@ -672,6 +699,12 @@ begin
   end;
 end;
 
+function AUi_ExecuteOpenFileDialog(const InitialDir, Filter, Title: AString_Type;
+    var FileName: AString_Type): ABoolean;
+begin
+  xxx
+end;
+
 function AUi_ExecuteOpenFileDialogP(const InitialDir, Filter, Title: APascalString;
     var FileName: APascalString): ABoolean;
 var
@@ -696,6 +729,12 @@ begin
   except
     Result := -1;
   end;
+end;
+
+function AUi_ExecuteSaveFileDialog1(const InitialDir, DefExt, DefFileName: AString_Type;
+      out Value: AString_Type): AInteger;
+begin
+  xxx
 end;
 
 function AUi_ExecuteSaveFileDialog1P(const InitialDir, DefExt, DefFileName: APascalString): APascalString;
@@ -861,6 +900,12 @@ begin
 end;
 
 // --- AUiDialog ---
+
+function AUiDialog_AddButton(Win: AWindow; Left, Width: AInt;
+      const Text: AString_Type; OnClick: ACallbackProc): AControl;
+begin
+  xxx
+end;
 
 function AUiDialog_AddButton02(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
     OnClick: ACallbackProc02): AControl;

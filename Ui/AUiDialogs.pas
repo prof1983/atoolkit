@@ -2,7 +2,7 @@
 @Abstract AUiDialogs
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 11.12.2012
+@LastMod 14.12.2012
 }
 unit AUiDialogs;
 
@@ -577,8 +577,15 @@ end;
 
 function AUi_ExecuteLoginDialog(var UserName, Password: AString_Type;
     IsSave: ABoolean): ABoolean;
+var
+  UserNameStr: APascalString;
+  PasswordStr: APascalString;
 begin
-  xxx
+  UserNameStr := AString_ToPascalString(UserName);
+  PasswordStr := AString_ToPascalString(Password);
+  Result := AUi_ExecuteLoginDialogP(UserNameStr, PasswordStr, IsSave);
+  AString_AssignP(UserName, UserNameStr);
+  AString_AssignP(Password, PasswordStr);
 end;
 
 function AUi_ExecuteLoginDialogP(var UserName, Password: APascalString; IsSave: ABoolean): ABoolean;
@@ -612,7 +619,10 @@ end;
 function AUi_ExecuteMessageDialog1(const Text, Caption: AString_Type;
     Flags: AMessageBoxFlags): ADialogBoxCommands;
 begin
-  xxx
+  Result := AUi_ExecuteMessageDialog1P(
+      AString_ToPascalString(Text),
+      AString_ToPascalString(Caption),
+      Flags);
 end;
 
 function AUi_ExecuteMessageDialog1A(Text, Caption: AStr;
@@ -701,8 +711,16 @@ end;
 
 function AUi_ExecuteOpenFileDialog(const InitialDir, Filter, Title: AString_Type;
     var FileName: AString_Type): ABoolean;
+var
+  FileNameStr: APascalString;
 begin
-  xxx
+  FileNameStr := AString_ToPascalString(FileName);
+  Result := AUi_ExecuteOpenFileDialogP(
+      AString_ToPascalString(InitialDir),
+      AString_ToPascalString(Filter),
+      AString_ToPascalString(Title),
+      FileNameStr);
+  AString_AssignP(FileName, FileNameStr);
 end;
 
 function AUi_ExecuteOpenFileDialogP(const InitialDir, Filter, Title: APascalString;
@@ -733,8 +751,14 @@ end;
 
 function AUi_ExecuteSaveFileDialog1(const InitialDir, DefExt, DefFileName: AString_Type;
       out Value: AString_Type): AInteger;
+var
+  S: APascalString;
 begin
-  xxx
+  S := AUi_ExecuteSaveFileDialog1P(
+      AString_ToPascalString(InitialDir),
+      AString_ToPascalString(DefExt),
+      AString_ToPascalString(DefFileName));
+  Result := AString_AssignP(Value, S);
 end;
 
 function AUi_ExecuteSaveFileDialog1P(const InitialDir, DefExt, DefFileName: APascalString): APascalString;
@@ -904,7 +928,7 @@ end;
 function AUiDialog_AddButton(Win: AWindow; Left, Width: AInt;
       const Text: AString_Type; OnClick: ACallbackProc): AControl;
 begin
-  xxx
+  Result := AUiDialog_AddButtonP(Win, Left, Width, AString_ToPascalString(Text), OnClick);
 end;
 
 function AUiDialog_AddButton02(Win: AWindow; Left, Width: AInteger; const Text: APascalString;

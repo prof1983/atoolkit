@@ -2,9 +2,11 @@
 @Abstract AUtils - Main
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.09.2011
-@LastMod 29.11.2012
+@LastMod 13.12.2012
 }
 unit AUtilsMain;
+
+{$define AStdCall}
 
 interface
 
@@ -13,19 +15,30 @@ uses
 
 // --- AUtils ---
 
+function AUtils_ChangeFileExt(const FileName, Extension: AString_Type;
+    out Res: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUtils_ChangeFileExtP(const FileName, Extension: APascalString): APascalString; stdcall;
 
 function AUtils_ChangeFileExtWS(const FileName, Extension: AWideString): AWideString; stdcall;
+
+function AUtils_DateToStr(Value: TDateTime; out Res: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_DateToStrP(Value: TDateTime): APascalString; stdcall;
 
 function AUtils_DateToStrWS(Value: TDateTime): AWideString; stdcall;
 
+function AUtils_DeleteFile(const FileName: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUtils_DeleteFileP(const FileName: APascalString): AError; stdcall;
 
 function AUtils_DeleteFileWS(const FileName: AWideString): AError; stdcall;
 
+function AUtils_DirectoryExists(const Directory: AString_Type): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUtils_DirectoryExistsP(const Directory: APascalString): ABoolean; stdcall;
+
+function AUtils_ExpandFileName(const FileName: AString_Type; out Res: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_ExpandFileNameP(const FileName: APascalString): APascalString; stdcall;
 
@@ -36,6 +49,8 @@ function AUtils_ExtractFileExt(const FileName: AString_Type; out Res: AString_Ty
 function AUtils_ExtractFileExtP(const FileName: APascalString): APascalString; stdcall;
 
 function AUtils_ExtractFileExtWS(const FileName: AWideString): AWideString; stdcall;
+
+function AUtils_ExtractFileName(const FileName: AString_Type; out Res: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_ExtractFileNameP(const FileName: APascalString): APascalString; stdcall;
 
@@ -54,6 +69,9 @@ function AUtils_FileExistsWS(const FileName: AWideString): ABoolean; stdcall;
 function AUtils_Fin(): AError; stdcall;
 
 function AUtils_FloatToStr(Value: AFloat; out Res: AString_Type): AInteger; stdcall;
+
+function AUtils_FloatToStr2(Value: AFloat; DigitsAfterComma: AInteger;
+    ReplaceComma, Delimer: ABoolean; out Res: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_FloatToStr2P(Value: AFloat; DigitsAfterComma: AInteger;
     ReplaceComma, Delimer: ABoolean): APascalString; stdcall;
@@ -205,6 +223,15 @@ implementation
 
 // --- AUtils ---
 
+function AUtils_ChangeFileExt(const FileName, Extension: AString_Type;
+    out Res: AString_Type): AError;
+var
+  S: APascalString;
+begin
+  S := AUtils_ChangeFileExtP(AString_ToPascalString(FileName), AString_ToPascalString(Extension));
+  Result := AString_AssignP(Res, S);
+end;
+
 function AUtils_ChangeFileExtP(const FileName, Extension: APascalString): APascalString;
 begin
   try
@@ -223,6 +250,14 @@ begin
   end;
 end;
 
+function AUtils_DateToStr(Value: TDateTime; out Res: AString_Type): AError;
+var
+  S: APascalString;
+begin
+  S := AUtils_DateToStrP(Value);
+  Result := AString_AssignP(Res, S);
+end;
+
 function AUtils_DateToStrP(Value: TDateTime): APascalString;
 begin
   try
@@ -239,6 +274,11 @@ begin
   except
     Result := '';
   end;
+end;
+
+function AUtils_DeleteFile(const FileName: AString_Type): AError;
+begin
+  Result := AUtils_DeleteFileP(AString_ToPascalString(FileName));
 end;
 
 function AUtils_DeleteFileP(const FileName: APascalString): AError;
@@ -265,6 +305,11 @@ begin
   end;
 end;
 
+function AUtils_DirectoryExists(const Directory: AString_Type): ABoolean;
+begin
+  Result := AUtils_DirectoryExistsP(AString_ToPascalString(Directory));
+end;
+
 function AUtils_DirectoryExistsP(const Directory: APascalString): ABoolean;
 begin
   try
@@ -272,6 +317,14 @@ begin
   except
     Result := False;
   end;
+end;
+
+function AUtils_ExpandFileName(const FileName: AString_Type; out Res: AString_Type): AError;
+var
+  S: APascalString;
+begin
+  S := AUtils_ExpandFileNameP(AString_ToPascalString(FileName));
+  Result := AString_AssignP(Res, S);
 end;
 
 function AUtils_ExpandFileNameP(const FileName: APascalString): APascalString;
@@ -319,6 +372,14 @@ begin
   except
     Result := '';
   end;
+end;
+
+function AUtils_ExtractFileName(const FileName: AString_Type; out Res: AString_Type): AError;
+var
+  S: APascalString;
+begin
+  S := AUtils_ExtractFileNameP(AString_ToPascalString(FileName));
+  Result := AString_AssignP(Res, S);
 end;
 
 function AUtils_ExtractFileNameP(const FileName: APascalString): APascalString;
@@ -394,6 +455,15 @@ begin
   except
     Result := 0;
   end;
+end;
+
+function AUtils_FloatToStr2(Value: AFloat; DigitsAfterComma: AInteger;
+    ReplaceComma, Delimer: ABoolean; out Res: AString_Type): AError;
+var
+  S: APascalString;
+begin
+  S := AUtils_FloatToStr2P(Value, DigitsAfterComma, ReplaceComma, Delimer);
+  Result := AString_AssignP(Res, S);
 end;
 
 function AUtils_FloatToStr2P(Value: AFloat; DigitsAfterComma: AInteger;

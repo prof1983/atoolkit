@@ -2,7 +2,7 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 13.12.2012
+@LastMod 14.12.2012
 }
 unit AUiMain;
 
@@ -36,6 +36,8 @@ uses
 function AUi_CreateMainForm(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUi_GetIsShowApp(): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_GetMainMenuItem(): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -85,7 +87,7 @@ function AUi_Shutdown(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 // --- UI ---
 
-function UI_GetIsShowApp(): ABoolean; stdcall;
+function UI_GetIsShowApp(): ABoolean; stdcall; deprecated; // Use AUi_GetIsShowApp()
 
 function UI_Init(): AError; stdcall; deprecated; // Use AUi_Init()
 
@@ -215,6 +217,11 @@ begin
   FOnDone := 0;
 
   Result := 0;
+end;
+
+function AUi_GetIsShowApp(): ABoolean;
+begin
+  Result := FIsShowApp;
 end;
 
 function AUi_GetMainMenuItem(): AMenuItem;
@@ -498,7 +505,7 @@ end;
 
 function UI_GetIsShowApp(): ABoolean;
 begin
-  Result := FIsShowApp;
+  Result := AUi_GetIsShowApp();
 end;
 
 function UI_Init(): AError;

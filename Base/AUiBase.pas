@@ -2,7 +2,7 @@
 @Abstract User Interface base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 23.11.2012
+@LastMod 14.12.2012
 }
 unit AUiBase;
 
@@ -59,6 +59,16 @@ const
   UI_Align_Right = 4;
   UI_Align_Client = 5;
   UI_Align_Custom = 6;
+
+type
+  AUiAlignment = type AInt;
+const
+  uitaLeftJustify = $0000;
+  uitaRightJustify = $0001;
+  uitaCenter = $0002;
+  uitlTop = $0000;
+  uitlCenter = $0100;
+  uitlBottom = $0200;
 
 type
   TUiAnchors = AInt;

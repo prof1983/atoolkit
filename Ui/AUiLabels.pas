@@ -2,7 +2,7 @@
 @Abstract AUiLabel
 @Author Prof1983 <prof1983@ya.ru>
 @Created 05.09.2012
-@LastMod 14.11.2012
+@LastMod 14.12.2012
 }
 unit AUiLabels;
 
@@ -14,16 +14,6 @@ uses
   Classes, Controls, StdCtrls,
   ABase,
   AUiBase, AUiData;
-
-type
-  AUiAlignment = type AInt;
-const
-  uitaLeftJustify = $0000;
-  uitaRightJustify = $0001;
-  uitaCenter = $0002;
-  uitlTop = $0000;
-  uitlCenter = $0100;
-  uitlBottom = $0200;
 
 // --- AUiLabel ---
 

@@ -134,6 +134,8 @@ function AUiDialog_AddButtonP(Win: AWindow; Left, Width: AInt; const Text: APasc
 
 function AUiDialog_GetWindow(Dialog: ADialog): AWindow; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiDialog_New(Buttons: AUiWindowButtons): ADialog; {$ifdef AStdCall}stdcall;{$endif}
+
 // --- UI_Dialog ---
 
 procedure UI_Dialog_About(); stdcall;
@@ -872,6 +874,56 @@ begin
 end;
 
 function AUi_NewDialog(Buttons: AUiWindowButtons): ADialog;
+begin
+  Result := AUiDialog_New(Buttons);
+end;
+
+// --- AUiDialog ---
+
+function AUiDialog_AddButton(Win: AWindow; Left, Width: AInt;
+      const Text: AString_Type; OnClick: ACallbackProc): AControl;
+begin
+  Result := AUiDialog_AddButtonP(Win, Left, Width, AString_ToPascalString(Text), OnClick);
+end;
+
+function AUiDialog_AddButton02(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
+    OnClick: ACallbackProc02): AControl;
+begin
+  try
+    if (Win = 0) or not(TObject(Win) is TAboutForm) then
+    begin
+      Result := 0;
+      Exit;
+    end;
+    Result := TAboutForm(Win).AddButton02(Left, Width, Text, OnClick)
+  except
+    Result := 0;
+  end;
+end;
+
+function AUiDialog_AddButtonP(Win: AWindow; Left, Width: AInt; const Text: APascalString;
+    OnClick: ACallbackProc): AControl;
+begin
+  try
+    if (Win <> 0) and (TObject(Win) is TAboutForm) then
+      Result := TAboutForm(Win).AddButton(Left, Width, Text, OnClick)
+    else
+      Result := 0;
+  except
+    Result := 0;
+  end;
+end;
+
+function AUiDialog_GetWindow(Dialog: ADialog): AWindow;
+begin
+  try
+    Result := TAUiDialog(Dialog).GetWindow();
+  except
+    Result := 0;
+  end;
+end;
+
+function AUiDialog_New(Buttons: AUiWindowButtons): ADialog;
 var
   Button: AControl;
   Dialog: TAUIDialog;
@@ -918,51 +970,6 @@ begin
       AUiControl_SetTextP(Button, cCancelText);
     end;
     Result := ADialog(Dialog);
-  except
-    Result := 0;
-  end;
-end;
-
-// --- AUiDialog ---
-
-function AUiDialog_AddButton(Win: AWindow; Left, Width: AInt;
-      const Text: AString_Type; OnClick: ACallbackProc): AControl;
-begin
-  Result := AUiDialog_AddButtonP(Win, Left, Width, AString_ToPascalString(Text), OnClick);
-end;
-
-function AUiDialog_AddButton02(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
-    OnClick: ACallbackProc02): AControl;
-begin
-  try
-    if (Win = 0) or not(TObject(Win) is TAboutForm) then
-    begin
-      Result := 0;
-      Exit;
-    end;
-    Result := TAboutForm(Win).AddButton02(Left, Width, Text, OnClick)
-  except
-    Result := 0;
-  end;
-end;
-
-function AUiDialog_AddButtonP(Win: AWindow; Left, Width: AInt; const Text: APascalString;
-    OnClick: ACallbackProc): AControl;
-begin
-  try
-    if (Win <> 0) and (TObject(Win) is TAboutForm) then
-      Result := TAboutForm(Win).AddButton(Left, Width, Text, OnClick)
-    else
-      Result := 0;
-  except
-    Result := 0;
-  end;
-end;
-
-function AUiDialog_GetWindow(Dialog: ADialog): AWindow;
-begin
-  try
-    Result := TAUiDialog(Dialog).GetWindow();
   except
     Result := 0;
   end;
@@ -1073,7 +1080,7 @@ end;
 
 function UI_Dialog_New(Buttons: AUIWindowButtons): ADialog;
 begin
-  Result := AUi_NewDialog(Buttons);
+  Result := AUiDialog_New(Buttons);
 end;
 
 function UI_Dialog_OpenFile(const InitialDir, Filter, Title: APascalString;

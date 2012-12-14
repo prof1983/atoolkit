@@ -2,7 +2,7 @@
 @Abstract AUi Menus
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2011
-@LastMod 13.12.2012
+@LastMod 14.12.2012
 }
 unit AUiMenus;
 
@@ -58,6 +58,8 @@ function AUiMenu_AddItemExP(ParentMenuItem: AMenuItem; const Name, Text: APascal
 function AUiMenu_Clear(MenuItem: AMenuItem): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_GetItems(Menu: AMenu): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiMenu_FindItemByName(MenuItem: AMenuItem; const Name: AString_Type): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_FindItemByNameP(MenuItem: AMenuItem; const Name: APascalString): AMenuItem;
 
@@ -386,6 +388,11 @@ begin
   except
     Result := 0;
   end;
+end;
+
+function AUiMenu_FindItemByName(MenuItem: AMenuItem; const Name: AString_Type): AMenuItem;
+begin
+  Result := AUiMenu_FindItemByNameP(MenuItem, AString_ToPascalString(Name));
 end;
 
 function AUiMenu_FindItemByNameP(MenuItem: AMenuItem; const Name: APascalString): AMenuItem;

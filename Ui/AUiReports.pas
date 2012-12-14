@@ -2,7 +2,7 @@
 @Abstract AUiReports
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 13.12.2012
+@LastMod 14.12.2012
 }
 unit AUiReports;
 
@@ -33,9 +33,13 @@ function AUiReport_SetTextP(Report: AReport; const Value: APascalString): AError
 
 function AUiReportWin_New(): AWindow; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiReportWin_New2P(ReportWinType: AInt; const Text: APascalString): AWindow; {$ifdef AStdCall}stdcall;{$endif}
+function AUiReportWin_New2(ReportWinType: AInt; const Text: AString_Type): AWindow; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiReportWin_ShowReportP(const Text: APascalString; Font: AFont): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiReportWin_New2P(ReportWinType: AInt; const Text: APascalString): AWindow;
+
+function AUiReportWin_ShowReport(const Text: AString_Type; Font: AFont): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiReportWin_ShowReportP(const Text: APascalString; Font: AFont): AError;
 
 // --- AUi_Report ---
 
@@ -115,6 +119,11 @@ begin
   end;
 end;
 
+function AUiReportWin_New2(ReportWinType: AInt; const Text: AString_Type): AWindow;
+begin
+  Result := AUiReportWin_New2P(ReportWinType, AString_ToPascalString(Text));
+end;
+
 function AUiReportWin_New2P(ReportWinType: AInt; const Text: APascalString): AWindow;
 {$IFDEF USE_REPORTS}
 var
@@ -148,6 +157,11 @@ begin
   except
     Result := 0;
   end;
+end;
+
+function AUiReportWin_ShowReport(const Text: AString_Type; Font: AFont): AError;
+begin
+  Result := AUiReportWin_ShowReportP(AString_ToPascalString(Text), Font);
 end;
 
 function AUiReportWin_ShowReportP(const Text: APascalString; Font: AFont): AError;

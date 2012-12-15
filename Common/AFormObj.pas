@@ -2,7 +2,7 @@
 @Abstract TForm with Logging and Configurations
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.10.2005
-@LastMod 12.11.2012
+@LastMod 15.12.2012
 }
 unit AFormObj;
 
@@ -82,7 +82,7 @@ implementation
 function TAFormObject.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
     const AStrMsg: APascalString): AInteger;
 begin
-  Result := ALogNode_AddToLog(FLog, AGroup, AType, AStrMsg);
+  Result := ALogNode_AddToLogP(FLog, AGroup, AType, AStrMsg);
   if Assigned(FOnAddToLog) then
   try
     Result := FOnAddToLog(AGroup, AType, AStrMsg);

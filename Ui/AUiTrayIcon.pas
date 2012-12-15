@@ -2,7 +2,7 @@
 @Abstract The icon in the system tray
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.12.2007
-@Lastmod 12.12.2012
+@Lastmod 15.12.2012
 }
 unit AUiTrayIcon;
 
@@ -19,6 +19,9 @@ uses
   {$ENDIF}
   ABase, AUiBase;
 
+type
+  AIcon = type AInt; // Graphics.TIcon
+
 // --- AUiTrayIcon ---
 
 function AUiTrayIcon_Free(TrayIcon: ATrayIcon): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -31,9 +34,15 @@ function AUiTrayIcon_GetMenuItems(TrayIcon: ATrayIcon): AMenuItem; {$ifdef AStdC
 
 function AUiTrayIcon_GetPopupMenu(TrayIcon: ATrayIcon): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiTrayIcon_New(): ATrayIcon; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiTrayIcon_SetHint(TrayIcon: ATrayIcon; const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiTrayIcon_SetHintP(TrayIcon: ATrayIcon; const Value: APascalString): AError;
+
+function AUiTrayIcon_SetIcon(TrayIcon: ATrayIcon; Icon: AIcon): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiTrayIcon_SetIsActive(TrayIcon: ATrayIcon; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiTrayIcon_SetOnLeftClick(TrayIcon: ATrayIcon; Value: AProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -454,6 +463,11 @@ begin
   end;
 end;
 
+function AUiTrayIcon_New(): ATrayIcon;
+begin
+  Result := ATrayIcon(TAUiTrayIcon.Create());
+end;
+
 function AUiTrayIcon_SetHint(TrayIcon: ATrayIcon; const Value: AString_Type): AError;
 begin
   Result := AUiTrayIcon_SetHintP(TrayIcon, AString_ToPascalString(Value));
@@ -472,6 +486,35 @@ begin
     end;
 
     _SetHint(I, Value);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiTrayIcon_SetIcon(TrayIcon: ATrayIcon; Icon: AIcon): AError;
+var
+  I: AInteger;
+begin
+  I := _Find(TrayIcon);
+  if (I < 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if (Icon = 0) then
+  begin
+    Result := -3;
+    Exit;
+  end;
+  if not(TObject(Icon) is TIcon) then
+  begin
+    Result := -4;
+    Exit;
+  end;
+
+  try
+    Items[I].FIcon.Assign(TIcon(Icon));
     Result := 0;
   except
     Result := -1;
@@ -544,6 +587,16 @@ begin
     if (I < 0) then
     begin
       Result := -2;
+      Exit;
+    end;
+    if (Value = 0) then
+    begin
+      Result := -3;
+      Exit;
+    end;
+    if not(TObject(Value) is TPopupMenu) then
+    begin
+      Result := -4;
       Exit;
     end;
 

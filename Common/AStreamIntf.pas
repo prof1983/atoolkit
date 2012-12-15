@@ -1,35 +1,34 @@
 ﻿{**
-@Abstract(Базовый интерфейс потока ввода/вывода)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(18.04.2004)
-@LastMod(25.04.2012)
-@Version(0.5)
+@Abstract Базовый интерфейс потока ввода/вывода
+@Author Prof1983 <prof1983@ya.ru>
+@Created 18.04.2004
+@LastMod 15.12.2012
 }
 unit AStreamIntf;
 
 interface
 
 uses
-  ATypes;
+  ABase;
 
 type //** Интерфейс потока
   IProfStream = interface
-    function ReadInt08(var Value: Int08): TProfError;
-    function ReadInt16(var Value: Int16): TProfError;
-    function ReadInt32(var Value: Int32): TProfError;
-    function ReadInt64(var Value: Int64): TProfError;
-    function ReadUInt08(var Value: UInt08): TProfError;
-    function ReadUInt16(var Value: UInt16): TProfError;
-    function ReadUInt32(var Value: UInt32): TProfError;
-    function ReadUInt64(var Value: UInt64): TProfError;
-    function WriteInt08(Value: Int08): TProfError;
-    function WriteInt16(Value: Int16): TProfError;
-    function WriteInt32(Value: Int32): TProfError;
-    function WriteInt64(Value: Int64): TProfError;
-    function WriteUInt08(Value: UInt08): TProfError;
-    function WriteUInt16(Value: UInt16): TProfError;
-    function WriteUInt32(Value: UInt32): TProfError;
-    function WriteUInt64(Value: UInt64): TProfError;
+    function ReadInt08(var Value: AInt08): AError;
+    function ReadInt16(var Value: AInt16): AError;
+    function ReadInt32(var Value: AInt32): AError;
+    function ReadInt64(var Value: AInt64): AError;
+    function ReadUInt08(var Value: AUInt08): AError;
+    function ReadUInt16(var Value: AUInt16): AError;
+    function ReadUInt32(var Value: AUInt32): AError;
+    function ReadUInt64(var Value: AUInt64): AError;
+    function WriteInt08(Value: AInt08): AError;
+    function WriteInt16(Value: AInt16): AError;
+    function WriteInt32(Value: AInt32): AError;
+    function WriteInt64(Value: AInt64): AError;
+    function WriteUInt08(Value: AUInt08): AError;
+    function WriteUInt16(Value: AUInt16): AError;
+    function WriteUInt32(Value: AUInt32): AError;
+    function WriteUInt64(Value: AUInt64): AError;
   end;
 
 implementation

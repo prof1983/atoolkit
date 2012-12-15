@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Контрол для вывода сообщений программы в TreeView)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(24.10.2006)
-@LastMod(02.05.2012)
-@Version(0.5)
+@Abstract Контрол для вывода сообщений программы в TreeView
+@Author Prof1983 <prof1983@ya.ru>
+@Created 24.10.2006
+@LastMod 15.12.2012
 }
 unit ALogControl;
 
@@ -28,7 +27,7 @@ type //** Контрол для вывода сообщений программ
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; override;
     constructor Create(AControl: TWinControl);
       //** Инициализировать
-    function Initialize(): TProfError; override;
+    function Initialize(): AError; override;
   end;
 
 implementation
@@ -91,7 +90,7 @@ begin
   FControl := AControl;
 end;
 
-function TProfLogControl.Initialize(): TProfError;
+function TProfLogControl.Initialize(): AError;
 begin
   Result := inherited Initialize();
   if not(Assigned(FTreeView)) then FTreeView := TTreeView.Create(FControl);

@@ -2,7 +2,7 @@
 @Abstract Показывать Log в окне
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.10.2005
-@LastMod 27.11.2012
+@LastMod 15.12.2012
 }
 unit ALogDocumentForm2007;
 
@@ -24,7 +24,7 @@ type //** Показывать Log в окне
     function ConfigureLoad2(AConfig: IXmlNode = nil): WordBool; virtual;
     function ConfigureSave2(AConfig: IXmlNode = nil): WordBool; virtual;
     constructor Create(AConfig: IXmlNode = nil);
-    function Finalize(): TProfError; override;
+    function Finalize(): AError; override;
     procedure Free(); virtual;
     //** Показать
     procedure Show(); override;
@@ -85,7 +85,7 @@ begin
   end;
 end;
 
-function TLogForm.Finalize(): TProfError;
+function TLogForm.Finalize(): AError;
 begin
   Result := inherited Finalize();
   FFormLog.Hide();

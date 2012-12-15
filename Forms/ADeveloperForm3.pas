@@ -2,7 +2,7 @@
 @Abstract Главная форма для проектирования
 @Author Prof1983 <prof1983@ya.ru>
 @Created 08.11.2006
-@LastMod 13.11.2012
+@LastMod 15.12.2012
 }
 unit ADeveloperForm3;
 
@@ -76,9 +76,9 @@ type
     //** Срабытывает при уничтожении
     procedure DoDestroy(); override;
     //** Срабатывает при финализации
-    function DoFinalize(): TProfError; override;
+    function DoFinalize(): AError; override;
     //** Срабатывает при инициализации
-    function DoInitialize(): TProfError; override;
+    function DoInitialize(): AError; override;
     //** Срабатывает при создании вкладки в главной области окна
     function DoTabMainAdd(ATabType: TabMainTypeEnum; const ACaption: WideString): TWinControl; virtual;
     //** Срабатывает при создании вкладки в области сообщений
@@ -178,7 +178,7 @@ begin
   // ...
 end;
 
-function TfmDeveloper3.ConfigureLoad(AConfig: IProfNode): TProfError;
+function TfmDeveloper3.ConfigureLoad(AConfig: IProfNode): AError;
 var
   tmpConfig: IProfNode;
   //i: Integer;
@@ -212,7 +212,7 @@ begin
       pnMessages.Visible := False;}
 end;
 
-function TfmDeveloper3.ConfigureSave(AConfig: IProfNode): TProfError;
+function TfmDeveloper3.ConfigureSave(AConfig: IProfNode): AError;
 var
   tmpConfig: IProfNode;
 begin
@@ -323,13 +323,13 @@ begin
   inherited DoDestroy();
 end;
 
-function TfmDeveloper3.DoFinalize(): TProfError;
+function TfmDeveloper3.DoFinalize(): AError;
 begin
   //ConfigureSave();
   Result := inherited DoFinalize();
 end;
 
-function TfmDeveloper3.DoInitialize(): TProfError;
+function TfmDeveloper3.DoInitialize(): AError;
 begin
   Result := inherited DoInitialize();
   //ConfigureLoad();
@@ -374,7 +374,7 @@ end;
 
 { TfmDeveloperA }
 
-function TfmDeveloperA.ConfigureLoad(AConfig: IProfNode): TProfError;
+function TfmDeveloperA.ConfigureLoad(AConfig: IProfNode): AError;
 var
   //i: Integer;
   tmpConfig: IProfNode;
@@ -390,7 +390,7 @@ begin
   if TProfXmlNode.ReadIntegerA(tmpConfig, 'ObjectPropertyCol0Width', i) then vleObjects.ColWidths[0] := i;}
 end;
 
-function TfmDeveloperA.ConfigureSave(AConfig: IProfNode): TProfError;
+function TfmDeveloperA.ConfigureSave(AConfig: IProfNode): AError;
 var
   tmpConfig: IProfNode;
 begin

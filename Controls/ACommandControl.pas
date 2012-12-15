@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Контрол ввода команд)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(01.04.2007)
-@LastMod(09.07.2012)
-@Version(0.5)
+@Abstract Контрол ввода команд
+@Author Prof1983 <prof1983@ya.ru>
+@Created 01.04.2007
+@LastMod 15.12.2012
 }
 unit ACommandControl;
 
@@ -19,7 +18,7 @@ type
     FInputMemo: TMemo;
     procedure DoKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   protected
-    function DoInitialize(): TProfError; override; safecall;
+    function DoInitialize(): AError; override; safecall;
   public
     function AddMessage(const Msg: WideString): Integer; override;
   end;
@@ -34,7 +33,7 @@ begin
   // Ничего не делаем
 end;
 
-function TCommandControl.DoInitialize(): TProfError;
+function TCommandControl.DoInitialize(): AError;
 begin
   Result := inherited DoInitialize();
   FInputMemo := TMemo.Create(FControl);

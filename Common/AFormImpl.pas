@@ -2,7 +2,7 @@
 @Abstract Класс-потомок для форм с логированием и конфигурациями
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.10.2005
-@LastMod 12.11.2012
+@LastMod 15.12.2012
 }
 unit AFormImpl;
 
@@ -89,9 +89,9 @@ type //** Класс-потомок для форм с логированием 
       //** Созранить конфигурации
     function ConfigureSave(AConfig: IProfNode = nil): AError; virtual;
       //** Финализирует
-    function Finalize(): TProfError; virtual;
+    function Finalize(): AError; virtual;
       //** Инициализирует
-    function Initialize(): TProfError; virtual;
+    function Initialize(): AError; virtual;
   public
       //** Конфигурации в виде XML
     property Config: IProfNode read FConfig write FConfig;
@@ -260,7 +260,7 @@ begin
   end;
 end;
 
-function TProfForm.Finalize(): TProfError;
+function TProfForm.Finalize(): AError;
 begin
   Result := DoFinalize();
 end;
@@ -270,7 +270,7 @@ begin
   Result := FConfig;
 end;
 
-function TProfForm.Initialize(): TProfError;
+function TProfForm.Initialize(): AError;
 begin
   Result := DoInitialize();
 end;

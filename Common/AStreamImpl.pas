@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Базовый класс потока ввода/вывода)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(18.04.2004)
-@LastMod(15.05.2012)
-@Version(0.5)
+@Abstract Базовый класс потока ввода/вывода
+@Author Prof1983 <prof1983@ya.ru>
+@Created 18.04.2004
+@LastMod 15.12.2012
 }
 unit AStreamImpl;
 
@@ -425,7 +424,7 @@ begin
   Result := -1;
 end;
 
-function TProfStream.WriteInteger(Value: Integer): WordBool{TProfError};
+function TProfStream.WriteInteger(Value: Integer): WordBool;
 begin
   Result := False;
 end;

@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Контрол сообщений с выводом в Memo)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.01.2007)
-@LastMod(02.05.2012)
-@Version(0.5)
+@Abstract Контрол сообщений с выводом в Memo
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.01.2007
+@LastMod 15.12.2012
 }
 unit AHelpControl;
 
@@ -20,14 +19,14 @@ type
   public
     property memMain: TMemo read FmemMain;
   public
-    function Initialize(): TProfError; override;
+    function Initialize(): AError; override;
   end;
 
 implementation
 
 { THelpControl }
 
-function THelpControl.Initialize(): TProfError;
+function THelpControl.Initialize(): AError;
 begin
   FmemMain := TMemo.Create(FControl);
   FmemMain.Parent := FControl;

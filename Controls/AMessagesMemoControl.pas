@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Контрол сообщений с выводом в Memo)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(28.10.2006)
-@LastMod(28.04.2012)
-@Version(0.5)
+@Abstract Контрол сообщений с выводом в Memo
+@Author Prof1983 <prof1983@ya.ru>
+@Created 28.10.2006
+@LastMod 15.12.2012
 }
 unit AMessagesMemoControl;
 
@@ -24,7 +23,7 @@ type //** @abstract(Контрол сообщений с выводом в Memo)
   protected
     function DoMessageAdd(const AMessage: WideString; AID: Integer): Integer; override;
   public
-    function Initialize(): TProfError; override;
+    function Initialize(): AError; override;
   end;
 
 implementation
@@ -38,7 +37,7 @@ begin
   //Result := memMessages.Lines.Count;
 end;
 
-function TMessagesMemoControl.Initialize(): TProfError;
+function TMessagesMemoControl.Initialize(): AError;
 begin
   Result := inherited Initialize();
   memInput := TMemo.Create(FControl);

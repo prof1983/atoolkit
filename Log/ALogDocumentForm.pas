@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Показывать Log в окне)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(22.10.2005)
-@LastMod(04.07.2012)
-@Version(0.5)
+@Abstract Показывать Log в окне
+@Author Prof1983 <prof1983@ya.ru>
+@Created 22.10.2005
+@LastMod 15.12.2012
 }
 unit ALogDocumentForm;
 
@@ -28,7 +27,7 @@ type //** Показывать Log в окне
     function ConfigureLoad(AConfig: IXmlNode = nil): WordBool; deprecated; // Delete
     function ConfigureSave(AConfig: IXmlNode = nil): WordBool; deprecated; // Delete
     constructor Create();
-    function Finalize(): TProfError; {override;}
+    function Finalize(): AError; override;
     procedure Free(); {override;}
       //** Скрыть
     procedure Hide(); override;
@@ -84,7 +83,7 @@ begin
   end;}
 end;
 
-function TLogForm.Finalize(): TProfError;
+function TLogForm.Finalize(): AError;
 begin
   Result := 0; //inherited Finalize();
   FFormLog.Hide();

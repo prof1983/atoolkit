@@ -2,7 +2,7 @@
 @Abstract Класс работы с XML документом
 @Author Prof1983 <prof1983@ya.ru>
 @Created 07.03.2007
-@LastMod 28.11.2012
+@LastMod 15.12.2012
 }
 unit AXmlDocumentImpl;
 
@@ -357,9 +357,9 @@ begin
     try
       FDocument.Active := True;
       Self.GetDocumentElement();
-      Result := True;
     except
       Result := False;
+      Exit;
     end;
   end;
 

@@ -2,7 +2,7 @@
 @Abstract Класс работы с XML документом
 @Author Prof1983 <prof1983@ya.ru>
 @Created 07.03.2007
-@LastMod 15.12.2012
+@LastMod 17.12.2012
 }
 unit AXmlDocumentImpl;
 
@@ -64,7 +64,7 @@ type
     function LoadFromString(const Value1: WideString): WordBool;
     {$ifdef ADepr}
       //** Сохранить в файл
-    function SaveToFile(const FileName: WideString = ''): WordBool; deprecated; // Use XmlDocument_SaveToFile()
+    function SaveToFile(const FileName: WideString = ''): WordBool; deprecated; // Use AXmlDocument_SaveToFileP()
     {$endif}
     function SaveToString(var Value: WideString): Boolean;
       //** Открыть документ
@@ -477,7 +477,7 @@ end;
 {$ifdef ADepr}
 function TProfXmlDocument.SaveToFile(const FileName: WideString): WordBool;
 begin
-  Result := ProfXmlDocument_SaveToFileP(AXmlDocument(Self), FileName);
+  Result := AXmlDocument_SaveToFileP(AXmlDocument(Self), FileName);
 end;
 {$endif}
 

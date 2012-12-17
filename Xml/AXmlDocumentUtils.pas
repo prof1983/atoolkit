@@ -2,7 +2,7 @@
 @Abstract AXmlDucument functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.06.2012
-@LastMod 27.11.2012
+@LastMod 17.12.2012
 }
 unit AXmlDocumentUtils;
 
@@ -11,7 +11,7 @@ unit AXmlDocumentUtils;
 interface
 
 uses
-  ABase, AXmlNodeUtils;
+  ABase, ATypes, AXmlNodeUtils;
 
 function AXmlDocument_CloseDocument(XmlDocument: AXmlDocument): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -30,6 +30,12 @@ function AXmlDocument_New(): AXmlDocument; {$ifdef AStdCall}stdcall;{$endif}
 function AXmlDocument_SaveToFile1(Document: AProfXmlDocument1; const FileName: APascalString): AError; deprecated; // Use AXmlDocument_SaveToFileP()
 
 function AXmlDocument_SaveToFileP(Document: AProfXmlDocument1; const FileName: APascalString): AError;
+
+function AXmlDocument_SetDefElementNameP(Document: AXmlDocument; const Value: APascalString): AError;
+
+function AXmlDocument_SetFileNameP(Document: AXmlDocument; const Value: APascalString): AError;
+
+function AXmlDocument_SetOnAddToLog(Document: AXmlDocument; AddToLog: TAddToLogProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
@@ -79,32 +85,61 @@ end;
 
 function AXmlDocument_CloseDocument(XmlDocument: AXmlDocument): AError;
 begin
-  if (TObject(XmlDocument) is TProfXmlDocument) then
+  if (XmlDocument = 0) then
   begin
+    Result := -3;
+    Exit;
+  end;
+  if not(TObject(XmlDocument) is TProfXmlDocument) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  try
     TProfXmlDocument(XmlDocument).CloseDocument();
     Result := 0;
-  end
-  else
-    Result := -2;
+  except
+    Result := -1;
+  end;
 end;
 
 function AXmlDocument_Free(XmlDocument: AXmlDocument): AError;
 begin
-  if (TObject(XmlDocument) is TProfXmlDocument) then
+  if (XmlDocument = 0) then
   begin
+    Result := -3;
+    Exit;
+  end;
+  if not(TObject(XmlDocument) is TProfXmlDocument) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+
+  try
     TProfXmlDocument(XmlDocument).Free();
     Result := 0;
-  end
-  else
-    Result := -2;
+  except
+    Result := -1;
+  end;
 end;
 
 function AXmlDocument_GetDocumentElement(XmlDocument: AXmlDocument): AProfXmlNode;
 var
   D: TProfXmlDocument;
 begin
-  if (TObject(XmlDocument) is TProfXmlDocument) then
+  if (XmlDocument = 0) then
   begin
+    Result := 0;
+    Exit;
+  end;
+  if not(TObject(XmlDocument) is TProfXmlDocument) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+
+  try
     D := TProfXmlDocument(XmlDocument);
     if (D.FDocumentElement = 0) then
     begin
@@ -116,20 +151,29 @@ begin
       D.FDocumentElement := AXmlNode_New2(D.FDocument.DocumentElement)
     end;
     Result := D.FDocumentElement;
-  end
-  else
+  except
     Result := 0;
+  end;
 end;
 
 function AXmlDocument_Initialize(XmlDocument: AXmlDocument): AError;
 begin
-  if (TObject(XmlDocument) is TProfXmlDocument) then
+  if (XmlDocument = 0) then
   begin
+    Result := -3;
+    Exit;
+  end;
+  if not(TObject(XmlDocument) is TProfXmlDocument) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  try
     TProfXmlDocument(XmlDocument).Initialize();
     Result := 0;
-  end
-  else
-    Result := -2;
+  except
+    Result := -1;
+  end;
 end;
 
 function AXmlDocument_LoadFromString(XmlDocument: AXmlDocument; const S: APascalString): AError;
@@ -139,20 +183,33 @@ end;
 
 function AXmlDocument_LoadFromStringP(XmlDocument: AXmlDocument; const S: APascalString): AError;
 begin
-  if (TObject(XmlDocument) is TProfXmlDocument) then
+  if (XmlDocument = 0) then
   begin
+    Result := -3;
+    Exit;
+  end;
+  if not(TObject(XmlDocument) is TProfXmlDocument) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  try
     if TProfXmlDocument(XmlDocument).LoadFromString(S) then
       Result := 0
     else
-      Result := -1;
-  end
-  else
-    Result := -2;
+      Result := -4;
+  except
+    Result := -1;
+  end;
 end;
 
 function AXmlDocument_New(): AXmlDocument;
 begin
-  Result := AXmlDocument(TProfXmlDocument.Create());
+  try
+    Result := AXmlDocument(TProfXmlDocument.Create());
+  except
+    Result := 0;
+  end;
 end;
 
 function AXmlDocument_SaveToFile1(Document: AProfXmlDocument1; const FileName: APascalString): AError;
@@ -162,15 +219,84 @@ end;
 
 function AXmlDocument_SaveToFileP(Document: AProfXmlDocument1; const FileName: APascalString): AError;
 begin
+  if (Document = 0) then
+  begin
+    Result := -4;
+    Exit;
+  end;
   if not(TObject(Document) is TProfXmlDocument) then
   begin
     Result := -2;
     Exit;
   end;
-  if ProfXmlDocument_SaveToFile(TProfXmlDocument(Document), FileName) then
-    Result := 0
-  else
+  try
+    if ProfXmlDocument_SaveToFile(TProfXmlDocument(Document), FileName) then
+      Result := 0
+    else
+      Result := -3;
+  except
+    Result := -1;
+  end;
+end;
+
+function AXmlDocument_SetDefElementNameP(Document: AXmlDocument; const Value: APascalString): AError;
+begin
+  if (Document = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if not(TObject(Document) is TProfXmlDocument) then
+  begin
     Result := -3;
+    Exit;
+  end;
+  try
+    TProfXmlDocument(Document).DefElementName := Value;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AXmlDocument_SetFileNameP(Document: AXmlDocument; const Value: APascalString): AError;
+begin
+  if (Document = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if not(TObject(Document) is TProfXmlDocument) then
+  begin
+    Result := -3;
+    Exit;
+  end;
+  try
+    TProfXmlDocument(Document).FFileName := Value;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AXmlDocument_SetOnAddToLog(Document: AXmlDocument; AddToLog: TAddToLogProc): AError;
+begin
+  if (Document = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if not(TObject(Document) is TProfXmlDocument) then
+  begin
+    Result := -3;
+    Exit;
+  end;
+  try
+    TProfXmlDocument(Document).OnAddToLog := AddToLog;
+    Result := 0;
+  except
+    Result := -1;
+  end;
 end;
 
 end.

@@ -2,7 +2,7 @@
 @Abstract Работа с Log. Классы для записи собщений программы в БД или файл или отображения в окне Log
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2005
-@LastMod 28.11.2012
+@LastMod 17.12.2012
 }
 unit ALogDocumentImpl;
 
@@ -27,7 +27,7 @@ type //** Документ работы с Log
     FOnCommand: TProcMessageStr;
     FNodes: array of TALogNode;
     }
-  protected
+  public
     procedure SetOnCommand(Value: TProcMessageStr); virtual;
   public // IProfDocument
     {**

@@ -2,7 +2,7 @@
 @Abstract Показывать Log в окне
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.10.2005
-@LastMod 15.12.2012
+@LastMod 17.12.2012
 }
 unit ALogDocumentForm2007;
 
@@ -10,7 +10,7 @@ interface
 
 uses
   ComCtrls, XmlIntf,
-  AConfigFormUtils, ALogDocumentImpl, ALogFormTree2007, ALogNodeImpl, ATypes;
+  ABase, AConfigFormUtils, ALogDocumentImpl, ALogFormTree2007, {ALogNodeImpl,} ALogNodeUtils, ATypes;
 
 type //** Показывать Log в окне
   TLogForm = class(TALogDocument)
@@ -28,7 +28,8 @@ type //** Показывать Log в окне
     procedure Free(); virtual;
     //** Показать
     procedure Show(); override;
-    function NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode; override;
+    function NewNode(LogType: TLogTypeMessage; const Prefix: WideString;
+        Parent: AInt = 0; Id: AInt = 0): ALogNode; override;
     //** Скрыть
     procedure Hide(); override;
     //** Добавить сообщение
@@ -108,14 +109,16 @@ begin
   if Assigned(FFormLog) then FFormLog.Hide();
 end;
 
-function TLogForm.NewNode(AType: TLogTypeMessage; const APrefix: WideString; AParent: Integer = 0; AId: Integer = 0): TALogNode;
+function TLogForm.NewNode(LogType: TLogTypeMessage; const Prefix: WideString; Parent, Id: AInt): ALogNode;
 var
-  Id: Integer;
+  Id1: Integer;
+  Node: ALogNode;
 begin
-  Id := GetFreeId;
-  FFormLog.AddNode(AType, Id, AParent, APrefix);
-  Result := TALogNode.Create2(ALogDocument(Self), AParent, APrefix, Id);
-  AddNode(Result);
+  Id1 := GetFreeId();
+  FFormLog.AddNode(LogType, Id1, Parent, Prefix);
+  Node := ALogNode_New(ALogDocument(Self), Parent, Prefix, Id1);
+  FLogDocument.AddNode(Node);
+  Result := Node;
 end;
 
 procedure TLogForm.Show();

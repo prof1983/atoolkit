@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Класс, объединяющий вывод логов сразу в несколько мест)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(26.01.2006)
-@LastMod(10.07.2012)
-@Version(0.5)
+@Abstract Класс, объединяющий вывод логов сразу в несколько мест
+@Author Prof1983 <prof1983@ya.ru>
+@Created 26.01.2006
+@LastMod 17.12.2012
 }
 unit ALogDocuments;
 
@@ -13,7 +12,7 @@ interface
 
 uses
   SysUtils, XmlIntf,
-  ALogDocumentImpl, ALogDocumentIntf, ALogNodeImpl, ALogNodeIntf, ATypes;
+  ABase, ALogDocumentImpl, ALogDocumentIntf, ALogNodeImpl, ALogNodeIntf, ALogNodeUtils, ATypes;
 
 type //** Класс для записи Log сразу в несколько мест
   TALogDocuments = class(TALogDocument, IALogDocuments)
@@ -41,7 +40,7 @@ type //** Класс для записи Log сразу в несколько м
     function ConfigureLoad(): WordBool; override;
     function ConfigureSave(): WordBool; override;
     function NewNode(LogType: TLogTypeMessage; const Msg: WideString;
-        Parent: Integer = 0; Id: Integer = 0): TALogNode; override;
+        Parent: AInt = 0; Id: AInt = 0): ALogNode; override;
     procedure Show(); override;
   public
     constructor Create();
@@ -165,13 +164,15 @@ begin
 end;
 
 function TALogDocuments.NewNode(LogType: TLogTypeMessage; const Msg: WideString;
-    Parent, Id: Integer): TALogNode;
+    Parent, Id: AInt): ALogNode;
 var
   I: Integer;
+  NodeId: AInt;
 begin
   Result := inherited NewNode(LogType, Msg, Parent, Id);
+  NodeId := ALogNode_GetId(Result);
   for I := 0 to High(FDocuments) do
-    FDocuments[I].NewNode(LogType, Msg, Parent, Result.Id);
+    FDocuments[I].NewNode(LogType, Msg, Parent, NodeId);
 end;
 
 procedure TALogDocuments.SetOnCommand(Value: TProcMessageStr);
@@ -180,7 +181,7 @@ var
 begin
   inherited SetOnCommand(Value);
   for I := 0 to High(FDocuments) do
-    FDocuments[I].OnCommand := Value;
+    FDocuments[I].SetOnCommand(Value);
 end;
 
 procedure TALogDocuments.Show();

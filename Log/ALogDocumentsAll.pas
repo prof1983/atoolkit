@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Класс, объединяющий вывод логов сразу в несколько мест)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(14.09.2006)
-@LastMod(06.07.2012)
-@Version(0.5)
+@Abstract Класс, объединяющий вывод логов сразу в несколько мест
+@Author Prof1983 <prof1983@ya.ru>
+@Created 14.09.2006
+@LastMod 17.12.2012
 }
 unit ALogDocumentsAll;
 
@@ -11,7 +10,7 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ABaseUtils2, ALogDocumentForm2007, ALogDocuments, ALogFile, ALogProgram,
+  ABaseUtils2, ALogDocumentForm2007, ALogDocuments, ALogFileText, ALogProgram,
   ATypes;
 
 type
@@ -28,7 +27,7 @@ constructor TLogDocumentsAll.Create(AConfig: IXmlNode; ASetLogType: TLogTypeSet;
 var
   Config1: IXmlNode;
   I: Integer;
-  LogFile: TLogFileText;
+  LogFile: TALogFileText;
   LogFileName: WideString;
   LogForm: TLogForm;
   LogProgram: TLogProgram;
@@ -58,7 +57,8 @@ begin
     else
       LogFileName := ALogFilePath + LogFileName + '.log';
 
-    LogFile := TLogFileText.Create(nil, LogFileName);
+    LogFile := TALogFileText.Create();
+    LogFile.SetFileName(LogFileName);
     LogFile.ConfigureLoad();
     LogFile.Initialize();
     AddLogDocument(LogFile);

@@ -2,7 +2,7 @@
 @Abstract ALogNode functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.07.2012
-@LastMod 28.11.2012
+@LastMod 17.12.2012
 }
 unit ALogNodeUtils;
 
@@ -21,6 +21,8 @@ function ALogNode_AddToLogP(LogNode: ALogNode; LogGroup: TLogGroupMessage; LogTy
 function ALogNode_AddStrP(LogNode: ALogNode; const Str: APascalString): AInt;
 
 function ALogNode_Free(LogNode: ALogNode): AError;
+
+function ALogNode_GetId(LogNode: ALogNode): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function ALogNode_New(LogDoc: ALogDocument; ParentNodeId: AInt;
     const LogPrefix: APascalString; Id: AInt): ALogNode;
@@ -95,6 +97,25 @@ begin
     Result := 0;
   except
     Result := -1;
+  end;
+end;
+
+function ALogNode_GetId(LogNode: ALogNode): AInt;
+begin
+  if (LogNode = 0) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+  if not(TObject(LogNode) is TALogNodeObject) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+  try
+    Result := TALogNodeObject(LogNode).GetId();
+  except
+    Result := 0;
   end;
 end;
 

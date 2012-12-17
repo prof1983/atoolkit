@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Окно вывода сообщений программы в виде дерева)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(13.10.2005)
-@LastMod(27.06.2012)
-@Version(0.5)
+@Abstract Окно вывода сообщений программы в виде дерева
+@Author Prof1983 <prof1983@ya.ru>
+@Created 13.10.2005
+@LastMod 17.12.2012
 }
 unit ALogFormTree2007;
 
@@ -12,8 +11,7 @@ interface
 uses
   Classes, ComCtrls, Controls, Dialogs, ExtCtrls, Forms, Graphics, ImgList,
   Menus, Messages, StdCtrls, SysUtils, Windows,
-  ALogShablonForm2006, ATypes,
-  fShablon;
+  ALogShablonForm2006, AShablonForm, ATypes;
 
 type //** Окно вывода сообщений программы в виде дерева
   TFormLog = class(TfmLogShablon)

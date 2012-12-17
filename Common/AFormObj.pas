@@ -2,7 +2,7 @@
 @Abstract TForm with Logging and Configurations
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.10.2005
-@LastMod 15.12.2012
+@LastMod 17.12.2012
 }
 unit AFormObj;
 
@@ -17,7 +17,7 @@ type
   TAFormObject = class(TForm)
   protected
     FConfig: AConfig;
-    FConfigDocument1: TConfigDocument;
+    FConfigDocument1: ADocument;
     FInitialized: WordBool;
     FLog: ALogNode;
     FLogPrefix: WideString;
@@ -56,7 +56,7 @@ type
     procedure Free(); virtual;
   public
     property Config: AConfig read GetConfig write SetConfig;
-    property ConfigDocument1: TConfigDocument read FConfigDocument1 write FConfigDocument1;
+    property ConfigDocument1: ADocument read FConfigDocument1 write FConfigDocument1;
     property Initialized: WordBool read FInitialized;
     property Log: ALogNode read FLog write FLog;
     property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
@@ -192,7 +192,7 @@ function TAFormObject.DoFinalize(): WordBool;
 begin
   AConfig_Free(FConfig);
   FConfig := 0;
-  FConfigDocument1 := nil;
+  FConfigDocument1 := 0;
   ALogNode_Free(FLog);
   FLog := 0;
   Result := True;

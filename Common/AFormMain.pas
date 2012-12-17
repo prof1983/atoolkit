@@ -102,18 +102,16 @@ begin
 
   Result := inherited Finalize();
 
-  if FIsConfigDocumentInit and Assigned(FConfigDocument1) then
+  if FIsConfigDocumentInit and (FConfigDocument1 <> 0) then
   try
-    {IFDEF VER150}
     // Проверим наличие файла
     if not(FileExists(FConfigFileName)) then
     begin
       // Создадим каталог, если надо
       ForceDirectories(ExtractFilePath(FConfigFileName));
     end;
-    {ENDIF}
 
-    AXmlDocument_SaveToFileP(FConfigDocument1.GetSelf(), FConfigFileName);
+    AXmlDocument_SaveToFileP(FConfigDocument1, FConfigFileName);
     FreeAndNil(FConfigDocument1);
   except
   end;
@@ -137,10 +135,10 @@ end;
 procedure TProfFormMain.InitConfig();
 var
   ExeName: String;
-  Doc: TProfXmlDocument;
+  //Doc: TProfXmlDocument;
   Conf: AXmlNode;
 begin
-  if not(Assigned(FConfigDocument1)) and (FConfig = 0) then
+  if (FConfigDocument1 = 0) and (FConfig = 0) then
   try
     ExeName := ExtractFileName(ParamStr(0));
     if (FConfigFileName = '') then
@@ -167,16 +165,16 @@ begin
     // Проверка существования директории
     ForceDirectories(ExtractFilePath(FConfigFileName));
     // Создание объекта
-    Doc := TProfXmlDocument.Create(FConfigFileName);
-    Doc.Initialize();
-    FConfigDocument1 := Doc;
+    FConfigDocument1 := AXmlDocument_New();
+    AXmlDocument_SetFileNameP(FConfigDocument1, FConfigFileName);
+    AXmlDocument_Initialize(FConfigDocument1);
     // Проверим наличие файла----
     FIsConfigDocumentInit := True;
   except
   end;
-  if (FConfig = 0) and Assigned(FConfigDocument1) then
+  if (FConfig = 0) and (FConfigDocument1 <> 0) then
   try
-    Conf := FConfigDocument1.FDocumentElement;
+    Conf := AXmlDocument_GetDocumentElement(FConfigDocument1);
     FConfig := AXmlNode_GetChildNodeByName(Conf, 'FormMain')
   except
   end;

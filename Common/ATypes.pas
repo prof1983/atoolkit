@@ -2,7 +2,7 @@
 @Abstract Globals types
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.02.2007
-@LastMod 11.12.2012
+@LastMod 17.12.2012
 }
 unit ATypes;
 
@@ -232,7 +232,8 @@ const
   tsTerminating  = $0008;
   tsPaused       = $0010;
   tsPausing      = $0020;
-  tsNotConnected = $0040;
+  tsStoped       = $0040;
+  tsStoping      = $0080;
   tsUncnown      = $1000;
 
 // ---

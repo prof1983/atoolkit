@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Оболочка для процесса)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(03.10.2005)
-@LastMod(04.07.2012)
-@Version(0.5)
+@Abstract Оболочка для процесса
+@Author Prof1983 <prof1983@ya.ru>
+@Created 03.10.2005
+@LastMod 17.12.2012
 }
 unit AThread2007;
 
@@ -14,25 +13,6 @@ interface
 uses
   Classes,
   ATypes;
-
-type
-  //** @abstract(Состояние процесса)
-  TThreadState = (
-      //** Запущен. Работает.
-    tsStarted,
-      //** Происходит запуск
-    tsStarting,
-      //** Не запущен. Не работает.
-    tsTerminated,
-      //** Происходит завершение
-    tsTerminating,
-      //** Пауза
-    tsPaused,
-      //** Происходит постановка на паузу
-    tsPausing,
-      //** Нет соединения
-    tsNotConnected
-    );
 
 type //** @abstract(Оболочка для процесса)
   TProfThread = class(TThread)

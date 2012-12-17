@@ -2,7 +2,7 @@
 @Abstract Контрол сообщений с выводом в Memo
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.10.2006
-@LastMod 15.12.2012
+@LastMod 17.12.2012
 }
 unit AMessagesMemoControl;
 
@@ -10,6 +10,7 @@ interface
 
 uses
   Classes, Controls, StdCtrls,
+  ABase,
   AMessagesControl, ATypes;
 
 type //** @abstract(Контрол сообщений с выводом в Memo)

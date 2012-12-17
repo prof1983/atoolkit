@@ -2,7 +2,7 @@
 @Abstract Implementation of interfaces IALogNode
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2005
-@LastMod 28.11.2012
+@LastMod 17.12.2012
 }
 unit ALogNodeImpl;
 
@@ -138,7 +138,7 @@ end;
 
 function TALogNode.GetSelf(): ALogNode;
 begin
-  Result := ALogNode(Self);
+  Result := ALogNode(FLogNode);
 end;
 
 function TALogNode.Get_GroupEnum(): EnumGroupMessage;

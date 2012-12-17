@@ -2,7 +2,7 @@
 @Abstract Главная форма для проектирования
 @Author Prof1983 <prof1983@ya.ru>
 @Created 08.11.2006
-@LastMod 13.11.2012
+@LastMod 17.12.2012
 }
 unit fDeveloper;
 
@@ -10,7 +10,11 @@ interface
 
 uses
   Classes, ComCtrls, Controls, ExtCtrls, Forms, Menus, ValEdit,
-  ABase, ANodeIntf, fAbout1, AShablonForm{fShablon};
+  ABase, ANodeIntf, fAbout1,
+  ATypes,
+  AShablonForm,
+  ASplitterControl,
+  AUiForm;
 
 type
   //** @abstract(Тип вкладки главной области)
@@ -53,6 +57,8 @@ type
   //** @abstract(Форма дизайнера с панелями и линейками)
   TfmDeveloper = class(TfmShablon)
   protected
+    FOnAddToLog: TAddToLogProc;
+  protected
     miHelp: TMenuItem;
     miHelpAbout: TMenuItem;
     miHelpHelp: TMenuItem;
@@ -78,7 +84,7 @@ type
     //** Срабытывает при уничтожении
     procedure DoDestroy(); override;
     //** Срабатывает при добавлении сообщения
-    function DoMessage(const AMsg: WideString): Integer; override;
+    function DoMessage(const AMsg: WideString): Integer; virtual;
     //** Срабатывает при создании вкладки в главной области окна
     function DoTabMainAdd(ATabType: TabMainTypeEnum; const ACaption: WideString): TWinControl; virtual;
     //** Срабатывает при создании вкладки в области сообщений
@@ -88,10 +94,15 @@ type
     //** Срабатывает при создании вкладки в области свойств
     function DoTabValueListAdd(ATabType: TabValueListTypeEnum; const ACaption: WideString): TWinControl; virtual;
   public
+    function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: WideString): AInteger; virtual;
+    function Finalize(): AError; virtual;
+    function Initialize(): AError; virtual;
+  public
     //** Загрузить конфигурации
-    function ConfigureLoad(AConfig: IProfNode = nil): AError; override;
+    function ConfigureLoad(Config: AConfig): AError; virtual;
     //** Сохранить конфигурации
-    function ConfigureSave(AConfig: IProfNode = nil): AError; override;
+    function ConfigureSave(Config: AConfig): AError; virtual;
   end;
 
 type
@@ -110,9 +121,9 @@ type
     function DoTabValueListAdd(ATabType: TabValueListTypeEnum; const ACaption: WideString): TWinControl; override;
   public
     //** Загрузить конфигурации
-    function ConfigureLoad(AConfig: IProfNode = nil): AError; override;
+    function ConfigureLoad(Config: AConfig{IProfNode = nil}): AError; override;
     //** Сохранить конфигурации
-    function ConfigureSave(AConfig: IProfNode = nil): AError; override;
+    function ConfigureSave(Config: AConfig{IProfNode = nil}): AError; override;
   end;
 
 type
@@ -164,21 +175,19 @@ implementation
 
 { TfmDeveloper }
 
-function TfmDeveloper.ConfigureLoad(AConfig: IProfNode): AError;
-var
-  tmpConfig: IProfNode;
-  i: Integer;
+function TfmDeveloper.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+    const StrMsg: WideString): AInteger;
 begin
-  if (inherited ConfigureLoad(AConfig) < 0) then
-  begin
-    Result := -1;
-    Exit;
+  if Assigned(FOnAddToLog) then
+  try
+    Result := FOnAddToLog(LogGroup, LogType, StrMsg);
+  except
   end;
-  if Assigned(AConfig) then
-    tmpConfig := AConfig
-  else
-    tmpConfig := FConfig;
+end;
 
+function TfmDeveloper.ConfigureLoad(Config: AConfig): AError;
+begin
+  Result := AUiForm.Form_LoadConfig(Self, Config);
   {if TProfXmlNode.ReadIntegerA(tmpConfig, 'ObjectsWidth', i) then
     if i > 0 then
       pnObjects.Width := i
@@ -201,20 +210,9 @@ begin
       pnMessages.Visible := False;}
 end;
 
-function TfmDeveloper.ConfigureSave(AConfig: IProfNode): AError;
-var
-  tmpConfig: IProfNode;
+function TfmDeveloper.ConfigureSave(Config: AConfig): AError;
 begin
-  if (inherited ConfigureSave(AConfig) < 0) then
-  begin
-    Result := -1;
-    Exit;
-  end;
-  if Assigned(AConfig) then
-    tmpConfig := AConfig
-  else
-    tmpConfig := FConfig;
-
+  Result := AUiForm.Form_SaveConfig(Self, Config);
   {TProfXmlNode.WriteIntegerA(tmpConfig, 'ObjectsWidth', pnObjects.Width);
   TProfXmlNode.WriteIntegerA(tmpConfig, 'ToolWidth', pnTool.Width);
   TProfXmlNode.WriteIntegerA(tmpConfig, 'ButtonsHeight', pnButtons.Height);
@@ -339,6 +337,16 @@ begin
   // ...
 end;
 
+function TfmDeveloper.Finalize(): AError;
+begin
+  Result := 0;
+end;
+
+function TfmDeveloper.Initialize(): AError;
+begin
+  Result := 0;
+end;
+
 procedure TfmDeveloper.miHelpAboutClick(Sender: TObject);
 var
   fm: TAboutForm;
@@ -354,39 +362,24 @@ end;
 
 { TfmDeveloperA }
 
-function TfmDeveloperA.ConfigureLoad(AConfig: IProfNode): AError;
-var
-  i: Integer;
-  tmpConfig: IProfNode;
+function TfmDeveloperA.ConfigureLoad(Config: AConfig): AError;
 begin
-  if (inherited ConfigureLoad(AConfig) < 0) then
+  if (inherited ConfigureLoad(Config) < 0) then
   begin
     Result := -1;
     Exit;
   end;
-  if Assigned(AConfig) then
-    tmpConfig := AConfig
-  else
-    tmpConfig := FConfig;
-
   {if TProfXmlNode.ReadIntegerA(tmpConfig, 'ObjectTreeViewHeight', i) then tvObjects.Height := i;
   if TProfXmlNode.ReadIntegerA(tmpConfig, 'ObjectPropertyCol0Width', i) then vleObjects.ColWidths[0] := i;}
 end;
 
-function TfmDeveloperA.ConfigureSave(AConfig: IProfNode): AError;
-var
-  tmpConfig: IProfNode;
+function TfmDeveloperA.ConfigureSave(Config: AConfig): AError;
 begin
-  if (inherited ConfigureSave(AConfig) < 0) then
+  if (inherited ConfigureSave(Config) < 0) then
   begin
     Result := -1;
     Exit;
   end;
-  if Assigned(AConfig) then
-    tmpConfig := AConfig
-  else
-    tmpConfig := FConfig;
-
   {TProfXmlNode.WriteIntegerA(tmpConfig, 'ObjectTreeViewHeight', tvObjects.Height);
   TProfXmlNode.WriteIntegerA(tmpConfig, 'ObjectPropertyCol0Width', vleObjects.ColWidths[0]);}
 end;

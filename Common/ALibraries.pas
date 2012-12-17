@@ -2,7 +2,7 @@
 @Abstract ALibraries (.dll, .so)
 @Author Prof1983 <prof1983@ya.ru>
 @Created 02.10.2005
-@LastMod 27.11.2012
+@LastMod 17.12.2012
 }
 unit ALibraries;
 
@@ -233,7 +233,7 @@ begin
       Result := 0;
       Exit;
     end;
-    S := string(FileName);
+    S := AnsiString(FileName);
     Handle := _LoadLibrary(PAnsiChar(S));
     if (Handle <= 32) then
     begin

@@ -2,7 +2,7 @@
 @Abstract Контрол для вывода сообщений программы в TreeView
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.10.2006
-@LastMod 15.12.2012
+@LastMod 17.12.2012
 }
 unit ALogControl;
 
@@ -10,6 +10,7 @@ interface
 
 uses
   ComCtrls, Controls, SysUtils,
+  ABase,
   ALogDocumentImpl, ALogGlobals, ATypes;
 
 type //** Контрол для вывода сообщений программы в TreeView

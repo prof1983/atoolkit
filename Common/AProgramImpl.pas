@@ -2,11 +2,9 @@
 @Abstract Реализация основной функциональности для главного объекта
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.05.2006
-@LastMod 23.11.2012
+@LastMod 17.12.2012
 }
 unit AProgramImpl;
-
-{DEFINE UseComXml}
 
 interface
 
@@ -14,13 +12,12 @@ interface
 
 uses
   ActiveX, Classes, ComObj, ComServ, Messages, SysUtils, Windows, WinSock, WinSvc,
-  {$IFDEF UseComDocument}MSXML24_TLB{$ELSE}XmlIntf, AXmlDocumentImpl{$ENDIF},
-  ABase, AConsts2, ALogDocumentIntf, ALogDocuments, ALogJournal, ALogNodeImpl,
-  AProcessImpl, AProgramUtils, ASystemData, ATypes;
+  ABase, AConsts2, ALogDocuments, ALogJournal, ALogNodeUtils,
+  AProcessImpl, AProgramUtils, ASystemData, ATypes, AXmlDocumentUtils;
 
 type
   {$IFDEF UseComXml}
-  IXmlDocument = IXmlDomDocument;
+  //IXmlDocument = IXmlDomDocument;
   {$ENDIF}
 
   //** Основной объект программы
@@ -55,7 +52,7 @@ type
     FIsTeach: Boolean;
     FIsTest: Boolean;
   protected
-    FConfigDocument: TProfXmlDocument;
+    FConfigDocument: AXmlDocument;
     FConfigFileName: WideString;
     FConfigInitialize: Boolean;
     FDateStart: TDateTime;
@@ -69,7 +66,7 @@ type
     FSrvTypeLib: ITypeLib;
     FStdTypeLib: ITypeLib;
   protected
-    function GetConfigDocument(): IXmlDocument;
+    function GetConfigDocument(): AProfXmlNode;
     function GetIsDemo(): Boolean; virtual;
     procedure SetIsDemo(Value: Boolean); virtual;
   protected
@@ -103,9 +100,9 @@ type
     class function GetInstance(): TAProgram;
   public
     //** Конфигурации программы
-    property ConfigDocument: TProfXmlDocument read FConfigDocument;
+    property ConfigDocument: AXmlDocument read FConfigDocument;
     //** Конфигурации программы
-    property ConfigDocument2: IXmlDocument read GetConfigDocument;
+    property ConfigDocument2: AProfXmlNode read GetConfigDocument;
     //** Имя файла конфигураций
     property ConfigFileName: WideString read FConfigFileName write FConfigFileName;
     //** Время запуска сервиса
@@ -199,12 +196,10 @@ begin
 end;
 
 constructor TAProgram.Create();
-{$IFNDEF UseComXml}
 var
-  doc: TProfXmlDocument;
-{$ENDIF}
+  Doc: AXmlDocument;
 begin
-  FConfigDocument := nil;
+  FConfigDocument := 0;
   FLogDocuments := nil;
   FLogJournal := nil;
   FGlbTypeLib := nil;
@@ -251,27 +246,17 @@ begin
 
   // ---
 
-  {$IFDEF UseComXml}CoInitialize(nil);{$ENDIF}
   // Создать конфигурации программы
-  if not(Assigned(FConfigDocument)) then
+  if (FConfigDocument = 0) then
   try
-    {$IFDEF UseComXml}
-    FConfigDocument := CoDOMDocument.Create();
-    if not(FConfigDocument.load(Self.ExePath + Self.ExeName + FILE_EXT_CONFIG)) then
-      FConfigDocument := nil;
-    {$ELSE}
-    doc := TProfXmlDocument.Create();
-    doc.FileName := GetConfigFileName();
-    doc.DefElementName := 'Config';
-    doc.OnAddToLog := AddToLog;
-    doc.Initialize();
-    //doc.DocumentElement.Attributes['app'] := Self.ProgramName;
-    Self.FConfigDocument := doc;
-    FConfigInitialize := True;
-    Self.FConfig := doc.GetDocumentElement();
-    {$ENDIF UseComXml}
+    Doc := AXmlDocument_New();
+    AXmlDocument_SetFileNameP(Doc, GetConfigFileName());
+    AXmlDocument_SetDefElementNameP(Doc, 'Config');
+    AXmlDocument_SetOnAddToLog(Doc, AddToLog);
+    AXmlDocument_Initialize(Doc);
+    Self.FConfig := AXmlDocument_GetDocumentElement(Doc);
   except
-    FConfigDocument := nil;
+    FConfigDocument := 0;
   end;
 
   GetDataPath();
@@ -298,17 +283,6 @@ begin
     FLogJournal := nil;
   end;
 
-  // Сохраняем конфигурации программы
-  if Assigned(FConfigDocument) then
-  try
-    FConfigDocument.SaveToFile(GetConfigFileName());
-  finally
-    try
-      FConfigDocument := nil;
-    except
-    end;
-  end;
-
   {if Assigned(FLogDocuments) then
   try
     FLogDocuments.Finalize();
@@ -318,22 +292,17 @@ begin
   end;}
 
   // Сохраняем конфигурации программы
-  if FConfigInitialize and Assigned(FConfigDocument) then
+  if FConfigInitialize and (FConfigDocument <> 0) then
   try
-    //TProfXmlDocument.Normalize();
-    FConfigDocument.SaveToFile('');
+    AXmlDocument_SaveToFileP(FConfigDocument, '');
   finally
-    try
-      FConfigDocument := nil;
-    except
-    end;
+    AXmlDocument_Free(FConfigDocument);
+    FConfigDocument := 0;
   end;
   Result := inherited DoFinalized();
 end;
 
 function TAProgram.DoInitialize(): AError;
-var
-  LogNode1: TALogNode;
 begin
   Result := inherited DoInitialize();
   if not(Assigned(FLogDocuments)) then
@@ -345,9 +314,8 @@ begin
     FLog := FLogDocuments.GetDocumentElement();
   if (FLog = 0) then
   begin
-    LogNode1 := TALogNode.Create(nil, '', 0);
-    LogNode1.OnAddToLog := FLogDocuments.AddToLog;
-    FLog := LogNode1.GetSelf();
+    FLog := ALogNode_New(0, 0, '', 0);
+    ALogNode_SetOnAddToLog(FLog, FLogDocuments.AddToLog);
   end;
   {if not(Assigned(FLogJournal)) then
   try
@@ -386,12 +354,9 @@ begin
   //inherited Free();
 end;
 
-function TAProgram.GetConfigDocument(): IXmlDocument;
+function TAProgram.GetConfigDocument(): AProfXmlNode;
 begin
-  if Assigned(FConfigDocument) then
-    Result := FConfigDocument.Document
-  else
-    Result := nil;
+  Result := AXmlDocument_GetDocumentElement(FConfigDocument);
 end;
 
 function TAProgram.GetConfigFileName(): APascalString;

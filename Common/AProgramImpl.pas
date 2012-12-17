@@ -255,6 +255,8 @@ begin
     AXmlDocument_SetOnAddToLog(Doc, AddToLog);
     AXmlDocument_Initialize(Doc);
     Self.FConfig := AXmlDocument_GetDocumentElement(Doc);
+    FConfigDocument := Doc;
+    Self.FConfigInitialize := True;
   except
     FConfigDocument := 0;
   end;

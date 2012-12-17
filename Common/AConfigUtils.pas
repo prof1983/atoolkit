@@ -1,9 +1,8 @@
 {**
-@Abstract(AConfig functions)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(09.07.2012)
-@LastMod(09.07.2012)
-@Version(0.5)
+@Abstract AConfig functions
+@Author Prof1983 <prof1983@ya.ru>
+@Created 09.07.2012
+@LastMod 17.12.2012
 }
 unit AConfigUtils;
 
@@ -15,6 +14,9 @@ uses
 function AConfig_Free(Config: AConfig): AError;
 
 function AConfig_GetChildNodeByName(Config: AConfig; const Name: APascalString): AConfig;
+
+function AConfig_ReadBool(Config: AConfig; const Name: APascalString;
+    out Value: ABoolean): AError;
 
 function AConfig_ReadInt(Config: AConfig; const Name: APascalString;
     out Value: AInt): AError;
@@ -50,6 +52,12 @@ end;
 function AConfig_GetChildNodeByName(Config: AConfig; const Name: APascalString): AConfig;
 begin
   Result := AXmlNode_GetChildNodeByName(Config, Name);
+end;
+
+function AConfig_ReadBool(Config: AConfig; const Name: APascalString;
+    out Value: ABoolean): AError;
+begin
+  Result := AXmlNode_ReadBool(Config, Name, Value);
 end;
 
 function AConfig_ReadInt(Config: AConfig; const Name: APascalString;

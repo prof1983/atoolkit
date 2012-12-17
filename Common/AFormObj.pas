@@ -10,7 +10,8 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ABase, AConfig2007, AConfigUtils, ALogGlobals, ALogNodeUtils, ATypes;
+  ABase, AConfig2007, AConfigUtils, ALogGlobals, ALogNodeUtils, ATypes,
+  AUiForm;
 
 type
     //** TForm with Logging and Configurations
@@ -44,12 +45,10 @@ type
     function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
         const AStrMsg: WideString): Integer; virtual;
   public
-    function ConfigureLoad(): WordBool; virtual;
-    //function ConfigureLoad1(): WordBool; virtual; deprecated; // Use ConfigureLoad()
-    function ConfigureLoad2(FConfig: AConfig): AError;
-    function ConfigureSave(): WordBool; virtual;
-    //function ConfigureSave1(): WordBool; virtual; deprecated; // Use ConfigureSave()
-    function ConfigureSave2(FConfig: AConfig): AError;
+    function ConfigureLoad(): WordBool; virtual; deprecated; // Use AUiForm.Form_LoadConfig()
+    function ConfigureLoad2(FConfig: AConfig): AError; deprecated; // Use AUiForm.Form_LoadConfig()
+    function ConfigureSave(): WordBool; virtual; deprecated; // Use AUiForm.Form_SaveConfig()
+    function ConfigureSave2(FConfig: AConfig): AError; deprecated; // Use AUiForm.Form_SaveConfig()
     function Finalize(): AError; virtual;
     function Initialize(): AError; virtual;
   public
@@ -114,42 +113,9 @@ begin
   Result := (ConfigureLoad2(FConfig) >= 0);
 end;
 
-{function TAFormObject.ConfigureLoad1(): WordBool;
-begin
-  Result := ConfigureLoad();
-end;}
-
 function TAFormObject.ConfigureLoad2(FConfig: AConfig): AError;
-var
-  I: Integer;
-  S: APascalString;
-  tmpWindowState: TWindowState;
 begin
-  if (FConfig = 0) then
-  begin
-    Result := -1;
-    Exit;
-  end;
-
-  tmpWindowState := TWindowState(AConfig_ReadInt32Def(FConfig, 'WindowState', Integer(wsNormal)));
-  WindowState := wsNormal;
-
-  if (AConfig_ReadInt32(FConfig, 'Left', I) >= 0) then
-    Left := I;
-  if (AConfig_ReadInt32(FConfig, 'Top', I) >= 0) then
-    Top := I;
-  if (AConfig_ReadInt32(FConfig, 'Width', I) >= 0) then
-    Width := I;
-  if (AConfig_ReadInt32(FConfig, 'Height', I) >= 0) then
-    Height := I;
-
-  if (WindowState <> tmpWindowState) then
-    WindowState := tmpWindowState;
-
-  if (AConfig_ReadString(FConfig, 'Caption', S) >= 0) then
-    Caption := S;
-
-  Result := 0;
+  Result := AUiForm.Form_LoadConfig(Self, FConfig);
 end;
 
 function TAFormObject.ConfigureSave(): WordBool;
@@ -157,29 +123,9 @@ begin
   Result := (ConfigureSave2(FConfig) >= 0);
 end;
 
-{function TAFormObject.ConfigureSave1(): WordBool;
-begin
-  Result := ConfigureSave();
-end;}
-
 function TAFormObject.ConfigureSave2(FConfig: AConfig): AError;
 begin
-  if (FConfig = 0) then
-  begin
-    Result := -1;
-    Exit;
-  end;
-  if (WindowState <> wsMaximized) then
-  begin
-    AConfig_WriteInt32(FConfig, 'Left', Left);
-    AConfig_WriteInt32(FConfig, 'Top', Top);
-    AConfig_WriteInt32(FConfig, 'Width', Width);
-    AConfig_WriteInt32(FConfig, 'Height', Height);
-  end;
-  AConfig_WriteInt32(FConfig, 'WindowState', Integer(WindowState));
-  AConfig_WriteString(FConfig, 'Caption', Caption);
-  AConfig_WriteBool(FConfig, 'Visible', Self.Visible);
-  Result := 0;
+  Result := AUiForm.Form_SaveConfig(Self, FConfig);
 end;
 
 procedure TAFormObject.DoDestroy();

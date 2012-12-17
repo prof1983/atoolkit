@@ -273,6 +273,7 @@ begin
   end;
   try
     TProfXmlDocument(Document).FFileName := Value;
+    TProfXmlDocument(Document).FDefFileName := Value;
     Result := 0;
   except
     Result := -1;

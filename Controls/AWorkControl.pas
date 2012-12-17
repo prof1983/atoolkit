@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Контрол для получения новостей о работе)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(12.04.2007)
-@LastMod(26.04.2012)
-@Version(0.5)
+@Abstract Контрол для получения новостей о работе
+@Author Prof1983 <prof1983@ya.ru>
+@Created 12.04.2007
+@LastMod 17.12.2012
 }
 unit AWorkControl;
 
@@ -14,7 +13,7 @@ uses
   AControlImpl;
 
 type //** Контрол для получения новостей о работе
-  TWorkControl = class(TProfControl)
+  TWorkControl = class(TAControl)
   private
     //reOut: TRichEdit;
   private

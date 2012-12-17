@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Контрол для ввода и вывода сообщений)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(28.10.2006)
-@LastMod(28.04.2012)
-@Version(0.5)
+@Abstract Контрол для ввода и вывода сообщений
+@Author Prof1983 <prof1983@ya.ru>
+@Created 28.10.2006
+@LastMod 17.12.2012
 }
 unit AMessagesControl;
 
@@ -16,7 +15,7 @@ type
   TMessageAddEvent = function(const AMessage: WideString; AID: Integer): Integer of object;
 
 type //** @abstract(Контрол для ввода и вывода сообщений)
-  TMessagesControl = class(TProfControl)
+  TMessagesControl = class(TAControl)
   private
     FOnMessageAdd: TMessageAddEvent;
   protected

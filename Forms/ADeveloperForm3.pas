@@ -2,7 +2,7 @@
 @Abstract Главная форма для проектирования
 @Author Prof1983 <prof1983@ya.ru>
 @Created 08.11.2006
-@LastMod 15.12.2012
+@LastMod 17.12.2012
 }
 unit ADeveloperForm3;
 
@@ -10,7 +10,7 @@ interface
 
 uses
   Classes, ComCtrls, Controls, ExtCtrls, Forms, Menus, ValEdit,
-  AAboutForm, ABase, ANodeIntf, AShablonForm{fShablon}, ATypes;
+  AAboutForm, ABase, ANodeIntf, AShablonForm{fShablon}, ASplitterControl, ATypes;
 
 type //** @abstract(Тип вкладки главной области)
   TabMainTypeEnum = Integer;
@@ -75,10 +75,6 @@ type
     procedure DoCreate(); override;
     //** Срабытывает при уничтожении
     procedure DoDestroy(); override;
-    //** Срабатывает при финализации
-    function DoFinalize(): AError; override;
-    //** Срабатывает при инициализации
-    function DoInitialize(): AError; override;
     //** Срабатывает при создании вкладки в главной области окна
     function DoTabMainAdd(ATabType: TabMainTypeEnum; const ACaption: WideString): TWinControl; virtual;
     //** Срабатывает при создании вкладки в области сообщений
@@ -91,9 +87,9 @@ type
     function AddMainTab(ATabType: TabMainTypeEnum; const ACaption: WideString): TWinControl; virtual; safecall;
   public
     //** Загрузить конфигурации
-    function ConfigureLoad(AConfig: IProfNode = nil): AError; override;
+    function ConfigureLoad(AConfig: IProfNode = nil): AError; virtual;
     //** Сохранить конфигурации
-    function ConfigureSave(AConfig: IProfNode = nil): AError; override;
+    function ConfigureSave(AConfig: IProfNode = nil): AError; virtual;
   end;
 
 type
@@ -179,16 +175,14 @@ begin
 end;
 
 function TfmDeveloper3.ConfigureLoad(AConfig: IProfNode): AError;
-var
-  tmpConfig: IProfNode;
+//var
+  //tmpConfig: IProfNode;
   //i: Integer;
 begin
-  Result := inherited ConfigureLoad(AConfig);
-  if (Result < 0) then Exit;
-  if Assigned(AConfig) then
+  {if Assigned(AConfig) then
     tmpConfig := AConfig
   else
-    tmpConfig := FConfig;
+    tmpConfig := FConfig;}
 
   {if TProfXmlNode.ReadIntegerA(tmpConfig, 'ObjectsWidth', i) then
     if i > 0 then
@@ -210,23 +204,23 @@ begin
       pnMessages.Height := i
     else
       pnMessages.Visible := False;}
+  Result := 0;
 end;
 
 function TfmDeveloper3.ConfigureSave(AConfig: IProfNode): AError;
-var
-  tmpConfig: IProfNode;
+//var
+  //tmpConfig: IProfNode;
 begin
-  Result := inherited ConfigureSave(AConfig);
-  if (Result < 0) then Exit;
-  if Assigned(AConfig) then
+  {if Assigned(AConfig) then
     tmpConfig := AConfig
   else
-    tmpConfig := FConfig;
+    tmpConfig := FConfig;}
 
   {TProfXmlNode.WriteIntegerA(tmpConfig, 'ObjectsWidth', pnObjects.Width);
   TProfXmlNode.WriteIntegerA(tmpConfig, 'ToolWidth', pnTool.Width);
   TProfXmlNode.WriteIntegerA(tmpConfig, 'ButtonsHeight', pnButtons.Height);
   TProfXmlNode.WriteIntegerA(tmpConfig, 'MessagesHeight', pnMessages.Height);}
+  Result := 0;
 end;
 
 procedure TfmDeveloper3.CreateMenu();
@@ -323,18 +317,6 @@ begin
   inherited DoDestroy();
 end;
 
-function TfmDeveloper3.DoFinalize(): AError;
-begin
-  //ConfigureSave();
-  Result := inherited DoFinalize();
-end;
-
-function TfmDeveloper3.DoInitialize(): AError;
-begin
-  Result := inherited DoInitialize();
-  //ConfigureLoad();
-end;
-
 function TfmDeveloper3.DoTabMainAdd(ATabType: TabMainTypeEnum; const ACaption: WideString): TWinControl;
 begin
   Result := AddMainTab(ATabType, ACaption);
@@ -375,31 +357,31 @@ end;
 { TfmDeveloperA }
 
 function TfmDeveloperA.ConfigureLoad(AConfig: IProfNode): AError;
-var
+//var
   //i: Integer;
-  tmpConfig: IProfNode;
+  //tmpConfig: IProfNode;
 begin
   Result := inherited ConfigureLoad(AConfig);
-  if (Result < 0) then Exit;
+  {if (Result < 0) then Exit;
   if Assigned(AConfig) then
     tmpConfig := AConfig
   else
-    tmpConfig := FConfig;
+    tmpConfig := FConfig;}
 
   {if TProfXmlNode.ReadIntegerA(tmpConfig, 'ObjectTreeViewHeight', i) then tvObjects.Height := i;
   if TProfXmlNode.ReadIntegerA(tmpConfig, 'ObjectPropertyCol0Width', i) then vleObjects.ColWidths[0] := i;}
 end;
 
 function TfmDeveloperA.ConfigureSave(AConfig: IProfNode): AError;
-var
-  tmpConfig: IProfNode;
+//var
+  //tmpConfig: IProfNode;
 begin
   Result := inherited ConfigureSave(AConfig);
-  if (Result < 0) then Exit;
+  {if (Result < 0) then Exit;
   if Assigned(AConfig) then
     tmpConfig := AConfig
   else
-    tmpConfig := FConfig;
+    tmpConfig := FConfig;}
 
   {TProfXmlNode.WriteIntegerA(tmpConfig, 'ObjectTreeViewHeight', tvObjects.Height);
   TProfXmlNode.WriteIntegerA(tmpConfig, 'ObjectPropertyCol0Width', vleObjects.ColWidths[0]);}

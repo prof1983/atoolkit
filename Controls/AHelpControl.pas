@@ -2,7 +2,7 @@
 @Abstract Контрол сообщений с выводом в Memo
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.01.2007
-@LastMod 15.12.2012
+@LastMod 17.12.2012
 }
 unit AHelpControl;
 
@@ -10,10 +10,11 @@ interface
 
 uses
   Classes, Controls, StdCtrls,
+  ABase,
   AControlImpl, ATypes;
 
 type
-  THelpControl = class(TProfControl)
+  THelpControl = class(TAControl)
   private
     FmemMain: TMemo;
   public

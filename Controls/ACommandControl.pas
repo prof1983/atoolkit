@@ -2,7 +2,7 @@
 @Abstract Контрол ввода команд
 @Author Prof1983 <prof1983@ya.ru>
 @Created 01.04.2007
-@LastMod 15.12.2012
+@LastMod 17.12.2012
 }
 unit ACommandControl;
 
@@ -10,10 +10,11 @@ interface
 
 uses
   Classes, Controls, StdCtrls,
+  ABase,
   AControlImpl, ATypes;
 
 type
-  TCommandControl = class(TProfControl)
+  TCommandControl = class(TAControl)
   private
     FInputMemo: TMemo;
     procedure DoKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);

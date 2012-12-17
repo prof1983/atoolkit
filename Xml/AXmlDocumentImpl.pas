@@ -477,7 +477,7 @@ end;
 {$ifdef ADepr}
 function TProfXmlDocument.SaveToFile(const FileName: WideString): WordBool;
 begin
-  Result := AXmlDocument_SaveToFileP(AXmlDocument(Self), FileName);
+  Result := (AXmlDocument_SaveToFileP(AXmlDocument(Self), FileName) >= 0);
 end;
 {$endif}
 

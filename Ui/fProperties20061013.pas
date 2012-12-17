@@ -1,8 +1,8 @@
 ﻿{**
-@Abstract(Properties form)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(12.10.2005)
-@LastMod(13.07.2012)
+@Abstract Properties form
+@Author Prof1983 <prof1983@ya.ru>
+@Created 12.10.2005
+@LastMod 17.12.2012
 
 Uses
   @link fProfShablon
@@ -19,6 +19,7 @@ uses
   Classes, Controls, ComCtrls, Dialogs, ExtCtrls, Graphics, Grids, Forms,
   Messages, SysUtils, ValEdit, Variants, Windows,
   {$IFDEF USENL}NLStatusBar, NLXmlTreeView,{$ENDIF}
+  ABase,
   fProfShablon, ATreeView, ATypes;
 
 type
@@ -33,7 +34,8 @@ type
     procedure DoClick(ARow: Integer); virtual;
     procedure DoCreate(); override;
   public
-    function Initialize(): WordBool; override;
+    function Initialize(): AError; override;
+  public
     property TreeView: TCustomTreeView read FTreeView write FTreeView;
     property Splitter: TSplitter read FSplitter write FSplitter;
     property StatusBar: TStatusBar read FStatusBar write FStatusBar;
@@ -54,11 +56,11 @@ begin
   Self.Caption := 'Properties';
 end;
 
-function TfmProperties.Initialize(): WordBool;
+function TfmProperties.Initialize(): AError;
 begin
   AddToLog(lgGeneral, ltInformation, 'TfmProperties.Initialize');
   Result := inherited Initialize();
-  if not(Result) then Exit;
+  if (Result < 0) then Exit;
 
   if not(Assigned(FTreeView)) then
   begin

@@ -110,7 +110,7 @@ end;
 
 function TAFormObject.ConfigureLoad(): WordBool;
 begin
-  Result := (ConfigureLoad2(FConfig) >= 0);
+  Result := (AUiForm.Form_LoadConfig(Self, FConfig) >= 0);
 end;
 
 function TAFormObject.ConfigureLoad2(FConfig: AConfig): AError;
@@ -120,7 +120,7 @@ end;
 
 function TAFormObject.ConfigureSave(): WordBool;
 begin
-  Result := (ConfigureSave2(FConfig) >= 0);
+  Result := (AUiForm.Form_SaveConfig(Self, FConfig) >= 0);
 end;
 
 function TAFormObject.ConfigureSave2(FConfig: AConfig): AError;

@@ -1,8 +1,8 @@
 ﻿{**
-@Abstract(Форма "О программе")
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(04.04.2006)
-@LastMod(18.07.2012)
+@Abstract Форма "О программе"
+@Author Prof1983 <prof1983@ya.ru>
+@Created 04.04.2006
+@LastMod 17.12.2012
 }
 unit fAbout1;
 
@@ -49,8 +49,6 @@ const
 { TAboutForm }
 
 procedure TAboutForm.FormCreate(Sender: TObject);
-var
-  VersionInfo: TFileVersionInfoA;
 begin
   Caption := AboutStr;
   lbName.Caption := (Owner as TForm).Caption;

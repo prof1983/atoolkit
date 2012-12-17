@@ -2,7 +2,7 @@
 @Abstract Настройки импорта/экспотра и синхронизации справочкиков БД
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.04.2006
-@LastMod 27.11.2012
+@LastMod 17.12.2012
 }
 unit ASetDm;
 
@@ -11,7 +11,7 @@ interface
 uses
   AdoDB, Buttons, Classes, Controls, Dialogs, ExtCtrls, Forms, Graphics, ImgList,
   Messages, StdCtrls, SysUtils, Windows,
-  ADbDataModule2, ADbTable, ADbTypes, AUiSpin, AXmlDocumentImpl;
+  ABase, ADbDataModule2, ADbTable, ADbTypes, AUiSpin, AXmlDocumentImpl, AXmlDocumentUtils;
 
 type
   TfrSetDM = class(TFrame)
@@ -537,7 +537,7 @@ procedure TfrSetDM.btSaveClick(Sender: TObject);
   begin
     xd := TProfXmlDocument.Create(AFileName);
     FDM.ConfigureSave(xd.DocumentElement);
-    xd.SaveToFile();
+    AXmlDocument_SaveToFileP(AXmlDocument(xd), '');
     xd.Free();
   end;
 

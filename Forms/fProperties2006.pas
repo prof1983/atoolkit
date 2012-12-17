@@ -1,8 +1,8 @@
 ﻿{**
-@Abstract(Форма отображения свойств)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(12.10.2005)
-@LastMod(18.07.2012)
+@Abstract Форма отображения свойств
+@Author Prof1983 <prof1983@ya.ru>
+@Created 12.10.2005
+@LastMod 17.12.2012
 }
 unit fProperties2006;
 
@@ -12,6 +12,7 @@ uses
   Classes, Controls, ComCtrls, Dialogs, ExtCtrls, Graphics, Grids, Forms,
   Messages, SysUtils, ValEdit, Variants, Windows,
   NlStatusBar, NlXmlTreeView,
+  ABase,
   ATypes,
   fProfShablon;
 
@@ -23,7 +24,8 @@ type
     FStatusBar: TNLStatusBar;
     FValueListEditor: TValueListEditor;
   public
-    function Initialize(): WordBool; override;
+    function Initialize(): AError; override;
+  public
     property TreeView: TCustomTreeView read FTreeView write FTreeView;
     property Splitter: TSplitter read FSplitter write FSplitter;
     property StatusBar: TNLStatusBar read FStatusBar write FStatusBar;
@@ -34,11 +36,11 @@ implementation
 
 { TfmProperties }
 
-function TfmProperties.Initialize(): WordBool;
+function TfmProperties.Initialize(): AError;
 begin
   AddToLog(lgGeneral, ltInformation, 'TFormPropertys.Initialize');
   Result := inherited Initialize;
-  if not(Result) then Exit;
+  if (Result < 0) then Exit;
 
   if not(Assigned(FTreeView)) then
   begin

@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Окно вывода сообщений программы в виде дерева)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(13.10.2005)
-@LastMod(04.07.2012)
-@Version(0.5)
+@Abstract Окно вывода сообщений программы в виде дерева
+@Author Prof1983 <prof1983@ya.ru>
+@Created 13.10.2005
+@LastMod 17.12.2012
 }
 unit ALogFormTree;
 
@@ -11,8 +10,9 @@ interface
 
 uses
   Classes, ComCtrls, Controls, ExtCtrls, Forms, StdCtrls, SysUtils,
+  ABase,
   ALogShablon, ATypes,
-  fShablon;
+  AShablonForm{fShablon};
 
 type //** Окно вывода сообщений программы в виде дерева
   TProfLogTreeForm = class(TfmLogShablon)
@@ -40,7 +40,8 @@ type //** Окно вывода сообщений программы в вид�
     //** Добавить строку
     procedure AddStr(const AStr: WideString); //override; safecall;
     //** Добавить лог-сообщение
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; override; {safecall;}
+    function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: APascalString): AInteger; override;
   public
     property TreeView: TTreeView read FTreeView;
   end;
@@ -134,14 +135,15 @@ begin
   FTreeView.Items.Add(nil, tmpStr);
 end;
 
-function TProfLogTreeForm.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
+function TProfLogTreeForm.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+    const StrMsg: APascalString): AInteger;
 var
   s: string;
 begin
   //S := '[' + CHR_LOG_TYPE_MESSAGE[AType] + '] ' +
   //   CHR_LOG_GROUP_MESSAGE[AGroup] + ': ' + AStrMsg;
-  s := AStrMsg;
-  AddNode(AType, 0, 0, s);
+  s := StrMsg;
+  AddNode(LogType, 0, 0, s);
   Result := 1;
 end;
 

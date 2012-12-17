@@ -2,7 +2,7 @@
 @Abstract Показывать Log в окне
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.10.2005
-@LastMod 15.12.2012
+@LastMod 17.12.2012
 }
 unit ALogDocumentForm;
 
@@ -10,6 +10,7 @@ interface
 
 uses
   ComCtrls, XmlIntf,
+  ABase,
   AConfigFormUtils, ALogDocumentImpl, ALogFormTree, ALogGlobals,
   ALogNodeImpl, ALogNodeIntf, ATypes;
 
@@ -32,7 +33,7 @@ type //** Показывать Log в окне
       //** Скрыть
     procedure Hide(); override;
     function NewNode(LogType: TLogTypeMessage; const Prefix: WideString;
-        Parent: Integer = 0; Id: Integer = 0): TALogNode; override;
+        Parent: AInteger = 0; Id: AInteger = 0): ALogNode; override;
       //** Показать
     procedure Show(); override;
   public
@@ -107,13 +108,17 @@ begin
 end;
 
 function TLogForm.NewNode(LogType: TLogTypeMessage; const Prefix: WideString;
-    Parent, Id: Integer): TALogNode;
+    Parent, Id: AInteger): ALogNode;
+var
+  LogNode: TALogNode;
 begin
   if (Id = 0) then
     Id := GetFreeId();
   FFormLog.AddNode(LogType, Id, Parent, Prefix);
-  Result := TALogNode.Create(Self, Prefix, Id);
-  AddNode(Result);
+
+  LogNode := TALogNode.Create(Self, Prefix, Id);
+  AddNode(LogNode);
+  Result := LogNode.GetSelf();
 end;
 
 procedure TLogForm.Show();

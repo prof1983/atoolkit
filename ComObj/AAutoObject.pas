@@ -1,12 +1,8 @@
 ﻿{**
-@Abstract(Объект подключения клиента. Создается автоматический системой для каждого клиента)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.04.2006)
-@LastMod(26.06.2012)
-@Version(0.5)
-
-0.0.5.7 - 21.07.2011
-[*] unProgram -> ProfProgram
+@Abstract Объект подключения клиента. Создается автоматический системой для каждого клиента
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.04.2006
+@LastMod 17.12.2012
 }
 unit AAutoObject;
 
@@ -15,9 +11,6 @@ interface
 uses
   ActiveX, AxCtrls, Classes, ComObj, Messages, SysUtils, Variants, Windows, WinSock, WinSvc,
   AProgramImpl, ATypes;
-
-{type - Use ATypes.TClientType
-  TClientType = Integer;}
 
 type
   {**
@@ -28,7 +21,6 @@ type
   TProfAutoObject = class(TAutoObject, IConnectionPointContainer)
   private
     FEvents: IUnknown;
-    FClientType: TClientType;
     FClientID: Integer;
     FClientName: WideString;
     FClientAccount: WideString;
@@ -54,7 +46,6 @@ type
     function Get_ModuleVersion(): WideString; safecall;
     function Get_DateStartWork(): TDateTime; safecall;
     function Get_TimeWork(): Integer; safecall;
-    function Get_InterfaceType(): Integer; safecall;
   public
     destructor Destroy(); override;
     procedure Initialize(); override;
@@ -67,8 +58,6 @@ type
     property AutoFactory;
     property Events: Variant read FRaiseEvents;
   public
-    //** Тип подключенного клиента
-    property ClientType: TClientType read FClientType;
     //** Уникальный номер клиента
     property ClientID: Integer read FClientID;
     //** Наименование клиента
@@ -164,18 +153,6 @@ begin
     Sleep(10);}
   try
     AddToLog(lgNetwork, ltInformation, info_InitConnectClent);
-    FClientType := cltUnknown;
-    {if (Pos('_Info', Self.ClassName) <> 0) then
-      FClientType := cltInfo;
-    if (Pos('_Config', Self.ClassName) <> 0) then
-      FClientType := cltConfig;
-    if (Pos('_Work', Self.ClassName) <> 0) then
-      FClientType := cltWork;
-    if (FClientType = cltUnknown) then
-    begin
-      // 15.09.2006
-      raise Exception.Create(err_ErrorClientType);
-    end;}
     FClientID := 0;
     FClientName := 'unknown';
     GetMem(tmpBuffer, 100);
@@ -224,12 +201,6 @@ begin
       FConnectionPoint := FConnectionPoints.CreateConnectionPoint(AutoFactory.EventIID, ckSingle, EventConnect)
     else
       FConnectionPoint := nil;
-
-    // 15.09.2006
-    // Создадим объект событий
-    //FRaiseEvents := IDispatch(TEvents.Create(Self));
-    // Пошлем событие о подключениии нового клиента
-    //ServiceNT.Events.OnChangeClientsList(ClientHost, ClientAccount, Ord(ClientType), ClientID, ClientName);
 
     // все ОК
     //AddToLog(lgNetwork, ltInformation, info_ConnectClent, [ClientAccount, STR_CLIENT_TYPE[ClientType]]);
@@ -289,64 +260,50 @@ end;
 
 function TProfAutoObject.Get_ObjectGlobalID(): WideString;
 begin
-  //Result := ServiceNT.SetupRecord.ObjectGlobalID;
   //Result := Self.ProgramNT.ObjectGlobalID;
   Result := '';
 end;
 
 function TProfAutoObject.Get_ObjectOwnerName(): WideString;
 begin
-  //Result := WideString(ServiceNT.SetupRecord.ObjectOwnerName);
   Result := Self.FProgram.ObjectOwnerName;
 end;
 
 function TProfAutoObject.Get_OrgOwnerName(): WideString;
 begin
-  //Result := WideString(ServiceNT.SetupRecord.OrgOwnerName);
   Result := Self.FProgram.OrgOwnerName;
 end;
 
 function TProfAutoObject.Get_ModuleName(): WideString;
 begin
-  //Result := WideString(ServiceNT.ServiceName);
   Result := Self.FProgram.ProgramName;
 end;
 
 function TProfAutoObject.Get_ModuleDescription(): WideString;
 begin
-  //Result := WideString(ServiceNT.ServiceNameDisplay);
   Result := Self.FProgram.ProgramDescription;
 end;
 
 function TProfAutoObject.Get_ModuleID(): WideString;
 begin
-  //Result := ServiceNT.ServiceID;
   //Result := Self.ProgramNT.ProgramID;
   Result := '';
 end;
 
 function TProfAutoObject.Get_ModuleVersion(): WideString;
 begin
-  //Result := WideString(ServiceNT.SetupRecord.ModuleVersion);
   //Result := Self.ProgramNT.ProgramVersionStr;
   Result := '';
 end;
 
 function TProfAutoObject.Get_DateStartWork(): TDateTime;
 begin
-  //Result := ServiceNT.DateStartService;
   Result := Self.FProgram.DateStart;
 end;
 
 function TProfAutoObject.Get_TimeWork(): Integer;
 begin
-  //Result := ServiceNT.TimeWork;
   Result := Self.FProgram.TimeWork;
-end;
-
-function TProfAutoObject.Get_InterfaceType(): Integer;
-begin
-  Result := Ord(ClientType);
 end;
 
 { TEvents }

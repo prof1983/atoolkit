@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(AErrorTypes)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(22.09.2005)
-@LastMod(16.05.2012)
-@Version(0.5)
+@Abstract AErrorTypes
+@Author Prof1983 <prof1983@ya.ru>
+@Created 22.09.2005
+@LastMod 17.12.2012
 
 Структура типа TError:
  3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0
@@ -36,7 +35,7 @@ unit AErrorTypes;
 interface
 
 uses
-  ABaseUtils3, ATypes;
+  ABase, ABaseUtils3, ATypes;
 
 type
   TErrorSeverity = type UInt32;
@@ -305,21 +304,21 @@ const
   sER_AR_SourceDelete     = sER_AR_Source + '.Delete';
   sER_AR_SourceOpen       = sER_AR_Source + '.Open';
 
-function cErrorAToError(E: TErrorA): TError;
+function cErrorAToError(E: TErrorA): AError;
 function cErrorAToStr(const E: TErrorA): String;
-procedure cErrorToErrorA(Er: TError; var E: TErrorA);
-function cErrorToStr(Er: TError): String;
-function cErrorToStr2(Er: TError): String;
+procedure cErrorToErrorA(Er: AError; var E: TErrorA);
+function cErrorToStr(Er: AError): String;
+function cErrorToStr2(Er: AError): String;
 
-function ErrorToStr(Er: TError): String;
+function ErrorToStr(Er: AError): String;
 
 implementation
 
-function StandartErrorARDll(Er: TError; var S: String): Boolean; forward;
-function StandartErrorARPlugin(Er: TError; var S: String): Boolean; forward;
-function StandartErrorSoftLocal(Er: TError; var S: String): Boolean; forward;
+function StandartErrorARDll(Er: AError; var S: String): Boolean; forward;
+function StandartErrorARPlugin(Er: AError; var S: String): Boolean; forward;
+function StandartErrorSoftLocal(Er: AError; var S: String): Boolean; forward;
 
-function StandartError(Er: TError; var S: String): Boolean;
+function StandartError(Er: AError; var S: String): Boolean;
 begin
   Result := False;
   case (Er and ER_Place_) of
@@ -327,7 +326,7 @@ begin
   end;
 end;
 
-function StandartErrorAR(Er: TError; var S: String): Boolean;
+function StandartErrorAR(Er: AError; var S: String): Boolean;
 begin
   Result := False;
   case (Er and ER_Place3_) of
@@ -336,7 +335,7 @@ begin
   end;
 end;
 
-function StandartErrorARDll(Er: TError; var S: String): Boolean;
+function StandartErrorARDll(Er: AError; var S: String): Boolean;
 begin
   Result := True;
   case (Er and ER_Func_) of
@@ -356,7 +355,7 @@ begin
   end;
 end;
 
-function StandartErrorARPlugin(Er: TError; var S: String): Boolean;
+function StandartErrorARPlugin(Er: AError; var S: String): Boolean;
 begin
   Result := True;
   case (Er and ER_Func_) of
@@ -376,7 +375,7 @@ begin
   end;
 end;
 
-function StandartErrorSoftLocal(Er: TError; var S: String): Boolean;
+function StandartErrorSoftLocal(Er: AError; var S: String): Boolean;
 begin
   Result := False;
   case (Er and ER_Place2_) of
@@ -564,7 +563,7 @@ begin
   Result := eCgiFiles(Er, 1, Er);
 end;}
 
-function cErrorAToError(E: TErrorA): TError;
+function cErrorAToError(E: TErrorA): AError;
 begin
   Result := (E.Sev shl 30) or
             (E.Place shl 30 shr 2) or
@@ -594,7 +593,7 @@ begin
   end;
 end;
 
-procedure cErrorToErrorA(Er: TError; var E: TErrorA);
+procedure cErrorToErrorA(Er: AError; var E: TErrorA);
 begin
   E.Sev := Er shr 30;
   E.Place := Er shl 2 shr 30;
@@ -604,7 +603,7 @@ begin
   E.Er := Er shl 24 shr 24;
 end;
 
-function cErrorToStr(Er: TError): String;
+function cErrorToStr(Er: AError): String;
 begin
   case Er and ER_ of
     ER_Info: if Er = 0 then Result := 'Ok' else Result := SEr_Info + '(' + cUInt32ToStr(Er) + ')';
@@ -617,7 +616,7 @@ begin
   ErrorUMyBaseConvert := 0;}
 end;
 
-function cErrorToStr2(Er: TError): String;
+function cErrorToStr2(Er: AError): String;
 var
   S: String;
 begin
@@ -658,7 +657,7 @@ begin
   end;*)
 end;
 
-function ErrorToStr(Er: TError): String;
+function ErrorToStr(Er: AError): String;
 begin
   Result := cErrorToStr(Er);
 end;

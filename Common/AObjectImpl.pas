@@ -2,7 +2,7 @@
 @Abstract Объект с логированием и конфигурациями
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.12.2005
-@LastMod 23.11.2012
+@LastMod 17.12.2012
 
 Uses
   @link ABase
@@ -200,7 +200,7 @@ begin
   end;
 
   if (FLog <> 0) then
-    Result := ALogNode_AddToLog(FLog, LogGroup, LogType, StrMsg);
+    Result := ALogNode_AddToLogP(FLog, LogGroup, LogType, StrMsg);
 end;
 
 function TAObject.AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;

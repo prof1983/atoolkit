@@ -2,7 +2,7 @@
 @Abstract Класс главной форма - оболочка для TForm
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.11.2005
-@LastMod 09.08.2012
+@LastMod 17.12.2012
 }
 unit AFormMain;
 
@@ -33,7 +33,7 @@ type
       //** Финализация программы (конфигурации, логирование)
     procedure Done(); virtual; deprecated; // Use Finalize()
       //** Финализация программы (конфигурации, логирование)
-    function Finalize(): WordBool; virtual;
+    function Finalize(): AError; override;
     function GetExePath(): APascalString;
       //** Инициализация программы (конфигурации, логирование)
     procedure Init(); virtual;
@@ -88,7 +88,7 @@ begin
   Finalize();
 end;
 
-function TProfFormMain.Finalize(): WordBool;
+function TProfFormMain.Finalize(): AError;
 begin
   if {FIsLogDocumentsInit and} Assigned(FLogDocuments) then
   try
@@ -113,10 +113,8 @@ begin
     end;
     {ENDIF}
 
-    AXmlDocument_SaveToFile1(FConfigDocument1.GetSelf(), FConfigFileName);
-    //FConfigDocument1.SaveToFile(FConfigFileName);
+    AXmlDocument_SaveToFileP(FConfigDocument1.GetSelf(), FConfigFileName);
     FreeAndNil(FConfigDocument1);
-    //FConfigDocument := nil;
   except
   end;
 end;

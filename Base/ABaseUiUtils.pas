@@ -1,9 +1,8 @@
 {**
-@Abstract(Базовый модуль основных типов и их преобразования. Базовые функции for Delphi 5,7,2005,2006)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(06.06.2004)
-@LastMod(21.06.2012)
-@Version(0.5)
+@Abstract Базовый модуль основных типов и их преобразования. Базовые функции for Delphi 5,7,2005,2006
+@Author Prof1983 <prof1983@ya.ru>
+@Created 06.06.2004
+@LastMod 17.12.2012
 }
 unit ABaseUiUtils;
 
@@ -18,7 +17,7 @@ type
   TWndRes = type AInt;
 
 {IFNDEF VER170}
-function wndClose(Handle: THandle32): TError;
+function wndClose(Handle: THandle32): AError;
 function wndDialogOpen(var AFileName: WideString): WordBool;
 
 // wnd_Input2
@@ -56,7 +55,7 @@ function __GetLastError(): AInt32; stdcall; external 'kernel32.dll' name 'GetLas
 // --- Public ---
 
 {IFNDEF VER170}
-function wndClose(Handle: THandle32): TError;
+function wndClose(Handle: THandle32): AError;
 begin
   Result := (Integer(__CloseHandle(Handle)));
 end;

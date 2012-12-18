@@ -38,9 +38,6 @@ type //** Запись в файл
     property FileName: WideString read FFileName write SetFileName;
   end;
 
-  //TLogFileText = TALogFileText;
-  //TProfLogFileText3 = TALogFileText;
-
 implementation
 
 { TALogFileText }

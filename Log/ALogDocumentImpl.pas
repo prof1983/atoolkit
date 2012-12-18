@@ -2,7 +2,7 @@
 @Abstract Работа с Log. Классы для записи собщений программы в БД или файл или отображения в окне Log
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2005
-@LastMod 17.12.2012
+@LastMod 18.12.2012
 }
 unit ALogDocumentImpl;
 
@@ -55,12 +55,14 @@ type //** Документ работы с Log
   public // IALogDocument
     function GetDocumentElement(): ALogNode;
   public
-    {**
-      Добавить лог-сообщение
-      @returns(Возвращает номер добавленого лог-сообщения или 0)
-    }
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer; override;
+    {** Добавляет лог-сообщение
+        @returns(Возвращает номер добавленого лог-сообщения или 0) }
+    function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: APascalString): AInt; override;
+    {** Добавляет лог-сообщение
+        @returns(Возвращает номер добавленого лог-сообщения или 0) }
+    function AddToLogW(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: WideString): AInt; override;
   public
       //** Загрузить конфигурации
     function ConfigureLoad(): WordBool; virtual;
@@ -100,9 +102,16 @@ begin
   Result := (FLogDocument.AddNode(ANode.GetSelf) >= 0);
 end;
 
-function TALogDocument.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
+function TALogDocument.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+    const StrMsg: APascalString): AInt;
 begin
-  Result := FLogDocument.AddToLog(AGroup, AType, AStrMsg);
+  Result := FLogDocument.AddToLog(LogGroup, LogType, StrMsg);
+end;
+
+function TALogDocument.AddToLogW(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+    const StrMsg: WideString): AInt;
+begin
+  Result := FLogDocument.AddToLog(LogGroup, LogType, StrMsg);
 end;
 
 procedure TALogDocument.CloseDocument();

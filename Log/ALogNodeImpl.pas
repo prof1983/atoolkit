@@ -2,7 +2,7 @@
 @Abstract Implementation of interfaces IALogNode
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2005
-@LastMod 17.12.2012
+@LastMod 18.12.2012
 }
 unit ALogNodeImpl;
 
@@ -20,28 +20,6 @@ type //** Нод логирования - элемент дерева логирования
   TALogNode = class(TInterfacedObject, IALogNode2)
   protected
     FLogNode: TALogNodeObject;
-    {
-      //** Дата создания
-    FDTCreate: TDateTime;
-      //** Identifier
-    FId: Integer;
-      //** Сообщение
-    FMsg: WideString;
-    FOnAddToLog: TAddToLogProc;
-      //** Параметры в виде XML
-    FParams: WideString;
-      //** Тип сообщения
-    FType: TLogTypeMessage;
-      //** Группа сообщения
-    FGroup: TLogGroupMessage;
-  protected
-      //** Документ логирования к которому принадлежит этот нод
-    FLogDoc: ALogDocument;
-      //** Родительский нод логирования к которому принадлежит этот нод
-    FParent: IALogNode2;
-      //** Статус нода
-    FStatus: TLogNodeStatus;
-    }
   protected
     function Get_GroupEnum(): EnumGroupMessage;
     function Get_Id(): Integer;
@@ -64,10 +42,16 @@ type //** Нод логирования - элемент дерева логирования
       {** Добавить строку
           @returns(Возвращает номер добавленой строки или 0) }
     function AddStr(const AStr: WideString): Integer; virtual;
+    {** Добавляет лог-сообщение
+        @returns(Возвращает номер добавленого сообщения или 0) }
     function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
-        const StrMsg: WideString): AInteger; virtual;
+        const StrMsg: APascalString): AInt; virtual;
     function AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
         const StrMsg: string; Params: array of const): Boolean; virtual;
+    {** Добавляет лог-сообщение
+        @returns(Возвращает номер добавленого сообщения или 0) }
+    function AddToLogW(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: WideString): AInt; virtual;
     function GetSelf(): ALogNode;
     procedure Hide(); virtual;
     function Prefix(): string;
@@ -86,13 +70,6 @@ type //** Нод логирования - элемент дерева логирования
     property Id: Integer read Get_Id write Set_Id;
     property LogNode: TALogNodeObject read FLogNode;
     property Msg: WideString read Get_StrMsg write Set_StrMsg;
-    {
-    property OnAddToLog: TAddToLogProc read GetOnAddToLog write SetOnAddToLog;
-    property Params: WideString read GetParams write SetParams;
-    property Group: TLogGroupMessage read GetGroup write SetGroup;
-    property Status: TLogNodeStatus read GetStatus write SetStatus;
-    property Typ: TLogTypeMessage read GetType write SetType;
-    }
   end;
 
 implementation
@@ -113,7 +90,7 @@ begin
 end;
 
 function TALogNode.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
-    const StrMsg: WideString): AInteger;
+    const StrMsg: APascalString): AInt;
 begin
   Result := FLogNode.AddToLog(LogGroup, LogType, StrMsg);
 end;
@@ -122,6 +99,12 @@ function TALogNode.AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessag
     const StrMsg: string; Params: array of const): Boolean;
 begin
   Result := FLogNode.AddToLog2(LogGroup, LogType, StrMsg, Params);
+end;
+
+function TALogNode.AddToLogW(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+    const StrMsg: WideString): AInt;
+begin
+  Result := FLogNode.AddToLog(LogGroup, LogType, StrMsg);
 end;
 
 constructor TALogNode.Create(ALogDoc: IALogNode2; ALogPrefix: string; AID: Integer);

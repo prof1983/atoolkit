@@ -2,7 +2,7 @@
 @Abstract Окно вывода сообщений программы в виде дерева
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2005
-@LastMod 17.12.2012
+@LastMod 18.12.2012
 }
 unit ALogFormTree2007;
 
@@ -131,7 +131,7 @@ begin
   if (Key = 13) and not(ssCtrl in Shift) then
   begin
     if FMemoCommand.Text = '' then Exit;
-    AddToLog(lgNone, ltInformation, 'Команда "%s"', [FMemoCommand.Text]);
+    AddToLog(lgNone, ltInformation, Format('Команда "%s"', [FMemoCommand.Text]));
     if Assigned(FOnCommand) then
     try
       {// Разбор строки
@@ -221,7 +221,7 @@ end;
 
 function TFormLog.ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage; const AStrMsg: WideString): Integer;
 begin
-  AddToLog(TLogGroupMessage(AGroup), TLogTypeMessage(AType), AStrMsg, []);
+  AddToLog(TLogGroupMessage(AGroup), TLogTypeMessage(AType), AStrMsg);
   Result := 1;
 end;
 

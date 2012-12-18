@@ -2,7 +2,7 @@
 @Abstract Объект с логированием и конфигурациями
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.12.2005
-@LastMod 17.12.2012
+@LastMod 18.12.2012
 
 Uses
   @link ABase
@@ -77,9 +77,9 @@ type //** Объект с логированием и конфигурациям
       //** Выполнить или передать дочерним объектам
     function AddMessageX(AMsg: IProfNode): Integer; virtual; safecall;
     function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
-        const StrMsg: WideString): AInt; virtual;
+        const StrMsg: WideString): AInt; override;
     function AddToLog2(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
-        const StrMsg: string; Params: array of const): ABoolean; virtual;
+        const StrMsg: string; Params: array of const): ABoolean; virtual; deprecated; // Use AddToLog()
     function AssignedConfig(): Boolean;
     function CheckInitialized(): Boolean; virtual;
     function SendMessageX(Msg: AXmlNode): AInt; virtual;
@@ -119,14 +119,6 @@ type //** Объект с логированием и конфигурациям
   protected
     //** Срабатывает, когда нужно выполнить внешнюю команду. см. TProcMessageStr
     function DoCommand(const AMsg: WideString): WordBool; virtual; safecall;
-    //** Срабатывает при финализации
-    function DoFinalize(): WordBool; virtual; safecall;
-    //** Срабатывает после успешной финализации
-    function DoFinalized(): WordBool; virtual; safecall;
-    //** Срабатывает при инициализации
-    function DoInitialize(): WordBool; virtual; safecall;
-    //** Срабатывает после успешнрй инициализации
-    function DoInitialized(): WordBool; virtual; safecall;
     //** Срабатывает при начале запуска
     function DoStart(): WordBool; virtual; safecall;
     //** Срабатывает после удачного запуска
@@ -135,11 +127,6 @@ type //** Объект с логированием и конфигурациям
     function DoStop(AIsShutDown: WordBool): WordBool; virtual; safecall;
     //** Срабатывает при завершении процедуры остановки
     function DoStoped(AIsShutDown: WordBool): WordBool; virtual; safecall;
-  public // IProfObject
-      //** Добавить (выполнить) сообщение
-    function AddMessage(const Msg: WideString): Integer; safecall;
-      //** Передать сообщение
-    function SendMessage(const Msg: WideString): Integer; safecall;
   public
     function ConfigureLoad(): WordBool; virtual;
     function ConfigureSave(): WordBool; virtual;
@@ -148,9 +135,9 @@ type //** Объект с логированием и конфигурациям
     //** Сохранить конфигурации
     function ConfigureSave2(AConfig: IXmlNode = nil): WordBool; virtual; safecall;
     //** Финализировать
-    function Finalize(): AError; virtual;
+    function Finalize(): AError; override;
     //** Инициализировать
-    function Initialize(): AError; virtual;
+    function Initialize(): AError; override;
     function Start(): WordBool; virtual; safecall;
     function Stop(): WordBool; virtual; safecall;
   public // Переопределение функций TInterfacedObject
@@ -158,7 +145,6 @@ type //** Объект с логированием и конфигурациям
     procedure BeforeDestruction(); override;
   public
     function AssignedConfig(): Boolean;
-    function CheckInitialized(): Boolean; virtual;
   public
     property Config2: IXmlNode read GetConfig2 write SetConfig2;
     property Log: ALogNode read GetLog write SetLog;
@@ -192,13 +178,7 @@ end;
 function TAObject.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
     const StrMsg: WideString): AInt;
 begin
-  Result := -1;
-  if Assigned(FOnAddToLog) then
-  try
-    Result := FOnAddToLog(LogGroup, LogType, StrMsg);
-  except
-  end;
-
+  Result := inherited AddToLog(LogGroup, LogType, StrMsg);
   if (FLog <> 0) then
     Result := ALogNode_AddToLogP(FLog, LogGroup, LogType, StrMsg);
 end;
@@ -337,8 +317,6 @@ begin
   if (Result >= 0) then
     Result := DoInitialized();
 
-  //Start();
-
   FInitialized := True;
 end;
 
@@ -409,11 +387,6 @@ end;
 
 { TProfObject2 }
 
-function TProfObject2.AddMessage(const Msg: WideString): Integer;
-begin
-  Result := 0;
-end;
-
 procedure TProfObject2.AfterConstruction();
 begin
   inherited AfterConstruction();
@@ -431,13 +404,6 @@ procedure TProfObject2.BeforeDestruction();
 begin
   DoDestroy();
   inherited BeforeDestruction();
-end;
-
-function TProfObject2.CheckInitialized(): Boolean;
-begin
-  Result := FInitialized;
-  if not(Result) then
-    AddToLog(lgGeneral, ltWarning, stNotInitialized);
 end;
 
 function TProfObject2.ConfigureLoad(): WordBool;
@@ -465,26 +431,6 @@ begin
   Result := False;
 end;
 
-function TProfObject2.DoFinalize(): WordBool;
-begin
-  Result := True;
-end;
-
-function TProfObject2.DoFinalized(): WordBool;
-begin
-  Result := True;
-end;
-
-function TProfObject2.DoInitialize(): WordBool;
-begin
-  Result := True;
-end;
-
-function TProfObject2.DoInitialized(): WordBool;
-begin
-  Result := True;
-end;
-
 function TProfObject2.DoStart(): WordBool;
 begin
   Result := True;
@@ -507,33 +453,12 @@ end;
 
 function TProfObject2.Finalize(): AError;
 begin
-  {IFDEF NEW}
-  {Stop();
-  Result := -1;
-  if not(FInitialized) then
-  begin
-    AddToLog(lgGeneral, ltInformation, stAlreadyFinalize);
-    Exit;
-  end;
+  Result := inherited Finalize();
 
-  Result := DoFinalize();
-  if Result then
-    Result := DoFinalized();}
-  {ELSE}
-  Result := -1;
-  if not(FInitialized) then
-  begin
-    AddToLog(lgGeneral, ltInformation, stAlreadyFinalize);
-    Exit;
-  end;
-  Result := 0;
   if not(DoStop(False)) then
     Result := -2;
   if not(DoStoped(False)) then
     Result := -3;
-  {ENDIF}
-
-  FInitialized := False;
 end;
 
 function TProfObject2.GetConfig2(): IXmlNode;
@@ -548,32 +473,12 @@ end;
 
 function TProfObject2.Initialize(): AError;
 begin
-  if FInitialized then
-  begin
-    AddToLog(lgGeneral, ltInformation, stAlreadyInitialize);
-    Result := 0;
-    Exit;
-  end;
-  {IFDEF NEW}
-  {Result := DoInitialize();
-  if Result then
-    Result := DoInitialized();}
-  {ELSE}
-  Result := 0;
+  Result := inherited Initialize();
+
   if not(DoStart()) then
     Result := -2;
   if not(DoStarted()) then
     Result := -3;
-  {ENDIF}
-
-  //Start();
-
-  FInitialized := True;
-end;
-
-function TProfObject2.SendMessage(const Msg: WideString): Integer;
-begin
-  Result := 0;
 end;
 
 procedure TProfObject2.SetConfig2(const Value: IXmlNode);

@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Класс для работы с динамическими библиотеками .dll)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(02.10.2005)
-@LastMod(03.05.2012)
-@Version(0.5)
+@Abstract Класс для работы с динамическими библиотеками .dll
+@Author Prof1983 <prof1983@ya.ru>
+@Created 02.10.2005
+@LastMod 18.12.2012
 }
 unit ALibraryObj;
 
@@ -34,18 +33,18 @@ type
     {$ELSE}
     function GetProcAddress(const AName: WideString): IntPtr;
     {$ENDIF}
-    // Идентификатор
-    property Handle: HMODULE read FHandle;
     // Открывает библиотеку
     function Initialize(): WordBool; virtual;
-    // True, если библиотека открыта
-    property IsLoaded: Boolean read GetIsLoaded;
     // Открывает библиотеку
     function LoadLibrary(const AFileName: WideString): Boolean;
-    property OnAddToLog: TProfAddToLog read FOnAddToLog write FOnAddToLog;
-  published
-    // Имя файла .dll
+  public
+    {** Имя файла .dll }
     property FileName: WideString read FFileName write SetFileName;
+    {** Идентификатор }
+    property Handle: HMODULE read FHandle;
+    {** True, если библиотека открыта }
+    property IsLoaded: Boolean read GetIsLoaded;
+    property OnAddToLog: TProfAddToLog read FOnAddToLog write FOnAddToLog;
   end;
 
 resourcestring // Сообщения ----------------------------------------------------

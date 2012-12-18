@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Шаблон для создания формы логирования в не визуальном режиме)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.07.2006)
-@LastMod(27.06.2012)
-@Version(0.5)
+@Abstract Шаблон для создания формы логирования в не визуальном режиме
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.07.2006
+@LastMod 18.12.2012
 }
 unit ALogShablonForm2006;
 
@@ -22,8 +21,6 @@ type //** Шаблон для создания формы логирования
     procedure SetOnCommand(Value: TProcMessageStr); virtual;
     procedure SetProgress(Index, Value: Integer); virtual;
   public
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: string; AParams: array of const): Boolean; virtual;
     property OnCommand: TProcMessageStr read GetOnCommand write SetOnCommand;
     property Progress[Index: Integer]: Integer read GetProgress write SetProgress;
     property ProgressCount: Integer read GetProgressCount;
@@ -32,12 +29,6 @@ type //** Шаблон для создания формы логирования
 implementation
 
 { TfmLogShablon }
-
-function TfmLogShablon.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-    const AStrMsg: string; AParams: array of const): Boolean;
-begin
-  Result := False;
-end;
 
 function TfmLogShablon.GetOnCommand(): TProcMessageStr;
 begin

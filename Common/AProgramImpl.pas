@@ -2,7 +2,7 @@
 @Abstract Реализация основной функциональности для главного объекта
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.05.2006
-@LastMod 17.12.2012
+@LastMod 18.12.2012
 }
 unit AProgramImpl;
 
@@ -156,7 +156,7 @@ type
     property SrvTypeLib: ITypeLib read FSrvTypeLib;
     //** Стандартная библиотека типов
     property StdTypeLib: ITypeLib read FStdTypeLib;
-  published // Глобальные свойства программы
+  public
     //** Программа является COM сервером
     property IsComServer: Boolean read FIsComServer default False;
     //** Консольный вид программы
@@ -191,7 +191,7 @@ function TAProgram.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
     const AStrMsg: WideString): Integer;
 begin
   EnterCriticalSection(FCSAddToLog);
-  inherited AddToLog(AGroup, AType, AStrMsg);
+  Result := inherited AddToLog(AGroup, AType, AStrMsg);
   LeaveCriticalSection(FCSAddToLog);
 end;
 

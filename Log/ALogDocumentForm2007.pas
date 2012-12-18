@@ -2,7 +2,7 @@
 @Abstract Показывать Log в окне
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.10.2005
-@LastMod 17.12.2012
+@LastMod 18.12.2012
 }
 unit ALogDocumentForm2007;
 
@@ -10,14 +10,13 @@ interface
 
 uses
   ComCtrls, XmlIntf,
-  ABase, AConfigFormUtils, ALogDocumentImpl, ALogFormTree2007, {ALogNodeImpl,} ALogNodeUtils, ATypes;
+  ABase, AConfigFormUtils, ALogDocumentImpl, ALogFormTree2007, ALogNodeUtils, ATypes;
 
 type //** Показывать Log в окне
   TLogForm = class(TALogDocument)
   private
     FFormLog: TFormLog;
     FConfigFormLog: TConfigForm;
-    //procedure SetConfig(Value: TConfigForm);
   public
     function AddMsg(const AMsg: WideString): Integer; override;
     function AddStr(const AStr: WideString): Integer; override;

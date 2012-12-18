@@ -2,7 +2,7 @@
 @Abstract Класс главной форма - оболочка для TForm
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.11.2005
-@LastMod 17.12.2012
+@LastMod 18.12.2012
 }
 unit AFormMain;
 
@@ -10,7 +10,9 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ABase, AConsts2, ALogDocumentsAll, AFormObj, ALogDocuments, ALogNodeUtils, ASystemData,
+  ABase, AConsts2, ALogDocumentsAll, AFormObj, ALogDocuments, ALogNodeUtils,
+  AUiForm,
+  ASystemData,
   ATypes, AXmlDocumentImpl, AXmlDocumentUtils, AXmlNodeUtils, AXmlUtils;
 
 type
@@ -98,7 +100,7 @@ begin
     FLogDocuments := nil;
   end;
 
-  ConfigureSave();
+  AUiForm.Form_SaveConfig(Self, FConfig);
 
   Result := inherited Finalize();
 
@@ -128,7 +130,7 @@ procedure TProfFormMain.Init();
 begin
   GetExePath();
   InitConfig();
-  ConfigureLoad();
+  AUiForm.Form_LoadConfig(Self, FConfig);
   InitLog();
 end;
 

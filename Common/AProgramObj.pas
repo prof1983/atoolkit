@@ -1,58 +1,33 @@
 ﻿{**
-@Abstract(Реализация основной функциональности для главного объекта)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(22.05.2006)
-@LastMod(18.07.2012)
+@Abstract Реализация основной функциональности для главного объекта
+@Author Prof1983 <prof1983@ya.ru>
+@Created 22.05.2006
+@LastMod 18.12.2012
 }
-unit AProgram20060925;
-
-// TODO: Rename to AProgramObj.pas
+unit AProgramObj;
 
 interface
 
 uses
-  ActiveX, Classes, ComObj, ComServ, Messages, SysUtils, Windows, WinSock, WinSvc,
-  ABase, AConfig2007, AConsts2, ALogDocuments, ALogObj, ATypes, AXmlNodeImpl;
+  SysUtils,
+  Windows,
+  ABase,
+  AConfig2007,
+  AConsts2,
+  ALogDocumentListObj,
+  ALogObj,
+  AProgramData,
+  ATypes,
+  AUtilsMain,
+  AXmlNodeImpl;
 
 type //** Основной объект сервиса
   TAProgramObject = class(TLoggerObject)
   private
-    FCSAddToLog: TRTLCriticalSection; // Критическая секция для добавления в лог
-    FConfigPath: APascalString;
-    FDataPath: APascalString;
-    FDependencies: WideString;
-    FExeFullName: WideString;
-    FExeName: WideString;
-    FExePath: WideString;
-    FObjectGlobalID: Integer;
-    FObjectOwnerName: WideString;
-    FOrgOwnerName: WideString;
-    FProgramDescription: WideString;
-    FProgramID: LongWord;
-    FProgramName: WideString;
-    FProgramNameDisplay: WideString;
-    FProgramVersion: WideString;
-    FSystemName: WideString;
-    FTimerInterval: LongWord;
     function GetTimeWork(): Integer;
-  private
-    FIsComServer: ABoolean;
-    FIsConsole: Boolean;
-    FIsDebug: Boolean;
-    //FIsDemo: Boolean;
-    FIsSilent: Boolean;
-    FIsSplash: Boolean;
-    FIsTeach: Boolean;
-    FIsTest: Boolean;
   protected
-    FConfig: AConfig;
     FConfigDocument: TConfigDocument;
-    FDateStart: TDateTime;
-    FLogDocuments: TALogDocuments;
-
-    FGlbTypeLib: ITypeLib;
-    FSrvTypeLib: ITypeLib;
-    FStdTypeLib: ITypeLib;
+    FLogDocuments: TALogDocumentListObject;
   public
     function GetIsDemo(): Boolean; virtual;
     procedure SetIsComServer(Value: ABoolean);
@@ -91,18 +66,19 @@ type //** Основной объект сервиса
   public
     // Конфигурации программы
     property ConfigDocument: TConfigDocument read FConfigDocument;
+    {
     // Время запуска сервиса
     property DateStart: TDateTime read FDateStart;
     // Зависимости от других сервисов
     property Dependencies: WideString read FDependencies write FDependencies;
-    // Полный путь и имя фийла "C:\AR\BIN\Modules\AR_Core.exe"
+    // Полный путь и имя файла
     property ExeFullName: WideString read FExeFullName;
-    // Имя файла "AR_Core.exe"
+    // Имя файла
     property ExeName: WideString read FExeName;
-    // Путь расположения программы "C:\AR\BIN\Modules\"
+    // Путь расположения программы
     property ExePath: WideString read FExePath;
     // Класс, объединяющий вывод логов сразу в несколько мест
-    property LogDocuments: TALogDocuments read FLogDocuments;
+    property LogDocuments: TALogDocumentListObject read FLogDocuments;
     // Глобальный ID объекта - владельца
     property ObjectGlobalID: Integer read FObjectGlobalID write FObjectGlobalID;
     // Название объекта - владельца
@@ -125,12 +101,9 @@ type //** Основной объект сервиса
     property TimerInterval: LongWord read FTimerInterval write FTimerInterval;
     // Время непрерывной работы в минутах
     property TimeWork: Integer read GetTimeWork;
-    //property MaxClientAccount: Integer read GetMaxClientAccount;
-  public
-    property GlbTypeLib: ITypeLib read FGlbTypeLib; // Глобальная библиотека типов AR
-    property SrvTypeLib: ITypeLib read FSrvTypeLib; // Библиотека типов данного приложения
-    property StdTypeLib: ITypeLib read FStdTypeLib; // Стандартная библиотека типов
+    }
   published // Глобальные свойства программы
+    {
     // Консольный вид программы
     property IsConsole: Boolean read FIsConsole default False;
     // Режим отладки - выводить все сообщения, логировать все события
@@ -145,6 +118,7 @@ type //** Основной объект сервиса
     property IsTeach: Boolean read FIsTeach write FIsTeach default False;
     // Признак режима тестирования
     property IsTest: Boolean read FIsTest write FIsTest default False;
+    }
   end;
 
   TProgram = TAProgramObject;
@@ -173,13 +147,10 @@ begin
   FIsComServer := True;
   FConfigDocument := nil;
   FLogDocuments := nil;
-  FGlbTypeLib := nil;
-  FSrvTypeLib := nil;
-  FStdTypeLib := nil;
 
   FTimerInterval := 1000;
 
-  FDateStart := Now;
+  FDateStart := AUtils_GetNowDateTime();
 
   Prog := Self;
 
@@ -211,7 +182,7 @@ function TAProgramObject.DoStart(): WordBool;
 begin
   if not(Assigned(FLogDocuments)) then
   try
-    FLogDocuments := TALogDocuments.Create();
+    FLogDocuments := TALogDocumentListObject.Create();
   except
   end;
 
@@ -273,7 +244,7 @@ end;
 
 function TAProgramObject.GetTimeWork(): Integer;
 begin
-  Result := Round((Now - FDateStart) * 24 * 60);
+  Result := Round((AUtils_GetNowDateTime() - FDateStart) * 24 * 60);
 end;
 
 function TAProgramObject.Initialize(): WordBool;
@@ -304,15 +275,9 @@ begin
 
   // Создать конфигурации программы
   if not(Assigned(FConfigDocument)) then
-    FConfigDocument := TConfigDocument.Create(FConfigPath + Self.ProgramName + '.' +
+    FConfigDocument := TConfigDocument.Create(FConfigPath + FProgramName + '.' +
         FILE_EXT_CONFIG, 'Config', AddToLog);
   FConfig := FConfigDocument.GetDocumentElement();
-
-  if FIsComServer and Assigned(ComServer) then
-  try // Здесь возникнет Exception, если программа не является COM объектом. Создайте и присоедините TLB.
-    FSrvTypeLib := ComServer.TypeLib;
-  except
-  end;
 
   Result := True;
   if not(DoStart()) then Result := False;
@@ -331,7 +296,7 @@ end;
 
 procedure TAProgramObject.SetProgramName(const Value: APascalString);
 begin
-  Self.FProgramName := Value;
+  FProgramName := Value;
 end;
 
 end.

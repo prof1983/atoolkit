@@ -13,7 +13,12 @@ interface
 uses
   ActiveX, Classes, ComObj, ComServ, Messages, SysUtils, Windows, WinSock, WinSvc,
   ABase, AConsts2, ALogDocuments, ALogJournal, ALogNodeUtils,
-  AProcessImpl, AProgramUtils, ASystemData, ATypes, AXmlDocumentUtils;
+  AProcessImpl,
+  AProgramData,
+  AProgramUtils,
+  ASystemData,
+  ATypes,
+  AXmlDocumentUtils;
 
 type
   {$IFDEF UseComXml}
@@ -23,42 +28,6 @@ type
   //** Основной объект программы
   TAProgram = class(TProfProcess)
   protected
-    FConfigDir: APascalString;
-      //** Критическая секция для добавления в лог
-    FCSAddToLog: TRTLCriticalSection;
-    FDataDir: APascalString;
-    FExeFullName: WideString;
-    FFileVersionInfo: TFileVersionInfoA;
-  protected
-    FDependencies: WideString;
-    FObjectGlobalID: Integer;
-    FObjectOwnerName: WideString;
-    FOrgOwnerName: WideString;
-    FProgramDescription: WideString;
-    FProgramId: LongWord;
-    FProgramIdStr: WideString;
-    FProgramName: WideString;
-    FProgramNameDisplay: WideString;
-    FProgramVersion: WideString;
-    FProgramVersionStr: WideString;
-    FSystemName: WideString;
-    FTimerInterval: LongWord;
-  protected
-    FIsConsole: Boolean;
-    FIsDebug: Boolean;
-    FIsDemo: Boolean;
-    FIsSilent: Boolean;
-    FIsSplash: Boolean;
-    FIsTeach: Boolean;
-    FIsTest: Boolean;
-  protected
-    FConfigDocument: AXmlDocument;
-    FConfigFileName: WideString;
-    FConfigInitialize: Boolean;
-    FDateStart: TDateTime;
-    FIsComServer: Boolean;
-    FIsService: Boolean;
-    FMaxClientAccount: Integer;
     FLogDocuments: TALogDocuments;
     FLogJournal: TLogJournal;
   protected

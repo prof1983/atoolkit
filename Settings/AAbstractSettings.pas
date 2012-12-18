@@ -2,7 +2,7 @@
 @Abstract AAbstractSettings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 24.07.2012
+@LastMod 18.12.2012
 }
 unit AAbstractSettings;
 
@@ -12,7 +12,9 @@ interface
 
 uses
   {$IFDEF USE_AUTILS}AUtils{$ELSE}SysUtils{$ENDIF},
-  ABase, ABaseConsts, ACollectionsBase;
+  ABase,
+  ABaseConsts,
+  ABaseTypes;
 
 type
   TAbstractSettings = class

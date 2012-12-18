@@ -2,8 +2,7 @@
 @Abstract Reading and writing settings from INI file
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.03.2008
-@LastMod 24.07.2012
-Version: 0.3
+@LastMod 18.12.2012
 }
 unit AIniSettings;
 
@@ -11,8 +10,10 @@ interface
 
 uses
   Classes, IniFiles, SysUtils,
-  ABase, ACollections, ACollectionsBase, AUtils,
-  AAbstractSettings;
+  AAbstractSettings,
+  ABase,
+  ABaseTypes,
+  AStringLists;
 
 type
   TIniSettings = class(TAbstractSettings)
@@ -76,36 +77,26 @@ end;
 
 function TIniSettings.ReadSection(const Section: APascalString; Strings: AStringList): ABoolean;
 var
-  Values: TStringList;
+  Values: AStringList;
   I: Integer;
+  C: AInteger;
 begin
   if not(Assigned(FIniFile)) then
   begin
     Result := False;
     Exit;
   end;
-  ACollections.StringList_Clear(Strings);
-  Values := TStringList.Create;
+  AStringList_Clear(Strings);
+  Values := AStringList_New();
   try
-    FIniFile.ReadSectionValues(Section, Values);
-    for I := 0 to Values.Count - 1 do
-      ACollections.StringList_AddP(Strings, Values.Strings[I]); //TStrings(Strings).Add(Values.Strings[I]);
+    FIniFile.ReadSectionValues(Section, TStrings(Values));
+    C := AStringList_GetCount(Values);
+    for I := 0 to C - 1 do
+      AStringList_AddP(Strings, AStringList_GetStringP(Values, I));
   finally
-    Values.Free;
+    AStringList_Free(Values);
   end;
   Result := True;
-  {Result := Assigned(FIniFile);
-  if Result then
-  begin
-    Values := TStringList.Create;
-    try
-      FIniFile.ReadSectionValues(Section, Values);
-      for I := 0 to Values.Count - 1 do
-        TStrings(Strings).Add(Values.Strings[I]);
-    finally
-      Values.Free;
-    end;
-  end;}
 end;
 
 function TIniSettings.ReadString(const Section, Name, DefValue: APascalString; out Value: APascalString): AInteger;

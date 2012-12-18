@@ -2,7 +2,7 @@
 @Abstract ABaseTypes
 @Author Prof1983 <prof1983@ya.ru>
 @Created 23.06.2011
-@LastMod 05.09.2012
+@LastMod 18.12.2012
 }
 unit ABaseTypes;
 
@@ -101,7 +101,8 @@ type
 type
   ACollection = type AInt; // =TACollection
   AStream = type Integer; //TFileStream
-
+  AStringList = type AInteger; // =TStringList
+
 implementation
 
 end.

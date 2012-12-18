@@ -2,14 +2,16 @@
 @Abstract ACollections
 @Author Prof1983 <prof1983@ya.ru>
 @Created 29.06.2011
-@LastMod 27.07.2012
+@LastMod 18.12.2012
 }
 unit ACollections;
 
 interface
 
 uses
-  ABase, ACollectionsBase, ACollectionsStringList, AStrings;
+  ABase,
+  ABaseTypes,
+  AStringLists;
 
 function Init(): AError; stdcall;
 
@@ -77,117 +79,64 @@ end;
 
 function StringList_Add(StringList: AStringList; const Value: AString_Type): AInteger; stdcall;
 begin
-  try
-    Result := Collections_StringList_AddP(StringList, AStrings.String_ToWideString(Value));
-  except
-    Result := -1;
-  end;
+  Result := AStringList_Add(StringList, Value);
 end;
 
 function StringList_AddA(StringList: AStringList; Value: PAnsiChar): AInteger; stdcall;
 begin
-  try
-    Result := Collections_StringList_AddP(StringList, Value);
-  except
-    Result := -1;
-  end;
+  Result := AStringList_AddA(StringList, Value);
 end;
 
 function StringList_AddP(StringList: AStringList; const Value: APascalString): AInteger; stdcall;
 begin
-  try
-    Result := Collections_StringList_AddP(StringList, Value);
-  except
-    Result := -1;
-  end;
+  Result := AStringList_AddP(StringList, Value);
 end;
 
 function StringList_AddPS(StringList: AStringList; const Value: APascalString): AInteger; stdcall;
 begin
-  try
-    Result := Collections_StringList_AddP(StringList, Value);
-  except
-    Result := -1;
-  end;
+  Result := AStringList_AddP(StringList, Value);
 end;
 
 function StringList_AddWS(StringList: AStringList; const Value: AWideString): AInteger; stdcall;
 begin
-  try
-    Result := Collections_StringList_AddP(StringList, Value);
-  except
-    Result := -1;
-  end;
+  Result := AStringList_AddP(StringList, Value);
 end;
 
 function StringList_Clear(StringList: AStringList): AError; stdcall;
 begin
-  try
-    Collections_StringList_Clear(StringList);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AStringList_Clear(StringList);
 end;
 
 function StringList_Count(StringList: AStringList): AInteger; stdcall;
 begin
-  try
-    Result := Collections_StringList_Count(StringList);
-  except
-    Result := -1;
-  end;
+  Result := AStringList_GetCount(StringList);
 end;
 
 function StringList_Delete(StringList: AStringList; Index: AInteger): AError; stdcall;
 begin
-  try
-    Collections_StringList_Delete(StringList, Index);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AStringList_Delete(StringList, Index);
 end;
 
 function StringList_Insert(StringList: AStringList; Index: AInteger;
     Value: AString_Type): AInteger; stdcall;
 begin
-  try
-    Collections_StringList_InsertP(StringList, Index, AStrings.String_ToWideString(Value));
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AStringList_Insert(StringList, Index, Value);
 end;
 
 function StringList_InsertP(StringList: AStringList; Index: AInteger;
     const Value: APascalString): AError; stdcall;
 begin
-  try
-    Collections_StringList_InsertP(StringList, Index, Value);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AStringList_InsertP(StringList, Index, Value);
 end;
 
 function StringList_New(): AStringList; stdcall;
 begin
-  try
-    Result := Collections_StringList_New();
-  except
-    Result := 0;
-  end;
+  Result := AStringList_New();
 end;
 
 function StringList_RemoveAt(StringList: AStringList; Index: AInteger): AInteger; stdcall;
 begin
-  try
-    Collections_StringList_Delete(StringList, Index);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AStringList_Delete(StringList, Index);
 end;
 
 end.

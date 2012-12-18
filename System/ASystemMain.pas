@@ -2,7 +2,7 @@
 @Abstract ASystem
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.09.2011
-@LastMod 12.12.2012
+@LastMod 18.12.2012
 }
 unit ASystemMain;
 
@@ -40,6 +40,8 @@ function ASystem_GetDataDirectoryPath(out Value: AString_Type): AError; {$ifdef 
 function ASystem_GetDataDirectoryPathP(): APascalString; stdcall;
 
 function ASystem_GetDirectoryPath(out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_GetExeNameP(): APascalString;
 
 function ASystem_GetExePath(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -149,6 +151,11 @@ end;
 function ASystem_GetDirectoryPath(out Value: AString_Type): AInteger;
 begin
   Result := AStrings.String_AssignP(Value, FExePath);
+end;
+
+function ASystem_GetExeNameP(): APascalString;
+begin
+  Result := FExeName;
 end;
 
 function ASystem_GetExePath(out Value: AString_Type): AError;

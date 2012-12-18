@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Надстройка над модулем ATcpIpClient)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(22.12.2005)
-@LastMod(09.07.2012)
-@Version(0.5)
+@Abstract Надстройка над модулем ATcpIpClient
+@Author Prof1983 <prof1983@ya.ru>
+@Created 22.12.2005
+@LastMod 18.12.2012
 }
 unit ANetTcpIpClient2006;
 
@@ -11,13 +10,15 @@ interface
 
 uses
   SysUtils,
-  AConfig2007, ALogNodeImpl, ANetTcpIpClient, ANetTcpIpGlobals, ATypes;
+  AConfig2007,
+  ALogNodeUtils,
+  ANetTcpIpClient, ANetTcpIpGlobals, ATypes;
 
 type
   TProfTcpIpClient = class(TTcpIpClient)
   private
     FConfig: TConfigNode1;
-    FLog: TALogNode;
+    FLog: ALogNode;
     F_ServerPort: LongWord;
     F_ServerHost: String;
   protected
@@ -26,15 +27,17 @@ type
   public
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: String; AParams: array of const): Boolean;
-    property Config: TConfigNode1 read FConfig write FConfig;
     function ConfigureLoad: Boolean;
     function ConfigureSave: Boolean;
-    constructor Create(AConfig: TConfigNode1 = nil; ALog: TALogNode = nil);
     function Finalize: Boolean;
-    procedure Free;
     function Initialize: Boolean;
-    property Log: TALogNode read FLog write FLog;
     function SendMessage(AMsg: String): Boolean;
+  public
+    constructor Create();
+    procedure Free();
+  public
+    property Config: TConfigNode1 read FConfig write FConfig;
+    property Log: ALogNode read FLog write FLog;
     property _ServerHost: String read F_ServerHost write F_ServerHost;
     property _ServerPort: LongWord read F_ServerPort write F_ServerPort;
   end;
@@ -45,10 +48,12 @@ implementation
 
 function TProfTcpIpClient.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: String; AParams: array of const): Boolean;
 begin
-  if Assigned(FLog) then
-    Result := FLog.AddToLog2(AGroup, AType, AStrMsg, AParams)
-  else
+  if (FLog = 0) then
+  begin
     Result := False;
+    Exit;
+  end;
+  Result := (ALogNode_AddToLogP(FLog, AGroup, AType, Format(AStrMsg, AParams)) >= 0);
 end;
 
 function TProfTcpIpClient.ConfigureLoad: Boolean;
@@ -82,12 +87,10 @@ begin
   Config.WriteInt32('ServerPort', ServerPort);
 end;
 
-constructor TProfTcpIpClient.Create(AConfig: TConfigNode1 = nil; ALog: TALogNode = nil);
+constructor TProfTcpIpClient.Create();
 begin
   inherited Create;
   OnAddToLog := AddToLog;
-  FConfig := AConfig;
-  FLog := ALog;
 end;
 
 function TProfTcpIpClient.Finalize: Boolean;

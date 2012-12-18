@@ -74,7 +74,7 @@ begin
   GetFormatSettings;
   FFormatSettings := DefaultFormatSettings;
   {$ELSE}
-  GetLocaleFormatSettings(0, FFormatSettings);
+  FFormatSettings := TFormatSettings.Create(0);
   {$ENDIF}
   FFormatSettings.DecimalSeparator := '.';
   FFormatSettings.DateSeparator := '.';

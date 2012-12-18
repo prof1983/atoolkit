@@ -15,10 +15,9 @@ uses
   ATypes;
 
 type //** Окно вывода сообщений программы в виде дерева
-  TProfLogTreeForm = class(TfmShablon)
-    //** Очистить содержимое
+  TALogTreeForm = class(TfmShablon)
     procedure NClearClick(Sender: TObject);
-  private
+  protected
     FMemoCommand: TMemo;
     FNodes: array of record
       ID: Integer;
@@ -33,18 +32,32 @@ type //** Окно вывода сообщений программы в вид�
     function GetOnCommand(): TProcMessageStr; virtual;
     procedure SetOnCommand(Value: TProcMessageStr); virtual;
   public
-    //** Добавить Node
-    function AddNode(AType: TLogTypeMessage; AId, AParentId: Integer; const AStr: WideString): TTreeNode;
-    //** Добавить сообщение
-    procedure AddMsg(const AMsg: WideString);
-    //** Добавить строку
-    procedure AddStr(const AStr: WideString);
-    //** Добавить лог-сообщение
+    {** Добавляет сообщение }
     function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
-        const StrMsg: APascalString): AInteger; virtual;
+        StrMsg: APascalString): AInt; virtual;
+    {** Добавляет Node }
+    function AddNode(AType: TLogTypeMessage; AId, AParentId: Integer; const AStr: WideString): TTreeNode;
+    {** Добавляет сообщение }
+    procedure AddMsg(const AMsg: WideString);
+    {** Добавляет строку }
+    procedure AddStr(const AStr: WideString);
+    {** Добавляет сообщение }
+    function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+        const AStrMsg: WideString; AParams: array of const): Integer; virtual; deprecated; // Use AddToLog()
+    {** Добавляет сообщение }
+    function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+        const AStrMsg: WideString): Integer; virtual; deprecated; // Use AddToLog()
+    {** Добавляет сообщение }
+    function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
+        const AStrMsg: WideString): Integer; virtual; deprecated; // Use AddToLog()
   public
     property TreeView: TTreeView read FTreeView;
   end;
+
+  //TProfLogTreeForm = TALogTreeForm;
+
+//const
+//  LOG_IMAGE_INDEX: array[TLogTypeMessage] of Integer = (IndexGreenBox, IndexRedBox, IndexFuchsiaBox, -1, -1, -1);
 
 implementation
 
@@ -63,9 +76,9 @@ begin
   end;
 end;
 
-{ TFormLog }
+{ TALogTreeForm }
 
-function TProfLogTreeForm.AddNode(AType: TLogTypeMessage; AId, AParentId: Integer; const AStr: WideString): TTreeNode;
+function TALogTreeForm.AddNode(AType: TLogTypeMessage; AId, AParentId: Integer; const AStr: WideString): TTreeNode;
 
   procedure Add();
   var
@@ -107,7 +120,7 @@ begin
   FNodes[I].Node.ImageIndex := GetLogImageIndex(AType);
 end;
 
-procedure TProfLogTreeForm.AddMsg(const AMsg: WideString);
+procedure TALogTreeForm.AddMsg(const AMsg: WideString);
 var
   tmpStr: WideString;
 begin
@@ -121,7 +134,7 @@ begin
   AddStr(FormatDateTime('nn:ss:zzzz', Now) + ' ' + tmpStr);
 end;
 
-procedure TProfLogTreeForm.AddStr(const AStr: WideString);
+procedure TALogTreeForm.AddStr(const AStr: WideString);
 var
   tmpStr: WideString;
 begin
@@ -135,24 +148,24 @@ begin
   FTreeView.Items.Add(nil, tmpStr);
 end;
 
-function TProfLogTreeForm.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
-    const StrMsg: APascalString): AInteger;
+function TALogTreeForm.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+    StrMsg: APascalString): AInt;
 var
-  s: string;
+  S: string;
 begin
-  //S := '[' + CHR_LOG_TYPE_MESSAGE[AType] + '] ' +
-  //   CHR_LOG_GROUP_MESSAGE[AGroup] + ': ' + AStrMsg;
-  s := StrMsg;
-  AddNode(LogType, 0, 0, s);
+  S := '[' + CHR_LOG_TYPE_MESSAGE[LogType] + '] ' +
+     CHR_LOG_GROUP_MESSAGE[LogGroup] + ': ' +
+     StrMsg;
+  AddNode(LogType, 0, 0, S);
   Result := 1;
 end;
 
-procedure TProfLogTreeForm.CommandKeyPress(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TALogTreeForm.CommandKeyPress(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if (Key = 13) and not(ssCtrl in Shift) then
   begin
     if FMemoCommand.Text = '' then Exit;
-    AddToLog(lgNone, ltInformation, 'Команда "'+FMemoCommand.Text+'"');
+    AddToLog(lgNone, ltInformation, Format('Команда "%s"', [FMemoCommand.Text]));
     if Assigned(FOnCommand) then
     try
       {// Разбор строки
@@ -168,7 +181,7 @@ begin
   end;
 end;
 
-procedure TProfLogTreeForm.DoCreate();
+procedure TALogTreeForm.DoCreate();
 begin
   inherited DoCreate();
   Top := Screen.Height - 200;
@@ -191,6 +204,7 @@ begin
   FMemoCommand.OnKeyDown := CommandKeyPress;
   FMemoCommand.Visible := False;
 
+  //FImages := TCustomImageList.Create;
   if not(Assigned(FTreeView)) then FTreeView := TTreeView.Create(Self);
   FTreeView.Parent := Self;
   FTreeView.Align := alClient;
@@ -198,21 +212,45 @@ begin
   FTreeView.PopupMenu := PopupMenu;
 end;
 
-function TProfLogTreeForm.GetOnCommand(): TProcMessageStr;
+function TALogTreeForm.GetOnCommand(): TProcMessageStr;
 begin
   Result := FOnCommand;
 end;
 
-procedure TProfLogTreeForm.NClearClick(Sender: TObject);
+procedure TALogTreeForm.NClearClick(Sender: TObject);
 begin
   FTreeView.Items.Clear;
   SetLength(FNodes, 0);
 end;
 
-procedure TProfLogTreeForm.SetOnCommand(Value: TProcMessageStr);
+procedure TALogTreeForm.SetOnCommand(Value: TProcMessageStr);
 begin
   FOnCommand := Value;
   FMemoCommand.Visible := Assigned(Value);
+end;
+
+function TALogTreeForm.ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
+    const AStrMsg: WideString; AParams: array of const): Integer;
+var
+  S: string;
+begin
+  try
+    S := Format(AStrMsg, AParams);
+  except
+    S := AStrMsg;
+  end;
+  Result := AddToLog(AGroup, AType, S);
+end;
+
+function TALogTreeForm.ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
+begin
+  Result := AddToLog(AGroup, AType, AStrMsg);
+end;
+
+function TALogTreeForm.ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage; const AStrMsg: WideString): Integer;
+begin
+  AddToLog(TLogGroupMessage(AGroup), TLogTypeMessage(AType), AStrMsg);
+  Result := 1;
 end;
 
 end.

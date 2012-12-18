@@ -2,14 +2,13 @@
 @Abstract Работа с Log. Классы для записи собщений программы в БД или файл или отображения в окне Log
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2005
-@LastMod 28.11.2012
+@LastMod 18.12.2012
 }
 unit ALogDocumentObj;
 
 interface
 
 uses
-  Graphics, SysUtils, XmlIntf,
   ABase, ALogDocumentUtils, ALogNodeObj, AMessageConst, ATypes;
 
 type //** Документ работы с Log
@@ -19,7 +18,7 @@ type //** Документ работы с Log
     FDocumentElement: TALogNodeObject;
     FLogType: TLogType;
     FOnCommand: TProcMessageStr;
-    FNodes: array of ALogNode{TALogNodeObject};
+    FNodes: array of ALogNode;
   public
     function GetDocumentElement(): ALogNode;
     procedure SetOnCommand(Value: TProcMessageStr); virtual;
@@ -31,9 +30,13 @@ type //** Документ работы с Log
     {** Добавить строку
         @returns(Возвращает номер добавленой строки или 0) }
     function AddStr(const Str: WideString): AInt; virtual;
-    {** Добавить лог-сообщение
+    {** Добавляет лог-сообщение
         @returns(Возвращает номер добавленого лог-сообщения или 0) }
     function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: APascalString): AInt; virtual;
+    {** Добавляет лог-сообщение
+        @returns(Возвращает номер добавленого лог-сообщения или 0) }
+    function AddToLogW(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
         const StrMsg: WideString): AInt; virtual;
   public
     {** Финализировать }
@@ -73,6 +76,12 @@ begin
 end;
 
 function TALogDocumentObject.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+    const StrMsg: APascalString): AInt;
+begin
+  Result := ALogDocument_AddToLogP(ALogDocument(Self), LogGroup, LogType, StrMsg);
+end;
+
+function TALogDocumentObject.AddToLogW(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
     const StrMsg: WideString): AInt;
 begin
   Result := ALogDocument_AddToLogP(ALogDocument(Self), LogGroup, LogType, StrMsg);

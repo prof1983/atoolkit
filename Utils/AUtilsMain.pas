@@ -119,6 +119,8 @@ function AUtils_FormatStrStrWS(const FormatStr, S: AWideString): AWideString; st
 
 function AUtils_FormatStrWS(const Value: AWideString; Len: AInteger): AWideString; stdcall;
 
+function AUtils_GetNowDateTime(): TDateTime; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUtils_Init(): AError; stdcall;
 
 function AUtils_IntToStr(Value: AInteger; out Res: AString_Type): AInteger; stdcall;
@@ -710,6 +712,15 @@ begin
     Result := AUtils_FormatStrAnsi(AnsiString(Value), Len);
   except
     Result := '';
+  end;
+end;
+
+function AUtils_GetNowDateTime(): TDateTime;
+begin
+  try
+    Result := SysUtils.Now();
+  except
+    Result := 0;
   end;
 end;
 

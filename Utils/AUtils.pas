@@ -2,7 +2,7 @@
 @Abstract Util functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.09.2009
-@LastMod 16.11.2012
+@LastMod 18.12.2012
 }
 unit AUtils;
 
@@ -888,11 +888,7 @@ end;
 
 function GetNowDateTime(): TDateTime;
 begin
-  try
-    Result := SysUtils.Now();
-  except
-    Result := 0;
-  end;
+  Result := AUtils_GetNowDateTime();
 end;
 
 function Init(): AError; stdcall;

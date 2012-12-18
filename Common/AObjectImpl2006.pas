@@ -2,7 +2,7 @@
 @Abstract Объект с логированием и конфигурациями
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.12.2005
-@LastMod 13.11.2012
+@LastMod 18.12.2012
 }
 unit AObjectImpl2006;
 
@@ -17,13 +17,13 @@ type //** Объект с логированием и конфигурациям
   protected
     FConfig: AProfXmlNode2;
     FInitialized: Boolean;
-    FLog: ILogNode2;
+    FLog: IALogNode2;
     procedure SetInitialized(Value: Boolean);
   protected
     function Get_Config(): AProfXmlNode2; safecall;
-    function Get_Log(): ILogNode2; safecall;
+    function Get_Log(): IALogNode2; safecall;
     procedure Set_Config(const Value: AProfXmlNode2); safecall;
-    procedure Set_Log(const Value: ILogNode2); virtual; safecall;
+    procedure Set_Log(const Value: IALogNode2); virtual; safecall;
   public
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: String; AParams: array of const): Boolean; virtual;
     function AddToLog2(AMsg: WideString): TALogNode; virtual;
@@ -127,7 +127,7 @@ begin
   Result := FConfig;
 end;
 
-function TAObject2006.Get_Log(): ILogNode2;
+function TAObject2006.Get_Log(): IALogNode2;
 begin
   Result := FLog;
 end;
@@ -156,7 +156,7 @@ begin
   FConfig := Value;
 end;
 
-procedure TAObject2006.Set_Log(const Value: ILogNode2);
+procedure TAObject2006.Set_Log(const Value: IALogNode2);
 begin
   FLog := Value;
 end;

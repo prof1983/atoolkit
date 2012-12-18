@@ -4,7 +4,7 @@
 @Created 25.07.2006
 @LastMod 18.12.2012
 }
-unit ALogShablonForm2006;
+unit ALogShablonForm;
 
 interface
 

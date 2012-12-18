@@ -2,7 +2,7 @@
 @Abstract Общие интерфейсы для всех проектов
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.02.2007
-@LastMod 23.11.2012
+@LastMod 18.12.2012
 }
 unit AObjectIntf;
 
@@ -76,12 +76,12 @@ type //** Интерфейс для любого объекта
     function Finalize(): WordBool; safecall;
     function Initialize(): WordBool; safecall;
     function Get_Config(): AProfXmlNode2; safecall;
-    function Get_Log(): ILogNode2; safecall;
+    function Get_Log(): IALogNode2; safecall;
     procedure Set_Config(const Value: AProfXmlNode2); safecall;
-    procedure Set_Log(const Value: ILogNode2); safecall;
+    procedure Set_Log(const Value: IALogNode2); safecall;
 
     property Config: AProfXmlNode2 read Get_Config write Set_Config;
-    property Log: ILogNode2 read Get_Log write Set_Log;
+    property Log: IALogNode2 read Get_Log write Set_Log;
   end;
 
 implementation

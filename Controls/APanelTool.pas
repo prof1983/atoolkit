@@ -1,9 +1,8 @@
 {**
-Abstract(APanelTool)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(14.10.2006)
-@LastMod(03.07.2012)
-@Version(0.5)
+Abstract APanelTool
+@Author Prof1983 <prof1983@ya.ru>
+@Created 14.10.2006
+@LastMod 18.12.2012
 }
 unit APanelTool;
 
@@ -14,10 +13,10 @@ uses
   ALogNodeImpl, ALogNodeIntf, ATypes;
 
 type
-  TPanelTool = class(TPanel, ILogNode2)
+  TPanelTool = class(TPanel, IALogNode2)
   protected
-    FLogNode: ILogNode2;
-    property LogNode: ILogNode2 read FLogNode implements ILogNode2;
+    FLogNode: IALogNode2;
+    property LogNode: IALogNode2 read FLogNode implements IALogNode2;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy(); override;

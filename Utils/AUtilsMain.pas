@@ -2,7 +2,7 @@
 @Abstract AUtils - Main
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.09.2011
-@LastMod 13.12.2012
+@LastMod 18.12.2012
 }
 unit AUtilsMain;
 
@@ -11,7 +11,8 @@ unit AUtilsMain;
 interface
 
 uses
-  SysUtils, ABase, AStrings, AStringUtils, ASystemMain;
+  FileCtrl, SysUtils,
+  ABase, AStrings, AStringUtils, ASystemMain;
 
 // --- AUtils ---
 
@@ -90,6 +91,8 @@ function AUtils_FloatToStrDP(Value: AFloat): APascalString; stdcall;
 function AUtils_FloatToStrP(Value: AFloat): APascalString; stdcall;
 
 function AUtils_FloatToStrWS(Value: AFloat): AWideString; stdcall;
+
+function AUtils_ForceDirectoriesP(const Dir: APascalString): AError;
 
 function AUtils_FormatFloat(Value: AFloat; Count, Digits: AInteger;
     out Res: AString_Type): AInteger; stdcall;
@@ -552,6 +555,18 @@ begin
     Result := AUtilsMain.Utils_FloatToStr(Value);
   except
     Result := '';
+  end;
+end;
+
+function AUtils_ForceDirectoriesP(const Dir: APascalString): AError;
+begin
+  try
+    if ForceDirectories(Dir) then
+      Result := 0
+    else
+      Result := -2;
+  except
+    Result := -1;
   end;
 end;
 

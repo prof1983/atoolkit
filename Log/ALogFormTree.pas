@@ -2,7 +2,7 @@
 @Abstract Окно вывода сообщений программы в виде дерева
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2005
-@LastMod 17.12.2012
+@LastMod 18.12.2012
 }
 unit ALogFormTree;
 
@@ -11,11 +11,11 @@ interface
 uses
   Classes, ComCtrls, Controls, ExtCtrls, Forms, StdCtrls, SysUtils,
   ABase,
-  ALogShablon, ATypes,
-  AShablonForm{fShablon};
+  AShablonForm,
+  ATypes;
 
 type //** Окно вывода сообщений программы в виде дерева
-  TProfLogTreeForm = class(TfmLogShablon)
+  TProfLogTreeForm = class(TfmShablon)
     //** Очистить содержимое
     procedure NClearClick(Sender: TObject);
   private
@@ -30,18 +30,18 @@ type //** Окно вывода сообщений программы в вид�
     procedure CommandKeyPress(Sender: TObject; var Key: Word; Shift: TShiftState);
   protected
     procedure DoCreate(); override;
-    function GetOnCommand(): TProcMessageStr; override;
-    procedure SetOnCommand(Value: TProcMessageStr); override;
+    function GetOnCommand(): TProcMessageStr; virtual;
+    procedure SetOnCommand(Value: TProcMessageStr); virtual;
   public
     //** Добавить Node
     function AddNode(AType: TLogTypeMessage; AId, AParentId: Integer; const AStr: WideString): TTreeNode;
     //** Добавить сообщение
-    procedure AddMsg(const AMsg: WideString); //override; safecall;
+    procedure AddMsg(const AMsg: WideString);
     //** Добавить строку
-    procedure AddStr(const AStr: WideString); //override; safecall;
+    procedure AddStr(const AStr: WideString);
     //** Добавить лог-сообщение
     function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
-        const StrMsg: APascalString): AInteger; override;
+        const StrMsg: APascalString): AInteger; virtual;
   public
     property TreeView: TTreeView read FTreeView;
   end;

@@ -10,10 +10,16 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ABase, AConsts2, ALogDocumentsAll, AFormObj, ALogDocuments, ALogNodeUtils,
+  ABase,
+  AConsts2,
+  AFormObj,
+  ALogDocumentListObj,
+  ALogDocumentsAllUtils,
+  ALogNodeUtils,
   AUiForm,
   ASystemData,
-  ATypes, AXmlDocumentImpl, AXmlDocumentUtils, AXmlNodeUtils, AXmlUtils;
+  ATypes,
+  AXmlDocumentImpl, AXmlDocumentUtils, AXmlNodeUtils, AXmlUtils;
 
 type
   TProfFormMain = class(TAFormObject)
@@ -30,7 +36,7 @@ type
     FLogTypeSet: TLogTypeSet;
     //FExePath: APascalString; - Use ASystemData.FExePath
   protected
-    FLogDocuments: TALogDocuments; //ALog: TLogDocumentsAll;
+    FLogDocuments: TALogDocumentListObject;
   public
       //** Финализация программы (конфигурации, логирование)
     procedure Done(); virtual; deprecated; // Use Finalize()
@@ -46,7 +52,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property ALog: TALogDocuments read FLogDocuments write FLogDocuments;
+    property ALog: TALogDocumentListObject{TALogDocuments} read FLogDocuments write FLogDocuments;
       //** Имя файла конфигураций (с путем или без него)
     property ConfigFileName: WideString read FConfigFileName write FConfigFileName;
       //** Путь к файлу конфигураций (если ConfigFileName = '' то берется имя .exe файла без расширения)
@@ -137,7 +143,6 @@ end;
 procedure TProfFormMain.InitConfig();
 var
   ExeName: String;
-  //Doc: TProfXmlDocument;
   Conf: AXmlNode;
 begin
   if (FConfigDocument1 = 0) and (FConfig = 0) then
@@ -185,7 +190,6 @@ end;
 procedure TProfFormMain.InitLog();
 var
   ExePath: APascalString;
-  //LogConfig: IXmlNode;
 begin
   if (Length(FLogFilePath) = 0) then
   begin
@@ -202,18 +206,13 @@ begin
 
   if not(Assigned(FLogDocuments)) then
   begin
-    //if Assigned(FConfig) then conf := FConfig.GetNodeByName('Logs');
-    FLogDocuments := TLogDocumentsAll.Create(nil, FLogTypeSet, FLogFilePath, FLogID, FLogName);
+    FLogDocuments := ALogDocumentsAll_Create(FLogTypeSet, FLogFilePath);
     FIsLogDocumentsInit := True;
   end;
 
-  //FLog := FLogDocuments.GetDocumentElement();
   if (FLog = 0) then
     FLog := ALogNode_New(0, 0, '', 0);
-  ALogNode_SetOnAddToLog(FLog, FLogDocuments.AddToLog);
-  {LogConfig := AXmlUtils.ProfXmlNode_GetNodeByName(FConfig, 'Logs');
-  ALog := TLogDocumentsAll.Create(LogConfig, FLogTypeSet, FLogFilePath, FLogID, FLogName);
-  FLog := ALog;}
+  ALogNode_SetOnAddToLog(FLog, FLogDocuments.AddToLogW);
 end;
 
 end.

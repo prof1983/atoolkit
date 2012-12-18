@@ -1,13 +1,11 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.11.2012
-@LastMod 28.11.2012
+@LastMod 18.12.2012
 }
 unit ALogDocumentUtils;
 
-{$ifndef NoLogImpl}
-  {$define UseLogImpl}
-{$endif}
+{define UseLogImpl}
 
 interface
 

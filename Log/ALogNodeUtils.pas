@@ -2,13 +2,11 @@
 @Abstract ALogNode functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.07.2012
-@LastMod 17.12.2012
+@LastMod 18.12.2012
 }
 unit ALogNodeUtils;
 
-{$ifndef NoLogImpl}
-  {$define UseLogImpl}
-{$endif}
+{define UseLogImpl}
 
 interface
 

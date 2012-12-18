@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(XML документ. Класс реализует интерфейсы IProfXmlDocumentA и IProfXmlNodeA)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.02.2007)
-@LastMod(09.07.2012)
-@Version(0.5)
+@Abstract XML документ. Класс реализует интерфейсы IProfXmlDocumentA и IProfXmlNodeA
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.02.2007
+@LastMod 18.12.2012
 }
 unit AXmlDocumentB;
 
@@ -28,8 +27,8 @@ type
   protected
     function GetAsBool(): WordBool; safecall;
     function GetAsDateTime(): TDateTime; safecall;
-    function GetAsFloat32(): Float32; safecall;
-    function GetAsFloat64(): Float64; safecall;
+    function GetAsFloat32(): AFloat32; safecall;
+    function GetAsFloat64(): AFloat64; safecall;
     function GetAsInt32(): Integer; safecall;
     function GetAsInt64(): Integer; safecall;
     function GetAsString(): WideString; safecall;
@@ -47,7 +46,7 @@ type
     procedure SetAsString(const Value: WideString); safecall;
   protected
     function SetValueAsBool(Value: WordBool): WordBool; safecall;
-    function SetValueAsFloat64(Value: Float64): WordBool; safecall;
+    function SetValueAsFloat64(Value: AFloat64): WordBool; safecall;
     function SetValueAsInt32(AValue: Integer): WordBool; safecall;
     function SetValueAsString(const AValue: WideString): WordBool; safecall;
     function SetValueAsUInt08(AValue: Byte): WordBool; safecall;
@@ -57,24 +56,24 @@ type
   public
     function ReadBool(const AName: WideString; var Value: WordBool): WordBool; safecall;
     function ReadDateTime(const AName: WideString; var Value: TDateTime): WordBool; safecall;
-    function ReadFloat64(const AName: WideString; var Value: Float64): WordBool; safecall;
-    function ReadInt08(const AName: WideString; var Value: Int08): WordBool; safecall;
-    function ReadInt16(const AName: WideString; var Value: Int16): WordBool; safecall;
-    function ReadInt32(const AName: WideString; var Value: Int32): WordBool; safecall;
-    function ReadInt64(const AName: WideString; var AValue: Int64): WordBool; safecall;
+    function ReadFloat64(const AName: WideString; var Value: AFloat64): WordBool; safecall;
+    function ReadInt08(const AName: WideString; var Value: AInt08): WordBool; safecall;
+    function ReadInt16(const AName: WideString; var Value: AInt16): WordBool; safecall;
+    function ReadInt32(const AName: WideString; var Value: AInt32): WordBool; safecall;
+    function ReadInt64(const AName: WideString; var AValue: AInt64): WordBool; safecall;
     function ReadString(const AName: WideString; var Value: WideString): WordBool; safecall;
-    function ReadUInt08(const AName: WideString; var Value: UInt08): WordBool; safecall;
-    function ReadUInt16(const AName: WideString; var Value: UInt16): WordBool; safecall;
-    function ReadUInt32(const AName: WideString; var Value: UInt32): WordBool; safecall;
+    function ReadUInt08(const AName: WideString; var Value: AUInt08): WordBool; safecall;
+    function ReadUInt16(const AName: WideString; var Value: AUInt16): WordBool; safecall;
+    function ReadUInt32(const AName: WideString; var Value: AUInt32): WordBool; safecall;
     //function ReadUInt64(const AName: WideString; var Value: UInt64): WordBool; safecall;
   public
     function WriteBool(const AName: WideString; Value: WordBool): WordBool; safecall;
     function WriteDateTime(const AName: WideString; AValue: TDateTime): WordBool; safecall;
-    function WriteFloat64(const AName: WideString; Value: Float64): WordBool; safecall;
-    function WriteInt32(const AName: WideString; Value: Int32): WordBool; safecall;
-    function WriteInt64(const AName: WideString; Value: Int64): WordBool; safecall;
+    function WriteFloat64(const AName: WideString; Value: AFloat64): WordBool; safecall;
+    function WriteInt32(const AName: WideString; Value: AInt32): WordBool; safecall;
+    function WriteInt64(const AName: WideString; Value: AInt64): WordBool; safecall;
     function WriteString(const AName, Value: WideString): WordBool; safecall;
-    function WriteUInt08(const AName: WideString; AValue: UInt08): WordBool; safecall;
+    function WriteUInt08(const AName: WideString; AValue: AUInt08): WordBool; safecall;
     //function WriteUInt64(const AName: WideString; AValue: UInt64): WordBool; safecall;
     function WriteXml(const AName, Value: WideString): WordBool; safecall;
   public
@@ -122,13 +121,13 @@ begin
   // ...
 end;
 
-function TProfXmlDocumentB.GetAsFloat32(): Float32;
+function TProfXmlDocumentB.GetAsFloat32(): AFloat32;
 begin
   Result := 0;
   // ...
 end;
 
-function TProfXmlDocumentB.GetAsFloat64(): Float64;
+function TProfXmlDocumentB.GetAsFloat64(): AFloat64;
 begin
   Result := 0;
   // ...
@@ -316,13 +315,13 @@ begin
   // ...
 end;
 
-function TProfXmlDocumentB.ReadFloat64(const AName: WideString; var Value: Float64): WordBool;
+function TProfXmlDocumentB.ReadFloat64(const AName: WideString; var Value: AFloat64): WordBool;
 begin
   Result := False;
   // ...
 end;
 
-function TProfXmlDocumentB.ReadInt08(const AName: WideString; var Value: Int08): WordBool;
+function TProfXmlDocumentB.ReadInt08(const AName: WideString; var Value: AInt08): WordBool;
 begin
   Result := False;
   // ...
@@ -358,7 +357,7 @@ begin
   Result := GetValueAsStringA(Node, Value);
 end;
 
-function TProfXmlDocumentB.ReadUInt08(const AName: WideString; var Value: UInt08): WordBool;
+function TProfXmlDocumentB.ReadUInt08(const AName: WideString; var Value: AUInt08): WordBool;
 begin
   Result := False;
   // ...
@@ -399,7 +398,7 @@ begin
   // ...
 end;
 
-function TProfXmlDocumentB.SetValueAsFloat64(Value: Float64): WordBool;
+function TProfXmlDocumentB.SetValueAsFloat64(Value: AFloat64): WordBool;
 begin
   Result := False;
   // ...
@@ -435,7 +434,7 @@ begin
   // ...
 end;
 
-function TProfXmlDocumentB.WriteFloat64(const AName: WideString; Value: Float64): WordBool;
+function TProfXmlDocumentB.WriteFloat64(const AName: WideString; Value: AFloat64): WordBool;
 begin
   Result := False;
   // ...
@@ -460,7 +459,7 @@ begin
 //  // ...
 end;
 
-function TProfXmlDocumentB.WriteUInt08(const AName: WideString; AValue: UInt08): WordBool;
+function TProfXmlDocumentB.WriteUInt08(const AName: WideString; AValue: AUInt08): WordBool;
 begin
   Result := False;
   // ...

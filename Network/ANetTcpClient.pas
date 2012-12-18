@@ -1,24 +1,25 @@
 ﻿{**
-@Abstract(Оболочка для TCP/IP соединения (Client))
-@Author(Prof1983 prof1983@ya.ru)
-@Created(23.10.2005)
-@LastMod(09.07.2012)
-@Version(0.5)
+@Abstract Оболочка для TCP/IP соединения (Client)
+@Author Prof1983 <prof1983@ya.ru>
+@Created 23.10.2005
+@LastMod 18.12.2012
 }
 unit ANetTcpClient;
 
 interface
 
 uses
-  Classes, Sockets, XmlIntf,
-  ALogNodeImpl, ATypes;
+  Classes, Sockets, SysUtils, XmlIntf,
+  ABase,
+  ALogNodeUtils,
+  ATypes;
 
 type
   TProfTcpClient = class(TTcpClient)
   private
     FConfig: IXmlNode;
     FInitialized: Boolean;
-    FLog: TALogNode;
+    FLog: ALogNode;
   protected
     procedure DoConnect(Sender: TObject); //virtual;
     procedure DoDisconnect(Sender: TObject); //virtual;
@@ -28,18 +29,20 @@ type
     procedure DoSend(Sender: TObject; Buf: PAnsiChar; var DataLen: Integer);
     procedure DoError(Sender: TObject; SocketError: Integer);
   public
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: String; AParams: array of const): Boolean;
-    //property Client: TTcpClient read FClient;
-    property Config: IXmlNode read FConfig write FConfig;
+    function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: APascalString): AInt;
     function ConfigureLoad: Boolean; virtual;
     function ConfigureSave: Boolean; virtual;
-    constructor Create(AConfig: IXmlNode = nil; ALog: TALogNode = nil; AOwner: TComponent = nil);
     function Finalize: Boolean; virtual;
-    procedure Free; virtual;
     function Initialize: Boolean; virtual;
-    property Log: TALogNode read FLog write FLog;
     function SendString(Value: WideString): Boolean; virtual;
     function ReseiveString(var Value: WideString): Boolean; virtual;
+  public
+    constructor Create(Owner: TComponent = nil);
+    procedure Free(); virtual;
+  public
+    property Config: IXmlNode read FConfig write FConfig;
+    property Log: ALogNode read FLog write FLog;
   end;
 
 const // Сообщения
@@ -59,12 +62,15 @@ implementation
 
 {TProfTcpClient}
 
-function TProfTcpClient.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: String; AParams: array of const): Boolean;
+function TProfTcpClient.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+    const StrMsg: APascalString): AInt;
 begin
-  if Assigned(FLog) then
-    Result := FLog.AddToLog2(AGroup, AType, AStrMsg, AParams)
-  else
-    Result := False;
+  if (FLog = 0) then
+  begin
+    Result := -1;
+    Exit;
+  end;
+  Result := ALogNode_AddToLogP(FLog, LogGroup, LogType, StrMsg);
 end;
 
 function TProfTcpClient.ConfigureLoad: Boolean;
@@ -77,12 +83,9 @@ begin
   Result := Assigned(FConfig);
 end;
 
-constructor TProfTcpClient.Create(AConfig: IXmlNode = nil; ALog: TALogNode = nil; AOwner: TComponent = nil);
+constructor TProfTcpClient.Create(Owner: TComponent);
 begin
-  inherited Create(AOwner);
-  FConfig := AConfig;
-  FLog := ALog;
-  //FClient := TTcpClient.Create(nil);
+  inherited Create(Owner);
   {Установки по умолчанию}
   RemoteHost := 'localhost';
   RemotePort := '1234';
@@ -97,37 +100,37 @@ end;
 
 procedure TProfTcpClient.DoConnect(Sender: TObject);
 begin
-  AddToLog(lgNetwork, ltInformation, info_Connected, []);
+  AddToLog(lgNetwork, ltInformation, info_Connected);
 end;
 
 procedure TProfTcpClient.DoCreateHandle(Sender: TObject);
 begin
-  AddToLog(lgNetwork, ltInformation, info_CreateHandle, []);
+  AddToLog(lgNetwork, ltInformation, info_CreateHandle);
 end;
 
 procedure TProfTcpClient.DoDestroyHandle(Sender: TObject);
 begin
-  AddToLog(lgNetwork, ltInformation, info_DestroyHandle, []);
+  AddToLog(lgNetwork, ltInformation, info_DestroyHandle);
 end;
 
 procedure TProfTcpClient.DoDisconnect(Sender: TObject);
 begin
-  AddToLog(lgNetwork, ltInformation, info_Disconnected, []);
+  AddToLog(lgNetwork, ltInformation, info_Disconnected);
 end;
 
 procedure TProfTcpClient.DoError(Sender: TObject; SocketError: Integer);
 begin
-  AddToLog(lgNetwork, ltInformation, info_Error, [SocketError]);
+  AddToLog(lgNetwork, ltInformation, Format(info_Error, [SocketError]));
 end;
 
 procedure TProfTcpClient.DoReceive(Sender: TObject; Buf: PAnsiChar; var DataLen: Integer);
 begin
-  AddToLog(lgNetwork, ltInformation, info_Receive, [DataLen, AnsiString(Buf)]);
+  AddToLog(lgNetwork, ltInformation, Format(info_Receive, [DataLen, AnsiString(Buf)]));
 end;
 
 procedure TProfTcpClient.DoSend(Sender: TObject; Buf: PAnsiChar; var DataLen: Integer);
 begin
-  AddToLog(lgNetwork, ltInformation, info_Send, [DataLen, AnsiString(Buf)]);
+  AddToLog(lgNetwork, ltInformation, Format(info_Send, [DataLen, AnsiString(Buf)]));
 end;
 
 function TProfTcpClient.Finalize: Boolean;
@@ -147,12 +150,12 @@ function TProfTcpClient.Initialize: Boolean;
 begin
   Result := not(FInitialized);
   FInitialized := True;
-  AddToLog(lgNetwork, ltInformation, info_Connecting, [RemoteHost, RemotePort]);
+  AddToLog(lgNetwork, ltInformation, Format(info_Connecting, [RemoteHost, RemotePort]));
   Result := Connect;
   if Result then
-    AddToLog(lgNetwork, ltInformation, info_Connected, [])
+    AddToLog(lgNetwork, ltInformation, info_Connected)
   else
-    AddToLog(lgNetwork, ltInformation, info_NotConnected, []);
+    AddToLog(lgNetwork, ltInformation, info_NotConnected);
 end;
 
 function TProfTcpClient.ReseiveString(var Value: WideString): Boolean;
@@ -190,19 +193,12 @@ begin
   end;
 
   if Result then
-    AddToLog(lgNetwork, ltInformation, info_SendOk, [L, Value])
+    AddToLog(lgNetwork, ltInformation, Format(info_SendOk, [L, Value]))
   else
-    AddToLog(lgNetwork, ltError, info_SendError, [L, Value]);
+    AddToLog(lgNetwork, ltError, Format(info_SendError, [L, Value]));
 
   {L := StrLen(Value) + 1;
   Result := (SendBuf(P, L) = L);}
 end;
 
 end.
-
-{
-0.0.0.4 - 03.02.2006 - Globals
-0.0.0.3 - 08.01.2006
-0.0.0.2 - 04.01.2006
-0.0.0.1 - 23.10.2005
-}

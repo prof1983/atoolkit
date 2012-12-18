@@ -17,6 +17,7 @@ uses
   ALogDocumentListObj,
   ALogObj,
   AProgramData,
+  ASystemData,
   ATypes,
   AUtilsMain,
   AXmlNodeImpl;
@@ -62,7 +63,7 @@ type //** Основной объект сервиса
     // Финализировать программу
     function Finalize(): WordBool;
     // Инициализировать программу
-    function Initialize(): WordBool;
+    function Initialize(): AError; virtual;
   public
     // Конфигурации программы
     property ConfigDocument: TConfigDocument read FConfigDocument;
@@ -77,8 +78,10 @@ type //** Основной объект сервиса
     property ExeName: WideString read FExeName;
     // Путь расположения программы
     property ExePath: WideString read FExePath;
+    }
     // Класс, объединяющий вывод логов сразу в несколько мест
     property LogDocuments: TALogDocumentListObject read FLogDocuments;
+    {
     // Глобальный ID объекта - владельца
     property ObjectGlobalID: Integer read FObjectGlobalID write FObjectGlobalID;
     // Название объекта - владельца
@@ -247,7 +250,9 @@ begin
   Result := Round((AUtils_GetNowDateTime() - FDateStart) * 24 * 60);
 end;
 
-function TAProgramObject.Initialize(): WordBool;
+function TAProgramObject.Initialize(): AError;
+var
+  Res: Boolean;
 begin
   AddToLog(lgGeneral, ltInformation, 'Инициализация программы');
 
@@ -279,10 +284,16 @@ begin
         FILE_EXT_CONFIG, 'Config', AddToLog);
   FConfig := FConfigDocument.GetDocumentElement();
 
-  Result := True;
-  if not(DoStart()) then Result := False;
-  if not(DoStarted()) then Result := False;
+  Res := True;
+  if not(DoStart()) then
+    Res := False;
+  if not(DoStarted()) then
+    Res := False;
   AddToLog(lgGeneral, ltInformation, 'Программа инициализирована');
+  if Res then
+    Result := 0
+  else
+    Result := 1;
 end;
 
 procedure TAProgramObject.SetIsComServer(Value: ABoolean);

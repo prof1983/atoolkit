@@ -16,25 +16,18 @@ var
   {** Критическая секция добавления в лог }
   FCSAddToLog: TRTLCriticalSection;
   FConfigDir: APascalString;
-  FConfigPath: APascalString;
   FDataDir: APascalString;
-  FDataPath: APascalString;
   FDependencies: WideString;
   FExeFullName: WideString;
-  FExeName: WideString;
-  FExePath: WideString;
   FFileVersionInfo: TFileVersionInfoA;
   //FMaxClientAccount: Integer;
-  FObjectGlobalId: Integer;
-  FObjectOwnerName: WideString;
-  FOrgOwnerName: WideString;
+  //FObjectGlobalId: Integer;
+  //FObjectOwnerName: WideString;
+  //FOrgOwnerName: WideString;
   FProgramDescription: WideString;
   FProgramId: LongWord;
   FProgramIdStr: WideString;
-  FProgramName: WideString;
   FProgramNameDisplay: WideString;
-  FProgramVersion: AVersion;
-  FProgramVersionStr: WideString;
   FSystemName: WideString;
   FTimerInterval: LongWord;
 var
@@ -48,7 +41,6 @@ var
   FIsTeach: Boolean;
   FIsTest: Boolean;
 var
-  FConfig: AConfig;
   FConfigDocument: AXmlDocument;
   FConfigFileName: WideString;
   FConfigInitialize: Boolean;

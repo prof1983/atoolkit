@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 18.12.2012
-@LastMod 18.12.2012
+@LastMod 19.12.2012
 }
 unit AProgramData;
 
@@ -15,8 +15,6 @@ uses
 var
   {** Критическая секция добавления в лог }
   FCSAddToLog: TRTLCriticalSection;
-  FConfigDir: APascalString;
-  FDataDir: APascalString;
   FDependencies: WideString;
   FExeFullName: WideString;
   FFileVersionInfo: TFileVersionInfoA;
@@ -42,7 +40,6 @@ var
   FIsTest: Boolean;
 var
   FConfigDocument: AXmlDocument;
-  FConfigFileName: WideString;
   FConfigInitialize: Boolean;
   FDateStart: TDateTime;
 

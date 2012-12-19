@@ -2,7 +2,7 @@
 @Abstract Реализация основной функциональности для главного объекта
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.05.2006
-@LastMod 18.12.2012
+@LastMod 19.12.2012
 }
 unit AProgramObj;
 
@@ -61,7 +61,7 @@ type //** Основной объект сервиса
     class function GetInstance(): TAProgramObject;
   public
     // Финализировать программу
-    function Finalize(): WordBool;
+    function Finalize(): AError; virtual;
     // Инициализировать программу
     function Initialize(): AError; virtual;
   public
@@ -220,11 +220,11 @@ begin
   Result := True;
 end;
 
-function TAProgramObject.Finalize(): WordBool;
+function TAProgramObject.Finalize(): AError;
 begin
-  Result := True;
-  if not(DoStop(False)) then Result := False;
-  if not(DoStoped(False)) then Result := False;
+  Result := 0;
+  if not(DoStop(False)) then Result := 1;
+  if not(DoStoped(False)) then Result := 2;
 end;
 
 procedure TAProgramObject.Free();

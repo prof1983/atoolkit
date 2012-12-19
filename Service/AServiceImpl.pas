@@ -2,7 +2,7 @@
 @Abstract Реализация основной функциональности для сервиса WindowsNT
 @Author Prof1983 <prof1983@ya.ru>
 @Created 17.05.2006
-@LastMod 14.11.2012
+@LastMod 18.12.2012
 
 Возможные состояния сервиса для процедуры ReportStatus
   SERVICE_STOPPED        - сервис успешно остановлен
@@ -30,7 +30,7 @@ uses
   AServiceTypes, AServiceUtils, ATypes, AUtils1;
 
 type //** Основной объект сервиса
-  TProfService = class(TProfObject)
+  TProfService = class(TAObject)
   private
     FClientList: TThreadList;
     FConnectedAccount: TProfConnectedAccount;

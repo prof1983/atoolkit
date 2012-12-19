@@ -2,17 +2,16 @@
 @Abstract Server socket
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.10.2005
-@LastMod 13.11.2012
+@LastMod 18.12.2012
 }
 unit ANetServerSocket;
-
-TODO: AObjectImpl2006 -> AObjectImpl
 
 interface
 
 uses
   ScktComp,
-  ABase, AConfigUtils, AObjectImpl2006;
+  ABase,
+  AConfigUtils;
 
 type
   TClient = record
@@ -20,11 +19,14 @@ type
     Error: Integer;
   end;
 
-  TProfServerSocket = class(TAObject2006)
+  TProfServerSocket = class(TInterfacedObject)
   private
     FClients: array of TClient;
+    FConfig: AProfXmlNode2;
+    FInitialized: Boolean;
     FPort: Integer;
     FServerSocket: TServerSocket;
+  private
     procedure DeleteSocket(Socket: TCustomWinSocket);
     procedure ServClientConnect(Sender: TObject; Socket: TCustomWinSocket);
     procedure ServClientRead(Sender: TObject; Socket: TCustomWinSocket);
@@ -32,11 +34,12 @@ type
     procedure SerClientDisconnect(Sender: TObject; Socket: TCustomWinSocket);
     procedure DoError(Client: TClient);
   public
-    function ConfigureLoad: WordBool; override;
-    function Initialize: WordBool; override;
+    function ConfigureLoad(): WordBool; virtual;
+    function Finalize(): WordBool; virtual;
+    function Initialize(): WordBool; virtual;
   public
     constructor Create(APort: Integer);
-    procedure Free(); override;
+    procedure Free(); virtual;
   public
     property Port: Integer read FPort write FPort;
   end;
@@ -50,13 +53,17 @@ var
   I: AInt32;
   {S: String;}
 begin
-  Result := inherited ConfigureLoad;
-  if not(Result) then Exit;
+  if (FConfig = 0) then
+  begin
+    Result := False;
+    Exit;
+  end;
   if Assigned(FServerSocket) then
   begin
     AConfig_ReadInt32(FConfig, 'Port', I);
     FServerSocket.Port := I;
   end;
+  Result := True;
 end;
 
 constructor TProfServerSocket.Create(APort: Integer);
@@ -85,8 +92,16 @@ begin
   {RefreshA;}
 end;
 
+function TProfServerSocket.Finalize(): WordBool;
+begin
+  Result := True;
+end;
+
 procedure TProfServerSocket.Free;
 begin
+  if FInitialized then
+    Finalize();
+
   {Послать всем сообщения об отбое}
   {...}
   SetLength(FClients, 0);
@@ -95,17 +110,24 @@ end;
 
 function TProfServerSocket.Initialize: WordBool;
 begin
-  Result := inherited Initialize;
-  try
-  if not(Result) then Exit;
-  if not(Assigned(FServerSocket)) then begin
-    FServerSocket := TServerSocket.Create(nil);
-    FServerSocket.Port := FPort;
-    FServerSocket.OnClientConnect := ServClientConnect;
-    {FServerSocket.OnClientWrite := ServClientWrite;}
+  if FInitialized then
+  begin
+    //AddToLog(lgGeneral, ltInformation, stAlreadyInitialize, []);
+    Result := True;
+    Exit;
   end;
-  FServerSocket.Active := True;
-  Result := FServerSocket.Active;
+  FInitialized := True;
+
+  try
+    if not(Assigned(FServerSocket)) then
+    begin
+      FServerSocket := TServerSocket.Create(nil);
+      FServerSocket.Port := FPort;
+      FServerSocket.OnClientConnect := ServClientConnect;
+      {FServerSocket.OnClientWrite := ServClientWrite;}
+    end;
+    FServerSocket.Active := True;
+    Result := FServerSocket.Active;
   except
     Result := False;
   end;

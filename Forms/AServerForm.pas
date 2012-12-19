@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Server form)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(31.10.2005)
-@LastMod(09.07.2012)
-@Version(0.5)
+@Abstract Server form
+@Author Prof1983 <prof1983@ya.ru>
+@Created 31.10.2005
+@LastMod 18.12.2012
 }
 unit AServerForm;
 
@@ -12,7 +11,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ScktComp, Registry, StdCtrls, ExtCtrls,
-  AConfig2007, AFormImpl, ALogNodeImpl;
+  AFormObj;
 
 type
   TClient = record
@@ -29,7 +28,7 @@ type
     S: ShortString;
   end;
 
-  TProfFormServer = class(TProfForm)
+  TProfFormServer = class(TAFormObject)
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
@@ -41,8 +40,7 @@ type
     procedure ServerSocket1ClientDisconnect(Sender: TObject; Socket: TCustomWinSocket);
   public
     A: array of TClient;
-    {Reg: TRegistry;}
-    constructor Create(AConfig: TConfigNode1 = nil; ALog: TALogNode = nil; AOwner: TComponent = nil);
+    constructor Create(Owner: TComponent = nil);
     procedure Free();
     procedure RefreshA;
     procedure Refresh(Socket: TCustomWinSocket);
@@ -56,11 +54,9 @@ implementation
 
 {TProfFormServer}
 
-constructor TProfFormServer.Create(AConfig: TConfigNode1 = nil; ALog: TALogNode = nil; AOwner: TComponent = nil);
+constructor TProfFormServer.Create(Owner: TComponent);
 begin
-  inherited Create(AOwner);
-  //Self.Config := AConfig;
-  //Self.Log := ALog;
+  inherited Create(Owner);
   {Создание компонентов}
   if not(Assigned(FListBox)) then
     FListBox := TListBox.Create(Self);
@@ -267,7 +263,3 @@ begin
 end;
 
 end.
-
-{
-0.0.0.1 - 31.10.2005
-}

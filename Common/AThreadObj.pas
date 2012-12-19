@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Оболочка для процесса)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(03.10.2005)
-@LastMod(03.07.2012)
-@Version(0.5)
+@Abstract Оболочка для процесса
+@Author Prof1983 <prof1983@ya.ru>
+@Created 03.10.2005
+@LastMod 19.12.2012
 }
 unit AThreadObj;
 
@@ -11,10 +10,12 @@ interface
 
 uses
   Classes,
+  SysUtils,
+  ABase,
   ATypes;
 
 type //** Оболочка для процесса
-  TProfThread = class(TThread)
+  TAThread = class(TThread)
   protected
     FLogGroup: TLogGroupMessage;
     FLogMsg: WideString;
@@ -34,15 +35,21 @@ type //** Оболочка для процесса
     procedure DoAddToLog();
     procedure DoProgress();
   protected
-    //** Добавить лог-сообщение
-    function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; virtual; safecall;
+    {** Добавляет лог-сообщение }
+    function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: APascalString): AInt; virtual;
+    {** Добавляет лог-сообщение }
+    function AddToLogW(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: WideString): AInt; virtual;
     //** Срабатывает при создании
-    procedure DoCreate(); virtual; safecall;
+    procedure DoCreate(); virtual;
     //** Срабатывает при уничтожении
-    procedure DoDestroy(); virtual; safecall;
+    procedure DoDestroy(); virtual;
     //** Главная выполняемая функция
     procedure Execute(); override;
-    function Progress(AID, AProgress: Integer; const Msg: WideString): Integer; virtual; safecall;
+    function Progress(AID, AProgress: Integer; const Msg: WideString): Integer; virtual;
+    function ToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+        const StrMsg: WideString; Params: array of const): AInt; virtual;
   public
       //** Временно приостанавливает выполнения процесса
     procedure Pause();
@@ -52,16 +59,15 @@ type //** Оболочка для процесса
     procedure Stop();
   public
     constructor Create();
-    //function Finalize: WordBool; virtual;
-    //procedure Free; virtual;
-    //function Initialize: WordBool; virtual;
+  public
     //** CallBack функция логирования
     property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
     //** CallBack функция progress
     property OnProgress: TProcProgress read FOnProgress write FOnProgress;
     property State: TThreadState read FState;
   end;
-  TProfThread3 = TProfThread;
+
+  TProfThread = TAThread;
 
 const // -----------------------------------------------------------------------
   INT_THREAD_PRIORITY: array[TThreadPriority] of Integer = (0, 1, 2, 3, 4, 5, 6);
@@ -72,15 +78,22 @@ const // Сообщения ----------------------------------------------------
 
 implementation
 
-{ TProfThread }
+{ TAThread }
 
-function TProfThread.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
+function TAThread.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+    const StrMsg: APascalString): AInt;
 begin
-  FLogGroup := AGroup;
-  FLogType := AType;
-  FLogMsg := AStrMsg;
+  FLogGroup := LogGroup;
+  FLogType := LogType;
+  FLogMsg := StrMsg;
   Synchronize(DoAddToLog);
   Result := FLogResult;
+end;
+
+function TAThread.AddToLogW(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+    const StrMsg: WideString): AInt;
+begin
+  Result := AddToLog(LogGroup, LogType, StrMsg);
 end;
 
 {function TProfThread.ConfigureLoad: WordBool;
@@ -109,13 +122,13 @@ begin
   Config.WriteInt32('Priority', INT_THREAD_PRIORITY[Priority]);
 end;}
 
-constructor TProfThread.Create();
+constructor TAThread.Create();
 begin
   inherited Create(True);
   DoCreate();
 end;
 
-procedure TProfThread.DoAddToLog();
+procedure TAThread.DoAddToLog();
 begin
   FLogResult := 0;
   if Assigned(FOnAddToLog) then
@@ -125,15 +138,15 @@ begin
   end;
 end;
 
-procedure TProfThread.DoCreate();
+procedure TAThread.DoCreate();
 begin
 end;
 
-procedure TProfThread.DoDestroy();
+procedure TAThread.DoDestroy();
 begin
 end;
 
-procedure TProfThread.DoProgress();
+procedure TAThread.DoProgress();
 begin
   FProgressResult := 0;
   if Assigned(FOnProgress) then
@@ -143,17 +156,17 @@ begin
   end;
 end;
 
-procedure TProfThread.Execute();
+procedure TAThread.Execute();
 begin
   //if Assigned(FOnExecute) then FOnExecute;
 end;
 
-procedure TProfThread.Pause();
+procedure TAThread.Pause();
 begin
   Self.Suspend();
 end;
 
-function TProfThread.Progress(AID, AProgress: Integer; const Msg: WideString): Integer;
+function TAThread.Progress(AID, AProgress: Integer; const Msg: WideString): Integer;
 begin
   FProgressID := AID;
   FProgressValue := AProgress;
@@ -162,14 +175,20 @@ begin
   Result := FProgressResult;
 end;
 
-procedure TProfThread.Start();
+procedure TAThread.Start();
 begin
   Self.Resume();
 end;
 
-procedure TProfThread.Stop();
+procedure TAThread.Stop();
 begin
   Self.Terminate();
+end;
+
+function TAThread.ToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+    const StrMsg: WideString; Params: array of const): AInt;
+begin
+  Result := AddToLog(LogGroup, LogType, Format(StrMsg, Params));
 end;
 
 end.

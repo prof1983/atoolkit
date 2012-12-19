@@ -2,7 +2,7 @@
 @Abstract Контрол для вывода сообщений программы в TreeView
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.10.2006
-@LastMod 17.12.2012
+@LastMod 19.12.2012
 }
 unit ALogControl;
 
@@ -11,7 +11,10 @@ interface
 uses
   ComCtrls, Controls, SysUtils,
   ABase,
-  ALogDocumentImpl, ALogGlobals, ATypes;
+  ALogDocumentImpl,
+  ALogGlobals,
+  ALogUtils,
+  ATypes;
 
 type //** Контрол для вывода сообщений программы в TreeView
   TProfLogControl = class(TLogDocument)
@@ -71,7 +74,7 @@ begin
   FNodes[I].Id := AId;
   Add();
   FNodes[I].Node := Result;
-  //FNodes[I].Node.ImageIndex := LOG_IMAGE_INDEX[AType];
+  FNodes[I].Node.ImageIndex := GetLogImageIndex(AType);
 end;
 
 function TProfLogControl.AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;

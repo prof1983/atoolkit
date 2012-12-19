@@ -2,7 +2,7 @@
 @Abstract Показывать Log в окне
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.10.2005
-@LastMod 17.12.2012
+@LastMod 19.12.2012
 }
 unit ALogDocumentForm;
 
@@ -17,7 +17,7 @@ uses
 type //** Показывать Log в окне
   TLogForm = class(TALogDocument)
   private
-    FFormLog: TProfLogTreeForm;
+    FFormLog: TALogTreeForm;
     FConfigFormLog: TConfigForm;
     //procedure SetConfig(Value: TConfigForm);
   public
@@ -37,7 +37,7 @@ type //** Показывать Log в окне
       //** Показать
     procedure Show(); override;
   public
-    property FormLog: TProfLogTreeForm read FFormLog write FFormLog;
+    property FormLog: TALogTreeForm read FFormLog write FFormLog;
   end;
 
 implementation
@@ -76,7 +76,7 @@ end;
 constructor TLogForm.Create();
 begin
   inherited Create(lWindow);
-  FFormLog := TProfLogTreeForm.Create(nil);
+  FFormLog := TALogTreeForm.Create(nil);
 
   {if Assigned(AConfig) then
   begin

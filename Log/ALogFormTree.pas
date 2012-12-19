@@ -2,7 +2,7 @@
 @Abstract Окно вывода сообщений программы в виде дерева
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2005
-@LastMod 18.12.2012
+@LastMod 19.12.2012
 }
 unit ALogFormTree;
 
@@ -11,6 +11,7 @@ interface
 uses
   Classes, ComCtrls, Controls, ExtCtrls, Forms, StdCtrls, SysUtils,
   ABase,
+  ALogUtils,
   AShablonForm,
   ATypes;
 
@@ -54,27 +55,11 @@ type //** Окно вывода сообщений программы в вид�
     property TreeView: TTreeView read FTreeView;
   end;
 
-  //TProfLogTreeForm = TALogTreeForm;
-
-//const
-//  LOG_IMAGE_INDEX: array[TLogTypeMessage] of Integer = (IndexGreenBox, IndexRedBox, IndexFuchsiaBox, -1, -1, -1);
-
 implementation
 
 const
   LOG_DELIMER1 = '----------------------------------------------------------------';
   LOG_DELIMER2 = '================================================================';
-
-function GetLogImageIndex(LogType: TLogTypeMessage): Integer;
-begin
-  case LogType of
-    ltInformation: Result := IndexGreenBox;
-    ltWarning: Result := IndexFuchsiaBox;
-    ltError: Result := IndexRedBox;
-  else
-    Result := -1;
-  end;
-end;
 
 { TALogTreeForm }
 

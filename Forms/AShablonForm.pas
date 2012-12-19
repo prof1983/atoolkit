@@ -2,7 +2,7 @@
 @Abstract Пустая форма с картинками. Шаблон для создания форм в не визуальном режиме
 @Author Prof1983 <prof1983@ya.ru>
 @Created 17.03.2006
-@LastMod 12.11.2012
+@LastMod 19.12.2012
 }
 unit AShablonForm;
 
@@ -19,13 +19,6 @@ type // Шаблон для создания форм в не визуально
   public
     constructor Create(AOwner: TComponent); override;
   end;
-
-const // Константы номеров стандартных картинок в RunImages
-  IndexGrayBox    = 0;
-  IndexBlueBox    = 1;
-  IndexGreenBox   = 2;
-  IndexFuchsiaBox = 3; // Фиолетовый
-  IndexRedBox     = 4;
 
 implementation
 

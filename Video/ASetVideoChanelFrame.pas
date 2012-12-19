@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Настройка работы с видео)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(04.04.2006)
-@LastMod(10.07.2012)
-@Version(0.5)
+@Abstract Настройка работы с видео
+@Author Prof1983 <prof1983@ya.ru>
+@Created 04.04.2006
+@LastMod 19.12.2012
 }
 unit ASetVideoChanelFrame;
 
@@ -122,6 +121,7 @@ begin
   cbChanelChange(Self);
   // Сохранение в настройках
   //Result := Settings.SaveParams();
+  Result := False;
 end;
 
 procedure TfrSetVideoChanel.SaveChanel();

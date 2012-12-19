@@ -2,7 +2,7 @@
 @Abstract Функции работы с видео
 @Author Prof1983 <prof1983@ya.ru>
 @Created 31.03.2006
-@LastMod 17.08.2012
+@LastMod 19.12.2012
 
 Канал(Chanel) - приемник видеоизображения с видеоисточника
 Видеоисточник(Source) - любой источник видео сигналов, картинок
@@ -121,7 +121,7 @@ type // Настройки видео канала
     FSource: Integer;
   public
     procedure Assign(AChanel: TSetupVideoChanel);
-  published
+  public
     property Enabled: Boolean read FEnabled write FEnabled;
     property NumCamera: Integer read FNumCamera write FNumCamera;
     property Save: Boolean read FSave write FSave;
@@ -502,6 +502,7 @@ begin
   Node := AConfig_GetChildNodeByName(Config, 'Sources');
   for I := 0 to High(FSources) do
     FSources[I].ConfigureSave(AConfig_GetChildNodeByName(Node, 'Source'+IntToStr(I)));
+  Result := 0;
 end;
 
 constructor TVideoSources.Create();

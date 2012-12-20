@@ -90,12 +90,8 @@ type
 
 // functions -------------------------------------------------------------------
 
-function ArrayByteCopy(const Source: TArrayByte; Offset, Count: UInt32): TArrayByte;
-function ArrayByteInsert(var A: TArrayByte; const Source: TArrayByte; Offset: UInt32): UInt32;
-
 function cArrayByteToFloat64(const A: TArrayByte): Float64;
 function cArrayByteToString(const A: TArrayByte): string;
-function cArrayByteToUInt32(const A: TArrayByte): UInt32;
 function cArrayByteToUInt64(const A: TArrayByte): UInt64;
 
 function cChar08ToHex(Value: Char): string;
@@ -103,7 +99,6 @@ function cCharToByte(Value: Char): Byte;
 function cCharToUInt08(C: Char): AUInt08;
 function cFloat32ToInt32(Value: Float32): Int32;
 function cFloat64ToArrayByte(Value: Float64): TArrayByte;
-function cFloat64ToDateTime64(Value: Float64): TDateTime;
 function cFloat64ToUInt32(F: Float64): UInt32;
 function cHexToUInt08(H: Char): AUInt08;
 function cStringToArrayString(Value: string): TArrayString;
@@ -120,7 +115,6 @@ function cUInt64ToUInt08(Value: UInt64): AUInt08;
 function cUInt64ToInt16(Value: UInt64): UInt16;
 function cUInt64ToUInt32(Value: UInt64): UInt32;
 function cUInt32ToArrayByte(Value: UInt32): TArrayByte;
-function cUInt64ToArrayByte(Value: UInt64): TArrayByte;
 
 function IsCharEng(C: Char): Boolean;
 function IsCharRus(C: Char): Boolean;
@@ -198,30 +192,6 @@ function __GetLastError: UInt32; stdcall; external 'kernel32.dll' name 'GetLastE
 
 // Functions -------------------------------------------------------------------
 
-function ArrayByteCopy(const Source: TArrayByte; Offset, Count: UInt32): TArrayByte;
-var
-  I: Int32;
-  L: Int32;
-begin
-  L := MinInt32(Length(Source) - Offset, Count);
-  SetLength(Result, L);
-  for I := 0 to L - 1 do
-    Result[I] := Source[I + Offset];
-end;
-
-function ArrayByteInsert(var A: TArrayByte; const Source: TArrayByte; Offset: UInt32): UInt32;
-var
-  I: Int32;
-  L: Int32;
-begin
-  Result := 0;
-  L := MinInt32(Length(A) - Offset, Length(Source));
-  if L <= 0 then Exit;
-  Result := L;
-  for I := 0 to L do
-    A[I+Offset] := Source[I];
-end;
-
 function cArrayByteToFloat64(const A: TArrayByte): Float64;
 begin
   Result := 0;
@@ -234,11 +204,6 @@ begin
   SetLength(Result, Length(A));
   for I := 0 to High(A) do
     Result[I + 1] := cUInt08ToChar(A[I]);
-end;
-
-function cArrayByteToUInt32(const A: TArrayByte): UInt32;
-begin
-  Result := 0;
 end;
 
 function cArrayByteToUInt64(const A: TArrayByte): UInt64;
@@ -274,11 +239,6 @@ end;
 function cFloat64ToArrayByte(Value: Float64): TArrayByte;
 begin
   SetLength(Result, 8);
-end;
-
-function cFloat64ToDateTime64(Value: Float64): TDateTime;
-begin
-  Result := Value;
 end;
 
 function cFloat64ToUInt32(F: Float64): UInt32;
@@ -445,11 +405,6 @@ end;
 function cUInt32ToArrayByte(Value: UInt32): TArrayByte;
 begin
   SetLength(Result, 0);
-end;
-
-function cUInt64ToArrayByte(Value: UInt64): TArrayByte;
-begin
-  SetLength(Result, 8);
 end;
 
 function IsCharEng(C: Char): Boolean;
@@ -800,13 +755,6 @@ asm
   MOV     EDI,EDX
 end;
 {$ENDIF}
-
-{IFDEF VER170}
-function cFloat64ToDateTime64(Value: Float64): TDateTime64;
-begin
-  Result := Value;
-end;
-{ENDIF}
 
 function cUInt32ToInt32(Value: UInt32): Int32;
 begin

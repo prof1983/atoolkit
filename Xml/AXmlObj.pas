@@ -2,7 +2,7 @@
 @Abstract Xml
 @Author Prof1983 <prof1983@ya.ru>
 @Created 03.05.2012
-@LastMod 27.11.2012
+@LastMod 20.12.2012
 }
 unit AXmlObj;
 
@@ -10,7 +10,12 @@ interface
 
 uses
   SysUtils,
-  ABase, ABaseUtils3, AStreamObj, AXmlDocumentUtils, AXmlNodeUtils;
+  ABase,
+  ABaseUtils2,
+  ABaseUtils3,
+  AStreamObj,
+  AXmlDocumentUtils,
+  AXmlNodeUtils;
 
 type
   TParam = class

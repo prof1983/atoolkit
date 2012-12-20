@@ -37,8 +37,6 @@ function cStrToDateTime(S: string): TDateTime64;
 {$IFNDEF VER170}
 function cStrToFloatCurr(S: string; var Value: Float64): Boolean;
 {$ENDIF}
-//** Преобразует строку к виду 'abc#13#10abc'
-function cStrToHexA(Value: string): string;
 function cStrToTime(Str: string): TDateTime64;
 function cUInt064ToStr(Value: Integer): string; deprecated; // Use cUInt64ToStr()
 function cUInt32ToStr(I: AUInt32): string;

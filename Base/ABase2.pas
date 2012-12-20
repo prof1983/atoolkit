@@ -2,7 +2,7 @@
 @Abstract Базовый модуль основных типов для Delphi 5,7,9
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.06.2004
-@LastMod 23.11.2012
+@LastMod 20.12.2012
 }
 unit ABase2;
 
@@ -11,7 +11,6 @@ unit ABase2;
 interface
 
 uses
-  Classes,
   ABase, ATypes;
 
 // Простые типы ----------------------------------------------------------------

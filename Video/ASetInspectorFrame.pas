@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Фреймовая форма настроек видеозахвата Inspector+)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(28.09.2005)
-@LastMod(05.05.2012)
-@Version(0.5)
+@Abstract Фреймовая форма настроек видеозахвата Inspector+
+@Author Prof1983 <prof1983@ya.ru>
+@Created 28.09.2005
+@LastMod 20.12.2012
 }
 unit ASetInspectorFrame;
 
@@ -58,11 +57,6 @@ implementation
 function cFloat32ToInt32(Value: Real): Integer;
 begin
   Result := Round(Value);
-end;
-
-function cFloat64ToInt32(F: Double): Integer;
-begin
-  Result := Round(F);
 end;
 
 { TfrSetInspector }

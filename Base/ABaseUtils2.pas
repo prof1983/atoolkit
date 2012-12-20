@@ -2,14 +2,13 @@
 @Abstract Базовый модуль основных типов и их преобразования. Базовые функции for Delphi 5,7,2005,2006
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.06.2004
-@LastMod 28.11.2012
+@LastMod 20.12.2012
 }
 unit ABaseUtils2;
 
 interface
 
 uses
-  Math, StrUtils, SysUtils, Windows,
   ABase, ABase2, ATypes;
 
 // ---
@@ -21,13 +20,13 @@ type // Простые типы ------------------------------------------------
   //** Массив Char08
   TArrayChar08 = array of AChar;
   //** Массив строк string
-  TArrayStr    = array of string;
+  TArrayStr = array of string;
   //** Вид конвентарции: 0-Дата+Время, 1-Дата, 2-Время
-  TConvertDT   = type UInt32;
+  TConvertDT = type AUInt32;
   //** Простой тип для процедуры
-  TProc        = procedure;
+  TProc = procedure;
   //** Информация. Певый символ: #0-очистить все, #1-вывести строку. #2-вывести подстроку. #3-прогресс(второй символ [0..255]-прогресс), #4#n#p-прогресс n=[1..] p-текущий прогресс[0..255], #4#0-очистить все прогрессы
-  TProcInfo    = procedure(Str: string);
+  TProcInfo = procedure(Str: string);
 
 type // ------------------------------------------------------------------------
   TWndRes         = Integer;
@@ -90,131 +89,56 @@ type
   TUrlParams2 = array of TUrlParam;
 
 // functions -------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-function ArrayByteCopy(const A: TArrayByte; Offset, Count: UInt32): TArrayByte;
-function ArrayStringAdd(var A: TArrayString; const S: string): UInt32;
+
+function ArrayByteCopy(const Source: TArrayByte; Offset, Count: UInt32): TArrayByte;
+function ArrayByteInsert(var A: TArrayByte; const Source: TArrayByte; Offset: UInt32): UInt32;
+
 function cArrayByteToFloat64(const A: TArrayByte): Float64;
 function cArrayByteToString(const A: TArrayByte): string;
 function cArrayByteToUInt32(const A: TArrayByte): UInt32;
 function cArrayByteToUInt64(const A: TArrayByte): UInt64;
-function cBtnToStr(BtnCode: TWndRes): string;
-function cByteToStr(Value: Byte): string;
-function cChar08ToChar16(C: Char08): Char16;
+
 function cChar08ToHex(Value: Char): string;
-function cChar08ToUInt08(C: Char): AUInt08;
 function cCharToByte(Value: Char): Byte;
 function cCharToUInt08(C: Char): AUInt08;
-function cDateTime64ToStr(T: TDateTime): string;
-function cDateTime64ToStr2(T: TDateTime; Typ: TConvertDT): string;
-//** Конвертирует тип TDateTime064 в String
-function cDateTime64ToStrF(Format: TDateTimeFormat; T: TDateTime): string;
-//function cDateTime64ToUInt64(DT: TDateTime64): UInt064;
-function cDateTimeToStr(Value: TDateTime): string;
-function cDateToStr(D: TDateTime): string;
-function cDoubleToDateTime(Value: Double): TDateTime;
 function cFloat32ToInt32(Value: Float32): Int32;
-function cFloat32ToStr(Value: Float32): string;
 function cFloat64ToArrayByte(Value: Float64): TArrayByte;
 function cFloat64ToDateTime64(Value: Float64): TDateTime;
-function cFloat64ToInt32(F: Float64): Int32;
-function cFloat64ToStrP(Value: Float64): string;
 function cFloat64ToUInt32(F: Float64): UInt32;
-function cHexToChar(H1, H2: Char): Char;
 function cHexToUInt08(H: Char): AUInt08;
-function cInt08ToStr(I: AInt08): string;
-function cInt16ToStr(I: Int16): string;
-function cInt32ToStr(Value: Int32): string;
-function cInt64ToStr(I: Int64): string;
-function cInt64ToUInt64(Value: Int64): UInt64;
-function cSingleToInt32(Value: Single): Int32;
-function cSingleToStr(Value: Single): string;
-function cSingleToUInt32(Value: Single): UInt32;
-//** Делает все заглавные буквы строчными
-function cStrCaseLower(St: string): string;
-//** Делает все строчныме буквы заглавными
-function cStrCaseUpper(St: string): string;
 function cStringToArrayString(Value: string): TArrayString;
-function cStrPosCharToStr(Ch: TStrPosChar): string;
-function cStrToArrayByte(const S: string): TArrayByte;
-function cStrToDate(S: string): TDateTime;
-function cStrToDateTime(S: string): TDateTime;
-function cStrToDouble(Value: string): Double;
-function cStrToFloat32(S: string): Float32;
-function cStrToFloat64(S: string): Float64;
-{$IFNDEF VER170}
-function cStrToFloatCurr(S: string; var Value: Float64): Boolean;
-function cUInt64ToDateTime64(Value: UInt64): TDateTime;
-{$ENDIF}
 // Преобразует строку к виду ... F0 A1 B2 ...
 // Delimer - Разделитель
 function cStrToHex(Value: string; Delimiter: string = ''): string;
-//** Преобразует строку к виду 'abc#13#10abc'
-function cStrToHexA(Value: string): string;
 function cStrToHtmlStr(Str: string): string;
 function cStrToInt32(Str: string): Int32; deprecated; // Use ABaseUtils3.pas
-function cStrToSingle(Value: string): Single;
-function cStrToTime(Str: string): TDateTime;
-function cStrToUInt08(Str: string): AUInt08;
-function cStrToUInt16(Str: string): UInt16;
 function cStrToUInt32(Str: string): UInt32;
 function cStrToUInt64(Str: string): UInt64;
-function cUInt064ToStr(Value: Integer): string; deprecated; // Use cUInt64ToStr()
 function cUInt08ToHex(I: AUInt08): string;
-function cUInt32ToStr(I: UInt32): string;
 function cUInt64ToInt32(Value: UInt64): Int32;
-function cUInt64ToStr(I: UInt64): string;
 function cUInt64ToUInt08(Value: UInt64): AUInt08;
 function cUInt64ToInt16(Value: UInt64): UInt16;
 function cUInt64ToUInt32(Value: UInt64): UInt32;
 function cUInt32ToArrayByte(Value: UInt32): TArrayByte;
 function cUInt64ToArrayByte(Value: UInt64): TArrayByte;
-function cUIntToStr(Value: UIntPtr): String;
-function DateTimeNow(): TDateTime;
-//** Возвращает текущую дату/время
-function dtNow(): TDateTime;
+
 function IsCharEng(C: Char): Boolean;
 function IsCharRus(C: Char): Boolean;
 function IsCharRusEng(C: Char): Boolean;
-//function mathAddUInt064(var A1: UInt064; A2: UInt064): TError;
 function mathMinInt32(V1, V2: Int32): Int32;
 function mathMinUInt32(V1: UInt32; V2: UInt32): UInt32;
-//function mathMulInt32x32To64(Multiplier: Int032; Multiplicand: Int032): Int064;
-function mathPower(Base, Exponent: Float64): Float64;
-function strCaseLower(const S: string): string;
-function strCaseLowerEng(const S: string): string;
-//** Заменяет все строчные буквы на заглавные с учетом русских букв
-procedure strCaseUpper(var S: string);
-function strCopyFrom(SIn: string; IStart: UInt32): string;
-function strCopyFromTo(SIn: string; IStart: UInt32; IEnd: UInt32): string;
-{** Разделяет строку на слова и выражения, удаляет префиксные и постфиксные пробелы. Разделителем является запятая.
-  @param(Words - Слова и выражения по порядку, out)
-  @returns(Result - Номер символа, в котором произошла ошибка или 0, если успешно)
-}
-function strDivisionComma(const S: string; var Words: TArrayString): UInt32;
 // Сравнивает 2 строки
 // Result - Позиция, в которой строки имеют различия или 0, если они одинаковые
 function strEqual(Str1, Str2: string): UInt32;
 function strEqual2(S1, S2: string; A1: Float64 = 0; A2: Float64 = 0; A3: Float64 = 0): Float64;
-function strExecutePath(FullFileName: string): string;
 // Выделяет слово Num по счету c разделителями Delims
 function StrExtractWord(Num: Integer; Str: WideString; Delims: TArrayChar): WideString;
 function StrHtmlFromStr(Value: string): string;
-// Удаляет открывающий и закрывающий теги заголовка <hx>
-// SIn   - {in}{Исходная строка}
-// SOut  - {out}{Результат}
-// Level - {out}{Уровень заголовка}
-function strHtmlTagErraceH(SIn: String; var SOut: String; var Level: UInt32): AError;
-// Удаляет открывающий и закрывающий теги абзаца <p>
-// SIn  - {in}{Исходная строка}
-// SOut - {out}{Результат}
-function strHtmlTagErraceP(const SIn: String; var SOut: String): AError;
 function StrHtmlToStr(Value: WideString): WideString;
 //** Вставляет подстроку SubSt в строку St, начиная с символа с номеров Index
 procedure strInsert(var S: String; SubSt: String; Index: UInt32);
 //** Возвращает длину строки
 function strLength(const S: String): UInt32;
-//** Устанавливает новую длину строки
-function strLengthSet(var S: String; NewLength: UInt32): AError;
 //** Возвращает в строке St первое вхождение подстроки SubSt и возвращает номер позиции с которой она начинается. Если подстрока не найдена, возвращает ноль.
 function strPos(St: String; SubSt: String): UInt32;
 // Ищет в строке первое вхождение . ! ? ...
@@ -226,23 +150,16 @@ function strPos3(S: String; var Ch: TStrPosChar): UInt32;
 // St - Строка
 // C - Символ
 function StrPosEnd(const St: WideString; C: WideChar): Integer;
-//** Возвращает текущее время
-function timeNow(): TDateTime;
 //** Преобразует символы, записанные в виде URLencoded
 function urlDecode(Value: string): string;
 function urlParamDecode(const InParams: TUrlParams; var Params: TURLParams2): AError;
-function urlParamBack(const InParams: String): String;
 //** Возвращает значение атрибута заданного в качестве параметра функции из строки данных
 function urlParamByName(InParams: TUrlParams; Name: string): string;
 function urlParamByName_UInt064(InParams: TUrlParams; Name: String): UInt64;
-function urlParamCount(InParams: String): UInt32;
 
-function ArrayByteInsert(var A: TArrayByte; const Source: TArrayByte; Offset: UInt32): UInt32;
-function cErrorToStr(Value: AError): String;
 function MinInt32(Value1, Value2: Int32): Int32;
 
 function _StrToBool(const S: String; var Value: Boolean): Boolean;
-function _StrToDateTime(const S: String; var Value: TDateTime): Boolean;
 function _StrToFloat32(const S: String; var Value: Float32): UInt32;
 function _StrToFloat64(const S: String; var Value: Float64): UInt32;
 function _StrToInt08(const S: String; var Value: AInt08): UInt32;
@@ -260,10 +177,7 @@ function _StrToUInt64(const S: String; var Value: UInt64): UInt32;
 function _StrDeleteSpace(var S: APascalString; Options: TDeleteSpaceOptionSet): AError;
 
 function cBoolToStr(Value: Boolean): String;
-function cFloat64ToStr(Value: Float64): String;
 function cUInt08ToChar(I: AUInt08): Char;
-function cUInt08ToStr(I: AUInt08): String;
-function cUInt16ToStr(I: UInt16): String;
 procedure strAdd(var Str: String; S2: String);
 function strCopy(SIn: String; Index, Count: Int32): String;
 function strDelete(var St: String; Index, Count: UInt32): AError;
@@ -274,8 +188,6 @@ function strDelete(var St: String; Index, Count: UInt32): AError;
 function StrDeleteSpace(const SIn: WideString; Options: TDeleteSpaceOptionsSet = [dsFirst, dsLast, dsRep]): APascalString;
 
 function Tag(Name, Value: String): String;
-function TagUInt32(Name: String; Value: UInt32): String;
-function TagUInt64(Name: String; Value: UInt64): String;
 
 implementation
 
@@ -286,16 +198,28 @@ function __GetLastError: UInt32; stdcall; external 'kernel32.dll' name 'GetLastE
 
 // Functions -------------------------------------------------------------------
 
-function ArrayByteCopy(const A: TArrayByte; Offset, Count: UInt32): TArrayByte;
+function ArrayByteCopy(const Source: TArrayByte; Offset, Count: UInt32): TArrayByte;
+var
+  I: Int32;
+  L: Int32;
 begin
-  SetLength(Result, 0);
+  L := MinInt32(Length(Source) - Offset, Count);
+  SetLength(Result, L);
+  for I := 0 to L - 1 do
+    Result[I] := Source[I + Offset];
 end;
 
-function ArrayStringAdd(var A: TArrayString; const S: String): UInt32;
+function ArrayByteInsert(var A: TArrayByte; const Source: TArrayByte; Offset: UInt32): UInt32;
+var
+  I: Int32;
+  L: Int32;
 begin
-  Result := Length(A);
-  SetLength(A, Result + 1);
-  A[Result] := S;
+  Result := 0;
+  L := MinInt32(Length(A) - Offset, Length(Source));
+  if L <= 0 then Exit;
+  Result := L;
+  for I := 0 to L do
+    A[I+Offset] := Source[I];
 end;
 
 function cArrayByteToFloat64(const A: TArrayByte): Float64;
@@ -327,47 +251,9 @@ begin
   if Value then Result := 'True' else Result := 'False';
 end;
 
-function cBtnToStr(BtnCode: TWndRes): String;
-// Возвращает название кода кнопки
-// BtnCode - Код кнопки
-begin
-  case BtnCode of
-    1: Result := 'Ok';
-    2: Result := 'Cancel';
-    3: Result := 'Abort';
-    4: Result := 'Retry';
-    5: Result := 'Ignore';
-    6: Result := 'Yes';
-    7: Result := 'No';
-    8: Result := 'Close';
-    9: Result := 'Help';
-    10: Result := 'Try again';
-    11: Result := 'Continue';
-    $F1: Result := 'Last';
-    $F2: Result := 'Next';
-  else
-    Result := '?';
-  end;
-end;
-
-function cByteToStr(Value: Byte): String;
-begin
-  Result := cUInt08ToStr(Value);
-end;
-
-function cChar08ToChar16(C: Char08): Char16;
-begin
-  Result := WideChar(C);
-end;
-
 function cChar08ToHex(Value: Char): string;
 begin
   Result := cUInt08ToHex(Ord(Value));
-end;
-
-function cChar08ToUInt08(C: Char): AUInt08;
-begin
-  Result := Ord(C);
 end;
 
 function cCharToByte(Value: Char): Byte;
@@ -380,55 +266,6 @@ begin
   Result := Ord(C);
 end;
 
-function cDateTime64ToStr(T: TDateTime): String;
-begin
-  try
-    {Result := DateTimeToStr(T);}
-    DateTimeToString(Result, 'dd.mm.yyyy hh:nn:ss', T);
-  except
-    //on EConvertError do ErrorUMyBaseConvert := ER_Convert + 2;
-  else
-  end;
-end;
-
-function cDateTime64ToStr2(T: TDateTime; Typ: TConvertDT): String;
-// Конвертирует тип TDateTime064 в String
-// T   - Значение
-// Typ - Вид вывода 0-Дата+Время, 1-Дата, 2-Время
-begin
-  try
-  case Typ of
-    1: Result := DateToStr(T);
-    2: Result := TimeToStr(T);
-    3: Result := cDateTime64ToStrF('s"."zzz', T); //FormatDateTime('hh:nn:ss', T);
-  else
-    Result := DateTimeToStr(T);
-  end;
-  except
-  else
-  end;
-end;
-
-function cDateTime64ToStrF(Format: TDateTimeFormat; T: TDateTime): String;
-begin
-  Result := FormatDateTime(Format, T);
-end;
-
-function cDateTimeToStr(Value: TDateTime): String;
-begin
-  Result := cDateTime64ToStr(Value);
-end;
-
-function cDateToStr(D: TDateTime): String;
-begin
-  Result := DateToStr(D);
-end;
-
-function cDoubleToDateTime(Value: Double): TDateTime;
-begin
-  Result := Value;
-end;
-
 function cFloat32ToInt32(Value: Float32): Int32;
 begin
   Result := Round(Value);
@@ -436,7 +273,7 @@ end;
 
 function cFloat64ToArrayByte(Value: Float64): TArrayByte;
 begin
-  SetLength(Result, 0);
+  SetLength(Result, 8);
 end;
 
 function cFloat64ToDateTime64(Value: Float64): TDateTime;
@@ -444,32 +281,9 @@ begin
   Result := Value;
 end;
 
-function cFloat64ToInt32(F: Float64): Int32;
-begin
-  Result := Round(F);
-end;
-
-function cFloat64ToStrP(Value: Float64): String;
-// Вводит тезультат с разделителем - точкой
-var
-  I: Int32;
-begin
-  Result := cFloat64ToStr(Value);
-  for I := 1 to Length(Result) do
-    if Result[I] = ',' then
-      Result[I] := '.';
-end;
-
 function cFloat64ToUInt32(F: Float64): UInt32;
 begin
   Result := Round(F);
-end;
-
-function cHexToChar(H1, H2: Char): Char;
-const
-  A: array[0..15] of Char = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F');
-begin
-  Result := cUInt08ToChar(cHexToUInt08(H1) * 16 + cHexToUInt08(H2));
 end;
 
 function cHexToUInt08(H: Char): AUInt08;
@@ -484,106 +298,6 @@ begin
   else
     Result := 0;
   end;
-end;
-
-function cInt08ToStr(I: AInt08): String;
-begin
-  Result := cInt32ToStr(I);
-end;
-
-function cInt16ToStr(I: Int16): String;
-begin
-  Result := cInt32ToStr(I);
-end;
-
-{$IFNDEF VER170}
-function cInt32ToPCharcInt32ToPChar(I: Int32): PChar;
-var
-  S: String;
-begin
-  S := cInt32ToStr(I);
-  Result := PChar(S);
-end;
-{$ENDIF}
-
-function cInt32ToStr(Value: Int32): String;
-{$IFNDEF VER170}
-begin
-  try
-    Result := IntToStr(Value);
-  except
-  else
-  end;
-end;
-{$ELSE}
-begin
-  Result := Convert.ToString(Value);
-end;
-{$ENDIF}
-
-function cInt64ToStr(I: Int64): String;
-begin
-  try
-    Result := IntToStr(I);
-  except
-  else
-  end;
-end;
-
-function cInt64ToUInt64(Value: Int64): UInt64;
-begin
-  Result := Value;
-end;
-
-{$IFNDEF VER170}
-function cPCharToDateTime(S: PChar): TDateTime;
-begin
-  Result := 0; if (S = nil) then Exit;
-  Result := SysUtils.StrToDateTime(String(S));
-end;
-
-{function cPCharToInt32cPCharToInt32(Str: PChar): Int32;
-begin
-  Result := cStrToInt32(String(Str));
-end;}
-
-function cPCharToUInt32cPCharToUInt32(Str: PChar): UInt32;
-var
-  Code: Int32;
-begin
-  Result := 0;
-  if (Str = nil) then begin Exit; end;
-  try
-    Val(String(Str), Result, Code);
-  except
-  else
-  end;
-end;
-{$ENDIF}
-
-function cSingleToInt32(Value: Single): Int32;
-begin
-  Result := Round(Value);
-end;
-
-function cSingleToStr(Value: Single): String;
-begin
-  Result := cFloat64ToStr(Value);
-end;
-
-function cSingleToUInt32(Value: Single): UInt32;
-begin
-  Result := Round(Value);
-end;
-
-function cStrCaseLower(St: String): String;
-begin
-  Result := AnsiLowerCase(St);
-end;
-
-function cStrCaseUpper(St: String): String;
-begin
-  Result := AnsiUpperCase(St);
 end;
 
 function cStringToArrayString(Value: String): TArrayString;
@@ -614,69 +328,6 @@ begin
   end;
 end;
 
-function cStrPosCharToStr(Ch: TStrPosChar): String;
-begin
-  case Ch of
-    1: Result := '.';
-    2: Result := '!';
-    3: Result := '?';
-    4: Result := '...';
-  else
-    Result := '';
-  end;
-end;
-
-function cStrToArrayByte(const S: String): TArrayByte;
-var
-  I: Int32;
-begin
-  SetLength(Result, Length(S));
-  for I := 0 to High(Result) do
-    Result[I] := cCharToUInt08(S[I + 1]);
-end;
-
-function cStrToDate(S: String): TDateTime;
-begin
-  Result := SysUtils.StrToDate(S);
-end;
-
-function cStrToDateTime(S: String): TDateTime;
-begin
-  if S = '' then
-    Result := 0
-  else
-    Result := SysUtils.StrToDateTime(S);
-end;
-
-function cStrToDouble(Value: String): Double;
-begin
-  Result := cStrToFloat64(Value);
-end;
-
-function cStrToFloat32(S: String): Float32;
-var
-  Code: Cardinal;
-begin
-  Val(S, Result, Code);
-  if Code <> 0 then Result := 0;
-end;
-
-function cStrToFloat64(S: String): Float64;
-var
-  Code: Cardinal;
-begin
-  Result := 0; if S = '' then Exit;
-  Val(S, Result, Code);
-  if Code <> 0 then Result := 0;
-end;
-
-{$IFNDEF VER170}
-function cStrToFloatCurr(S: String; var Value: Float64): Boolean;
-begin
-  Result := TextToFloat(PChar(S), Value, fvCurrency);
-end;
-{$ENDIF}
-
 function cStrToHex(Value: string; Delimiter: string = ''): string;
 var
   i: Integer;
@@ -684,20 +335,6 @@ begin
   Result := '';
   for i := 1 to Length(Value) do
     Result := Result + cChar08ToHex(Value[i]) + Delimiter;
-end;
-
-function cStrToHexA(Value: string): string;
-var
-  i: Integer;
-begin
-  Result := '';
-  for i := 1 to Length(Value) do
-  begin
-    if (Byte(Value[i]) < $20) or (Byte(Value[i]) = $FF) then
-      Result := Result + '#' + IntToStr(Ord(Value[i]))
-    else
-      Result := Result + Value[i];
-  end;
 end;
 
 function cStrToHtmlStr(Str: String): String;
@@ -725,30 +362,6 @@ begin
   end;
 end;
 
-function cStrToSingle(Value: String): Single;
-begin
-  Result := cStrToFloat64(Value);
-end;
-
-function cStrToTime(Str: String): TDateTime;
-begin
-  Result := StrToTime(Str);
-end;
-
-function cStrToUInt08(Str: String): AUInt08;
-var
-  Code: Int32;
-begin
-  Val(Str, Result, Code);
-end;
-
-function cStrToUInt16(Str: String): UInt16;
-var
-  Code: Int32;
-begin
-  Val(Str, Result, Code);
-end;
-
 function cStrToUInt32(Str: String): UInt32;
 var
   Code: Int32;
@@ -773,11 +386,6 @@ begin
   end;
 end;
 
-function cUInt064ToStr(Value: Integer): string;
-begin
-  Result := IntToStr(Value);
-end;
-
 function cUInt08ToHex(I: AUInt08): String;
 
   function a(I: AUInt08): Char08;
@@ -794,27 +402,6 @@ begin
   Result := a(I shr 4) + a(I and $0F);
 end;
 
-function cUInt32ToStr(I: UInt32): String;
-begin
-  if I > HighInt032 then begin
-    I := HighInt032;
-  end;
-  try
-    Result := IntToStr(I);
-  except
-  end;
-end;
-
-{$IFNDEF VER170}
-function cUInt64ToDateTime64(Value: UInt64): TDateTime;
-var
-  P: Pointer;
-begin
-  P := @Value;
-  Result := TDateTime64(P^);
-end;
-{$ENDIF}
-
 function cUInt64ToInt32(Value: UInt64): Int32;
 begin
   if Value > High(Int32) then
@@ -823,15 +410,6 @@ begin
     Result := Low(Int32)
   else
     Result := Value;
-end;
-
-function cUInt64ToStr(I: UInt64): String;
-begin
-  if I > HighInt064 then
-  begin
-    I := HighInt064;
-  end;
-  Result := cInt64ToStr(I);
 end;
 
 function cUInt64ToUInt08(Value: UInt64): AUInt08;
@@ -872,25 +450,6 @@ end;
 function cUInt64ToArrayByte(Value: UInt64): TArrayByte;
 begin
   SetLength(Result, 8);
-end;
-
-function cUIntToStr(Value: UIntPtr): String;
-begin
-  Result := cUInt64ToStr(UInt64(Value));
-end;
-
-function DateTimeNow(): TDateTime;
-begin
-  Result := SysUtils.Now();
-end;
-{function DateTimeNow: TDateTime;
-begin
-  Result := TDateTime.Now;
-end;}
-
-function dtNow(): TDateTime;
-begin
-  Result := SysUtils.Now;
 end;
 
 function IsCharEng(C: Char): Boolean;
@@ -944,73 +503,6 @@ begin
   if V1 > V2 then Result := V2 else Result := V1;
 end;
 
-function mathPower(Base, Exponent: Float64): Float64;
-begin
-  Result := Power(Base, Exponent);
-end;
-
-function strCaseLower(const S: String): String;
-// Заменяет все заглавные буквы на строчные с учетом русских букв
-begin
-  Result := AnsiLowerCase(S);
-end;
-
-function strCaseLowerEng(const S: String): String;
-// Заменяет все заглавные буквы на строчные (только латиница)
-begin
-  Result := AnsiLowerCase(S);
-end;
-
-procedure strCaseUpper(var S: String);
-begin
-  S := AnsiUpperCase(S);
-end;
-
-function strCopyFrom(SIn: String; IStart: UInt32): String;
-var
-  L: UInt32; // Длина строки
-begin
-  Result := '';
-  L := strLength(SIn);
-  if L < IStart then Exit;
-  Result := strCopy(SIn, IStart, L-IStart+1);
-end;
-
-function strCopyFromTo(SIn: String; IStart, IEnd: UInt32): String;
-// Копирует часть строки с начальной по конечный символы включая граничные символы
-begin
-  Result := ''; if IStart > IEnd then Exit;
-  Result := Copy(SIn, IStart, IEnd-IStart+1);
-end;
-
-function strDivisionComma(const S: String; var Words: TArrayString): UInt32;
-var
-  Q: String;
-  I: UInt32;
-  I2: UInt32;
-begin
-  Result := 0; if strLength(S) = 0 then Exit;
-  Q := S;
-  SetLength(Words, 0);
-  // Разделение на отдельные выражения
-  while strLength(Q) > 0 do begin
-    I := strPos(Q, ',');
-    I2 := Length(Words); SetLength(Words, I2+1);
-    if I > 0 then begin
-      Words[I2] := strCopy(Q, 1, I-1);
-      {}WriteLn(Words[I2]);
-      {}WriteLn('<br>'+cUInt32ToStr(I2));
-      strDelete(Q, 1, I);
-    end else begin
-      Words[I2] := Q;
-      Q := '';
-    end;
-  end;
-  if Length(Words) = 0 then Exit;
-  // Удаление префиксных и постфиксных пробелов
-  for I := 0 to High(Words) do Words[I] := strDeleteSpace(Words[I]);
-end;
-
 function strEqual(Str1, Str2: String): UInt32;
 var
   I: UInt32;
@@ -1062,24 +554,6 @@ begin
     if K > K3 then K3 := K;
   end;
   Result := K1 * K3
-end;
-
-function strExecutePath(FullFileName: String): String;
-// Возвращает путь к файлу
-var
-  I: Int32;
-  I2: Int32;
-begin
-  I2 := 0;
-  Result := '';
-  for I := Length(FullFileName) downto 1 do begin
-    if (FullFileName[I] = '/') or (FullFileName[I] = '\') then begin
-      I2 := I;
-      Break;
-    end;
-  end;
-  if I2 = 0 then Exit;
-  Result := strCopy(FullFileName, 1, I2);
 end;
 
 function StrExtractWord(Num: Integer; Str: WideString; Delims: TArrayChar): WideString;
@@ -1145,52 +619,6 @@ begin
   end;
 end;
 
-function strHtmlTagErraceH(SIn: String; var SOut: String; var Level: UInt32): AError;
-{var
-  I, L: UInt032;
-  P: PChar;
-label L1;}
-begin
-  (*Result := eError; if (Level <> nil) then Level^ := 0;
-  if (SOut <> nil) then SOut^ := '';
-  L := _strLen(SIn);
-  if (L < 10) then goto L1; {Минимум 10 символов <h1>A</h1>}
-  P := memAlloc(L + 1);
-  memCopy(SIn, P, L + 1);
-  strPos(P, '<', @I); strDelete(@P, 1, I);
-  {if (_strLen(P) < 2) then goto L1;}
-  if (AChar(P^) <> 'h') and (AChar(P^) <> 'H') then goto L1;
-  strDelete(@P, 1, 1);
-  strPos(P, '>', @I);
-  if (Level <> nil) then Level^ := StrToUInt032(_strCopy(P, 1, I - 1));
-  strDelete(@P, 1, I);
-  strPos(P, '<', @I);
-  strDelete(@P, I, _strLen(P) + 1 - I);
-  {Result := strDeleteSpace(SIn, SOut);}
-L1:
-  SOut^ := P;
-  Result := 0;*)
-  SOut := SIn;
-  Result := 0;
-end;
-
-function strHtmlTagErraceP(const SIn: String; var SOut: String): AError;
-{var
-  I: UInt032;}
-begin
-  (*Result := eError; if (_strLen(SIn) < 1) then Exit; {Минимум 1 символов 'A'}
-  strPos(SIn, '<', @I); strDelete(@SIn, 1, I);
-  if (_strLen(SIn) < 2) then Exit;
-  {strDelete(@SIn, 1, 1);}
-  if (AChar(SIn^) <> 'p') and (AChar(SIn^) <> 'P') then Exit;
-  strPos(SIn, '>', @I); strDelete(@SIn, 1, I);
-  strPos(SIn, '<', @I); strDelete(@SIn, I, _strLen(SIn) + 1 - I);
-  {Result := strDeleteSpace(SIn, SOut);}
-  SOut^ := SIn;
-  Result := 0;*)
-  Result := 0;
-end;
-
 function StrHtmlToStr(Value: WideString): WideString;
 // Переводит строку Html формата с тегами в простую строку с символами
 // Обратная процедура StrHtmlFromStr
@@ -1229,12 +657,6 @@ begin
   Result := Length(S);
 end;
 
-function strLengthSet(var S: String; NewLength: UInt32): AError;
-begin
-  Result := 0;
-  SetLength(S, NewLength);
-end;
-
 function strPos(St, SubSt: String): UInt32;
 begin
   Result := Pos(SubSt, St);
@@ -1271,11 +693,6 @@ var
 begin
   Result := 0;
   for I := Length(St) downto 1 do if St[I] = C then begin Result := I; Exit; end;
-end;
-
-function timeNow: TDateTime;
-begin
-  Result := Time;
 end;
 
 function urlDecode(Value: string): string;
@@ -1338,16 +755,6 @@ begin
   end;
 end;
 
-function urlParamBack(const InParams: String): String;
-var
-  I: UInt32;
-begin
-  Result := ''; if strLength(InParams) < 5 then Exit;
-  I := strPos(InParams, 'Back=');
-  if I = 0 then Exit;
-  Result := strCopy(InParams, I + 5, strLength(InParams));
-end;
-
 function urlParamByName(InParams: TUrlParams; Name: string): string;
 // Фнкция возвращает значение атрибута заданного в качестве параметра функции из строки данных
 var
@@ -1380,14 +787,6 @@ begin
   Result := cStrToUInt64(urlParamByName(InParams, Name));
 end;
 
-function urlParamCount(InParams: String): UInt32;
-var
-  Params: TURLParams2;
-begin
-  urlParamDecode(InParams, Params);
-  Result := Length(Params);
-end;
-
 {$IFNDEF VER170}
 function _strLen(const Str: PChar): UInt32; assembler;
 asm
@@ -1403,110 +802,16 @@ end;
 {$ENDIF}
 
 {IFDEF VER170}
-{function ArrayByteCopy(const Source: TArrayByte; Offset, Count: UInt32): TArrayByte;
-var
-  I: Int32;
-  L: Int32;
-begin
-  L := MinInt32(Length(Source) - Offset, Count);
-  SetLength(Result, L);
-  for I := 0 to L - 1 do
-    Result[I] := Source[I + Offset];
-end;}
-
-function ArrayByteInsert(var A: TArrayByte; const Source: TArrayByte; Offset: UInt32): UInt32;
-var
-  I: Int32;
-  L: Int32;
-begin
-  Result := 0;
-  L := MinInt32(Length(A) - Offset, Length(Source));
-  if L <= 0 then Exit;
-  Result := L;
-  for I := 0 to L do
-    A[I+Offset] := Source[I];
-end;
-
-{function ArrayStringAdd(var A: TArrayString; S: String): UInt32;
-begin
-  Result := Length(A);
-  SetLength(A, Result + 1);
-  A[Result] := S;
-end;}
-
-{function cArrayByteToFloat64(const A: TArrayByte): Float64;
-begin
-  Result := 0;
-end;}
-
-{function cArrayByteToUInt32(const A: TArrayByte): UInt32;
-begin
-  Result := 0;
-end;}
-
-{function cArrayByteToUInt64(const A: TArrayByte): UInt64;
-begin
-  Result := 0;
-end;}
-
-{function cCharToByte(Value: Char): Byte;
-begin
-  Result := Ord(Value);
-end;}
-
-{function cCharToUInt08(Value: Char): UInt08;
-begin
-  Result := Ord(Value);
-end;}
-
-function cErrorToStr(Value: AError): String;
-begin
-  if Value = 0 then
-    Result := 'Ok'
-  else
-    Result := cInt32ToStr(Value);
-end;
-
-{function cFloat32ToInt32(Value: Float32): Int32;
-begin
-  Result := Convert.ToInt32(Value);
-end;}
-{ENDIF}
-
-function cFloat32ToStr(Value: Float32): String;
-begin
-  Result := cFloat64ToStr(Value);
-end;
-
-{$IFDEF VER170}
-function cFloat64ToArrayByte(Value: Float64): TArrayByte;
-begin
-  SetLength(Result, 8);
-end;
-
 function cFloat64ToDateTime64(Value: Float64): TDateTime64;
 begin
   Result := Value;
 end;
-{$ENDIF}
+{ENDIF}
 
-function cFloat64ToStr(Value: Float64): String;
-// Выводит результат с разделителем по установкам Windos
-begin
-  try
-    Result := FloatToStr(Value);
-  except
-    on EConvertError do begin end;
-  else
-  end;
-end;
-
-{IFDEF VER170}
 function cUInt32ToInt32(Value: UInt32): Int32;
 begin
   Result := Int32(Value);
 end;
-{ENDIF}
 
 function MinInt32(Value1, Value2: Int32): Int32;
 begin
@@ -1522,16 +827,6 @@ begin
   if S = 'True' then Value := True else
   if S = 'False' then Value := False else
     Result := False;
-end;
-
-function _StrToDateTime(const S: String; var Value: TDateTime): Boolean;
-begin
-  try
-    Value := StrToDateTime(S);
-    Result := True;
-  except
-    Result := False;
-  end;
 end;
 
 function _StrToFloat32(const S: String; var Value: Float32): UInt32;
@@ -1633,16 +928,6 @@ begin
   Result := Chr(I);
 end;
 
-function cUInt08ToStr(I: AUInt08): String;
-begin
-  Result := cUInt32ToStr(I);
-end;
-
-function cUInt16ToStr(I: UInt16): String;
-begin
-  Result := cUInt32ToStr(I);
-end;
-
 procedure strAdd(var Str: String; S2: String);
 begin
   Str := Concat(Str, S2);
@@ -1669,16 +954,6 @@ end;
 function Tag(Name, Value: String): String;
 begin
   Result := '<'+Name+'>'+Value+'</'+Name+'>';
-end;
-
-function TagUInt32(Name: String; Value: UInt32): String;
-begin
-  Result := Tag(Name, cUInt32ToStr(Value));
-end;
-
-function TagUInt64(Name: String; Value: UInt64): String;
-begin
-  Result := Tag(Name, cUInt64ToStr(Value));
 end;
 
 end.

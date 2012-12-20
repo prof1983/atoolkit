@@ -2,7 +2,7 @@
 @Abstract Работа с Log. Классы для отображения собщений программы окне в виде дерева
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.10.2006
-@LastMod 28.11.2012
+@LastMod 20.12.2012
 
 Работа с Log. Классы для записи собщений программы в БД или файл или отображения в окне Log
 }
@@ -22,7 +22,7 @@ type
     function AddMsg(const Msg: WideString): AInt; override;
     function AddStr(const Str: WideString): AInt; override;
     function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
-        const StrMsg: WideString): AInteger; override;
+        const StrMsg: APascalString): AInt; override;
   public
     constructor Create(ATreeView: TTreeView; const AName: WideString = '');
   end;
@@ -42,7 +42,7 @@ begin
 end;
 
 function TLogTreeView.AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
-  const StrMsg: WideString): AInteger;
+  const StrMsg: APascalString): AInt;
 begin
   Result := 0;
   if Assigned(FTreeView) then

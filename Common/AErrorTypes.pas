@@ -2,7 +2,7 @@
 @Abstract AErrorTypes
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.09.2005
-@LastMod 17.12.2012
+@LastMod 20.12.2012
 
 Структура типа TError:
  3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0
@@ -35,7 +35,10 @@ unit AErrorTypes;
 interface
 
 uses
-  ABase, ABaseUtils3, ATypes;
+  ABase,
+  ABaseUtils2,
+  ABaseUtils3,
+  ATypes;
 
 type
   TErrorSeverity = type UInt32;

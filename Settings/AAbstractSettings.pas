@@ -2,10 +2,11 @@
 @Abstract AAbstractSettings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 18.12.2012
+@LastMod 24.12.2012
 }
 unit AAbstractSettings;
 
+{$I A.inc}
 {DEFINE USE_AUTILS}
 
 interface
@@ -74,7 +75,11 @@ begin
   GetFormatSettings;
   FFormatSettings := DefaultFormatSettings;
   {$ELSE}
+  {$IFDEF DELPHI_XE_UP}
   FFormatSettings := TFormatSettings.Create(0);
+  {$ELSE}
+  GetLocaleFormatSettings(0, FFormatSettings);
+  {$ENDIF}
   {$ENDIF}
   FFormatSettings.DecimalSeparator := '.';
   FFormatSettings.DateSeparator := '.';

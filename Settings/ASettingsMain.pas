@@ -2,11 +2,13 @@
 @Abstract ASettings main functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.08.2012
-@LastMod 17.12.2012
+@LastMod 24.12.2012
 }
 unit ASettingsMain;
 
-{$define UseXmlNode}
+{$ifndef NoXmlNode}
+  {$define UseXmlNode}
+{$endif}
 
 interface
 
@@ -157,10 +159,14 @@ begin
   except
     Result := -1;
   end
-  {$ifdef UseXmlNode}
   else
+  begin
+    {$ifdef UseXmlNode}
     Result := AConfig_WriteBool(Config, Name, Value);
-  {$endif}
+    {$else}
+    Result := -3;
+    {$endif}
+  end;
 end;
 
 function ASettings_WriteIntegerP(Config: AConfig; const Section, Name: APascalString; Value: AInteger): AError;
@@ -180,10 +186,14 @@ begin
   except
     Result := -1;
   end
-  {$ifdef UseXmlNode}
   else
+  begin
+    {$ifdef UseXmlNode}
     Result := AConfig_WriteInt(Config, Name, Value);
-  {$endif}
+    {$else}
+    Result := -3;
+    {$endif}
+  end;
 end;
 
 function ASettings_WriteStringP(Config: AConfig; const Section, Name, Value: APascalString): AError;
@@ -203,10 +213,14 @@ begin
   except
     Result := -1;
   end
-  {$ifdef UseXmlNode}
   else
+  begin
+    {$ifdef UseXmlNode}
     Result := AConfig_WriteString(Config, Name, Value);
-  {$endif}
+    {$else}
+    Result := -3;
+    {$endif}
+  end;
 end;
 
 end.

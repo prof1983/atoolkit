@@ -2,7 +2,7 @@
 @Abstract ASettings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 04.05.2008
-@LastMod 19.07.2012
+@LastMod 24.12.2012
 }
 unit ARegistrySettings;
 
@@ -10,7 +10,11 @@ interface
 
 uses
   Classes, Registry, Windows,
-  ABase, ACollections, ACollectionsBase, AUtils,
+  ABase,
+  ABaseTypes,
+  ACollections,
+  ACollectionsBase,
+  AUtils,
   AAbstractSettings;
 
 type

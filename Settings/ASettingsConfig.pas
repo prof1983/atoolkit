@@ -2,14 +2,17 @@
 @Abstract ASettingsConfig
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 16.11.2012
+@LastMod 24.12.2012
 }
 unit ASettingsConfig;
 
 interface
 
 uses
-  ABase, ACollectionsBase, AStrings,
+  ABase,
+  ABaseTypes,
+  ACollectionsBase,
+  AStrings,
   AAbstractSettings, ASettingsMain;
 
 {deprecated}

@@ -2,14 +2,21 @@
 @Abstract The module for work with the settings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 11.12.2012
+@LastMod 24.12.2012
 }
 unit ASettings;
 
 interface
 
 uses
-  ABase, ACollectionsBase, ASettingsIni, ASettingsMain, ASettingsReg, AStringBaseUtils, AStrings;
+  ABase,
+  ABaseTypes,
+  ACollectionsBase,
+  ASettingsIni,
+  ASettingsMain,
+  ASettingsReg,
+  AStringBaseUtils,
+  AStrings;
 
 // ----
 

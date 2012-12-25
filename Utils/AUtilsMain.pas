@@ -158,7 +158,11 @@ function AUtils_Round2(Value: Real; Digits1, DigitsAfterComma: Integer): Real; s
 
 function AUtils_Sleep(Milliseconds: AUInt): AError; stdcall;
 
-function AUtils_StrToFloatP(const Value: APascalString): AFloat; stdcall;
+function AUtils_StrToDateP(const Value: APascalString): TDateTime;
+
+function AUtils_StrToFloatP(const Value: APascalString): AFloat; 
+
+function AUtils_StrToIntP(const Value: APascalString): AInteger;
 
 function AUtils_TrimP(const S: APascalString): APascalString;
 
@@ -933,10 +937,28 @@ begin
   end;
 end;
 
+function AUtils_StrToDateP(const Value: APascalString): TDateTime;
+begin
+  try
+    Result := SysUtils.StrToDate(Value);
+  except
+    Result := 0;
+  end;
+end;
+
 function AUtils_StrToFloatP(const Value: APascalString): AFloat;
 begin
   try
     Result := SysUtils.StrToFloat(Value);
+  except
+    Result := 0;
+  end;
+end;
+
+function AUtils_StrToIntP(const Value: APascalString): AInteger;
+begin
+  try
+    Result := SysUtils.StrToInt(Value);
   except
     Result := 0;
   end;

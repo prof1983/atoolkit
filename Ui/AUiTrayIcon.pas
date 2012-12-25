@@ -2,7 +2,7 @@
 @Abstract The icon in the system tray
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.12.2007
-@Lastmod 15.12.2012
+@Lastmod 25.12.2012
 }
 unit AUiTrayIcon;
 
@@ -101,31 +101,13 @@ type
 
   TAUITrayIcon = class
   private
-    procedure SetIsActive(Value: Boolean);
-    procedure SetIsShowDesigning(Value: Boolean);
-    procedure SetIcon(Value: TIcon);
-    procedure ModifyIcon(ACommand: LongWord);
     procedure OnChangeIcon(Sender: TObject);
-    procedure SetHint(Value: AnsiString);
     procedure WndProc(var AMsg: TMessage);
-    procedure DoRightClick(Sender: TObject);
-    procedure SetIDMessage(AValue: string);
-    procedure DoDblClick(Sender: TObject);
-    procedure DoLeftClick(Sender: TObject);
   public
     constructor Create;
     destructor Destroy; override;
   public
     procedure ShowToolTip(ATimeOut: LongWord; AType: TLogTypeMessage; const ATitle, AInfo: AnsiString);
-  public //published
-    {
-    property IsActive: Boolean read FIsActive write SetIsActive;
-    property IsShowDesigning: Boolean read FIsShowDesigning write SetIsShowDesigning;
-    property Icon: TIcon read FIcon write SetIcon;
-    property IDMessage: string read FIDMessage write SetIDMessage;
-    property Hint: AnsiString read FHint write SetHint;
-    property PopupMenu: TPopupMenu read FPopupMenu write FPopupMenu;
-    }
   end;
 
 procedure TrayIcon_Free(TrayIcon: Integer);
@@ -677,51 +659,6 @@ begin
   inherited;
 end;
 
-procedure TAUITrayIcon.SetIDMessage(AValue: string);
-var
-  I: AInteger;
-begin
-  I := _Find(ATrayIcon(Self));
-  if (I < 0) then
-    Exit;
-  _SetIdMessage(I, AValue);
-end;
-
-procedure TAUITrayIcon.SetIsActive(Value: Boolean);
-begin
-  AUiTrayIcon_SetIsActive(ATrayIcon(Self), Value);
-end;
-
-procedure TAUITrayIcon.SetIsShowDesigning(Value: Boolean);
-var
-  I: AInteger;
-begin
-  I := _Find(ATrayIcon(Self));
-  if (I < 0) then
-    Exit;
-  _SetIsShowDesigning(I, Value);
-end;
-
-procedure TAUITrayIcon.ModifyIcon(ACommand: LongWord);
-var
-  I: AInteger;
-begin
-  I := _Find(ATrayIcon(Self));
-  if (I < 0) then
-    Exit;
-  _ModifyIcon(I, ACommand);
-end;
-
-procedure TAUITrayIcon.SetIcon(Value: TIcon);
-var
-  I: AInteger;
-begin
-  I := _Find(ATrayIcon(Self));
-  if (I < 0) then
-    Exit;
-  _SetIcon(I, Value);
-end;
-
 procedure TAUITrayIcon.OnChangeIcon(Sender: TObject);
 var
   I: AInteger;
@@ -733,11 +670,6 @@ begin
     _ModifyIcon(I, NIM_MODIFY);
 end;
 
-procedure TAUITrayIcon.SetHint(Value: AnsiString);
-begin
-  AUiTrayIcon_SetHintP(ATrayIcon(Self), Value);
-end;
-
 procedure TAUITrayIcon.WndProc(var AMsg: TMessage);
 var
   I: AInteger;
@@ -746,36 +678,6 @@ begin
   if (I < 0) then
     Exit;
   _WndProc(I, AMsg);
-end;
-
-procedure TAUITrayIcon.DoDblClick(Sender: TObject);
-var
-  I: AInteger;
-begin
-  I := _Find(ATrayIcon(Self));
-  if (I < 0) then
-    Exit;
-  _DoDblClick(I);
-end;
-
-procedure TAUITrayIcon.DoLeftClick(Sender: TObject);
-var
-  I: AInteger;
-begin
-  I := _Find(ATrayIcon(Self));
-  if (I < 0) then
-    Exit;
-  _DoLeftClick(I);
-end;
-
-procedure TAUITrayIcon.DoRightClick(Sender: TObject);
-var
-  I: AInteger;
-begin
-  I := _Find(ATrayIcon(Self));
-  if (I < 0) then
-    Exit;
-  _DoRightClick(I);
 end;
 
 procedure TAUITrayIcon.ShowToolTip(ATimeOut: LongWord; AType: TLogTypeMessage; const ATitle, AInfo: AnsiString);

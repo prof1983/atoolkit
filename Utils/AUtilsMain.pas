@@ -2,7 +2,7 @@
 @Abstract AUtils - Main
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.09.2011
-@LastMod 18.12.2012
+@LastMod 25.12.2012
 }
 unit AUtilsMain;
 
@@ -11,7 +11,7 @@ unit AUtilsMain;
 interface
 
 uses
-  FileCtrl, SysUtils,
+  SysUtils,
   ABase, AStrings, AStringUtils, ASystemMain;
 
 // --- AUtils ---
@@ -632,7 +632,7 @@ end;
 function AUtils_FormatIntWS(Value, Count: AInteger): AWideString;
 begin
   try
-    Result := AUtils_FormatIntWS(Value, Count);
+    Result := AUtils_FormatIntP(Value, Count);
   except
     Result := '';
   end;

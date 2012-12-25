@@ -190,29 +190,31 @@ function AUtils_TryStrToIntP(const S: APascalString; var Value: AInteger): ABool
 
 // --- Utils ---
 
-function Utils_ExtractFileExt(const FileName: APascalString): APascalString;
+function Utils_ExtractFileExt(const FileName: APascalString): APascalString; deprecated {$ifdef ADeprText}'Use AUtils_ExtractFileExtP()'{$endif};
 
-function Utils_ExtractFilePath(const FileName: APascalString): APascalString;
+function Utils_ExtractFilePath(const FileName: APascalString): APascalString; deprecated {$ifdef ADeprText}'Use AUtils_ExtractFilePathP()'{$endif};
 
-function Utils_FileExists(const FileName: APascalString): ABoolean;
-
-//** Преобразует число в строку.
-function Utils_FloatToStr(Value: AFloat): APascalString;
+function Utils_FileExists(const FileName: APascalString): ABoolean; deprecated {$ifdef ADeprText}'Use AUtils_FileExistsP()'{$endif};
 
 //** Преобразует число в строку.
-function Utils_FloatToStr2(Value: AFloat; DigitsAfterComma: Integer; ReplaceComma, Delimer: ABoolean): APascalString;
+function Utils_FloatToStr(Value: AFloat): APascalString; deprecated {$ifdef ADeprText}'Use AUtils_FloatToStrP()'{$endif};
+
+//** Преобразует число в строку.
+function Utils_FloatToStr2(Value: AFloat; DigitsAfterComma: Integer; ReplaceComma,
+    Delimer: ABoolean): APascalString; deprecated {$ifdef ADeprText}'Use AUtils_FloatToStr2P()'{$endif};
 
 //** Преобразует число в строку c двумя знаками после запятой
-function Utils_FloatToStrA(Value: AFloat; DigitsAfterComma: AInteger = 2): APascalString;
+function Utils_FloatToStrA(Value: AFloat; DigitsAfterComma: AInteger = 2): APascalString; deprecated {$ifdef ADeprText}'Use AUtils_FloatToStrAP()'{$endif};
 
 //** Преобразует число в строку для записи в БД (SQL). Для SQL необходим разделитель - точка.
-function Utils_FloatToStrB(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString;
+function Utils_FloatToStrB(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; deprecated {$ifdef ADeprText}'Use AUtils_FloatToStrBP()'{$endif};
 
-function Utils_FloatToStrC(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString;
+function Utils_FloatToStrC(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; deprecated {$ifdef ADeprText}'Use AUtils_FloatToStrCP()'{$endif};
 
-function Utils_FloatToStrD(Value: AFloat): APascalString;
+function Utils_FloatToStrD(Value: AFloat): APascalString; deprecated {$ifdef ADeprText}'Use AUtils_FloatToStrDP()'{$endif};
 
-function Utils_FormatFloat(Value: AFloat; DigitsBeforeComma, DigitsAfterComma: AInteger): APascalString;
+function Utils_FormatFloat(Value: AFloat; DigitsBeforeComma,
+    DigitsAfterComma: AInteger): APascalString; deprecated {$ifdef ADeprText}'Use AUtils_FormatFloatP()'{$endif};
 
 //** Преобразует число в строку.
 function Utils_IntToStr(Value: AInteger): APascalString; deprecated {$ifdef ADeprText}'Use AUtils_IntToStrP()'{$endif};
@@ -228,9 +230,9 @@ function Utils_ReplaceComma(const S: APascalString; DecimalSeparator: AChar = #0
   DigitsAfterComma - максимально необходимое кол-во знаков после запятой (Numbers after a comma) }
 function Utils_Round2(Value: Real; Digits1, DigitsAfterComma: Integer): Real;
 
-function Utils_String_ToLower(const S: APascalString): APascalString;
+function Utils_String_ToLower(const S: APascalString): APascalString; deprecated {$ifdef ADeprText}'Use AString_ToLowerP()'{$endif};
 
-function Utils_String_ToUpper(const S: APascalString): APascalString;
+function Utils_String_ToUpper(const S: APascalString): APascalString; deprecated {$ifdef ADeprText}'Use AString_ToUpperP()'{$endif};
 
 { Trims leading and trailing spaces and control characters from a string.
   Удаляет первые и последние пробелы }
@@ -1171,11 +1173,6 @@ begin
   Result := SS;
 end;
 
-function Utils_String_ToLower(const S: APascalString): APascalString;
-begin
-  Result := SysUtils.LowerCase(S);
-end;
-
 function Utils_Round2(Value: Real; Digits1, DigitsAfterComma: Integer): Real;
 
   function DigitToValue(Digits: Integer): Integer;
@@ -1269,6 +1266,11 @@ begin
 
   if IsOtr then
     Result := -Result;
+end;
+
+function Utils_String_ToLower(const S: APascalString): APascalString;
+begin
+  Result := AStringUtils.AString_ToLowerP(S);
 end;
 
 function Utils_String_ToUpper(const S: APascalString): APascalString;

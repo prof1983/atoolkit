@@ -561,7 +561,7 @@ end;
 function FloatToStrA(Value: AFloat; DigitsAfterComma: AInteger; out Res: AString_Type): AInteger; stdcall;
 begin
   try
-    Result := AStrings.String_AssignWS(Res, AUtilsMain.Utils_FloatToStrA(Value, DigitsAfterComma));
+    Result := AString_AssignP(Res, AUtils_FloatToStrAP(Value, DigitsAfterComma));
   except
     Result := 0;
   end;
@@ -569,26 +569,18 @@ end;
 
 function FloatToStrAP(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_FloatToStrA(Value, DigitsAfterComma);
-  except
-    Result := '';
-  end;
+  Result := AUtils_FloatToStrAP(Value, DigitsAfterComma);
 end;
 
 function FloatToStrAWS(Value: AFloat; DigitsAfterComma: Integer = 2): AWideString; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_FloatToStrA(Value, DigitsAfterComma);
-  except
-    Result := '';
-  end;
+  Result := AUtils_FloatToStrAP(Value, DigitsAfterComma);
 end;
 
 function FloatToStrB(Value: AFloat; Digits: AInteger; out Res: AString_Type): AInteger; stdcall;
 begin
   try
-    Result := AStrings.String_AssignWS(Res, AUtils.FloatToStrBP(Value, Digits));
+    Result := AString_AssignP(Res, AUtils_FloatToStrBP(Value, Digits));
   except
     Result := 0;
   end;
@@ -596,26 +588,18 @@ end;
 
 function FloatToStrBP(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_FloatToStrB(Value, DigitsAfterComma);
-  except
-    Result := '';
-  end;
+  Result := AUtils_FloatToStrBP(Value, DigitsAfterComma);
 end;
 
 function FloatToStrBWS(Value: AFloat; DigitsAfterComma: Integer = 2): AWideString; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_FloatToStrB(Value, DigitsAfterComma);
-  except
-    Result := '';
-  end;
+  Result := AUtils_FloatToStrBP(Value, DigitsAfterComma);
 end;
 
 function FloatToStrC(Value: AFloat; Digits: AInteger; out Res: AString_Type): AInteger; stdcall;
 begin
   try
-    Result := AStrings.String_AssignWS(Res, AUtilsMain.Utils_FloatToStrC(Value, Digits));
+    Result := AString_AssignP(Res, AUtils_FloatToStrCP(Value, Digits));
   except
     Result := 0;
   end;
@@ -623,26 +607,18 @@ end;
 
 function FloatToStrCP(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_FloatToStrC(Value, DigitsAfterComma);
-  except
-    Result := '';
-  end;
+  Result := AUtils_FloatToStrCP(Value, DigitsAfterComma);
 end;
 
 function FloatToStrCWS(Value: AFloat; DigitsAfterComma: Integer = 2): AWideString; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_FloatToStrC(Value, DigitsAfterComma);
-  except
-    Result := '';
-  end;
+  Result := AUtils_FloatToStrCP(Value, DigitsAfterComma);
 end;
 
 function FloatToStrD(Value: AFloat; out Res: AString_Type): AInteger; stdcall;
 begin
   try
-    Result := AStrings.String_AssignWS(Res, AUtilsMain.Utils_FloatToStrD(Value));
+    Result := AString_AssignP(Res, AUtils_FloatToStrDP(Value));
   except
     Result := 0;
   end;
@@ -650,20 +626,12 @@ end;
 
 function FloatToStrDP(Value: AFloat): APascalString; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_FloatToStrD(Value);
-  except
-    Result := '';
-  end;
+  Result := AUtils_FloatToStrDP(Value);
 end;
 
 function FloatToStrDWS(Value: AFloat): AWideString; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_FloatToStrD(Value);
-  except
-    Result := '';
-  end;
+  Result := AUtils_FloatToStrDP(Value);
 end;
 
 function FloatToStrP(Value: AFloat): APascalString; stdcall;
@@ -836,20 +804,12 @@ end;
 
 function String_ToLowerP(const S: APascalString): APascalString; stdcall;
 begin
-  try
-    Result := Utils_String_ToLower(S);
-  except
-    Result := '';
-  end;
+  Result := AString_ToLowerP(S);
 end;
 
 function String_ToLowerWS(const S: AWideString): AWideString; stdcall;
 begin
-  try
-    Result := Utils_String_ToLower(S);
-  except
-    Result := '';
-  end;
+  Result := AString_ToLowerP(S);
 end;
 
 function String_ToUpper(const S: AString_Type; out Res: AString_Type): AInteger; stdcall;
@@ -979,26 +939,18 @@ end;
 
 function TrimP(const S: APascalString): APascalString; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_Trim(S);
-  except
-    Result := '';
-  end;
+  Result := AUtils_TrimP(S);
 end;
 
 function TrimWS(const S: AWideString): AWideString; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_Trim(S);
-  except
-    Result := '';
-  end;
+  Result := AUtils_TrimP(S);
 end;
 
 function TryStrToDate(const S: AString_Type; var Value: TDateTime): ABoolean; stdcall;
 begin
   try
-    Result := AUtilsMain.Utils_TryStrToDate(AStrings.String_ToWideString(S), Value);
+    Result := AUtils_TryStrToDateP(AString_ToPascalString(S), Value);
   except
     Result := False;
   end;
@@ -1006,26 +958,18 @@ end;
 
 function TryStrToDateP(const S: APascalString; var Value: TDateTime): ABoolean; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_TryStrToDate(S, Value);
-  except
-    Result := False;
-  end;
+  Result := AUtils_TryStrToDateP(S, Value);
 end;
 
 function TryStrToDateWS(const S: AWideString; var Value: TDateTime): ABoolean; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_TryStrToDate(S, Value);
-  except
-    Result := False;
-  end;
+  Result := AUtils_TryStrToDateP(S, Value);
 end;
 
 function TryStrToFloat(const S: AString_Type; var Value: AFloat): ABoolean; stdcall;
 begin
   try
-    Result := AUtilsMain.Utils_TryStrToFloat(AStrings.String_ToWideString(S), Value);
+    Result := AUtils_TryStrToFloatP(AString_ToPascalString(S), Value);
   except
     Result := False;
   end;
@@ -1034,7 +978,7 @@ end;
 function TryStrToFloat32(const S: AString_Type; var Value: AFloat32): ABoolean; stdcall;
 begin
   try
-    Result := AUtilsMain.Utils_TryStrToFloat32(AStrings.String_ToWideString(S), Value);
+    Result := AUtils_TryStrToFloat32P(AString_ToPascalString(S), Value);
   except
     Result := False;
   end;
@@ -1042,26 +986,18 @@ end;
 
 function TryStrToFloat32P(const S: APascalString; var Value: AFloat32): ABoolean; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_TryStrToFloat32(S, Value);
-  except
-    Result := False;
-  end;
+  Result := AUtils_TryStrToFloat32P(S, Value);
 end;
 
 function TryStrToFloat32WS(const S: AWideString; var Value: AFloat32): ABoolean; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_TryStrToFloat32(S, Value);
-  except
-    Result := False;
-  end;
+  Result := AUtils_TryStrToFloat32P(S, Value);
 end;
 
 function TryStrToFloat64(const S: AString_Type; var Value: AFloat64): ABoolean; stdcall;
 begin
   try
-    Result := AUtilsMain.Utils_TryStrToFloat64(AStrings.String_ToWideString(S), Value);
+    Result := AUtils_TryStrToFloat64P(AString_ToPascalString(S), Value);
   except
     Result := False;
   end;
@@ -1069,44 +1005,28 @@ end;
 
 function TryStrToFloat64P(const S: APascalString; var Value: AFloat64): ABoolean; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_TryStrToFloat64(S, Value);
-  except
-    Result := False;
-  end;
+  Result := AUtils_TryStrToFloat64P(S, Value);
 end;
 
 function TryStrToFloat64WS(const S: AWideString; var Value: AFloat64): ABoolean; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_TryStrToFloat64(S, Value);
-  except
-    Result := False;
-  end;
+  Result := AUtils_TryStrToFloat64P(S, Value);
 end;
 
 function TryStrToFloatP(const S: APascalString; var Value: AFloat): ABoolean; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_TryStrToFloat(S, Value);
-  except
-    Result := False;
-  end;
+  Result := AUtils_TryStrToFloatP(S, Value);
 end;
 
 function TryStrToFloatWS(const S: AWideString; var Value: AFloat): ABoolean; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_TryStrToFloat(S, Value);
-  except
-    Result := False;
-  end;
+  Result := AUtils_TryStrToFloatP(S, Value);
 end;
 
 function TryStrToInt(const S: AString_Type; var Value: AInteger): ABoolean; stdcall;
 begin
   try
-    Result := AUtilsMain.Utils_TryStrToInt(AStrings.String_ToWideString(S), Value);
+    Result := AUtils_TryStrToIntP(AString_ToPascalString(S), Value);
   except
     Result := False;
   end;
@@ -1114,11 +1034,7 @@ end;
 
 function TryStrToIntWS(const S: AWideString; var Value: AInteger): ABoolean; stdcall;
 begin
-  try
-    Result := AUtilsMain.Utils_TryStrToInt(S, Value);
-  except
-    Result := False;
-  end;
+  Result := AUtils_TryStrToIntP(S, Value);
 end;
 
 function UpperStringP(const S: APascalString): APascalString; stdcall;
@@ -1207,7 +1123,7 @@ end;
 
 function Utils_String_ToLower(const S: APascalString): APascalString;
 begin
-  Result := SysUtils.LowerCase(S);
+  Result := AString_ToLowerP(S);
 end;
 
 function Utils_String_ToUpper(const S: APascalString): APascalString;
@@ -1227,7 +1143,7 @@ end;
 
 function Utils_StrToFloat1(const S: APascalString; DefValue: AFloat = 0): AFloat;
 begin
-  Result := StrToFloatDefP(S, DefValue);
+  Result := AUtils_StrToFloatDefP(S, DefValue);
 end;
 
 function Utils_StrToInt(const Value: APascalString): AInteger;
@@ -1237,7 +1153,7 @@ end;
 
 function Utils_StrToInt1(const S: APascalString; DefValue: AInteger = 0): AInteger;
 begin
-  Result := StrToInt1(S, DefValue);
+  Result := AUtils_StrToIntDefP(S, DefValue);
 end;
 
 function Utils_Time_Now: TDateTime;
@@ -1247,32 +1163,32 @@ end;
 
 function Utils_Trim(const S: APascalString): APascalString;
 begin
-  Result := AUtilsMain.Utils_Trim(S);
+  Result := AUtils_TrimP(S);
 end;
 
 function Utils_TryStrToDate(const S: APascalString; var Value: TDateTime): Boolean;
 begin
-  Result := AUtilsMain.Utils_TryStrToDate(S, Value);
+  Result := AUtils_TryStrToDateP(S, Value);
 end;
 
 function Utils_TryStrToFloat(const S: APascalString; var Value: AFloat): ABoolean;
 begin
-  Result := AUtilsMain.Utils_TryStrToFloat(S, Value);
+  Result := AUtils_TryStrToFloatP(S, Value);
 end;
 
 function Utils_TryStrToFloat32(const S: APascalString; var Value: AFloat32): ABoolean;
 begin
-  Result := AUtilsMain.Utils_TryStrToFloat32(S, Value);
+  Result := AUtils_TryStrToFloat32P(S, Value);
 end;
 
 function Utils_TryStrToFloat64(const S: APascalString; var Value: AFloat64): ABoolean;
 begin
-  Result := AUtilsMain.Utils_TryStrToFloat64(S, Value);
+  Result := AUtils_TryStrToFloat64P(S, Value);
 end;
 
 function Utils_TryStrToInt(const S: APascalString; var Value: AInteger): ABoolean;
 begin
-  Result := AUtilsMain.Utils_TryStrToInt(S, Value);
+  Result := AUtils_TryStrToIntP(S, Value);
 end;
 
 function Utils_UpperString(const S: APascalString): APascalString;

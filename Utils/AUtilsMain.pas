@@ -162,6 +162,22 @@ function AUtils_StrToFloatP(const Value: APascalString): AFloat; stdcall;
 
 function AUtils_TrimP(const S: APascalString): APascalString;
 
+function AUtils_TryStrToDateP(const S: APascalString; var Value: TDateTime): ABoolean;
+
+{** ѕреобразует строку в Float. –азделителем может быть как точка, так и зап€та€.
+    ¬ исходной строке могут присутствовать начальные и конечные пробелы. }
+function AUtils_TryStrToFloatP(const S: APascalString; var Value: AFloat): ABoolean;
+
+{** ѕреобразует строку в Float32. –азделителем может быть как точка, так и зап€та€.
+    ¬ исходной строке могут присутствовать начальные и конечные пробелы. }
+function AUtils_TryStrToFloat32P(const S: APascalString; var Value: AFloat32): ABoolean;
+
+{** ѕреобразует строку в Float64. –азделителем может быть как точка, так и зап€та€.
+    ¬ исходной строке могут присутствовать начальные и конечные пробелы. }
+function AUtils_TryStrToFloat64P(const S: APascalString; var Value: AFloat64): ABoolean;
+
+function AUtils_TryStrToIntP(const S: APascalString; var Value: AInteger): ABoolean;
+
 // --- Utils ---
 
 function Utils_ExtractFileExt(const FileName: APascalString): APascalString;
@@ -189,9 +205,9 @@ function Utils_FloatToStrD(Value: AFloat): APascalString;
 function Utils_FormatFloat(Value: AFloat; DigitsBeforeComma, DigitsAfterComma: AInteger): APascalString;
 
 //** ѕреобразует число в строку.
-function Utils_IntToStr(Value: AInteger): APascalString;
+function Utils_IntToStr(Value: AInteger): APascalString; deprecated {$ifdef ADeprText}'Use AUtils_IntToStrP()'{$endif};
 
-function Utils_NormalizeStrSpace(const Value: APascalString): APascalString;
+function Utils_NormalizeStrSpace(const Value: APascalString): APascalString; deprecated {$ifdef ADeprText}'Use AUtils_NormalizeStrSpaceP()'{$endif};
 
 { «амен€ет все точки на зап€тые или все зап€тые на точки в зависимости от региональных настроек.
   ≈сли параметр DecimalSeparator указан, то региональные настройки игнорируютс€. }
@@ -208,23 +224,23 @@ function Utils_String_ToUpper(const S: APascalString): APascalString;
 
 { Trims leading and trailing spaces and control characters from a string.
   ”дал€ет первые и последние пробелы }
-function Utils_Trim(const S: APascalString): APascalString;
+function Utils_Trim(const S: APascalString): APascalString; deprecated {$ifdef ADeprText}'Use AUtils_TrimP()'{$endif};
 
-function Utils_TryStrToDate(const S: APascalString; var Value: TDateTime): ABoolean;
+function Utils_TryStrToDate(const S: APascalString; var Value: TDateTime): ABoolean; deprecated {$ifdef ADeprText}'Use AUtils_TryStrToDateP()'{$endif};
 
 { ѕреобразует строку в Float. –азделителем может быть как точка, так и зап€та€.
   ¬ исходной строке могут присутствовать начальные и конечные пробелы. }
-function Utils_TryStrToFloat(const S: APascalString; var Value: AFloat): ABoolean;
+function Utils_TryStrToFloat(const S: APascalString; var Value: AFloat): ABoolean; deprecated {$ifdef ADeprText}'Use AUtils_TryStrToFloatP()'{$endif};
 
 { ѕреобразует строку в Float32. –азделителем может быть как точка, так и зап€та€.
   ¬ исходной строке могут присутствовать начальные и конечные пробелы. }
-function Utils_TryStrToFloat32(const S: APascalString; var Value: AFloat32): ABoolean;
+function Utils_TryStrToFloat32(const S: APascalString; var Value: AFloat32): ABoolean; deprecated {$ifdef ADeprText}'Use AUtils_TryStrToFloat32P()'{$endif};
 
 { ѕреобразует строку в Float64. –азделителем может быть как точка, так и зап€та€.
   ¬ исходной строке могут присутствовать начальные и конечные пробелы. }
-function Utils_TryStrToFloat64(const S: APascalString; var Value: AFloat64): ABoolean;
+function Utils_TryStrToFloat64(const S: APascalString; var Value: AFloat64): ABoolean; deprecated {$ifdef ADeprText}'Use AUtils_TryStrToFloat64P()'{$endif};
 
-function Utils_TryStrToInt(const S: APascalString; var Value: AInteger): ABoolean;
+function Utils_TryStrToInt(const S: APascalString; var Value: AInteger): ABoolean; deprecated {$ifdef ADeprText}'Use AUtils_TryStrToIntP()'{$endif};
 
 implementation
 
@@ -935,6 +951,73 @@ begin
   end;
 end;
 
+function AUtils_TryStrToDateP(const S: APascalString; var Value: TDateTime): ABoolean;
+begin
+  try
+    Result := SysUtils.TryStrToDate(S, Value);
+  except
+    Result := False;
+  end;
+end;
+
+function AUtils_TryStrToFloatP(const S: APascalString; var Value: AFloat): ABoolean;
+begin
+  {$IFDEF AFloat32}
+  Result := AUtils_TryStrToFloat32P(S, Value);
+  {$ELSE}
+  Result := AUtils_TryStrToFloat64P(S, Value);
+  {$ENDIF}
+end;
+
+function AUtils_TryStrToFloat32P(const S: APascalString; var Value: AFloat32): ABoolean;
+var
+  Value1: Extended;
+  S1: string;
+begin
+  try
+    S1 := SysUtils.Trim(Utils_ReplaceComma(S));
+    if (S1 <> '') then
+    begin
+      Result := SysUtils.TryStrToFloat(S1, Value1);
+      if Result then
+        Value := Value1;
+    end
+    else
+      Result := False;
+  except
+    Result := False;
+  end;
+end;
+
+function AUtils_TryStrToFloat64P(const S: APascalString; var Value: AFloat64): ABoolean;
+var
+  Value1: Extended;
+  S1: string;
+begin
+  try
+    S1 := SysUtils.Trim(Utils_ReplaceComma(S));
+    if (S1 <> '') then
+    begin
+      Result := SysUtils.TryStrToFloat(S1, Value1);
+      if Result then
+        Value := Value1;
+    end
+    else
+      Result := False;
+  except
+    Result := False;
+  end;
+end;
+
+function AUtils_TryStrToIntP(const S: APascalString; var Value: AInteger): ABoolean;
+begin
+  try
+    Result := SysUtils.TryStrToInt(SysUtils.Trim(S), Value);
+  except
+    Result := False;
+  end;
+end;
+
 // --- Utils ---
 
 function Utils_ExtractFileExt(const FileName: APascalString): APascalString;
@@ -989,7 +1072,7 @@ end;
 
 function Utils_IntToStr(Value: AInteger): APascalString;
 begin
-  Result := SysUtils.IntToStr(Value);
+  Result := AUtils_IntToStrP(Value);
 end;
 
 function Utils_NormalizeStrSpace(const Value: APascalString): APascalString;
@@ -1152,53 +1235,27 @@ end;
 
 function Utils_TryStrToDate(const S: APascalString; var Value: TDateTime): Boolean;
 begin
-  Result := SysUtils.TryStrToDate(S, Value);
+  Result := AUtils_TryStrToDateP(S, Value);
 end;
 
 function Utils_TryStrToFloat(const S: APascalString; var Value: AFloat): ABoolean;
 begin
-  {$IFDEF AFloat32}
-  Result := Utils_TryStrToFloat32(S, Value);
-  {$ELSE}
-  Result := Utils_TryStrToFloat64(S, Value);
-  {$ENDIF}
+  Result := AUtils_TryStrToFloatP(S, Value);
 end;
 
 function Utils_TryStrToFloat32(const S: APascalString; var Value: AFloat32): ABoolean;
-var
-  Value1: Extended;
-  S1: string;
 begin
-  S1 := SysUtils.Trim(Utils_ReplaceComma(S));
-  if (S1 <> '') then
-  begin
-    Result := SysUtils.TryStrToFloat(S1, Value1);
-    if Result then
-      Value := Value1;
-  end
-  else
-    Result := False;
+  Result := AUtils_TryStrToFloat32P(S, Value);
 end;
 
 function Utils_TryStrToFloat64(const S: APascalString; var Value: AFloat64): ABoolean;
-var
-  Value1: Extended;
-  S1: string;
 begin
-  S1 := SysUtils.Trim(Utils_ReplaceComma(S));
-  if (S1 <> '') then
-  begin
-    Result := SysUtils.TryStrToFloat(S1, Value1);
-    if Result then
-      Value := Value1;
-  end
-  else
-    Result := False;
+  Result := AUtils_TryStrToFloat64P(S, Value);
 end;
 
 function Utils_TryStrToInt(const S: APascalString; var Value: AInteger): ABoolean;
 begin
-  Result := SysUtils.TryStrToInt(SysUtils.Trim(S), Value);
+  Result := AUtils_TryStrToIntP(S, Value);
 end;
 
 end.

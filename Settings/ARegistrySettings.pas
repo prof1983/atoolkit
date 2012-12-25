@@ -2,7 +2,7 @@
 @Abstract ASettings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 04.05.2008
-@LastMod 24.12.2012
+@LastMod 25.12.2012
 }
 unit ARegistrySettings;
 
@@ -14,7 +14,6 @@ uses
   ABaseTypes,
   ACollections,
   ACollectionsBase,
-  AUtils,
   AAbstractSettings;
 
 type

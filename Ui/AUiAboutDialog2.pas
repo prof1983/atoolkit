@@ -2,14 +2,17 @@
 @Abstract AUi about dialog win 1
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.11.2012
-@LastMod 20.11.2012
+@LastMod 25.12.2012
 }
 unit AUiAboutDialog2;
 
 interface
 
 uses
-  ABase, AConsts2, AUtils, ASystem,
+  ABase,
+  AConsts2,
+  AUtilsMain,
+  ASystem,
   AUiAboutDialog, AUiControls, AUiTextView,
   fAbout;
 
@@ -64,7 +67,7 @@ begin
 
   S := ASystem.Info_GetDirectoryPathWS() + ASystem.Info_GetProgramNameWS() + '.bmp';
 
-  if FileExistsP(S) then
+  if AUtils_FileExistsP(S) then
   try
     AboutForm.Image.Picture.LoadFromFile(S);
   except

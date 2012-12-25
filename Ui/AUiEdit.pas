@@ -2,7 +2,7 @@
 @Abstract AUiEdit
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.01.2010
-@LastMod 16.11.2012
+@LastMod 25.12.2012
 }
 unit AUiEdit;
 
@@ -12,7 +12,8 @@ interface
 
 uses
   Controls, StdCtrls,
-  ABase, AUtils,
+  ABase,
+  AUtilsMain,
   AUiBase, AUiButtons, AUiControls, AUiData;
 
 // --- AUiEdit ---
@@ -239,7 +240,7 @@ begin
   Value := 0;
   if (Edit.Text <> '') and (Edit.Text <> '  .  .  ') then
   begin
-    Result := AUtils.TryStrToDateWS(Edit.Text, Value);
+    Result := AUtils_TryStrToDateP(Edit.Text, Value);
     if not(Result) then
     begin
       Edit.SelectAll;
@@ -253,7 +254,7 @@ function Edit_CheckFloat(Edit: TCustomEdit; out Value: Double): ABoolean;
 begin
   if (Edit.Text <> '') then
   begin
-    if not(AUtils.TryStrToFloat64WS(Edit.Text, Value)) then
+    if not(AUtils_TryStrToFloat64P(Edit.Text, Value)) then
     begin
       Edit.SetFocus;
       Edit.SelectAll;
@@ -284,7 +285,7 @@ function Edit_CheckInt(Edit: TCustomEdit; out Value: AInteger): ABoolean;
 begin
   if (Edit.Text <> '') then
   begin
-    if not(AUtils.TryStrToIntWS(Edit.Text, Value)) then
+    if not(AUtils_TryStrToIntP(Edit.Text, Value)) then
     begin
       Edit.SetFocus;
       Edit.SelectAll;

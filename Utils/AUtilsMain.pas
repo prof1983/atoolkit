@@ -160,6 +160,8 @@ function AUtils_Sleep(Milliseconds: AUInt): AError; stdcall;
 
 function AUtils_StrToFloatP(const Value: APascalString): AFloat; stdcall;
 
+function AUtils_TrimP(const S: APascalString): APascalString;
+
 // --- Utils ---
 
 function Utils_ExtractFileExt(const FileName: APascalString): APascalString;
@@ -924,6 +926,15 @@ begin
   end;
 end;
 
+function AUtils_TrimP(const S: APascalString): APascalString;
+begin
+  try
+    Result := SysUtils.Trim(S);
+  except
+    Result := '';
+  end;
+end;
+
 // --- Utils ---
 
 function Utils_ExtractFileExt(const FileName: APascalString): APascalString;
@@ -1136,7 +1147,7 @@ end;
 
 function Utils_Trim(const S: APascalString): APascalString;
 begin
-  Result := SysUtils.Trim(S);
+  Result := AUtils_TrimP(S);
 end;
 
 function Utils_TryStrToDate(const S: APascalString; var Value: TDateTime): Boolean;

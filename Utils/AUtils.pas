@@ -2,13 +2,11 @@
 @Abstract Util functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.09.2009
-@LastMod 18.12.2012
+@LastMod 25.12.2012
 }
 unit AUtils;
 
-{$IFDEF AOLD}
-  {$DEFINE AUTILSOLD}
-{$ENDIF AOLD}
+{$ifdef A04}{$DEFINE ADepr}{$endif}
 
 interface
 
@@ -20,9 +18,6 @@ uses
 
 function Init(): AError; stdcall; deprecated; // Use AUtils_Init()
 function Done(): AError; stdcall; deprecated; // Use AUtils_Fin()
-
-function Utils_Init(): AError; deprecated; // Use AUtils_Init()
-function Utils_Done(): AError; deprecated; // Use AUtils_Fin()
 
 function ChangeFileExtP(const FileName, Extension: APascalString): APascalString; stdcall;
 
@@ -42,12 +37,7 @@ function ExpandFileNameP(const FileName: APascalString): APascalString; stdcall;
 
 function ExpandFileNameWS(const FileName: AWideString): AWideString; stdcall;
 
-{$IFDEF AUTILSOLD}
-// Use ExtractFileExt()
-function ExtractFileExt(const FileName: AWideString): AWideString; stdcall; deprecated;
-{$ELSE}
 function ExtractFileExt(const FileName: AString_Type; out Res: AString_Type): AInteger; stdcall;
-{$ENDIF AUTILSOLD}
 
 // Извлекает расширение файла из полного названия.
 function ExtractFileExtP(const FileName: APascalString): APascalString; stdcall;
@@ -55,10 +45,7 @@ function ExtractFileExtP(const FileName: APascalString): APascalString; stdcall;
 // Извлекает расширение файла из полного названия.
 function ExtractFileExtWS(const FileName: AWideString): AWideString; stdcall;
 
-{$IFDEF AUTILSOLD}
-{$ELSE}
 function ExtractFilePath(const FileName: AString_Type; out Res: AString_Type): AInteger; stdcall;
-{$ENDIF AUTILSOLD}
 
 // Извлекает путь к файлу.
 function ExtractFilePathP(const FileName: APascalString): APascalString; stdcall;
@@ -66,11 +53,7 @@ function ExtractFilePathP(const FileName: APascalString): APascalString; stdcall
 // Извлекает путь к файлу.
 function ExtractFilePathWS(const FileName: AWideString): AWideString; stdcall;
 
-{$IFDEF AUTILSOLD}
-function FileExists(const FileName: AWideString): ABoolean; stdcall; deprecated; // Use FileExistsWS()
-{$ELSE}
 function FileExists(const FileName: AString_Type): ABoolean; stdcall;
-{$ENDIF AUTILSOLD}
 
 // Возвращает True, если указанный файл существует.
 function FileExistsP(const FileName: APascalString): ABoolean; stdcall;
@@ -79,20 +62,12 @@ function FileExistsP(const FileName: APascalString): ABoolean; stdcall;
 function FileExistsWS(const FileName: AWideString): ABoolean; stdcall;
 
 // Преобразует число в строку.
-{$IFDEF AUTILSOLD}
-function FloatToStr(Value: AFloat): APascalString; stdcall; deprecated; // Use FloatToStrWS()
-{$ELSE}
 function FloatToStr(Value: AFloat; out Res: AString_Type): AInteger; stdcall;
-{$ENDIF AUTILSOLD}
 
 function FloatToStr2WS(Value: AFloat; DigitsAfterComma: Integer; ReplaceComma, Delimer: ABoolean): AWideString; stdcall;
 
 // Преобразует число в строку c двумя знаками после запятой.
-{$IFDEF AUTILSOLD}
-function FloatToStrA(Value: AFloat; DigitsAfterComma: Integer = 2): AWideString; stdcall; deprecated; // Use FloatToStrAP()
-{$ELSE}
 function FloatToStrA(Value: AFloat; DigitsAfterComma: AInteger; out Res: AString_Type): AInteger; stdcall;
-{$ENDIF AUTILSOLD}
 
 // Преобразует число в строку c двумя знаками после запятой.
 function FloatToStrAP(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall;
@@ -101,11 +76,7 @@ function FloatToStrAP(Value: AFloat; DigitsAfterComma: Integer = 2): APascalStri
 function FloatToStrAWS(Value: AFloat; DigitsAfterComma: Integer = 2): AWideString; stdcall;
 
 // Преобразует число в строку для записи в БД (SQL). Для SQL необходим разделитель - точка.
-{$IFDEF AUTILSOLD}
-function FloatToStrB(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall; deprecated; // Use FloatToStrBP()
-{$ELSE}
 function FloatToStrB(Value: AFloat; Digits: AInteger; out Res: AString_Type): AInteger; stdcall;
-{$ENDIF AUTILSOLD}
 
 // Преобразует число в строку для записи в БД (SQL). Для SQL необходим разделитель - точка.
 function FloatToStrBP(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall;
@@ -113,11 +84,7 @@ function FloatToStrBP(Value: AFloat; DigitsAfterComma: Integer = 2): APascalStri
 // Преобразует число в строку для записи в БД (SQL). Для SQL необходим разделитель - точка.
 function FloatToStrBWS(Value: AFloat; DigitsAfterComma: Integer = 2): AWideString; stdcall;
 
-{$IFDEF AUTILSOLD}
-function FloatToStrC(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall; deprecated; // Use FloatToStrCP()
-{$ELSE}
 function FloatToStrC(Value: AFloat; Digits: AInteger; out Res: AString_Type): AInteger; stdcall;
-{$ENDIF AUTILSOLD}
 
 function FloatToStrCP(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall;
 
@@ -142,11 +109,7 @@ function FormatFloatP(Value: AFloat; DigitsBeforeComma, DigitsAfterComma: AInteg
 function FormatFloatWS(Value: AFloat; DigitsBeforeComma, DigitsAfterComma: AInteger): AWideString; stdcall;
 
 // Преобразует число в строку формата "%Nd".
-{$IFDEF AUTILSOLD}
-function FormatInt(Value, Count: AInteger): AWideString; stdcall; deprecated; // Use FormatIntWS()
-{$ELSE}
 function FormatInt(Value, Count: AInteger; out Res: AString_Type): AInteger; stdcall;
-{$ENDIF AUTILSOLD}
 
 // Преобразует число в строку формата "%Nd".
 function FormatIntP(Value, Count: AInteger): APascalString; stdcall;
@@ -174,11 +137,7 @@ function FormatStrStr(const FormatStr, S: APascalString): APascalString; stdcall
 // Применяет Format() к строке с одним строковым параметром. Например: "Ошибка в %s".
 function FormatStrStrWS(const FormatStr, S: AWideString): AWideString; stdcall;
 
-{$IFDEF AUTILSOLD}
-function IntToStr(Value: AInteger): AWideString; stdcall; deprecated; // Use IntToStrWS()
-{$ELSE}
 function IntToStr(Value: AInteger; out Res: AString_Type): AInteger; stdcall;
-{$ENDIF AUTILSOLD}
 
 // Преобразует число в строку.
 function IntToStrP(Value: AInteger): APascalString; stdcall;
@@ -189,11 +148,7 @@ function IntToStrWS(Value: AInteger): AWideString; stdcall;
 function NormalizeFloat(Value: AFloat): AFloat; stdcall;
 
 // Заменяет не отображаемые символы строки на #
-{$IFDEF AUTILSOLD}
-function NormalizeStr(const Value: AWideString): AWideString; stdcall; deprecated; // Use NormalizeStrWS()
-{$ELSE}
 function NormalizeStr(const Value: AString_Type; out Res: AString_Type): AInteger; stdcall;
-{$ENDIF AUTILSOLD}
 
 // Заменяет не отображаемые символы строки на #
 function NormalizeStrP(const Value: APascalString): APascalString; stdcall;
@@ -217,14 +172,8 @@ function Power(Base, Exponent: AFloat): AFloat; stdcall;
 
 { Заменяет все точки на запятые или все запятые на точки в зависимости от региональных настроек.
   Если параметр DecimalSeparator указан, то региональные настройки игнорируются. }
-{$IFDEF AUTILSOLD}
-// Use ReplaceCommaWS()
-function ReplaceComma(const S: AWideString; DecimalSeparator: AChar = #0;
-    ClearSpace: ABoolean = True): AWideString; stdcall; deprecated;
-{$ELSE}
 function ReplaceComma(const S: AString_Type; DecimalSeparator: AChar {= #0};
     ClearSpace: ABoolean {= True}; out Res: AString_Type): AInteger; stdcall;
-{$ENDIF AUTILSOLD}
 
 { Заменяет все точки на запятые или все запятые на точки в зависимости от региональных настроек.
   Если параметр DecimalSeparator указан, то региональные настройки игнорируются. }
@@ -241,11 +190,7 @@ function ReplaceCommaWS(const S: AWideString; DecimalSeparator: AChar = #0;
   DigitsAfterComma - максимально необходимое кол-во знаков после запятой (Numbers after a comma) }
 function Round2(Value: Real; Digits1, DigitsAfterComma: Integer): Real; stdcall;
 
-{$IFDEF AUTILSOLD}
-function StrToDate(const Value: AWideString): TDateTime; stdcall; deprecated; // Use StrToDateWS()
-{$ELSE}
 function StrToDate(const Value: AString_Type): TDateTime; stdcall;
-{$ENDIF AUTILSOLD}
 
 //** Преобразует дату/время из строки.
 function StrToDateA(Value: PAnsiChar): TDateTime; stdcall;
@@ -253,19 +198,12 @@ function StrToDateA(Value: PAnsiChar): TDateTime; stdcall;
 //** Преобразует дату/время из строки.
 function StrToDateWS(const Value: AWideString): TDateTime; stdcall;
 
-{$IFDEF AUTILSOLD}
-{$ELSE}
 function StrToFloat(const Value: AString_Type): AFloat; stdcall;
-{$ENDIF AUTILSOLD}
 
 { Преобразует строку в Float. Разделителем может быть как точка, так и запятая.
   В исходной строке могут присутствовать начальные и конечные пробелы.
   Use StrToFloatWS() or StrToFloatDefP(S,0) }
-{$IFDEF AUTILSOLD}
-function StrToFloat1(const S: APascalString; DefValue: AFloat = 0): AFloat; stdcall; deprecated;
-{$ELSE}
 function StrToFloat1(const S: AString_Type; DefValue: AFloat = 0): AFloat; stdcall; deprecated;
-{$ENDIF AUTILSOLD}
 
 { Преобразует строку в Float. Разделителем может быть как точка, так и запятая.
   В исходной строке могут присутствовать начальные и конечные пробелы. }
@@ -287,11 +225,7 @@ function StrToFloatP(const S: APascalString): AFloat; stdcall;
   В исходной строке могут присутствовать начальные и конечные пробелы. }
 function StrToFloatWS(const S: AWideString): AFloat; stdcall;
 
-{$IFDEF AUTILSOLD}
-function StrToInt(const S: AWideString): AInteger; stdcall; deprecated; // Use StrToIntWS()
-{$ELSE}
 function StrToInt(const Value: AString_Type): AInteger; stdcall;
-{$ENDIF}
 
 function StrToInt1(const S: APascalString; DefValue: AInteger = 0): AInteger; stdcall; deprecated; // Use StrToIntDefP(S,0)
 
@@ -320,11 +254,7 @@ function String_ToUpperP(const S: APascalString): APascalString; stdcall; deprec
 // Переводит все символы строки в верхний регистр.
 function String_ToUpperWS(const S: AWideString): AWideString; stdcall; deprecated; // Use AString_ToUpperWS()
 
-{$IFDEF AUTILSOLD}
-function TryStrToDate(const S: AWideString; var Value: TDateTime): ABoolean; stdcall; deprecated; // Use TryStrToDateWS()
-{$ELSE}
 function TryStrToDate(const S: AString_Type; var Value: TDateTime): ABoolean; stdcall;
-{$ENDIF AUTILSOLD}
 
 function TryStrToDateP(const S: APascalString; var Value: TDateTime): ABoolean; stdcall;
 
@@ -332,19 +262,11 @@ function TryStrToDateWS(const S: AWideString; var Value: TDateTime): ABoolean; s
 
 { Преобразует строку в Float. Разделителем может быть как точка, так и запятая.
   В исходной строке могут присутствовать начальные и конечные пробелы. }
-{$IFDEF AUTILSOLD}
-function TryStrToFloat(const S: AWideString; var Value: AFloat): ABoolean; stdcall; deprecated; // Use TryStrToFloatWS()
-{$ELSE}
 function TryStrToFloat(const S: AString_Type; var Value: AFloat): ABoolean; stdcall;
-{$ENDIF AUTILSOLD}
 
 { Преобразует строку в Float32. Разделителем может быть как точка, так и запятая.
   В исходной строке могут присутствовать начальные и конечные пробелы. }
-{$IFDEF AUTILSOLD}
-function TryStrToFloat32(const S: APascalString; var Value: AFloat32): ABoolean; stdcall; deprecated; // Use TryStrToFloat32()
-{$ELSE}
 function TryStrToFloat32(const S: AString_Type; var Value: AFloat32): ABoolean; stdcall;
-{$ENDIF AUTILSOLD}
 
 { Преобразует строку в Float32. Разделителем может быть как точка, так и запятая.
   В исходной строке могут присутствовать начальные и конечные пробелы. }
@@ -356,11 +278,7 @@ function TryStrToFloat32WS(const S: AWideString; var Value: AFloat32): ABoolean;
 
 { Преобразует строку в Float64. Разделителем может быть как точка, так и запятая.
   В исходной строке могут присутствовать начальные и конечные пробелы. }
-{$IFDEF AUTILSOLD}
-function TryStrToFloat64(const S: APascalString; var Value: AFloat64): ABoolean; stdcall; deprecated; // Use TryStrToFloat64WS()
-{$ELSE}
 function TryStrToFloat64(const S: AString_Type; var Value: AFloat64): ABoolean; stdcall;
-{$ENDIF AUTILSOLD}
 
 { Преобразует строку в Float64. Разделителем может быть как точка, так и запятая.
   В исходной строке могут присутствовать начальные и конечные пробелы. }
@@ -378,11 +296,7 @@ function TryStrToFloatP(const S: APascalString; var Value: AFloat): ABoolean; st
   В исходной строке могут присутствовать начальные и конечные пробелы. }
 function TryStrToFloatWS(const S: AWideString; var Value: AFloat): ABoolean; stdcall;
 
-{$IFDEF AUTILSOLD}
-function TryStrToInt(const S: AWideString; var Value: AInteger): ABoolean; stdcall; deprecated; // Use TryStrToIntWS()
-{$ELSE}
 function TryStrToInt(const S: AString_Type; var Value: AInteger): ABoolean; stdcall;
-{$ENDIF AUTILSOLD}
 
 function TryStrToIntWS(const S: AWideString; var Value: AInteger): ABoolean; stdcall;
 
@@ -390,11 +304,7 @@ function UpperStringP(const S: APascalString): APascalString; stdcall; deprecate
 
 { Trims leading and trailing spaces and control characters from a string.
   Удаляет первые и последние пробелы }
-{$IFDEF AUTILSOLD}
-function Trim(const S: AWideString): AWideString; stdcall; deprecated; // Use TrimWS()
-{$ELSE}
 function Trim(const S: AString_Type; out Res: AString_Type): AInteger; stdcall;
-{$ENDIF AUTILSOLD}
 
 { Trims leading and trailing spaces and control characters from a string.
   Удаляет первые и последние пробелы. }
@@ -414,6 +324,8 @@ procedure Sleep02(Milliseconds: AUInt); stdcall;
 function Time_Now(): TDateTime; stdcall; // Use GetNowDateTime()
 
 { Utils }
+
+{$ifdef ADepr}
 
 // TODO: Убрать stdcall
 // TODO: Перенести в AUtilsMain
@@ -447,10 +359,6 @@ function Utils_ReplaceComma(const S: APascalString; DecimalSeparator: AChar = #0
 procedure Utils_Sleep(Milliseconds: AUInt); stdcall;
 
 function Utils_Time_Now: TDateTime; stdcall; // Use GetNowDateTime()
-
-{$IFDEF AUTILSOLD}
-function Utils_Trim(const S: APascalString): APascalString; deprecated; // Use TrimWS()
-{$ENDIF AUTILSOLD}
 
 function Utils_StrToFloat(const Value: APascalString): AFloat; stdcall;
 function Utils_StrToFloat1(const S: APascalString; DefValue: AFloat = 0): AFloat; stdcall; deprecated;
@@ -501,12 +409,16 @@ type // Тип версии системы
 function WinVersion: TWinVersion;
 {$ENDIF}
 
+{$endif ADepr}
+
 implementation
 
 uses
   AUtilsMain;
 
 { Private }
+
+{$ifdef ADepr}
 
 {$IFNDEF FPC}
 function WinVersion: TWinVersion;
@@ -536,6 +448,8 @@ begin
   end;
 end;
 {$ENDIF}
+
+{$endif ADepr}
 
 { Utils }
 
@@ -589,17 +503,10 @@ begin
   Result := AUtils_ExpandFileNameWS(FileName);
 end;
 
-{$IFDEF AUTILSOLD}
-function ExtractFileExt(const FileName: AWideString): AWideString; stdcall;
-begin
-  Result := AUtils_ExtractFileExtWS(FileName);
-end;
-{$ELSE}
 function ExtractFileExt(const FileName: AString_Type; out Res: AString_Type): AInteger; stdcall;
 begin
   Result := AUtils_ExtractFileExt(FileName, Res);
 end;
-{$ENDIF AUTILSOLD}
 
 function ExtractFileExtP(const FileName: APascalString): APascalString; stdcall;
 begin
@@ -611,13 +518,10 @@ begin
   Result := AUtils_ExtractFileExtWS(FileName);
 end;
 
-{$IFDEF AUTILSOLD}
-{$ELSE}
 function ExtractFilePath(const FileName: AString_Type; out Res: AString_Type): AInteger; stdcall;
 begin
   Result := AUtils_ExtractFilePath(FileName, Res);
 end;
-{$ENDIF AUTILSOLD}
 
 function ExtractFilePathP(const FileName: APascalString): APascalString; stdcall;
 begin
@@ -629,17 +533,10 @@ begin
   Result := AUtils_ExtractFilePathWS(FileName);
 end;
 
-{$IFDEF AUTILSOLD}
-function FileExists(const FileName: AWideString): ABoolean; stdcall;
-begin
-  Result := AUtils_FileExistsWS(FileName);
-end;
-{$ELSE}
 function FileExists(const FileName: AString_Type): ABoolean; stdcall;
 begin
   Result := AUtils_FileExists(FileName);
 end;
-{$ENDIF AUTILSOLD}
 
 function FileExistsP(const FileName: APascalString): ABoolean; stdcall;
 begin
@@ -651,33 +548,16 @@ begin
   Result := AUtils_FileExistsWS(FileName);
 end;
 
-{$IFDEF AUTILSOLD}
-function FloatToStr(Value: AFloat): APascalString; stdcall;
-begin
-  Result := SysUtils.FloatToStr(Value);
-end;
-{$ELSE}
 function FloatToStr(Value: AFloat; out Res: AString_Type): AInteger; stdcall;
 begin
   Result := AUtils_FloatToStr(Value, Res);
 end;
-{$ENDIF AUTILSOLD}
 
 function FloatToStr2WS(Value: AFloat; DigitsAfterComma: Integer; ReplaceComma, Delimer: ABoolean): AWideString; stdcall;
 begin
   Result := AUtils_FloatToStr2WS(Value, DigitsAfterComma, ReplaceComma, Delimer);
 end;
 
-{$IFDEF AUTILSOLD}
-function FloatToStrA(Value: AFloat; DigitsAfterComma: Integer = 2): AWideString; stdcall;
-begin
-  try
-    Result := Utils_FloatToStrA(Value, DigitsAfterComma);
-  except
-    Result := '';
-  end;
-end;
-{$ELSE}
 function FloatToStrA(Value: AFloat; DigitsAfterComma: AInteger; out Res: AString_Type): AInteger; stdcall;
 begin
   try
@@ -686,7 +566,6 @@ begin
     Result := 0;
   end;
 end;
-{$ENDIF AUTILSOLD}
 
 function FloatToStrAP(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall;
 begin
@@ -706,16 +585,6 @@ begin
   end;
 end;
 
-{$IFDEF AUTILSOLD}
-function FloatToStrB(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall;
-begin
-  try
-    Result := AUtilsMain.Utils_FloatToStrB(Value, DigitsAfterComma);
-  except
-    Result := '';
-  end;
-end;
-{$ELSE}
 function FloatToStrB(Value: AFloat; Digits: AInteger; out Res: AString_Type): AInteger; stdcall;
 begin
   try
@@ -724,7 +593,6 @@ begin
     Result := 0;
   end;
 end;
-{$ENDIF AUTILSOLD}
 
 function FloatToStrBP(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall;
 begin
@@ -744,16 +612,6 @@ begin
   end;
 end;
 
-{$IFDEF AUTILSOLD}
-function FloatToStrC(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall;
-begin
-  try
-    Result := AUtilsMain.Utils_FloatToStrC(Value, DigitsAfterComma);
-  except
-    Result := '';
-  end;
-end;
-{$ELSE}
 function FloatToStrC(Value: AFloat; Digits: AInteger; out Res: AString_Type): AInteger; stdcall;
 begin
   try
@@ -762,7 +620,6 @@ begin
     Result := 0;
   end;
 end;
-{$ENDIF AUTILSOLD}
 
 function FloatToStrCP(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall;
 begin
@@ -834,17 +691,10 @@ begin
   Result := AUtils_FormatFloatWS(Value, DigitsBeforeComma, DigitsAfterComma);
 end;
 
-{$IFDEF AUTILSOLD}
-function FormatInt(Value, Count: AInteger): AWideString; stdcall;
-begin
-  Result := AUtils_FormatIntWS(Value, Count);
-end;
-{$ELSE}
 function FormatInt(Value, Count: AInteger; out Res: AString_Type): AInteger; stdcall;
 begin
   Result := AUtils_FormatInt(Value, Count, Res);
 end;
-{$ENDIF AUTILSOLD}
 
 function FormatIntP(Value, Count: AInteger): APascalString; stdcall;
 begin
@@ -896,17 +746,10 @@ begin
   Result := AUtils_Init();
 end;
 
-{$IFDEF AUTILSOLD}
-function IntToStr(Value: AInteger): AWideString; stdcall;
-begin
-  Result := AUtils_IntToStrWS(Value);
-end;
-{$ELSE}
 function IntToStr(Value: AInteger; out Res: AString_Type): AInteger; stdcall;
 begin
   Result := AUtils_IntToStr(Value, Res);
 end;
-{$ENDIF AUTILSOLD}
 
 function IntToStrP(Value: AInteger): APascalString; stdcall;
 begin
@@ -923,21 +766,10 @@ begin
   Result := AUtils_NormalizeFloat(Value);
 end;
 
-{$IFDEF AUTILSOLD}
-function NormalizeStr(const Value: AWideString): AWideString; stdcall;
-begin
-  try
-    Result := Utils_NormalizeStr(Value);
-  except
-    Result := '';
-  end;
-end;
-{$ELSE}
 function NormalizeStr(const Value: AString_Type; out Res: AString_Type): AInteger; stdcall;
 begin
   Result := AUtils_NormalizeStr(Value, Res);
 end;
-{$ENDIF AUTILSOLD}
 
 function NormalizeStrP(const Value: APascalString): APascalString; stdcall;
 begin
@@ -969,19 +801,11 @@ begin
   Result := AUtils_Power(Base, Exponent);
 end;
 
-{$IFDEF AUTILSOLD}
-function ReplaceComma(const S: AWideString; DecimalSeparator: AChar = #0;
-    ClearSpace: ABoolean = True): AWideString; stdcall;
-begin
-  Result := AUtils_ReplaceCommaWS(S, DecimalSeparator, ClearSpace);
-end;
-{$ELSE}
 function ReplaceComma(const S: AString_Type; DecimalSeparator: AChar;
     ClearSpace: ABoolean; out Res: AString_Type): AInteger; stdcall;
 begin
   Result := AUtils_ReplaceComma(S, DecimalSeparator, ClearSpace, Res);
 end;
-{$ENDIF AUTILSOLD}
 
 function ReplaceCommaP(const S: APascalString; DecimalSeparator: AChar = #0;
     ClearSpace: ABoolean = True): APascalString; stdcall;
@@ -1043,67 +867,38 @@ begin
   Result := AString_ToUpperWS(S);
 end;
 
-{$IFDEF AUTILSOLD}
-function StrToDate(const Value: AWideString): TDateTime; stdcall;
-begin
-  try
-    Result := Utils_StrToDate(Value);
-  except
-    Result := 0;
-  end;
-end;
-{$ELSE}
 function StrToDate(const Value: AString_Type): TDateTime; stdcall;
 begin
   try
-    Result := Utils_StrToDate(AStrings.String_ToWideString(Value));
+    Result := AUtils_StrToDateP(AString_ToPascalString(Value));
   except
     Result := 0;
   end;
 end;
-{$ENDIF AUTILSOLD}
 
 function StrToDateA(Value: PAnsiChar): TDateTime; stdcall;
 begin
-  try
-    Result := Utils_StrToDate(Value);
-  except
-    Result := 0;
-  end;
+  Result := AUtils_StrToDateP(Value);
 end;
 
 function StrToDateWS(const Value: AWideString): TDateTime; stdcall;
 begin
-  try
-    Result := Utils_StrToDate(Value);
-  except
-    Result := 0;
-  end;
+  Result := AUtils_StrToDateP(Value);
 end;
 
-{$IFDEF AUTILSOLD}
-{$ELSE}
 function StrToFloat(const Value: AString_Type): AFloat; stdcall;
 begin
   try
-    Result := Utils_StrToFloat(AStrings.String_ToWideString(Value));
+    Result := AUtils_StrToFloatP(AString_ToPascalString(Value));
   except
     Result := 0;
   end;
 end;
-{$ENDIF AUTILSOLD}
 
-{$IFDEF AUTILSOLD}
-function StrToFloat1(const S: APascalString; DefValue: AFloat = 0): AFloat; stdcall;
-begin
-  Result := StrToFloatDefP(S, DefValue);
-end;
-{$ELSE}
 function StrToFloat1(const S: AString_Type; DefValue: AFloat): AFloat; stdcall;
 begin
   Result := StrToFloatDef(S, DefValue);
 end;
-{$ENDIF AUTILSOLD}
 
 function StrToFloatDef(const S: AString_Type; DefValue: AFloat): AFloat; stdcall;
 begin
@@ -1144,21 +939,14 @@ begin
   Result := StrToFloatDefP(S, 0);
 end;
 
-{$IFDEF AUTILSOLD}
-function StrToInt(const S: AWideString): AInteger; stdcall;
-begin
-  Result := StrToIntDefP(S, 0);
-end;
-{$ELSE}
 function StrToInt(const Value: AString_Type): AInteger; stdcall;
 begin
   try
-    Result := Utils_StrToInt(AStrings.String_ToWideString(Value));
+    Result := AUtils_StrToIntP(AString_ToPascalString(Value));
   except
     Result := 0;
   end;
 end;
-{$ENDIF AUTILSOLD}
 
 function StrToInt1(const S: APascalString; DefValue: AInteger = 0): AInteger; stdcall;
 begin
@@ -1197,32 +985,17 @@ end;
 
 function Time_Now: TDateTime; stdcall;
 begin
-  try
-    Result := Utils_Time_Now;
-  except
-    Result := 0;
-  end;
+  Result := AUtils_GetNowDateTime();
 end;
 
-{$IFDEF AUTILSOLD}
-function Trim(const S: AWideString): AWideString; stdcall;
-begin
-  try
-    Result := Utils_Trim(S);
-  except
-    Result := '';
-  end;
-end;
-{$ELSE}
 function Trim(const S: AString_Type; out Res: AString_Type): AInteger; stdcall;
 begin
   try
-    Result := AStrings.String_AssignWS(Res, Utils_Trim(AStrings.String_ToWideString(S)));
+    Result := AString_AssignP(Res, AUtils_TrimP(AString_ToPascalString(S)));
   except
     Result := 0;
   end;
 end;
-{$ENDIF AUTILSOLD}
 
 function TrimP(const S: APascalString): APascalString; stdcall;
 begin
@@ -1242,16 +1015,6 @@ begin
   end;
 end;
 
-{$IFDEF AUTILSOLD}
-function TryStrToDate(const S: AWideString; var Value: TDateTime): ABoolean; stdcall;
-begin
-  try
-    Result := AUtilsMain.Utils_TryStrToDate(S, Value);
-  except
-    Result := False;
-  end;
-end;
-{$ELSE}
 function TryStrToDate(const S: AString_Type; var Value: TDateTime): ABoolean; stdcall;
 begin
   try
@@ -1260,7 +1023,6 @@ begin
     Result := False;
   end;
 end;
-{$ENDIF AUTILSOLD}
 
 function TryStrToDateP(const S: APascalString; var Value: TDateTime): ABoolean; stdcall;
 begin
@@ -1280,16 +1042,6 @@ begin
   end;
 end;
 
-{$IFDEF AUTILSOLD}
-function TryStrToFloat(const S: AWideString; var Value: AFloat): ABoolean; stdcall;
-begin
-  try
-    Result := AUtilsMain.Utils_TryStrToFloat(S, Value);
-  except
-    Result := False;
-  end;
-end;
-{$ELSE}
 function TryStrToFloat(const S: AString_Type; var Value: AFloat): ABoolean; stdcall;
 begin
   try
@@ -1298,18 +1050,7 @@ begin
     Result := False;
   end;
 end;
-{$ENDIF AUTILSOLD}
 
-{$IFDEF AUTILSOLD}
-function TryStrToFloat32(const S: AWideString; var Value: AFloat32): ABoolean; stdcall;
-begin
-  try
-    Result := AUtilsMain.Utils_TryStrToFloat32(S, Value);
-  except
-    Result := False;
-  end;
-end;
-{$ELSE}
 function TryStrToFloat32(const S: AString_Type; var Value: AFloat32): ABoolean; stdcall;
 begin
   try
@@ -1318,7 +1059,6 @@ begin
     Result := False;
   end;
 end;
-{$ENDIF AUTILSOLD}
 
 function TryStrToFloat32P(const S: APascalString; var Value: AFloat32): ABoolean; stdcall;
 begin
@@ -1338,16 +1078,6 @@ begin
   end;
 end;
 
-{$IFDEF AUTILSOLD}
-function TryStrToFloat64(const S: AWideString; var Value: AFloat64): ABoolean; stdcall;
-begin
-  try
-    Result := AUtilsMain.Utils_TryStrToFloat64(S, Value);
-  except
-    Result := False;
-  end;
-end;
-{$ELSE}
 function TryStrToFloat64(const S: AString_Type; var Value: AFloat64): ABoolean; stdcall;
 begin
   try
@@ -1356,7 +1086,6 @@ begin
     Result := False;
   end;
 end;
-{$ENDIF AUTILSOLD}
 
 function TryStrToFloat64P(const S: APascalString; var Value: AFloat64): ABoolean; stdcall;
 begin
@@ -1394,16 +1123,6 @@ begin
   end;
 end;
 
-{$IFDEF AUTILSOLD}
-function TryStrToInt(const S: AWideString; var Value: AInteger): ABoolean; stdcall;
-begin
-  try
-    Result := Utils_TryStrToInt(S, Value);
-  except
-    Result := False;
-  end;
-end;
-{$ELSE}
 function TryStrToInt(const S: AString_Type; var Value: AInteger): ABoolean; stdcall;
 begin
   try
@@ -1412,7 +1131,6 @@ begin
     Result := False;
   end;
 end;
-{$ENDIF AUTILSOLD}
 
 function TryStrToIntWS(const S: AWideString; var Value: AInteger): ABoolean; stdcall;
 begin
@@ -1425,19 +1143,12 @@ end;
 
 function UpperStringP(const S: APascalString): APascalString; stdcall;
 begin
-  try
-    Result := Utils_UpperString(S);
-  except
-    Result := '';
-  end;
+  Result := AString_ToUpperP(S);
 end;
 
 { Utils }
 
-function Utils_Done(): AError;
-begin
-  Result := AUtils_Fin();
-end;
+{$ifdef ADepr}
 
 function Utils_FloatToStr(Value: AFloat): APascalString; stdcall;
 begin
@@ -1484,11 +1195,6 @@ begin
   Result := AUtils_FormatStrAnsi(Value, Len);
 end;
 
-function Utils_Init(): AError;
-begin
-  Result := AUtils_Init();
-end;
-
 function Utils_NormalizeFloat(Value: AFloat): AFloat; stdcall;
 begin
   Result := AUtils_NormalizeFloat(Value);
@@ -1531,7 +1237,7 @@ end;
 
 function Utils_StrToDate(const Value: APascalString): TDateTime;
 begin
-  Result := SysUtils.StrToDate(Value);
+  Result := AUtils_StrToDateP(Value);
 end;
 
 function Utils_StrToFloat(const Value: APascalString): AFloat;
@@ -1546,7 +1252,7 @@ end;
 
 function Utils_StrToInt(const Value: APascalString): AInteger;
 begin
-  Result := SysUtils.StrToInt(Value);
+  Result := AUtils_StrToIntP(Value);
 end;
 
 function Utils_StrToInt1(const S: APascalString; DefValue: AInteger = 0): AInteger;
@@ -1556,7 +1262,7 @@ end;
 
 function Utils_Time_Now: TDateTime;
 begin
-  Result := GetNowDateTime();
+  Result := AUtils_GetNowDateTime();
 end;
 
 function Utils_Trim(const S: APascalString): APascalString;
@@ -1591,8 +1297,10 @@ end;
 
 function Utils_UpperString(const S: APascalString): APascalString;
 begin
-  Result := Utils_String_ToUpper(S);
+  Result := AString_ToUpperP(S);
 end;
+
+{$endif ADepr}
 
 end.
 

@@ -160,7 +160,13 @@ function AUtils_Sleep(Milliseconds: AUInt): AError; stdcall;
 
 function AUtils_StrToDateP(const Value: APascalString): TDateTime;
 
-function AUtils_StrToFloatP(const Value: APascalString): AFloat; 
+{** ѕреобразует строку в Float. –азделителем может быть как точка, так и зап€та€.
+    ¬ исходной строке могут присутствовать начальные и конечные пробелы. }
+function AUtils_StrToFloatDefP(const S: APascalString; DefValue: AFloat): AFloat; 
+
+function AUtils_StrToFloatP(const Value: APascalString): AFloat;
+
+function AUtils_StrToIntDefP(const S: APascalString; DefValue: AInteger): AInteger; 
 
 function AUtils_StrToIntP(const Value: APascalString): AInteger;
 
@@ -946,12 +952,32 @@ begin
   end;
 end;
 
+function AUtils_StrToFloatDefP(const S: APascalString; DefValue: AFloat): AFloat;
+var
+  Value: AFloat64;
+begin
+  if AUtils_TryStrToFloat64P(S, Value) then
+    Result := Value
+  else
+    Result := DefValue;
+end;
+
 function AUtils_StrToFloatP(const Value: APascalString): AFloat;
 begin
   try
     Result := SysUtils.StrToFloat(Value);
   except
     Result := 0;
+  end;
+end;
+
+function AUtils_StrToIntDefP(const S: APascalString; DefValue: AInteger): AInteger;
+begin
+  try
+    if not(AUtils_TryStrToIntP(S, Result)) then
+      Result := DefValue;
+  except
+    Result := DefValue;
   end;
 end;
 

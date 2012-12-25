@@ -903,40 +903,30 @@ end;
 function StrToFloatDef(const S: AString_Type; DefValue: AFloat): AFloat; stdcall;
 begin
   try
-    Result := StrToFloatDefP(AStrings.String_ToWideString(S), DefValue);
+    Result := AUtils_StrToFloatDefP(AString_ToPascalString(S), DefValue);
   except
-    Result := 0;
+    Result := DefValue;
   end;
 end;
 
 function StrToFloatDefP(const S: APascalString; DefValue: AFloat): AFloat; stdcall;
-var
-  Value: AFloat64;
 begin
-  if TryStrToFloat64P(S, Value) then
-    Result := Value
-  else
-    Result := DefValue;
+  Result := AUtils_StrToFloatDefP(S, DefValue);
 end;
 
 function StrToFloatDefWS(const S: AWideString; DefValue: AFloat): AFloat; stdcall;
-var
-  Value: AFloat64;
 begin
-  if TryStrToFloat64P(S, Value) then
-    Result := Value
-  else
-    Result := DefValue;
+  Result := AUtils_StrToFloatDefP(S, DefValue);
 end;
 
 function StrToFloatP(const S: APascalString): AFloat; stdcall;
 begin
-  Result := StrToFloatDefP(S, 0);
+  Result := AUtils_StrToFloatDefP(S, 0);
 end;
 
 function StrToFloatWS(const S: AWideString): AFloat; stdcall;
 begin
-  Result := StrToFloatDefP(S, 0);
+  Result := AUtils_StrToFloatDefP(S, 0);
 end;
 
 function StrToInt(const Value: AString_Type): AInteger; stdcall;
@@ -950,37 +940,27 @@ end;
 
 function StrToInt1(const S: APascalString; DefValue: AInteger = 0): AInteger; stdcall;
 begin
-  Result := StrToIntDefP(S, DefValue);
+  Result := AUtils_StrToIntDefP(S, DefValue);
 end;
 
 function StrToIntDefP(const S: APascalString; DefValue: AInteger): AInteger; stdcall;
 begin
-  try
-    if not(AUtilsMain.Utils_TryStrToInt(S, Result)) then
-      Result := DefValue;
-  except
-    Result := DefValue;
-  end;
+  Result := AUtils_StrToIntDefP(S, DefValue);
 end;
 
 function StrToIntDefWS(const S: AWideString; DefValue: AInteger): AInteger; stdcall;
 begin
-  try
-    if not(AUtilsMain.Utils_TryStrToInt(S, Result)) then
-      Result := DefValue;
-  except
-    Result := DefValue;
-  end;
+  Result := AUtils_StrToIntDefP(S, DefValue);
 end;
 
 function StrToIntP(const S: APascalString): AInteger; stdcall;
 begin
-  Result := StrToIntDefP(S, 0);
+  Result := AUtils_StrToIntDefP(S, 0);
 end;
 
 function StrToIntWS(const S: AWideString): AInteger; stdcall;
 begin
-  Result := StrToIntDefP(S, 0);
+  Result := AUtils_StrToIntDefP(S, 0);
 end;
 
 function Time_Now: TDateTime; stdcall;

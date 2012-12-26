@@ -2,14 +2,21 @@
 @Abstract AUi Splash
 @Author Prof1983 <prof1983@ya.ru>
 @Created 08.12.2009
-@LastMod 20.11.2012
+@LastMod 26.12.2012
 }
 unit AUiSplash;
 
 interface
 
 uses
-  ABase, ASettings, AStringUtils, ASystemEvents, ASystemMain, AUi, AUiBase, AUtils;
+  ABase,
+  ASettings,
+  AStringUtils,
+  ASystemEvents,
+  ASystemMain,
+  AUi,
+  AUiBase,
+  AUtilsMain;
 
 {** Finalize splash }
 function AUiSplash_Fin(): AError; stdcall;
@@ -119,11 +126,11 @@ begin
     Exit;
   end;
   try
-    while (AUtils.GetNowDateTime() - FStartTime < cTime/(24*60*60)) do
+    while (AUtils_GetNowDateTime() - FStartTime < cTime/(24*60*60)) do
     begin
       AUI.Control_SetVisible(SplashWin, True);
       ASystem_ProcessMessages();
-      AUtils.Sleep(50);
+      AUtils_Sleep(50);
     end;
     AUI.Control_Free(SplashWin);
     SplashWin := 0;
@@ -220,25 +227,25 @@ begin
           AUI.TextView_SetWordWrap(TextView, False);
     end;
 
-    FStartTime := AUtils.GetNowDateTime();
+    FStartTime := AUtils_GetNowDateTime();
 
     if (FImageFileName = '') then
     begin
       S := ASystem_GetDataDirectoryPathP() + ASystem_GetProgramNameP() + '.png';
-      if AUtils.FileExistsWS(S) then
+      if AUtils_FileExistsP(S) then
         FImageFileName := S;
     end;
 
     if (FImageFileName = '') then
     begin
       S := ASystem_GetDataDirectoryPathP() + ASystem_GetProgramNameP() + '.bmp';
-      if AUtils.FileExistsWS(S) then
+      if AUtils_FileExistsP(S) then
         FImageFileName := S;
     end;
 
     if (FImageFileName <> '') then
     begin
-      if AUtils.FileExistsWS(FImageFileName) then
+      if AUtils_FileExistsP(FImageFileName) then
         AUI.Image_LoadFromFileWS(Image, FImageFileName);
     end;
 
@@ -262,7 +269,7 @@ end;
 function AUiSplash_Sleep(): AError;
 begin
   try
-    AUtils.Sleep(1000);
+    AUtils_Sleep(1000);
     Result := 0;
   except
     Result := -1;

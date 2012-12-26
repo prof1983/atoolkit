@@ -14,6 +14,7 @@ uses
   ABase,
   ABaseTypes,
   ADataBase,
+  ADataConnections,
   ADataMain;
 
 function Init(): AError; stdcall;
@@ -77,134 +78,67 @@ end;
 
 function Database_ChangeDataSet(Database: ADataConnection; DataSet: ADataSet; const SelectSql: AWideString): AError; stdcall;
 begin
-  try
-    ADataUtils.Database_ChangeDataSet(Database, DataSet, SelectSql);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := ADataConnection_ChangeDataSetWS(Database, DataSet, SelectSql);
 end;
 
 function Database_CheckDatabaseStructure(Database: ADataConnection; Struct: ADataStructure; Logger: TAddToLogWSProc): ABoolean; stdcall;
 begin
-  try
-    Result := ADataUtils.Database_CheckDatabaseStructure(Database, Struct, Logger);
-  except
-    Result := False;
-  end;
+  Result := ADataConnection_CheckDatabaseStructure(Database, Struct, Logger);
 end;
 
 function Database_CheckTableStructure(Database: ADataConnection; TableStruct: ATableStructure; Logger: TAddToLogWSProc): ABoolean; stdcall;
-var
-  I: IADatabase;
 begin
-  I := IADatabase(Database);
-  if Assigned(I) then
-    Result := I.CheckTableStructure(IATableStructure(TableStruct), Logger)
-  else
-    Result := False;
+  Result := ADataConnection_CheckTableStructure(Database, TableStruct, Logger);
 end;
 
 procedure Database_Close(Database: ADataConnection); stdcall;
-var
-  I: IADatabase;
 begin
-  I := IADatabase(Database);
-  if Assigned(I) then
-    I.Close;
+  ADataConnection_Close(Database);
 end;
 
 function Database_Connect(Database: ADataConnection): ABoolean; stdcall;
-var
-  I: IADatabase;
 begin
-  I := IADatabase(Database);
-  if Assigned(I) then
-    Result := I.Connect
-  else
-    Result := False;
+  Result := ADataConnection_Connect(Database);
 end;
 
 function Database_CreateDatabase(Database: ADataConnection): ABoolean; stdcall;
-var
-  I: IADatabase;
 begin
-  I := IADatabase(Database);
-  if Assigned(I) then
-    Result := I.CreateDatabase
-  else
-    Result := False;
+  Result := ADataConnection_CreateDatabase(Database);
 end;
 
 procedure Database_Disconnect(Database: ADataConnection); stdcall;
-var
-  I: IADatabase;
 begin
-  I := IADatabase(Database);
-  if Assigned(I) then
-    I.Disconnect;
+  ADataConnection_Disconnect(Database);
 end;
 
 function Database_ExecuteSql(Database: ADataConnection; const Sql: AWideString): ABoolean; stdcall;
-var
-  I: IADatabase;
 begin
-  I := IADatabase(Database);
-  if Assigned(I) then
-    Result := I.ExecuteSql(Sql)
-  else
-    Result := False;
+  Result := ADataConnection_ExecuteSqlWS(Database, Sql);
 end;
 
 function Database_GetConnected(Database: ADataConnection): ABoolean; stdcall;
-var
-  I: IADatabase;
 begin
-  I := IADatabase(Database);
-  if Assigned(I) then
-    Result := I.GetConnected
-  else
-    Result := False;
+  Result := ADataConnection_GetConnected(Database);
 end;
 
 function Database_GetConnectionString(Database: ADataConnection): AWideString; stdcall;
-var
-  I: IADatabase;
 begin
-  I := IADatabase(Database);
-  if Assigned(I) then
-    Result := I.GetConnectionString
-  else
-    Result := '';
+  Result := ADataConnection_GetConnectionStringWS(Database);
 end;
 
 function Database_NewDataSet(Database: ADataConnection; const SelectSqlText: AWideString; ReadOnly: ABoolean): ADataSet; stdcall;
-var
-  FDatabase: IADatabase;
 begin
-  FDatabase := IADatabase(Database);
-  FDatabase._AddRef();
-  Result := FDatabase.NewDataSet(SelectSqlText, ReadOnly);
-  FDatabase._Release();
+  Result := ADataConnection_NewDataSetWS(Database, SelectSqlText, ReadOnly);
 end;
 
 function Database_NewDataSetA(Database: ADataConnection; const SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText, RefreshSqlText: AWideString): ADataSet; stdcall;
-var
-  FDatabase: IADatabase;
 begin
-  FDatabase := IADatabase(Database);
-  FDatabase._AddRef();
-  Result := FDatabase.NewDataSetA(SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText, RefreshSqlText);
-  FDatabase._Release();
+  Result := ADataConnection_NewDataSet2WS(Database, SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText, RefreshSqlText);
 end;
 
 procedure Database_SetConnectionString(Database: ADataConnection; const Value: AWideString); stdcall;
 begin
-  if (Database <> 0) then
-  try
-    IADatabase(Database).SetConnectionString(Value);
-  except
-  end;
+  ADataConnection_SetConnectionStringWS(Database, Value);
 end;
 
 { DataSet }

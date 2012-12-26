@@ -2,7 +2,7 @@
 @Abstract Утилиты для проверки и создания базы данных по определенной структуре
 @Author Prof1983 <prof1983@ya.ru>
 @Created 04.07.2008
-@LastMod 19.07.2012
+@LastMod 26.12.2012
 }
 unit ADatabaseUtils;
 
@@ -10,7 +10,8 @@ interface
 
 uses
   Classes, DB, SysUtils, Variants, Windows,
-  ADataTypes, AUtils;
+  ADataTypes,
+  AUtilsMain;
 
 type
   TExecSqlProc = procedure(Sql: string);
@@ -82,8 +83,8 @@ end;
 function FieldTypeToStr(FieldType: TAFieldType; FieldSize: Integer): string;
 begin
   case FieldType of
-    aftString: Result := STR_FIELD_TYPE_FB[FieldType] + '(' + AUtils.IntToStrWS(FieldSize) + ')';
-    aftNumeric: Result := STR_FIELD_TYPE_FB[FieldType] + '(' + AUtils.IntToStrWS(FieldSize) + ',3)';
+    aftString: Result := STR_FIELD_TYPE_FB[FieldType] + '(' + AUtils_IntToStrP(FieldSize) + ')';
+    aftNumeric: Result := STR_FIELD_TYPE_FB[FieldType] + '(' + AUtils_IntToStrP(FieldSize) + ',3)';
   else
     Result := STR_FIELD_TYPE_FB[FieldType];
   end;
@@ -126,8 +127,8 @@ begin
   case Field.DataType of
     ftBoolean: Result := 'NULL';
     ftString, ftDate, ftTime: if Field.IsNull then Result := 'NULL' else Result := '''' + Field.AsString + '''';
-    ftFloat: Result := AUtils.ReplaceCommaWS(AUtils.FloatToStrWS(Field.AsFloat), '.');
-    ftSmallInt, ftInteger: if Field.IsNull then Result := 'NULL' else Result := AUtils.IntToStrWS(Field.AsInteger);
+    ftFloat: Result := AUtils_ReplaceCommaP(AUtils_FloatToStrP(Field.AsFloat), '.');
+    ftSmallInt, ftInteger: if Field.IsNull then Result := 'NULL' else Result := AUtils_IntToStrP(Field.AsInteger);
   else
     if Field.IsNull then Result := 'NULL' else Result := Field.AsString;
   end;

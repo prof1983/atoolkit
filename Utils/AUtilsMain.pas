@@ -2,7 +2,7 @@
 @Abstract AUtils - Main
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.09.2011
-@LastMod 25.12.2012
+@LastMod 26.12.2012
 }
 unit AUtilsMain;
 
@@ -623,7 +623,7 @@ begin
       Result := Format(FormatS,[Value]);
     end
     else
-      Result := Utils_FloatToStrB(Value, DigitsAfterComma);
+      Result := AUtils_FloatToStrBP(Value, DigitsAfterComma);
   except
     Result := '';
   end;
@@ -966,11 +966,8 @@ end;
 
 function AUtils_StrToFloatP(const Value: APascalString): AFloat;
 begin
-  try
-    Result := SysUtils.StrToFloat(Value);
-  except
+  if not(AUtils_TryStrToFloatP(Value, Result)) then
     Result := 0;
-  end;
 end;
 
 function AUtils_StrToIntDefP(const S: APascalString; DefValue: AInteger): AInteger;
@@ -985,11 +982,8 @@ end;
 
 function AUtils_StrToIntP(const Value: APascalString): AInteger;
 begin
-  try
-    Result := SysUtils.StrToInt(Value);
-  except
+  if not(AUtils_TryStrToIntP(Value, Result)) then
     Result := 0;
-  end;
 end;
 
 function AUtils_TrimP(const S: APascalString): APascalString;

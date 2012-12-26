@@ -2,7 +2,7 @@
 @Abstract AModuleManager main functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.11.2012
-@LastMod 22.11.2012
+@LastMod 26.12.2012
 }
 unit AModuleManagerMain;
 
@@ -14,7 +14,13 @@ uses
   ABase,
   ARuntimeMain,
   ASystemResourceString,
-  AUiBase, AUiControls, AUiListBox, AUiMain, AUiMainWindow, AUiMenus, AUiWindows,
+  AUiBase,
+  AUiControls,
+  AUiListBox,
+  AUiMain,
+  AUiMainWindow2,
+  AUiMenus,
+  AUiWindows,
   AUiWorkbenchMain;
 
 function AModuleManager_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}

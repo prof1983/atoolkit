@@ -255,7 +255,7 @@ var
   Res: AWindow;
 begin
   try
-    Dialog := AUi_NewDialog(MB_ApplyOkCancel);
+    Dialog := AUiDialog_New(MB_ApplyOkCancel);
     Res := AUiDialog_GetWindow(Dialog);
     if (Res = 0) then
     begin

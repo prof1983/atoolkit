@@ -2,7 +2,7 @@
 @Abstract ASettingsConfig
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 24.12.2012
+@LastMod 26.12.2012
 }
 unit ASettingsConfig;
 
@@ -67,10 +67,7 @@ end;
 
 function Settings_ReadFloat(Config: AConfig; const Section, Name: APascalString; DefValue: AFloat): AFloat;
 begin
-  if (Config <> 0) then
-    Result := TAbstractSettings(Config).ReadFloat(Section, Name, DefValue)
-  else
-    Result := DefValue;
+  Result := ASettings_ReadFloatDefP(Config, Section, Name, DefValue);
 end;
 
 function Settings_ReadInteger(Config: AConfig; const Section, Name: APascalString; DefValue: AInteger): AInteger;

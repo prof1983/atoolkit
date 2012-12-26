@@ -2,7 +2,7 @@
 @Abstract ASettings main functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.08.2012
-@LastMod 24.12.2012
+@LastMod 26.12.2012
 }
 unit ASettingsMain;
 
@@ -25,6 +25,8 @@ function ASettings_Close(Config: AConfig): AError; stdcall;
 function ASettings_ReadBoolDef(Config: AConfig; const Section, Name: AString_Type; DefValue: ABoolean): ABoolean; stdcall;
 
 function ASettings_ReadBoolDefP(Config: AConfig; const Section, Name: APascalString; DefValue: ABoolean): ABoolean;
+
+function ASettings_ReadFloatDefP(Config: AConfig; const Section, Name: APascalString; DefValue: AFloat): AFloat;
 
 function ASettings_ReadIntegerDefP(Config: AConfig; const Section, Name: APascalString; DefValue: AInteger): AInteger;
 
@@ -91,6 +93,25 @@ begin
     if (AConfig_ReadBool(Config, Name, Result) >= 0) then
       Exit;
     {$endif}
+    Result := DefValue;
+  end;
+end;
+
+function ASettings_ReadFloatDefP(Config: AConfig; const Section, Name: APascalString; DefValue: AFloat): AFloat;
+begin
+  if (Config = 0) then
+  begin
+    Result := DefValue;
+    Exit;
+  end;
+  if not(TObject(Config) is TAbstractSettings) then
+  begin
+    Result := DefValue;
+    Exit;
+  end;
+  try
+    Result := TAbstractSettings(Config).ReadFloat(Section, Name, DefValue);
+  except
     Result := DefValue;
   end;
 end;

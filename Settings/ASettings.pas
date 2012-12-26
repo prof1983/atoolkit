@@ -2,7 +2,7 @@
 @Abstract The module for work with the settings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 24.12.2012
+@LastMod 26.12.2012
 }
 unit ASettings;
 
@@ -618,11 +618,7 @@ end;
 
 function Config_ReadFloatDefP(Config: AConfig; const Section, Name: APascalString; DefValue: AFloat): AFloat; stdcall;
 begin
-  try
-    Result := Settings_ReadFloat(Config, Section, Name, DefValue);
-  except
-    Result := DefValue;
-  end;
+  Result := ASettings_ReadFloatDefP(Config, Section, Name, DefValue);
 end;
 
 function Config_ReadFloatDefS(Config: AConfig; {const} Section, Name: AString; DefValue: AFloat): AFloat; stdcall;

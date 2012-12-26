@@ -2,7 +2,7 @@
 @Abstract ћодуль работы с базами и структурами данных
 @Author Prof1983 <prof1983@ya.ru>)
 @Created 13.10.2008
-@LastMod 19.07.2012
+@LastMod 26.12.2012
 
 Analog System.Data.*
 }
@@ -11,24 +11,17 @@ unit AData;
 interface
 
 uses
-  ABase, ABaseTypes, ADataBase;
+  ABase,
+  ABaseTypes,
+  ADataBase,
+  ADataMain;
 
 function Init(): AError; stdcall;
 function Done(): AError; stdcall;
 
-function Data_Init(): AError;
-function Data_Done(): AError;
-
 function NewDatabaseW(const DriverName: AWideString): ADataConnection; stdcall;
 function NewDatabaseStructure(): ADataStructure; stdcall;
 function Drivers_RegisterDriver(DataDriver: ADataDriver): AInteger; stdcall;
-
-// Use NewDatabaseW()
-function Data_NewDatabase(const DriverName: AWideString): ADataConnection; stdcall; deprecated;
-// Use NewDatabaseStructure()
-function Data_NewDatabaseStructure: ADataStructure; stdcall; deprecated;
-// Use Drivers_RegisterDriver()
-function Data_RegisterDriver(DataDriver: ADataDriver): AInteger; stdcall; deprecated;
 
 procedure Database_Close(Database: ADataConnection); stdcall;
 function Database_Connect(Database: ADataConnection): ABoolean; stdcall;
@@ -78,47 +71,6 @@ begin
   except
     Result := 0;
   end;
-end;
-
-{ Data }
-
-function Data_Done(): AError;
-{var
-  I: Integer;}
-begin
-  {for I := 0 to High(FDrivers) do
-    FDrivers[I]._Release();
-  SetLength(FDrivers, 0);}
-
-  FInitialized := False;
-  Result := 0;
-end;
-
-function Data_Init(): AError;
-begin
-  if FInitialized then
-  begin
-    Result := 0;
-    Exit;
-  end;
-
-  FInitialized := True;
-  Result := 0;
-end;
-
-function Data_NewDatabase(const DriverName: AWideString): ADataConnection;
-begin
-  Result := ADataUtils.Data_NewDatabase(DriverName);
-end;
-
-function Data_NewDatabaseStructure: ADataStructure;
-begin
-  Result := ADataUtils.Data_NewDatabaseStructure();
-end;
-
-function Data_RegisterDriver(DataDriver: ADataDriver): Integer;
-begin
-  Result := ADataUtils.Data_RegisterDriver(DataDriver);
 end;
 
 { Database }
@@ -266,11 +218,7 @@ end;
 
 function Drivers_RegisterDriver(DataDriver: ADataDriver): AInteger; stdcall;
 begin
-  try
-    Result := ADataUtils.Data_RegisterDriver(DataDriver);
-  except
-    Result := -1;
-  end;
+  Result := AData_RegisterDriver(DataDriver);
 end;
 
 { Struct }

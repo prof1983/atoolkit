@@ -2,7 +2,7 @@
 @Abstract ARuntime
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.08.2012
-@LastMod 11.12.2012
+@LastMod 26.12.2012
 }
 unit ARuntimeMain;
 
@@ -11,7 +11,11 @@ unit ARuntimeMain;
 interface
 
 uses
-  ABase, ABaseTypes, ARuntimeBase, ARuntimeData, AStringBaseUtils;
+  ABase,
+  ABaseTypes,
+  ARuntimeBase,
+  ARuntimeData,
+  AStringBaseUtils;
 
 // --- ARuntime ---
 
@@ -59,6 +63,8 @@ function ARuntime_GetOnAfterRun(): AProc; {$ifdef AStdCall}stdcall;{$endif}
 function ARuntime_GetOnBeforeRun(): AProc; {$ifdef AStdCall}stdcall;{$endif}
 
 function ARuntime_GetProcByName(ModuleName, ProcName: AStr): Pointer; {$ifdef AStdCall}stdcall;{$endif}
+
+function ARuntime_Init(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function ARuntime_InitModuleByName(Name: AStr): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -442,6 +448,11 @@ begin
     //I := _FindModuleByName(ModuleName);
     Result := nil;
   end;
+end;
+
+function ARuntime_Init(): AError;
+begin
+  Result := 0;
 end;
 
 function ARuntime_InitModuleByName(Name: AStr): AInteger;

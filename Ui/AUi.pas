@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 13.12.2012
+@LastMod 26.12.2012
 }
 unit AUi;
 
@@ -38,7 +38,14 @@ uses
   {$IFDEF USE_SETTINGS}ASettings,{$ENDIF}
   AStrings, ASystem,
   AUiBase, AUiBox, AUiButtons, AUiCalendar, AUiControls, AUiControlsA,
-  AUiData, AUiDataSource, AUiDialogs, AUiEdit, AUiEvents1, AUiEventsObj, AUiForm, AUiGrids,
+  AUiData,
+  AUiDataSource,
+  AUiDialogs,
+  AUiEdit,
+  AUiEvents,
+  AUiEventsObj,
+  AUiForm,
+  AUiGrids,
   AUiImages, AUiInit, AUiLabels, AUiListBox, AUiMain, AUiMainWindow, AUiMainWindow2, AUiMenus,
   AUiPageControl, AUiProgressBar, AUiPropertyBox, AUiReports, AUiSpin, AUiSplitter,
   AUiTextView, AUiToolBar, AUiToolMenu, AUiTrayIcon, AUiTreeView,

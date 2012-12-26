@@ -2,9 +2,9 @@
 @Abstract AUi events functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2012
-@LastMod 23.11.2012
+@LastMod 26.12.2012
 }
-unit AUiEvents1;
+unit AUiEvents;
 
 {$define AStdCall}
 

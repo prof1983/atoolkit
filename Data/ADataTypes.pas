@@ -2,7 +2,7 @@
 @Abstract ћодуль работы с базами и структурами данных
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2008
-@LastMod 19.07.2012
+@LastMod 27.12.2012
 }
 unit ADataTypes;
 
@@ -66,16 +66,6 @@ type // “ип доступа внешних пользователей
     );
 
 // --- Structures ----------------------------------------------------------------------------------
-
-{$IFDEF A01}
-type
-  PADataSet = ADataSet;
-
-type
-  // Use ADataConnection
-  //ADatabase = type Integer; // ^IADatabase
-  PADatabase = ADataConnection;
-{$ENDIF A01}
 
 // --- Data ---
 
@@ -168,31 +158,6 @@ type
 type
   ADataDriver_GetName_Proc = function(): AWideString; stdcall;
 
-{IFDEF A01}
-{
-type
-  ADataDriverRec = record
-    GetName: ADataDriver_GetName_Proc;
-    //Connect: function(const ConnectionString: AWideString): IADatabase;
-    NewDatabase: function: ADataConnection; stdcall;
-
-    Database_GetConnected: function: Boolean; stdcall;
-    Database_GetConnectionString: function: AWideString; stdcall;
-    Database_SetConnectionString: procedure(const Value: AWideString); stdcall;
-    Database_SetReadOnly: procedure(DataSet: PADataSet; ReadOnly: Boolean); stdcall;
-
-    Database_Close: procedure; stdcall;
-    Database_Connect: function: Boolean; stdcall;
-    Database_CreateDatabase: function: Boolean; stdcall;
-    Database_Disconnect: procedure; stdcall;
-    Database_ExecuteSql: function(const Sql: AWideString): Boolean; stdcall;
-
-    DataSet_Change: procedure(DataSet: ADataSet; const SelectSql: AWideString);
-  end;
-  TADataDriver = ADataDriverRec;
-  PADataDriver = ^TADataDriver;
-}
-{ELSE}
 type
   ADataDriverRec = packed record
     GetName: ADataDriver_GetName_Proc;
@@ -235,7 +200,6 @@ type
     Reserved31: AInteger;
     Reserved30: AInteger;
   end;
-{ENDIF A01}
 
 type
   PDataDriver = ^ADataDriverRec;

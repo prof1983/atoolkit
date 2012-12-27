@@ -2,7 +2,7 @@
 @Abstract ћодуль работы с базами и структурами данных
 @Author Prof1983 <prof1983@ya.ru>)
 @Created 13.10.2008
-@LastMod 26.12.2012
+@LastMod 27.12.2012
 
 Analog System.Data.*
 }
@@ -15,7 +15,9 @@ uses
   ABaseTypes,
   ADataBase,
   ADataConnections,
-  ADataMain;
+  ADataMain,
+  ADataModelMain,
+  ADataStruct;
 
 function Init(): AError; stdcall;
 function Done(): AError; stdcall;
@@ -145,7 +147,7 @@ end;
 
 procedure DataSet_SetReadOnly(DataSet: ADataSet; ReadOnly: ABoolean); stdcall;
 begin
-  // ...
+  ADataModel_SetReadOnly(DataSet, ReadOnly);
 end;
 
 { Drivers }
@@ -159,20 +161,12 @@ end;
 
 function Struct_AddTableWS(Struct: ADataStructure; const TableName: WideString): ATableStructure;
 begin
-  try
-    Result := Data_Struct_AddTable(Struct, TableName);
-  except
-    Result := 0;
-  end;
+  Result := ADataStruct_AddTableP(Struct, TableName);
 end;
 
 function Struct_Clear(Struct: ADataStructure): AError; stdcall;
 begin
-  try
-    Result := Data_Struct_Clear(Struct);
-  except
-    Result := -1;
-  end;
+  Result := ADataStruct_Clear(Struct);
 end;
 
 { Module }

@@ -2,7 +2,7 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 14.12.2012
+@LastMod 27.12.2012
 }
 unit AUiMain;
 
@@ -27,7 +27,14 @@ interface
 
 uses
   Controls, Forms, ShellApi, SysUtils, Windows,
-  ABase, ABaseTypes, AEvents, ARuntimeMain, ASettings, AStrings, ASystemMain, AUtilsMain,
+  ABase,
+  ABaseTypes,
+  AEventsMain,
+  ARuntimeMain,
+  ASettings,
+  AStrings,
+  ASystemMain,
+  AUtilsMain,
   {$IFDEF OLDMAINFORM}fMain,{$ENDIF}
   AUiBase, AUiData, AUiDialogs, AUiEventsObj, AUiMainWindow, AUiTrayIcon;
 
@@ -186,7 +193,7 @@ end;
 function AUi_Fin(): AError;
 begin
   {$IFDEF USE_EVENTS}
-  AEvents.Event_Invoke(FOnDone, 0);
+  AEvent_Invoke(FOnDone, 0);
   {$ENDIF}
 
   try
@@ -212,7 +219,7 @@ begin
   ARuntime_SetOnRun(nil);
 
   {$IFDEF USE_EVENTS}
-  AEvents.Event_Free(FOnDone);
+  AEvent_Free(FOnDone);
   {$ENDIF}
   FOnDone := 0;
 
@@ -255,7 +262,7 @@ begin
   end;
 
   {$IFDEF USE_EVENTS}
-  if (AEvents.Init() < 0) then
+  if (AEvents_Init() < 0) then
   begin
     Result := -4;
     Exit;
@@ -279,7 +286,7 @@ begin
   end;
 
   {$IFDEF USE_EVENTS}
-  FOnDone := AEvents.Event_NewW(0, nil);
+  FOnDone := AEvent_NewP(0, '');
   {$ENDIF}
 
   FHideOnClose := False;

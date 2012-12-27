@@ -2,7 +2,7 @@
 @Abstract AUi events functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2012
-@LastMod 26.12.2012
+@LastMod 27.12.2012
 }
 unit AUiEvents;
 
@@ -11,7 +11,8 @@ unit AUiEvents;
 interface
 
 uses
-  ABase, AEvents,
+  ABase,
+  AEventsMain,
   AUiData;
 
 // --- AUi ---
@@ -37,7 +38,7 @@ implementation
 function AUi_OnDone_Connect(Proc: ACallbackProc): AInt;
 begin
   try
-    Result := AEvents.Event_Connect(FOnDone, Proc);
+    Result := AEvent_Connect(FOnDone, Proc);
   except
     Result := 0;
   end;
@@ -46,7 +47,7 @@ end;
 function AUi_OnDone_Disconnect(Proc: ACallbackProc): AInt;
 begin
   try
-    Result := AEvents.Event_Disconnect(FOnDone, Proc);
+    Result := AEvent_Disconnect(FOnDone, Proc);
   except
     Result := 0;
   end;

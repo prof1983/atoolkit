@@ -2,7 +2,7 @@
 @Abstract Базовый модуль основных типов и их преобразования. Базовые функции for Delphi 5,7,2005,2006
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.06.2004
-@LastMod 17.12.2012
+@LastMod 09.01.2013
 }
 unit ABaseUiUtils;
 
@@ -10,7 +10,10 @@ interface
 
 uses
   Dialogs, ExtCtrls, Forms, Windows,
-  ABase, ABaseUtils2, ATypes;
+  ABase,
+  ABaseUtils2,
+  ABaseUtils3,
+  ATypes;
 
 type
   TWndType = type AInt; // Windows.UINT
@@ -89,11 +92,9 @@ function wnd_InputUInt064(HParent: THandle32; Caption, Text: String; var Value: 
 var
   S: String;
 begin
-  repeat
-    S := cUInt64ToStr(Value);
-    Result := wnd_Input(HParent, PChar(Caption), PChar(Text), S, uType);
-    Value := cStrToUInt64(S);
-  until False;
+  S := cUInt64ToStr(Value);
+  Result := wnd_Input(HParent, PChar(Caption), PChar(Text), S, uType);
+  Value := cStrToUInt64(S);
 end;
 
 function wnd_Memo(HParent: THandle32; Caption, Text: String): TWndRes;

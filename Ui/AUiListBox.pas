@@ -37,7 +37,8 @@ function AUiListBox_GetItemIndex(ListBox: AControl): AInteger; {$ifdef AStdCall}
 {** Создает новый элемент ListBox }
 function AUiListBox_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-{** Создает новый элемент ListBox }
+{** Create net list box
+    @param Typ: 0 - ListBox; 1 - RadioGroup }
 function AUiListBox_New2(Parent: AControl; Typ: AInteger): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -68,7 +69,7 @@ function AUi_ListBox_New(Parent: AControl): AControl; stdcall;
 
 {** Create net list box
     @param Typ: 0 - ListBox; 1 - RadioGroup }
-function AUi_ListBox_NewA(Parent: AControl; Typ: AInteger): AControl; stdcall;
+function AUi_ListBox_NewA(Parent: AControl; Typ: AInteger): AControl; stdcall; deprecated {$ifdef ADeprText}'Use AUiListBox_New2()'{$endif};
 
 procedure AUi_ListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: AString_Type); stdcall;
 

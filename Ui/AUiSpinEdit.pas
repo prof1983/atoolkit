@@ -2,7 +2,7 @@
 @Abstract AUiSpinEdit
 @Author Prof1983 <prof1983@ya.ru>
 @Created 05.09.2012
-@LastMod 05.09.2012
+@LastMod 09.01.2013
 }
 unit AUiSpinEdit;
 
@@ -12,7 +12,10 @@ interface
 
 uses
   Controls,
-  ABase, AUiBase, AUiSpin;
+  ABase,
+  AUiBase,
+  AUiData,
+  AUiSpin;
 
 // --- AUiSpinEdit ---
 
@@ -43,7 +46,7 @@ begin
   try
     SpinEdit := TSpinEdit.Create(TWinControl(Parent));
     SpinEdit.Parent := TWinControl(Parent);
-    Result := AControl(SpinEdit);
+    Result := AUiData.AddObject(SpinEdit);
   except
     Result := 0;
   end;
@@ -59,7 +62,7 @@ begin
     SpinEdit.Value := Value;
     SpinEdit.MinValue := MinValue;
     SpinEdit.MaxValue := MaxValue;
-    Result := AControl(SpinEdit);
+    Result := AUiData.AddObject(SpinEdit);
   except
     Result := 0;
   end;

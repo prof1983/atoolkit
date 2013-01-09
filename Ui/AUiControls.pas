@@ -789,6 +789,8 @@ begin
         TButton(Obj).Caption := Value
       else if (Obj is TComboBox) then
         TComboBox(Obj).Text := Value
+      else if (Obj is TRadioGroup) then
+        TRadioGroup(Obj).Caption := Value
       else if (Obj is TEdit) then
         TEdit(Obj).Text := Value
       else if (Obj is TForm) then

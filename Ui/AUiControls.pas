@@ -787,6 +787,8 @@ begin
         TBitBtn(Obj).Caption := Value
       else if (Obj is TButton) then
         TButton(Obj).Caption := Value
+      else if (Obj is TCheckBox) then
+        TCheckBox(Obj).Caption := Value
       else if (Obj is TComboBox) then
         TComboBox(Obj).Text := Value
       else if (Obj is TRadioGroup) then

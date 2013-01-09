@@ -18,6 +18,8 @@ uses
   AUiControls,
   AUiData;
 
+function AUiCheckBox_Free(CheckBox: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiCheckBox_GetChecked(CheckBox: AControl): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiCheckBox_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
@@ -43,6 +45,17 @@ var
   FCheckBox: array of TAUiCheckBox;
 
 // --- Private ---
+
+procedure DeleteCheckBox(Index: Integer);
+var
+  I: Integer;
+begin
+  for I := Index to High(FCheckBox) - 1 do
+  begin
+    FCheckBox[I] := FCheckBox[I+1];
+  end;
+  SetLength(FCheckBox, High(FCheckBox));
+end;
 
 function FindCheckBox(CheckBox: AControl): Integer;
 var
@@ -80,6 +93,19 @@ begin
 end;
 
 // --- AUiCheckBox ---
+
+function AUiCheckBox_Free(CheckBox: AControl): AError;
+var
+  I: Integer;
+begin
+  try
+    I := FindCheckBox(CheckBox);
+    if (I > 0) then
+      DeleteCheckBox(I);
+  except
+  end;
+  Result := AUiControl_Free(CheckBox);
+end;
 
 function AUiCheckBox_GetChecked(CheckBox: AControl): ABool;
 begin

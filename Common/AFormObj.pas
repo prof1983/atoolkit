@@ -2,7 +2,7 @@
 @Abstract TForm with Logging and Configurations
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.10.2005
-@LastMod 17.12.2012
+@LastMod 09.01.2013
 }
 unit AFormObj;
 
@@ -10,8 +10,8 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  ABase, AConfig2007, AConfigUtils, ALogGlobals, ALogNodeUtils, ATypes,
-  AUiForm;
+  {$ifdef ADepr}AUiForm,{$endif}
+  ABase, AConfig2007, AConfigUtils, ALogGlobals, ALogNodeUtils, ATypes;
 
 type
     //** TForm with Logging and Configurations
@@ -45,10 +45,12 @@ type
     function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
         const AStrMsg: WideString): Integer; virtual;
   public
+    {$ifdef ADepr}
     function ConfigureLoad(): WordBool; virtual; deprecated; // Use AUiForm.Form_LoadConfig()
     function ConfigureLoad2(FConfig: AConfig): AError; deprecated; // Use AUiForm.Form_LoadConfig()
     function ConfigureSave(): WordBool; virtual; deprecated; // Use AUiForm.Form_SaveConfig()
     function ConfigureSave2(FConfig: AConfig): AError; deprecated; // Use AUiForm.Form_SaveConfig()
+    {$endif ADepr}
     function Finalize(): AError; virtual;
     function Initialize(): AError; virtual;
   public
@@ -108,6 +110,7 @@ begin
   Result := AddToLog(AGroup, AType, AStrMsg);
 end;
 
+{$ifdef ADepr}
 function TAFormObject.ConfigureLoad(): WordBool;
 begin
   Result := (AUiForm.Form_LoadConfig(Self, FConfig) >= 0);
@@ -127,6 +130,7 @@ function TAFormObject.ConfigureSave2(FConfig: AConfig): AError;
 begin
   Result := AUiForm.Form_SaveConfig(Self, FConfig);
 end;
+{$endif ADepr}
 
 procedure TAFormObject.DoDestroy();
 begin

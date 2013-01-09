@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 16.11.2012
+@LastMod 09.01.2013
 }
 unit AUiControls;
 
@@ -799,8 +799,10 @@ begin
         TMemo(Obj).Text := Value
       {$IFNDEF FPC}
       else if (Obj is TRichEdit) then
-        TRichEdit(Obj).Text := Value;
+        TRichEdit(Obj).Text := Value
       {$ENDIF}
+      else if (Obj is TTabSheet) then
+        TTabSheet(Obj).Caption := Value;
     end
     else if (Obj is TMenuItem) then
       TMenuItem(Obj).Caption := Value;

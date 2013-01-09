@@ -2,7 +2,7 @@
 @Abstract ASettings main functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.08.2012
-@LastMod 26.12.2012
+@LastMod 09.01.2013
 }
 unit ASettingsMain;
 
@@ -33,6 +33,8 @@ function ASettings_ReadIntegerDefP(Config: AConfig; const Section, Name: APascal
 function ASettings_ReadStringDefP(Config: AConfig; const Section, Name, DefValue: APascalString): APascalString;
 
 function ASettings_WriteBoolP(Config: AConfig; const Section, Name: APascalString; Value: ABoolean): AError;
+
+function ASettings_WriteFloatP(Config: AConfig; const Section, Name: APascalString; Value: AFloat): AError;
 
 function ASettings_WriteIntegerP(Config: AConfig; const Section, Name: APascalString; Value: AInteger): AError;
 
@@ -184,6 +186,32 @@ begin
   begin
     {$ifdef UseXmlNode}
     Result := AConfig_WriteBool(Config, Name, Value);
+    {$else}
+    Result := -3;
+    {$endif}
+  end;
+end;
+
+function ASettings_WriteFloatP(Config: AConfig; const Section, Name: APascalString; Value: AFloat): AError;
+begin
+  if (Config = 0) then
+  begin
+    Result := -1;
+    Exit;
+  end;
+  if (TObject(Config) is TAbstractSettings) then
+  try
+    if TAbstractSettings(Config).WriteFloat(Section, Name, Value) then
+      Result := 0
+    else
+      Result := -1;
+  except
+    Result := -1;
+  end
+  else
+  begin
+    {$ifdef UseXmlNode}
+    Result := AConfig_WriteFloat(Config, Name, Value);
     {$else}
     Result := -3;
     {$endif}

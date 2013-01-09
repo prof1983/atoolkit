@@ -2,7 +2,7 @@
 @Abstract ASettingsConfig
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 26.12.2012
+@LastMod 09.01.2013
 }
 unit ASettingsConfig;
 
@@ -105,10 +105,7 @@ end;
 
 function Settings_WriteBool(Config: AConfig; const Section, Name: APascalString; Value: ABoolean): ABoolean;
 begin
-  if (Config <> 0) then
-    Result := TAbstractSettings(Config).WriteBool(Section, Name, Value)
-  else
-    Result := False;
+  Result := (ASettings_WriteBoolP(Config, Section, Name, Value) = 0);
 end;
 
 function Settings_WriteDateTime(Config: AConfig; const Section, Name: APascalString; Value: TDateTime): ABoolean;
@@ -121,10 +118,7 @@ end;
 
 function Settings_WriteFloat(Config: AConfig; const Section, Name: APascalString; Value: AFloat): ABoolean;
 begin
-  if (Config <> 0) then
-    Result := TAbstractSettings(Config).WriteFloat(Section, Name, Value)
-  else
-    Result := False;
+  Result := (ASettings_WriteFloatP(Config, Section, Name, Value) = 0);
 end;
 
 function Settings_WriteInteger(Config: AConfig; const Section, Name: APascalString; Value: AInteger): ABoolean;

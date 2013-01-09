@@ -2,7 +2,7 @@
 @Abstract The module for work with the settings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 26.12.2012
+@LastMod 09.01.2013
 }
 unit ASettings;
 
@@ -1066,14 +1066,7 @@ end;
 
 function Config_WriteFloatP(Config: AConfig; const Section, Name: APascalString; Value: AFloat): AError; stdcall;
 begin
-  try
-    if Settings_WriteFloat(Config, Section, Name, Value) then
-      Result := 0
-    else
-      Result := -1;
-  except
-    Result := -1;
-  end;
+  Result := ASettings_WriteFloatP(Config, Section, Name, Value);
 end;
 
 function Config_WriteFloatS(Config: AConfig; {const} Section, Name: AString; Value: AFloat): AError; stdcall;

@@ -1,9 +1,7 @@
 {**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(02.10.2008)
-@LastMod(08.09.2011)
-@Version(0.5)
+@Author Prof1983 <prof1983@ya.ru>
+@Created 02.10.2008
+@LastMod 10.01.2013
 }
 unit fWait;
 
@@ -38,12 +36,15 @@ begin
   if (MaxPosition <= 0) then
     ProgressBar.Visible := False
   else //if (MaxPosition > 0) then
+  begin
     ProgressBar.Max := MaxPosition;
+    ProgressBar.Visible := True;
+  end;
 end;
 
 procedure TWaitForm.Step();
 begin
-  ProgressBar.StepIt();
+  ProgressBar.Position := ProgressBar.Position + 1;
   Application.ProcessMessages();
 end;
 

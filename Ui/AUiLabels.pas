@@ -128,6 +128,8 @@ end;
 function AUiLabel_SetWordWrap(Control: AControl; Value: ABoolean): AError;
 var
   Obj: TObject;
+  H: Integer;
+  W: Integer;
 begin
   try
     Obj := GetObject(Control);
@@ -138,7 +140,18 @@ begin
     end;
 
     if (Obj is TLabel) then
-      TLabel(Obj).WordWrap := Value;
+    begin
+      if (TLabel(Obj).Alignment = taCenter) or (TLabel(Obj).Layout = tlCenter) then
+      begin
+        H := TLabel(Obj).Height;
+        W := TLabel(Obj).Width;
+        TLabel(Obj).WordWrap := Value;
+        TLabel(Obj).Height := H;
+        TLabel(Obj).Width := W;
+      end
+      else
+        TLabel(Obj).WordWrap := Value;
+    end;
 
     Result := 0;
   except

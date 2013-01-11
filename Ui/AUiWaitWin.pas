@@ -93,13 +93,13 @@ begin
   AUiControl_SetClientSize(Window, W, 80);
 
   TextLabel := AUiLabel_New(Window);
+  AUiLabel_SetAlignment(TextLabel, uitaCenter + uitlCenter);
   AUiLabel_SetWordWrap(TextLabel, True);
   AUiControl_SetFontSize(TextLabel, 11);
   AUiControl_SetFontStyle(TextLabel, uifsBold);
   AUiControl_SetPosition(TextLabel, 0, 0);
   AUiControl_SetTextP(TextLabel, Text);
   AUiControl_SetSize(TextLabel, W, 40);
-  AUiLabel_SetAlignment(TextLabel, uitaCenter + uitlCenter);
 
   if (MaxPosition > 0) then
   begin

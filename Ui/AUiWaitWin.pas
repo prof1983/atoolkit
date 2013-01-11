@@ -93,12 +93,21 @@ begin
   AUiControl_SetClientSize(Window, W, 80);
 
   TextLabel := AUiLabel_New(Window);
+  AUiLabel_SetWordWrap(TextLabel, True);
+  AUiControl_SetFontSize(TextLabel, 11);
+  AUiControl_SetFontStyle(TextLabel, uifsBold);
   AUiControl_SetPosition(TextLabel, 0, 0);
-  AUiControl_SetWidth(TextLabel, W);
   AUiControl_SetTextP(TextLabel, Text);
+  AUiControl_SetSize(TextLabel, W, 40);
+  AUiLabel_SetAlignment(TextLabel, uitaCenter + uitlCenter);
 
   if (MaxPosition > 0) then
-    ProgressBar := AUiProgressBar_New(Window, MaxPosition)
+  begin
+    ProgressBar := AUiProgressBar_New(Window, MaxPosition);
+    I := (W div 10);
+    AUiControl_SetPosition(ProgressBar, I, 40);
+    AUiControl_SetWidth(ProgressBar, W - I * 2);
+  end
   else
     ProgressBar := 0;
 

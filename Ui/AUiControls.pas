@@ -21,6 +21,8 @@ function AUiControl_Free(Control: AControl): AError; {$ifdef AStdCall}stdcall;{$
 
 function AUiControl_FreeAndNil(var Control: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiControl_GetClientWidth(Control: AControl): AInt; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiControl_GetColor(Control: AControl): AColor; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_GetEnabled(Control: AControl): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
@@ -222,6 +224,15 @@ begin
   Res := AUiControl_Free(Control);
   Control := 0;
   Result := Res;
+end;
+
+function AUiControl_GetClientWidth(Control: AControl): AInt;
+begin
+  try
+    Result := TWinControl(Control).ClientWidth;
+  except
+    Result := 0;
+  end;
 end;
 
 function AUiControl_GetColor(Control: AControl): AColor;

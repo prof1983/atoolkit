@@ -87,10 +87,9 @@ begin
     Exit;
   end;
 
-  W := 386;
+  W := AUiControl_GetClientWidth(Window);
 
   AUiControl_SetTextP(Window, Caption);
-  AUiControl_SetClientSize(Window, W, 80);
 
   TextLabel := AUiLabel_New(Window);
   AUiLabel_SetAlignment(TextLabel, uitaCenter + uitlCenter);
@@ -154,6 +153,10 @@ begin
     Result := 0;
     Exit;
   end;
+
+  AUiControl_SetClientSize(WaitWin, 384, 80);
+  AUiControl_SetPosition(WaitWin, 500, 230);
+
   _Init(WaitWin, Caption, Text, MaxPosition);
   Result := WaitWin;
   {$endif}

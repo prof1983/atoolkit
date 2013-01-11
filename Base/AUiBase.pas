@@ -94,6 +94,14 @@ type
     );
 
 type
+  AUiFontStyle = AInt;
+const
+  uifsBold = $0001;
+  uifsItalic = $0002;
+  uifsUnderline = $0004;
+  uifsStrikeOut = $0008;
+
+type
   AUiProgramState = AInteger;
 const
   AUiProgramState_Default = 0;

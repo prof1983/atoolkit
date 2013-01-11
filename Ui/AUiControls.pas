@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 09.01.2013
+@LastMod 11.01.2013
 }
 unit AUiControls;
 
@@ -75,6 +75,10 @@ procedure AUiControl_SetFont1P_Old(Control: AControl; const FontName: APascalStr
 
 function AUiControl_SetFont2P(Control: AControl; const FontName: APascalString;
     FontSize: AInteger; FontColor: AColor): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_SetFontSize(Control: AControl; Size: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_SetFontStyle(Control: AControl; FontStyle: AUiFontStyle): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetHeight(Control: AControl; Value: AInt): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -570,6 +574,40 @@ begin
       if (FontColor <> 1) then
         TLabel(Control).Font.Color := FontColor;
     end;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiControl_SetFontSize(Control: AControl; Size: AInt): AError;
+begin
+  try
+    if (TObject(Control) is TLabel) then
+      TLabel(Control).Font.Size := Size;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiControl_SetFontStyle(Control: AControl; FontStyle: AUiFontStyle): AError;
+var
+  S: TFontStyles;
+begin
+  try
+    S := [];
+    if (FontStyle and uifsBold <> 0) then
+      S := S + [fsBold];
+    if (FontStyle and uifsItalic <> 0) then
+      S := S + [fsItalic];
+    if (FontStyle and uifsUnderline <> 0) then
+      S := S + [fsUnderline];
+    if (FontStyle and uifsStrikeOut <> 0) then
+      S := S + [fsStrikeOut];
+
+    if (TObject(Control) is TLabel) then
+      TLabel(Control).Font.Style := S;
     Result := 0;
   except
     Result := -1;

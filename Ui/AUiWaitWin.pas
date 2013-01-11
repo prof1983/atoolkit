@@ -1,16 +1,25 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.12.2012
-@LastMod 13.12.2012
+@LastMod 11.01.2013
 }
 unit AUiWaitWin;
 
 {$define AStdCall}
+{define UseWaitForm}
 
 interface
 
 uses
-  ABase, AStrings, AUiBase, AUiData, fWait;
+  {$ifdef UseWaitForm}fWait,{$endif}
+  ABase,
+  AStrings,
+  AUiBase,
+  AUiControls,
+  AUiData,
+  AUiLabels,
+  AUiProgressBar,
+  AUiWindows;
 
 // --- AUiWaitWin ---
 
@@ -39,6 +48,69 @@ implementation
 uses
   AUiMain;
 
+type
+  TWaitWin = record
+    Window: AWindow;
+    TextLabel: AControl;
+    ProgressBar: AControl;
+  end;
+
+var
+  FWaitWin: array of TWaitWin;
+
+function _FindWaitWin(Window: AWindow): Integer;
+var
+  I: Integer;
+begin
+  for I := 0 to High(FWaitWin) do
+  begin
+    if (FWaitWin[I].Window = Window) then
+    begin
+      Result := I;
+      Exit;
+    end;
+  end;
+  Result := -1;
+end;
+
+function _Init(Window: AWindow; const Caption, Text: APascalString; MaxPosition: AInteger): AError;
+var
+  I: Integer;
+  W: Integer;
+  TextLabel: AControl;
+  ProgressBar: AControl;
+begin
+  I := _FindWaitWin(Window);
+  if (I >= 0) then
+  begin
+    Result := 1;
+    Exit;
+  end;
+
+  W := 386;
+
+  AUiControl_SetTextP(Window, Caption);
+  AUiControl_SetClientSize(Window, W, 80);
+
+  TextLabel := AUiLabel_New(Window);
+  AUiControl_SetPosition(TextLabel, 0, 0);
+  AUiControl_SetWidth(TextLabel, W);
+  AUiControl_SetTextP(TextLabel, Text);
+
+  if (MaxPosition > 0) then
+    ProgressBar := AUiProgressBar_New(Window, MaxPosition)
+  else
+    ProgressBar := 0;
+
+  I := Length(FWaitWin);
+  SetLength(FWaitWin, I + 1);
+  FWaitWin[I].Window := Window;
+  FWaitWin[I].TextLabel := TextLabel;
+  FWaitWin[I].ProgressBar := ProgressBar;
+
+  Result := 0;
+end;
+
 // --- AUiWaitWin ---
 
 function AUiWaitWin_New(const Caption, Text: AString_Type; MaxPosition: AInteger): AWindow;
@@ -51,8 +123,13 @@ end;
 
 function AUiWaitWin_NewP(const Caption, Text: APascalString; MaxPosition: AInteger): AWindow;
 var
+  {$ifdef UseWaitForm}
   WaitForm: TWaitForm;
+  {$else}
+  WaitWin: AWindow;
+  {$endif}
 begin
+  {$ifdef UseWaitForm}
   try
     WaitForm := TWaitForm.Create(nil);
     WaitForm.Init(Caption, Text, MaxPosition);
@@ -61,10 +138,36 @@ begin
   except
     Result := 0;
   end;
+  {$else}
+  WaitWin := AUiWindow_New();
+  if (WaitWin = 0) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+  _Init(WaitWin, Caption, Text, MaxPosition);
+  Result := WaitWin;
+  {$endif}
 end;
 
 function AUiWaitWin_SetMaxPosition(WaitWin: AWindow; MaxPosition: AInteger): AError;
+var
+  I: Integer;
 begin
+  I := _FindWaitWin(WaitWin);
+  if (I >= 0) then
+  begin
+    AUiProgressBar_SetMaxPosition(FWaitWin[I].ProgressBar, MaxPosition);
+    AUi_ProcessMessages();
+    Result := 0;
+    Exit;
+  end;
+  {$ifdef UseWaitForm}
+  if not(TObject(WaitWin) is TWaitForm) then
+  begin
+    Result := -3;
+    Exit;
+  end;
   try
     TWaitForm(WaitWin).ProgressBar.Max := MaxPosition;
     AUi_ProcessMessages();
@@ -72,16 +175,39 @@ begin
   except
     Result := -1;
   end;
+  {$else}
+  Result := -2;
+  {$endif}
 end;
 
 function AUiWaitWin_SetPosition(WaitWin: AWindow; Position: AInteger): AError;
+var
+  I: Integer;
 begin
+  I := _FindWaitWin(WaitWin);
+  if (I >= 0) then
+  begin
+    AUiProgressBar_SetPosition(FWaitWin[I].ProgressBar, Position);
+    AUi_ProcessMessages();
+    Result := 0;
+    Exit;
+  end;
+  {$ifdef UseWaitForm}
+  if not(TObject(WaitWin) is TWaitForm) then
+  begin
+    Result := -3;
+    Exit;
+  end;
   try
     TWaitForm(WaitWin).ProgressBar.Position := Position;
+    AUi_ProcessMessages();
     Result := 0;
   except
     Result := -1;
   end;
+  {$else}
+  Result := -2;
+  {$endif}
 end;
 
 function AUiWaitWin_SetText(Window: AWindow; const Text: AString_Type): AError;
@@ -90,7 +216,23 @@ begin
 end;
 
 function AUiWaitWin_SetTextP(Window: AWindow; const Text: APascalString): AError;
+var
+  I: Integer;
 begin
+  I := _FindWaitWin(Window);
+  if (I >= 0) then
+  begin
+    AUiControl_SetTextP(FWaitWin[I].TextLabel, Text);
+    AUi_ProcessMessages();
+    Result := 0;
+    Exit;
+  end;
+  {$ifdef UseWaitWin}
+  if not(TObject(WaitWin) is TWaitForm) then
+  begin
+    Result := -3;
+    Exit;
+  end;
   try
     TWaitForm(Window).lblText.Caption := Text;
     AUi_ProcessMessages();
@@ -98,15 +240,38 @@ begin
   except
     Result := -1;
   end;
+  {$else}
+  Result := -2;
+  {$endif}
 end;
 
 function AUiWaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger;
+var
+  I: Integer;
 begin
-  try
-    TWaitForm(Window).Step;
-  except
+  I := _FindWaitWin(Window);
+  if (I >= 0) then
+  begin
+    Result := AUiProgressBar_StepBy(FWaitWin[I].ProgressBar, Step);
+    AUi_ProcessMessages();
+    Exit;
   end;
-  Result := 0;
+  {$ifdef UseWaitWin}
+  if not(TObject(WaitWin) is TWaitForm) then
+  begin
+    Result := -3;
+    Exit;
+  end;
+  try
+    TWaitForm(Window).ProgressBar.Position := TWaitForm(Window).ProgressBar.Position + 1;
+    AUi_ProcessMessages();
+    Result := 0;
+  except
+    Result := -1;
+  end;
+  {$else}
+  Result := -2;
+  {$endif}
 end;
 
 // --- UI_WaitWin ---

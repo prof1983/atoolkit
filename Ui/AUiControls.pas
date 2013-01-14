@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 11.01.2013
+@LastMod 14.01.2013
 }
 unit AUiControls;
 
@@ -840,16 +840,18 @@ begin
         TCheckBox(Obj).Caption := Value
       else if (Obj is TComboBox) then
         TComboBox(Obj).Text := Value
-      else if (Obj is TRadioGroup) then
-        TRadioGroup(Obj).Caption := Value
       else if (Obj is TEdit) then
         TEdit(Obj).Text := Value
       else if (Obj is TForm) then
         TForm(Obj).Caption := Value
+      else if (Obj is TGroupBox) then
+        TGroupBox(Obj).Caption := Value
       else if (Obj is TLabel) then
         TLabel(Obj).Caption := Value
       else if (Obj is TMemo) then
         TMemo(Obj).Text := Value
+      else if (Obj is TRadioGroup) then
+        TRadioGroup(Obj).Caption := Value
       {$IFNDEF FPC}
       else if (Obj is TRichEdit) then
         TRichEdit(Obj).Text := Value

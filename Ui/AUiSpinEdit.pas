@@ -2,7 +2,7 @@
 @Abstract AUiSpinEdit
 @Author Prof1983 <prof1983@ya.ru>
 @Created 05.09.2012
-@LastMod 09.01.2013
+@LastMod 14.01.2013
 }
 unit AUiSpinEdit;
 
@@ -22,6 +22,8 @@ uses
 function AUiSpinEdit_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiSpinEdit_NewEx(Parent: AControl; Value, MinValue, MaxValue: AInteger): AControl; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiSpinEdit_SetValue(SpinEdit: AControl; Value: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 // --- AUi_SpinEdit ---
 
@@ -65,6 +67,28 @@ begin
     Result := AUiData.AddObject(SpinEdit);
   except
     Result := 0;
+  end;
+end;
+
+function AUiSpinEdit_SetValue(SpinEdit: AControl; Value: AInt): AError;
+var
+  Obj: TObject;
+begin
+  try
+    Obj := AUiData.GetObject(SpinEdit);
+    if not(Assigned(Obj)) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+    if not(Obj is TSpinEdit) then
+    begin
+      Result := -3;
+      Exit;
+    end;
+    TSpinEdit(Obj).Value := Value;
+  except
+    Result := -1;
   end;
 end;
 

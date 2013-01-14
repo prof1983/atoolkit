@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 09.01.2013
-@LastMod 09.01.2013
+@LastMod 14.01.2013
 }
 unit AUiCheckBox;
 
@@ -32,7 +32,7 @@ function AUiCheckBox_SetChecked(CheckBox: AControl; Value: ABool): AError; {$ifd
 implementation
 
 type
-  TAUiCheckBox = object
+  TAUiCheckBox = class
   public
     CheckBox: AControl;
     OnChange: ACallbackProc;
@@ -84,6 +84,7 @@ begin
     Res := AUiData.AddObject(CheckBox);
     I := Length(FCheckBox);
     SetLength(FCheckBox, I + 1);
+    FCheckBox[I] := TAUiCheckBox.Create();
     FCheckBox[I].CheckBox := Res;
     FCheckBox[I].OnChange := OnChange;
     Result := I;

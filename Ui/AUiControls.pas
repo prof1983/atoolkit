@@ -78,6 +78,8 @@ procedure AUiControl_SetFont1P_Old(Control: AControl; const FontName: APascalStr
 function AUiControl_SetFont2P(Control: AControl; const FontName: APascalString;
     FontSize: AInteger; FontColor: AColor): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiControl_SetFontColor(Control: AControl; Color: AColor): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiControl_SetFontSize(Control: AControl; Size: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetFontStyle(Control: AControl; FontStyle: AUiFontStyle): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -557,8 +559,10 @@ begin
     begin
       if (FontName <> '') then
         TLabel(Control).Font.Name := FontName;
-      if (FontSize <> 0) then
+      if (FontSize > 0) then
         TLabel(Control).Font.Size := FontSize;
+      if (FontSize < 0) then
+        TLabel(Control).Font.Height := -FontSize;
     end;
     Result := 0;
   except
@@ -585,6 +589,17 @@ begin
       if (FontColor <> 1) then
         TLabel(Control).Font.Color := FontColor;
     end;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiControl_SetFontColor(Control: AControl; Color: AColor): AError;
+begin
+  try
+    if (TObject(Control) is TLabel) then
+      TLabel(Control).Font.Color := Color;
     Result := 0;
   except
     Result := -1;
@@ -628,7 +643,10 @@ end;
 function AUiControl_SetHeight(Control: AControl; Value: AInt): AInt;
 begin
   try
-    TControl(Control).Height := Value;
+    if (TObject(Control) is TLabel) then
+      TLabel(Control).Font.Height := Value
+    else
+      TControl(Control).Height := Value;
     Result := Value;
   except
     Result := -1;

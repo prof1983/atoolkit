@@ -2,7 +2,7 @@
 @Abstract AUi PageControl
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.02.2012
-@LastMod 15.11.2012
+@LastMod 14.01.2013
 }
 unit AUiPageControl;
 
@@ -28,6 +28,11 @@ function AUiPageControl_AddPageA(PageControl: AControl; Name, Text: AStr): ACont
 {** Создает новую вкладку
     @return 0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
 function AUiPageControl_AddPageP(PageControl: AControl; const Name, Text: APascalString): AControl; {$ifdef AStdCall}stdcall;{$endif}
+
+{** Создает новую вкладку
+    @param Index - позиция вкладки
+    @return 0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
+function AUiPageControl_InsertPageP(PageControl: AControl; const Name, Text: APascalString; Index: AInt): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiPageControl_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -55,22 +60,34 @@ begin
 end;
 
 function AUiPageControl_AddPageP(PageControl: AControl; const Name, Text: APascalString): AControl;
+begin
+  Result := AUiPageControl_InsertPageP(PageControl, Name, Text, -1);
+end;
+
+function AUiPageControl_InsertPageP(PageControl: AControl; const Name, Text: APascalString; Index: AInt): AControl;
 var
   O: TObject;
   TabSheet: TTabSheet;
 begin
   try
     O := AUiData.GetObject(PageControl);
-    if Assigned(O) and (O is TPageControl) then
+    if not(Assigned(O)) then
     begin
-      TabSheet := TTabSheet.Create(TPageControl(O));
-      TabSheet.PageControl := TPageControl(O);
-      TabSheet.Name := Name;
-      TabSheet.Caption := Text;
-      Result := AddObject(TabSheet);
-    end
-    else
       Result := 0;
+      Exit;
+    end;
+    if not(O is TPageControl) then
+    begin
+      Result := 0;
+      Exit;
+    end;
+    TabSheet := TTabSheet.Create(TPageControl(O));
+    TabSheet.PageControl := TPageControl(O);
+    TabSheet.Name := Name;
+    TabSheet.Caption := Text;
+    if (Index >= 0) then
+      TabSheet.PageIndex := Index;
+    Result := AddObject(TabSheet);
   except
     Result := 0;
   end;

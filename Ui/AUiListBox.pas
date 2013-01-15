@@ -2,7 +2,7 @@
 @Abstract AUiListBox
 @Author Prof1983 <prof1983@ya.ru>
 @Created 05.09.2012
-@LastMod 15.11.2012
+@LastMod 15.01.2013
 }
 unit AUiListBox;
 
@@ -11,7 +11,10 @@ unit AUiListBox;
 interface
 
 uses
-  Controls, ExtCtrls, StdCtrls,
+  CheckLst,
+  Controls,
+  ExtCtrls,
+  StdCtrls,
   ABase, AStrings,
   AUiBase, AUiData, AUiEventsObj;
 
@@ -26,6 +29,8 @@ function AUiListBox_Clear(ListBox: AControl): AError; {$ifdef AStdCall}stdcall;{
 
 function AUiListBox_DeleteItem(ListBox: AControl; Index: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiListBox_GetChecked(ListBox: AControl; Index: AInt): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiListBox_GetCount(ListBox: AControl): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiListBox_GetItem(ListBox: AControl; Index: AInteger; out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
@@ -38,8 +43,10 @@ function AUiListBox_GetItemIndex(ListBox: AControl): AInteger; {$ifdef AStdCall}
 function AUiListBox_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Create net list box
-    @param Typ: 0 - ListBox; 1 - RadioGroup }
+    @param Typ  0 - ListBox; 1 - RadioGroup; 2 - CheckListBox }
 function AUiListBox_New2(Parent: AControl; Typ: AInteger): AControl; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiListBox_SetChecked(ListBox: AControl; Index: AInt; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -121,9 +128,16 @@ var
 begin
   try
     O := AUiData.GetObject(ListBox);
-    if Assigned(O) and (O is TListBox) then
+    if not(Assigned(O)) then
+    begin
+      Result := -1;
+      Exit;
+    end;
+    if (O is TCheckListBox) then
+      Result := TCheckListBox(O).Items.Add(Text)
+    else if (O is TListBox) then
       Result := TListBox(O).Items.Add(Text)
-    else if Assigned(O) and (O is TRadioGroup) then
+    else if (O is TRadioGroup) then
       Result := TRadioGroup(O).Items.Add(Text)
     else
       Result := -1;
@@ -137,13 +151,18 @@ var
   O: TObject;
 begin
   try
-    O := AUIData.GetObject(ListBox);
-    if Assigned(O) and (O is TListBox) then
-      TListBox(O).Clear
-    else if Assigned(O) and (O is TRadioGroup) then
-      TRadioGroup(O).Items.Clear;
-    {if (ListBox <> 0) then
-      TListBox(ListBox).Clear;}
+    O := AUiData.GetObject(ListBox);
+    if not(Assigned(O)) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+    if (O is TCheckListBox) then
+      TCheckListBox(O).Clear()
+    else if (O is TListBox) then
+      TListBox(O).Clear()
+    else if (O is TRadioGroup) then
+      TRadioGroup(O).Items.Clear();
     Result := 0;
   except
     Result := -1;
@@ -151,16 +170,51 @@ begin
 end;
 
 function AUiListBox_DeleteItem(ListBox: AControl; Index: AInteger): AError;
+var
+  Obj: TObject;
 begin
   try
-    TListBox(ListBox).Items.Delete(Index);
-    if (TListBox(ListBox).Items.Count > Index) then
-      TListBox(ListBox).ItemIndex := Index
+    Obj := AUiData.GetObject(ListBox);
+    if not(Assigned(Obj)) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+    if (Obj is TListBox) then
+    begin
+      TListBox(Obj).Items.Delete(Index);
+      if (TListBox(Obj).Items.Count > Index) then
+        TListBox(Obj).ItemIndex := Index
+      else
+        TListBox(Obj).ItemIndex := Index-1;
+      Result := 0;
+    end
     else
-      TListBox(ListBox).ItemIndex := Index-1;
-    Result := 0;
+      Result := -2;
   except
     Result := -1;
+  end;
+end;
+
+function AUiListBox_GetChecked(ListBox: AControl; Index: AInt): ABoolean;
+var
+  Obj: TObject;
+begin
+  try
+    Obj := AUiData.GetObject(ListBox);
+    if not(Assigned(Obj)) then
+    begin
+      Result := False;
+      Exit;
+    end;
+    if not(Obj is TCheckListBox) then
+    begin
+      Result := False;
+      Exit;
+    end;
+    Result := TCheckListBox(Obj).Checked[Index];
+  except
+    Result := False;
   end;
 end;
 
@@ -169,10 +223,15 @@ var
   Obj: TObject;
 begin
   try
-    Obj := AUIData.GetObject(ListBox);
-    if Assigned(Obj) and (Obj is TListBox) then
+    Obj := AUiData.GetObject(ListBox);
+    if not(Assigned(Obj)) then
+    begin
+      Result := 0;
+      Exit;
+    end;
+    if (Obj is TListBox) then
       Result := TListBox(Obj).Items.Count
-    else if Assigned(Obj) and (Obj is TRadioGroup) then
+    else if (Obj is TRadioGroup) then
       Result := TRadioGroup(Obj).Items.Count
     else
       Result := 0;
@@ -195,9 +254,16 @@ var
   O: TObject;
 begin
   O := AUiData.GetObject(ListBox);
-  if Assigned(O) and (O is TListBox) then
+  if not(Assigned(O)) then
+  begin
+    Result := '';
+    Exit;
+  end;
+  if (O is TCheckListBox) then
+    Result := TCheckListBox(O).Items[Index]
+  else if (O is TListBox) then
     Result := TListBox(O).Items[Index]
-  else if Assigned(O) and (O is TRadioGroup) then
+  else if (O is TRadioGroup) then
     Result := TRadioGroup(O).Items[Index]
   else
     Result := '';
@@ -209,9 +275,16 @@ var
 begin
   try
     O := AUiData.GetObject(ListBox);
-    if Assigned(O) and (O is TListBox) then
+    if not(Assigned(O)) then
+    begin
+      Result := 0;
+      Exit;
+    end;
+    if (O is TCheckListBox) then
+      Result := TCheckListBox(O).ItemIndex
+    else if (O is TListBox) then
       Result := TListBox(O).ItemIndex
-    else if Assigned(O) and (O is TRadioGroup) then
+    else if (O is TRadioGroup) then
       Result := TRadioGroup(O).ItemIndex
     else
       Result := 0;
@@ -232,6 +305,7 @@ end;
 function AUiListBox_New2(Parent: AControl; Typ: AInteger): AControl;
 var
   O: TObject;
+  CheckListBox: TCheckListBox;
   ListBox: TListBox;
   RadioGroup: TRadioGroup;
   I: Integer;
@@ -254,6 +328,12 @@ begin
       RadioGroup.Parent := TWinControl(O);
       Result := AddObject(RadioGroup);
     end
+    else if (Typ = 2) then
+    begin
+      CheckListBox := TCheckListBox.Create(TWinControl(O));
+      CheckListBox.Parent := TWinControl(O);
+      Result := AddObject(CheckListBox);
+    end
     else
     begin
       ListBox := TListBox.Create(TWinControl(O));
@@ -270,6 +350,29 @@ begin
     end;
   except
     Result := 0;
+  end;
+end;
+
+function AUiListBox_SetChecked(ListBox: AControl; Index: AInt; Value: ABoolean): AError;
+var
+  Obj: TObject;
+begin
+  try
+    Obj := AUiData.GetObject(ListBox);
+    if not(Assigned(Obj)) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+    if not(Obj is TCheckListBox) then
+    begin
+      Result := -3;
+      Exit;
+    end;
+    TCheckListBox(Obj).Checked[Index] := Value;
+    Result := 0;
+  except
+    Result := -1;
   end;
 end;
 
@@ -290,7 +393,9 @@ begin
       Exit;
     end;
 
-    if (Obj is TListBox) then
+    if (Obj is TCheckListBox) then
+      TCheckListBox(Obj).ItemHeight := Value
+    else if (Obj is TListBox) then
       TListBox(Obj).ItemHeight := Value;
 
     Result := 0;
@@ -300,9 +405,20 @@ begin
 end;
 
 function AUiListBox_SetItemP(ListBox: AControl; Index: AInteger; const Value: APascalString): AError;
+var
+  Obj: TObject;
 begin
   try
-    TListBox(ListBox).Items[Index] := Value;
+    Obj := AUiData.GetObject(ListBox);
+    if not(Assigned(Obj)) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+    if (Obj is TCheckListBox) then
+      TCheckListBox(Obj).Items[Index] := Value;
+    if (Obj is TListBox) then
+      TListBox(Obj).Items[Index] := Value;
     Result := 0;
   except
     Result := -1;
@@ -314,10 +430,17 @@ var
   Obj: TObject;
 begin
   try
-    Obj := AUIData.GetObject(ListBox);
-    if Assigned(Obj) and (Obj is TListBox) then
+    Obj := AUiData.GetObject(ListBox);
+    if not(Assigned(Obj)) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+    if (Obj is TCheckListBox) then
+      TCheckListBox(Obj).ItemIndex := Index
+    else if (Obj is TListBox) then
       TListBox(Obj).ItemIndex := Index
-    else if Assigned(Obj) and (Obj is TRadioGroup) then
+    else if (Obj is TRadioGroup) then
       TRadioGroup(Obj).ItemIndex := Index;
     Result := 0;
   except
@@ -331,11 +454,15 @@ var
 begin
   try
     I := FindListBox(ListBox);
-    if (I >= 0) then
-      FListBoxs[I].OnDblClick := Value;
+    if (I < 0) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+    FListBoxs[I].OnDblClick := Value;
     Result := 0;
   except
-    Result := -2;
+    Result := -1;
   end;
 end;
 

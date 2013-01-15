@@ -229,7 +229,9 @@ begin
       Result := 0;
       Exit;
     end;
-    if (Obj is TListBox) then
+    if (Obj is TCheckListBox) then
+      Result := TCheckListBox(Obj).Items.Count
+    else if (Obj is TListBox) then
       Result := TListBox(Obj).Items.Count
     else if (Obj is TRadioGroup) then
       Result := TRadioGroup(Obj).Items.Count

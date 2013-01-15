@@ -118,7 +118,7 @@ function AUi_ExecuteSaveFileDialog2P(const InitialDir, DefExt, DefFileName, Filt
 {** Select one item by SelectList
     @SelectList - Example: "Item 1;Item 2;Item 3" }
 function AUi_ExecuteSelectDialogP(DialogType: AInt; const SelectList: APascalString;
-    out Res: AInt): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+    out Res: AInt): ABoolean;
 
 function AUi_ExecuteSelectDirectoryDialogP(var Directory: APascalString): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -236,6 +236,9 @@ function ExecuteSaveFileDialogA(const InitialDir, DefExt, DefFileName, Filter: A
 function ExecuteSelectDirectoryDialog(var Directory: APascalString): ABoolean; deprecated; // Use AUi_ExecuteSelectDirectoryDialog()
 
 implementation
+
+uses
+  AUiMain;
 
 const
   DialogButtonsBoxHeight = 36;
@@ -826,6 +829,7 @@ var
   C: AControl;
   S: APascalString;
   SSelectList: APascalString;
+  MaxW: AInt;
 begin
   Dialog := AUiDialog_New(AMessageBoxFlags_OkCancel);
   Window := AUiDialog_GetWindow(Dialog);
@@ -833,9 +837,8 @@ begin
   H := AUiControl_GetClientHeight(Window);
 
   C := AUiListBox_New2(Window, 1);
-  AUiControl_SetPosition(C, 0, 0);
-  AUiControl_SetSize(C, W, H - DialogButtonsBoxHeight);
   AUiControl_SetAlign(C, uiAlignClient);
+  MaxW := W;
 
   SSelectList := SelectList;
   while (Length(SSelectList) > 0) do
@@ -852,7 +855,16 @@ begin
       SSelectList := '';
     end;
     AUiListBox_AddP(C, S);
+    I := AUiControl_TextWidthP(Window, S);
+    if (I > MaxW) then
+      MaxW := I;
   end;
+
+  if (MaxW > W) then
+    AUiControl_SetWidth(Window, MaxW + 50);
+  I := AUiListBox_GetCount(C);
+  if (I * 16 + DialogButtonsBoxHeight > H) then
+    AUiControl_SetHeight(Window, I * 16 + DialogButtonsBoxHeight + 20);
 
   Result := (AUiWindow_ShowModal2(Window) = ID_OK);
   Res := AUiListBox_GetItemIndex(C);

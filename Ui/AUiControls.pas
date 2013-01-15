@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 14.01.2013
+@LastMod 15.01.2013
 }
 unit AUiControls;
 
@@ -121,6 +121,8 @@ function AUiControl_SetTextP(Control: AControl; const Value: APascalString): AEr
 function AUiControl_SetVisible(Control: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetWidth(Control: AControl; Value: AInt): AInt; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_TextWidthP(Control: AControl; const S: APascalString): AInt;
 
 // --- UI_Control ---
 
@@ -929,6 +931,28 @@ begin
     Result := Value;
   except
     Result := -1;
+  end;
+end;
+
+function AUiControl_TextWidthP(Control: AControl; const S: APascalString): AInt;
+var
+  Canvas: TCanvas;
+  Obj: TObject;
+begin
+  try
+    Obj := AUiData.GetObject(Control);
+    if (Obj is TCustomForm) then
+      Canvas := TCustomForm(Obj).Canvas
+    else if (Obj is TListBox) then
+      Canvas := TListBox(Obj).Canvas
+    else
+    begin
+      Result := 0;
+      Exit;
+    end;
+    Result := Canvas.TextWidth(S);
+  except
+    Result := 0;
   end;
 end;
 

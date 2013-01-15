@@ -2,7 +2,7 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 27.12.2012
+@LastMod 15.01.2013
 }
 unit AUiMain;
 
@@ -26,7 +26,12 @@ unit AUiMain;
 interface
 
 uses
-  Controls, Forms, ShellApi, SysUtils, Windows,
+  Controls,
+  Forms,
+  Graphics,
+  ShellApi,
+  SysUtils,
+  Windows,
   ABase,
   ABaseTypes,
   AEventsMain,
@@ -91,6 +96,8 @@ function AUi_ShowHelp2P(const FileName: APascalString): AError;
 function AUi_ShowHelp2WS(const FileName: AWideString): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_Shutdown(): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUi_TextWidthP(const S, FontName: APascalString; FontSize: AInt): AInt;
 
 // --- UI ---
 
@@ -505,6 +512,24 @@ begin
     Result := 0;
   except
     Result := -1;
+  end;
+end;
+
+function AUi_TextWidthP(const S, FontName: APascalString; FontSize: AInt): AInt;
+var
+  G: Graphics.TBitmap;
+begin
+  try
+    G := Graphics.TBitmap.Create();
+    try
+      G.Canvas.Font.Name := FontName;
+      G.Canvas.Font.Size := FontSize;
+      Result := G.Canvas.TextWidth(S);
+    finally
+      G.Free();
+    end;
+  except
+    Result := 0;
   end;
 end;
 

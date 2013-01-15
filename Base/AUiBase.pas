@@ -2,7 +2,7 @@
 @Abstract User Interface base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 14.12.2012
+@LastMod 15.01.2013
 }
 unit AUiBase;
 
@@ -124,8 +124,17 @@ const
   AUiSplitter_HSplitterBottom = 2; //(Align=alBottom)
   AUiSplitter_VSplitterRight = 3;  //(Align=alRight)
 
-//type // = Controls.TMouseButton
-//  AUIMouseButton = (mbLeft, mbRight, mbMiddle);
+type
+  AUiWindowPosition = AInt;
+const
+  AUiWindowPosition_Designed = 0;
+  AUiWindowPosition_Default = 1;
+  AUiWindowPosition_DefaultPosOnly = 2;
+  AUiWindowPosition_DefaultSizeOnly = 3;
+  AUiWindowPosition_ScreenCenter = 4;
+  AUiWindowPosition_DesktopCenter = 5;
+  AUiWindowPosition_MainFormCenter = 6;
+  AUiWindowPosition_OwnerFormCenter = 7;
 
 implementation
 

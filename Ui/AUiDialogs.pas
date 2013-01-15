@@ -835,6 +835,7 @@ begin
   C := AUiListBox_New2(Window, 1);
   AUiControl_SetPosition(C, 0, 0);
   AUiControl_SetSize(C, W, H - DialogButtonsBoxHeight);
+  AUiControl_SetAlign(C, uiAlignClient);
 
   SSelectList := SelectList;
   while (Length(SSelectList) > 0) do
@@ -1004,6 +1005,7 @@ begin
     Dialog := TAUiDialog.Create();
     Box := Dialog.GetButtonsBox();
     Window := AUiDialog_GetWindow(ADialog(Dialog));
+    AUiWindow_SetPosition(Window, AUiWindowPosition_OwnerFormCenter);
     if (Buttons = MB_OK) then
     begin
       Button := AUiButton_New(Window);

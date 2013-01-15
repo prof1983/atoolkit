@@ -30,7 +30,7 @@ function AUiWindow_SetBorderStyle(Window: AWindow; BorderStyle: AInt): AError; {
 
 function AUiWindow_SetFormStyle(Window: AWindow; FormStyle: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiWindow_SetPosition(Window: AWindow; Position: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiWindow_SetPosition(Window: AWindow; Position: AUiWindowPosition): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiWindow_SetState(Window: AWindow; State: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -165,10 +165,24 @@ begin
   end;
 end;
 
-function AUiWindow_SetPosition(Window: AWindow; Position: AInt): AError;
+function AUiWindow_SetPosition(Window: AWindow; Position: AUiWindowPosition): AError;
+var
+  P: TPosition;
 begin
   try
-    TForm(Window).Position := TPosition(poScreenCenter);
+    case Position of
+      AUiWindowPosition_Designed: P := poDesigned;
+      AUiWindowPosition_Default: P := poDefault;
+      AUiWindowPosition_DefaultPosOnly: P := poDefaultPosOnly;
+      AUiWindowPosition_DefaultSizeOnly: P := poDefaultSizeOnly;
+      AUiWindowPosition_ScreenCenter: P := poScreenCenter;
+      AUiWindowPosition_DesktopCenter: P := poDesktopCenter;
+      AUiWindowPosition_MainFormCenter: P := poMainFormCenter;
+      AUiWindowPosition_OwnerFormCenter: P := poOwnerFormCenter;
+    else
+      P := poMainFormCenter;
+    end;
+    TForm(Window).Position := P;
     Result := 0;
   except
     Result := -1;

@@ -2,7 +2,7 @@
 @Abstract AUiDialogs
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 14.12.2012
+@LastMod 15.01.2013
 }
 unit AUiDialogs;
 
@@ -16,7 +16,11 @@ uses
   Controls, Dialogs, Forms,
   ABase, ABaseTypes, AStringBaseUtils, AStrings, ASystem,
   AUiAboutDialog, AUiAboutDialog1, AUiAboutDialog2, AUiBase, AUiBox, AUiButtons,
-  AUiConsts, AUiControls, AUiData, AUiWindows,
+  AUiConsts,
+  AUiControls,
+  AUiData,
+  AUiListBox,
+  AUiWindows,
   fAbout, fCalendar, fDateFilter, fError, fInputDialog, fLogin, fPasswordDialog;
 
 // --- AUi ---
@@ -111,6 +115,11 @@ function AUi_ExecuteSaveFileDialog1P(const InitialDir, DefExt, DefFileName: APas
 function AUi_ExecuteSaveFileDialog2P(const InitialDir, DefExt, DefFileName, Filter: APascalString;
     var FilterIndex: AInteger): APascalString; {$ifdef AStdCall}stdcall;{$endif}
 
+{** Select one item by SelectList
+    @SelectList - Example: "Item 1;Item 2;Item 3" }
+function AUi_ExecuteSelectDialogP(DialogType: AInt; const SelectList: APascalString;
+    out Res: AInt): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUi_ExecuteSelectDirectoryDialogP(var Directory: APascalString): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_InitAboutDialog1(AboutDialog: AWindow): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -131,6 +140,8 @@ function AUiDialog_AddButton02(Win: AWindow; Left, Width: AInteger; const Text: 
 
 function AUiDialog_AddButtonP(Win: AWindow; Left, Width: AInt; const Text: APascalString;
     OnClick: ACallbackProc): AControl; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiDialog_Free(Dialog: ADialog): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiDialog_GetWindow(Dialog: ADialog): AWindow; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -226,6 +237,9 @@ function ExecuteSelectDirectoryDialog(var Directory: APascalString): ABoolean; d
 
 implementation
 
+const
+  DialogButtonsBoxHeight = 36;
+
 { TAUIDialog }
 
 type
@@ -247,8 +261,8 @@ begin
   FWindow := AUiWindow_New();
 
   FButtonsBox := AUiBox_New(FWindow, 0);
-  UI_Control_SetAlign(FButtonsBox, uiAlignBottom);
-  AUIControls.UI_Control_SetSize(FButtonsBox, 100, 35);
+  AUiControl_SetAlign(FButtonsBox, uiAlignBottom);
+  AUiControl_SetSize(FButtonsBox, 100, DialogButtonsBoxHeight);
 end;
 
 function TAUiDialog.GetButtonsBox(): AControl;
@@ -801,6 +815,50 @@ begin
   end;
 end;
 
+function AUi_ExecuteSelectDialogP(DialogType: AInt; const SelectList: APascalString;
+    out Res: AInt): ABoolean;
+var
+  Dialog: ADialog;
+  Window: AWindow;
+  I: AInt;
+  H: AInt;
+  W: AInt;
+  C: AControl;
+  S: APascalString;
+  SSelectList: APascalString;
+begin
+  Dialog := AUiDialog_New(AMessageBoxFlags_OkCancel);
+  Window := AUiDialog_GetWindow(Dialog);
+  W := AUiControl_GetClientWidth(Window);
+  H := AUiControl_GetClientHeight(Window);
+
+  C := AUiListBox_New2(Window, 1);
+  AUiControl_SetPosition(C, 0, 0);
+  AUiControl_SetSize(C, W, H - DialogButtonsBoxHeight);
+
+  SSelectList := SelectList;
+  while (Length(SSelectList) > 0) do
+  begin
+    I := Pos(';', SSelectList);
+    if (I > 0) then
+    begin
+      S := Copy(SSelectList, 1, I-1);
+      Delete(SSelectList, 1, I);
+    end
+    else
+    begin
+      S := SSelectList;
+      SSelectList := '';
+    end;
+    AUiListBox_AddP(C, S);
+  end;
+
+  Result := (AUiWindow_ShowModal2(Window) = ID_OK);
+  Res := AUiListBox_GetItemIndex(C);
+  AUiControl_Free(C);
+  AUiDialog_Free(Dialog);
+end;
+
 function AUi_ExecuteSelectDirectoryDialogP(var Directory: APascalString): ABoolean;
 {$IFDEF USE_JEDI}
 var
@@ -911,6 +969,18 @@ begin
       Result := 0;
   except
     Result := 0;
+  end;
+end;
+
+function AUiDialog_Free(Dialog: ADialog): AError;
+begin
+  try
+    AUiControl_Free(TAUiDialog(Dialog).FButtonsBox);
+    AUiControl_Free(TAUiDialog(Dialog).FWindow);
+    TAUiDialog(Dialog).Free();
+    Result := 0;
+  except
+    Result := -1;
   end;
 end;
 

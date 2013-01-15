@@ -2,7 +2,7 @@
 @Abstract User Interface window functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 11.08.2011
-@LastMod 27.08.2012
+@LastMod 15.01.2013
 }
 unit AUiWindows;
 
@@ -35,6 +35,8 @@ function AUiWindow_SetPosition(Window: AWindow; Position: AInt): AError; {$ifdef
 function AUiWindow_SetState(Window: AWindow; State: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiWindow_ShowModal(Window: AWindow): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiWindow_ShowModal2(Window: AWindow): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 // --- UI_Window ---
 
@@ -189,6 +191,15 @@ begin
     Result := (TForm(Window).ShowModal = mrOk);
   except
     Result := False;
+  end;
+end;
+
+function AUiWindow_ShowModal2(Window: AWindow): AInt;
+begin
+  try
+    Result := TForm(Window).ShowModal();
+  except
+    Result := 0;
   end;
 end;
 

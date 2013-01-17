@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 15.01.2013
+@LastMod 17.01.2013
 }
 unit AUiControls;
 
@@ -474,6 +474,7 @@ var
   A: TAnchors;
 begin
   try
+    A := [];
     if (uiakLeft and Anchors = uiakLeft) then
       A := A + [akLeft];
     if (uiakTop and Anchors = uiakTop) then
@@ -656,10 +657,7 @@ end;
 function AUiControl_SetHeight(Control: AControl; Value: AInt): AInt;
 begin
   try
-    if (TObject(Control) is TLabel) then
-      TLabel(Control).Font.Height := Value
-    else
-      TControl(Control).Height := Value;
+    TControl(Control).Height := Value;
     Result := Value;
   except
     Result := -1;

@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 27.12.2012
+@LastMod 17.01.2013
 }
 unit AUi;
 
@@ -54,6 +54,8 @@ uses
 
 function Init(): AError; stdcall;
 function Done(): AError; stdcall;
+
+function Fin(): AError;
 
 function InitMainTrayIcon(): AError; stdcall;
 
@@ -734,6 +736,11 @@ begin
   Result := Done();
 end;
 
+function Fin(): AError;
+begin
+  Result := AUi_Fin();
+end;
+
 function Init(): AError; stdcall;
 begin
   Result := AUi_Init();
@@ -780,15 +787,12 @@ end;
 
 function SetAboutMemoDefaultSize(Width, Height: AInteger): AError;
 begin
-  UiAboutWinMemoWidthDefault := Width;
-  UiAboutWinMemoHeightDefault := Height;
-  Result := 0;
+  Result := AUi_SetAboutMemoDefaultSize(Width, Height);
 end;
 
 function SetOnAboutClick(Value: AProc): AError;
 begin
-  UiAboutClick := Value;
-  Result := 0;
+  Result := AUi_SetOnAboutClick(Value);
 end;
 
 procedure SetOnMainFormCreate(Value: AProc); stdcall;

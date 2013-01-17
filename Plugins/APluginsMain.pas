@@ -2,7 +2,7 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.01.2012
-@LastMod 11.12.2012
+@LastMod 17.01.2013
 }
 unit APluginsMain;
 
@@ -36,6 +36,8 @@ function APlugins_FindP(const Path: APascalString): AError; stdcall;
 function APlugins_GetCount(): AInteger; stdcall;
 
 function APlugins_Init(): AError; stdcall;
+
+function APlugins_Prepare(Value: AVersion): AError; stdcall;
 
 function APlugins_SetOnCheckPlugin(CheckPluginProc: TCheckPluginProc): AError; stdcall;
 
@@ -379,6 +381,13 @@ begin
   Result := Plugins_Init();
 end;
 
+function APlugins_Prepare(Value: AVersion): AError;
+begin
+  PluginsVersionValue1 := Value;
+  PluginsVersionValue2 := 0;
+  Result := 0;
+end;
+
 function APlugins_SetOnCheckPlugin(CheckPluginProc: TCheckPluginProc): AError;
 begin
   Plugins_SetOnCheckPlugin(CheckPluginProc);
@@ -479,7 +488,7 @@ begin
 end;
 
 initialization
-  PluginsVersionMask := PluginsVersionMaskDef;
+  PluginsVersionMask := AVersion(PluginsVersionMaskDef);
   PluginsVersionValue1 := PluginsVersionValue1Def;
   PluginsVersionValue2 := PluginsVersionValue2Def;
   Plugins_SetOnCheckPlugin(DoCheckPlugin);

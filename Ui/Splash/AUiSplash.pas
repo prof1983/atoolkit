@@ -2,7 +2,7 @@
 @Abstract AUi Splash
 @Author Prof1983 <prof1983@ya.ru>
 @Created 08.12.2009
-@LastMod 26.12.2012
+@LastMod 17.01.2013
 }
 unit AUiSplash;
 
@@ -16,6 +16,7 @@ uses
   ASystemMain,
   AUi,
   AUiBase,
+  AUiControls,
   AUtilsMain;
 
 {** Finalize splash }
@@ -104,16 +105,20 @@ end;
 
 function AUiSplash_Fin(): AError;
 begin
-  {$IFDEF A02}
-  ASystem.OnBeforeRun_Disconnect(DoBeforeRun02);
-  {$ELSE}
-  ASystem_OnBeforeRun_Disconnect(DoBeforeRun);
-  {$ENDIF}
+  try
+    {$IFDEF A02}
+    ASystem.OnBeforeRun_Disconnect(DoBeforeRun02);
+    {$ELSE}
+    ASystem_OnBeforeRun_Disconnect(DoBeforeRun);
+    {$ENDIF}
 
-  AUI.Window_Free(SplashWin);
-  SplashWin := 0;
-  FInitialized := False;
-  Result := 0;
+    AUiControl_Free(SplashWin);
+    SplashWin := 0;
+    FInitialized := False;
+    Result := 0;
+  except
+    Result := -1;
+  end;
 end;
 
 function AUiSplash_Hide(): AError;

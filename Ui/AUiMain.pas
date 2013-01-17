@@ -2,7 +2,7 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 15.01.2013
+@LastMod 17.01.2013
 }
 unit AUiMain;
 
@@ -66,6 +66,8 @@ function AUi_ProcessMessages(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_Run(): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUi_SetAboutMemoDefaultSize(Width, Height: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUi_SetHideOnClose(Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 procedure AUi_SetHideOnClose_Old(Value: ABoolean); {$ifdef AStdCall}stdcall;{$endif} deprecated; // Use AUi_SetHideOnClose()
@@ -73,6 +75,8 @@ procedure AUi_SetHideOnClose_Old(Value: ABoolean); {$ifdef AStdCall}stdcall;{$en
 function AUi_SetIsShowApp(Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_SetMainToolBar(ToolBar: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUi_SetOnAboutClick(Value: AProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_SetOnMainFormCreate(Value: AProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -372,6 +376,13 @@ begin
   end;
 end;
 
+function AUi_SetAboutMemoDefaultSize(Width, Height: AInteger): AError;
+begin
+  UiAboutWinMemoWidthDefault := Width;
+  UiAboutWinMemoHeightDefault := Height;
+  Result := 0;
+end;
+
 function AUi_SetHideOnClose(Value: ABoolean): AError;
 begin
   FHideOnClose := Value;
@@ -424,6 +435,12 @@ begin
   except
     Result := -1;
   end;
+end;
+
+function AUi_SetOnAboutClick(Value: AProc): AError;
+begin
+  UiAboutClick := Value;
+  Result := 0;
 end;
 
 function AUi_SetOnMainFormCreate(Value: AProc): AError;

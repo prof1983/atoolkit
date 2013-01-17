@@ -2,7 +2,7 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.04.2009
-@LastMod 27.08.2012
+@LastMod 17.01.2013
 }
 unit APlugins;
 
@@ -124,8 +124,7 @@ end;
 
 procedure Prepare(Value: AVersion);
 begin
-  PluginsVersionValue1 := Value;
-  PluginsVersionValue2 := 0;
+  Result := APlugins_Prepare(Value);
 end;
 
 end.

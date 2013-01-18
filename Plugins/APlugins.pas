@@ -2,7 +2,7 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.04.2009
-@LastMod 17.01.2013
+@LastMod 18.01.2013
 }
 unit APlugins;
 
@@ -37,7 +37,7 @@ function FindWS(const Path: AWideString): AError; stdcall;
 
 function GetCount(): AInteger; stdcall;
 
-procedure Prepare(Value: AVersion);
+function Prepare(Value: AVersion): AError; stdcall;
 
 implementation
 
@@ -122,7 +122,7 @@ begin
   Result := APlugins_Init();
 end;
 
-procedure Prepare(Value: AVersion);
+function Prepare(Value: AVersion): AError;
 begin
   Result := APlugins_Prepare(Value);
 end;

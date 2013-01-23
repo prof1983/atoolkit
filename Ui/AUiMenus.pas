@@ -2,7 +2,7 @@
 @Abstract AUi Menus
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2011
-@LastMod 21.01.2013
+@LastMod 23.01.2013
 }
 unit AUiMenus;
 
@@ -360,7 +360,7 @@ begin
       ResIndex := FindMenuItem(Value);
       if (ResIndex < 0) then
         _AddMenuItem(ParentMenuItem, Value, 0);
-      Result := 0;
+      Result := FMenuItems[ResIndex].MenuItem;
       Exit;
     end;
 

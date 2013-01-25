@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 17.01.2013
+@LastMod 24.01.2013
 }
 unit AUi;
 
@@ -1798,7 +1798,7 @@ end;
 function ToolMenu_AddButtonWS(ToolMenu: AToolMenu; const Name, Text, Hint: AWideString;
     OnClick: ACallbackProc03; ImageId, Weight: AInteger): AButton; stdcall;
 begin
-  Result := AUiToolBar_AddButtonP(ToolMenu, Name, Text, Hint, OnClick, ImageId, Weight);
+  Result := AUiToolMenu_AddButtonP(ToolMenu, Name, Text, Hint, OnClick, ImageId, Weight);
 end;
 
 function ToolMenu_AddNewItemWS(Parent: AToolMenu; const Name, Text: AWideString;

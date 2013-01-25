@@ -12,9 +12,19 @@ interface
 
 uses
   ComCtrls, Menus,
-  ABase, AStrings, AUiBase, AUiControls, AUiData, AUiMenus, AUiPageControl;
+  ABase,
+  AStrings,
+  AUiBase,
+  AUiControls,
+  AUiData,
+  AUiMenus,
+  AUiPageControl,
+  AUiToolBar;
 
 // --- AUiToolMenu ---
+
+function AUiToolMenu_AddButtonP(ToolMenu: AToolMenu; const Name, Text, Hint: APascalString;
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AButton; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiToolMenu_AddNewItem(Parent: AToolMenu; const Name, Text: AString_Type;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu; {$ifdef AStdCall}stdcall;{$endif}
@@ -72,6 +82,12 @@ begin
 end;
 
 // --- AUiToolMenu ---
+
+function AUiToolMenu_AddButtonP(ToolMenu: AToolMenu; const Name, Text, Hint: APascalString;
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AButton;
+begin
+  Result := AUiToolBar_AddButtonP(ToolMenu, Name, Text, Hint, OnClick, ImageId, Weight);
+end;
 
 function AUiToolMenu_AddNewItem(Parent: AToolMenu; const Name, Text: AString_Type;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu;
@@ -204,6 +220,11 @@ var
 begin
   try
     PageControl := AUiPageControl_New(Parent);
+    if (PageControl = 0) then
+    begin
+      Result := 0;
+      Exit;
+    end;
     AUiControl_SetAlign(PageControl, uiAlignTop);
     AUiControl_SetHeight(PageControl, 60);
 

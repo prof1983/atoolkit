@@ -2,7 +2,7 @@
 @Abstract AUi Menus
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2011
-@LastMod 23.01.2013
+@LastMod 24.01.2013
 }
 unit AUiMenus;
 
@@ -56,7 +56,12 @@ function AUiMenu_AddItem4P(ParentMenuItem: AMenuItem; const Name, Text: APascalS
 function AUiMenu_AddItemExP(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
     ImageId, Weight, Tag: AInteger; out ResIndex: AInteger): AError;
 
-function AUiMenu_AddItemEx2P(ParentMenuItem: AMenuItem; const Name, Text, Hint: APascalString;
+{** Добавляет элемент меню
+    @param Name - имя компонента
+    @param TextMin - для MenuItem не используется, для Button - Text
+    @param Text - текст (Hint для Button)
+    @param ItemType - для MenuItem не используется, для ToolMenu: 0 - Button, 1 - Item }
+function AUiMenu_AddItemEx2P(Parent: AMenuItem; const Name, TextMin, Text: APascalString;
     OnClick: ACallbackProc; ItemType, ImageId, Weight, Tag: AInt): AMenuItem;
 
 function AUiMenu_Clear(MenuItem: AMenuItem): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -71,6 +76,9 @@ function AUiMenu_FindItemByName(MenuItem: AMenuItem; const Name: AString_Type): 
 function AUiMenu_FindItemByNameP(MenuItem: AMenuItem; const Name: APascalString): AMenuItem;
 
 function AUiMenu_New(MenuType: AInteger): AMenu; {$ifdef AStdCall}stdcall;{$endif}
+
+{ MenuType: 0 - MainMenu, 1 - PopupMenu, 2 - ToolMenu }
+function AUiMenu_New2(Parent: AControl; MenuType: AInt): AMenu; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_SetChecked(MenuItem: AMenuItem; Checked: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -103,6 +111,11 @@ function UI_MenuItem_AddEx(ParentMenuItem: AMenuItem; const Name, Text: APascalS
 function UI_MenuItem_FindByName(MenuItem: AMenuItem; const Name: APascalString): AMenuItem; deprecated; // Use AUiMenu_FindItemByNameP()
 
 implementation
+
+{$ifdef UseToolMenu}
+uses
+  AUiToolMenu;
+{$endif}
 
 { Private }
 
@@ -158,72 +171,36 @@ end;
 
 function AUiMenu_AddItem1(Menu: AMenu; const Name, Text: AString_Type;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem;
-var
-  MenuItems: AMenuItem;
 begin
-  try
-    {$ifdef UseToolMenu}
-    xxx
-    {$endif}
-
-    MenuItems := AUiMenu_GetItems(Menu);
-
-    if (MenuItems = 0) then
-    begin
-      Result := 0;
-      Exit;
-    end;
-
-    Result := AUiMenu_AddItem4P(MenuItems,
-        AString_ToPascalString(Name), AString_ToPascalString(Text),
-        OnClick, ImageId, Weight, 0);
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_AddItemEx2P(Menu,
+      AString_ToPascalString(Name), '', AString_ToPascalString(Text),
+      OnClick, 0, ImageId, Weight, 0);
 end;
 
 function AUiMenu_AddItem1P(Menu: AMenu; const Name, Text: APascalString;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem;
-var
-  MenuItems: AMenuItem;
 begin
-  try
-    {$ifdef UseToolMenu}
-    xxx
-    {$endif}
-
-    MenuItems := AUiMenu_GetItems(Menu);
-
-    if (MenuItems = 0) then
-    begin
-      Result := 0;
-      Exit;
-    end;
-
-    Result := AUiMenu_AddItem4P(MenuItems, Name, Text, OnClick, ImageId, Weight, 0);
-  except
-    Result := 0;
-  end;
+  Result := AUiMenu_AddItemEx2P(Menu, Name, '', Text, OnClick, 0, ImageId, Weight, 0);
 end;
 
 function AUiMenu_AddItem2(Parent: AMenuItem; const Name, Text: AString_Type;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem;
 begin
-  Result := AUiMenu_AddItem4P(Parent,
-      AString_ToPascalString(Name), AString_ToPascalString(Text),
-      OnClick, ImageId, Weight, 0);
+  Result := AUiMenu_AddItemEx2P(Parent,
+      AString_ToPascalString(Name), '', AString_ToPascalString(Text),
+      OnClick, 0, ImageId, Weight, 0);
 end;
 
 function AUiMenu_AddItem2P(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
     OnClick: ACallbackProc; ImageId, Weight: Integer): AMenuItem;
 begin
-  Result := AUiMenu_AddItem4P(ParentMenuItem, Name, Text, OnClick, ImageId, Weight, 0);
+  Result := AUiMenu_AddItemEx2P(ParentMenuItem, Name, '', Text, OnClick, 0, ImageId, Weight, 0);
 end;
 
 function AUiMenu_AddItem2WS(Parent: AMenuItem; const Name, Text: AWideString;
     OnClick: ACallbackProc; ImageId, Weight: Integer): AMenuItem;
 begin
-  Result := AUiMenu_AddItem4P(Parent, Name, Text, OnClick, ImageId, Weight, 0);
+  Result := AUiMenu_AddItemEx2P(Parent, Name, '', Text, OnClick, 0, ImageId, Weight, 0);
 end;
 
 function AUiMenu_AddItem2WS02(Parent: AMenuItem; const Name, Text: AWideString;
@@ -233,9 +210,11 @@ var
   ResIndex: AInteger;
 begin
   try
-    {$ifdef UseToolMenu}
-    xxx
-    {$endif}
+    if not(TObject(Parent) is TMenu) and not(TObject(Parent) is TMenuItem) then
+    begin
+      Result := 0;
+      Exit;
+    end;
 
     Res := AUiMenu_AddItemExP(Parent, Name, Text, ImageId, Weight, 0, ResIndex);
     if (Res < 0) then
@@ -264,9 +243,11 @@ var
   Res: AMenuItem;
 begin
   try
-    {$ifdef UseToolMenu}
-    xxx
-    {$endif}
+    if not(TObject(Parent) is TMenu) and not(TObject(Parent) is TMenuItem) then
+    begin
+      Result := 0;
+      Exit;
+    end;
 
     Res := AddObject(TMenuItem(MenuItem));
     I := Length(FMenuItems);
@@ -293,9 +274,11 @@ var
   ResIndex: AInteger;
 begin
   try
-    {$ifdef UseToolMenu}
-    xxx
-    {$endif}
+    if not(TObject(Parent) is TMenu) and not(TObject(Parent) is TMenuItem) then
+    begin
+      Result := 0;
+      Exit;
+    end;
 
     Res := AUiMenu_AddItemExP(Parent, Name, Text, ImageId, Weight, 0, ResIndex);
     if (Res < 0) then
@@ -315,7 +298,7 @@ function AUiMenu_AddItem4P(ParentMenuItem: AMenuItem; const Name, Text: APascalS
     OnClick: ACallbackProc; ImageId, Weight, Tag: AInteger): AMenuItem;
 begin
   try
-    Result := AUiMenu_AddItemEx2P(ParentMenuItem, Name, Text, '', OnClick, 0, ImageId, Weight, Tag);
+    Result := AUiMenu_AddItemEx2P(ParentMenuItem, Name, '', Text, OnClick, 0, ImageId, Weight, Tag);
   except
     Result := 0;
   end;
@@ -324,11 +307,11 @@ end;
 function AUiMenu_AddItemExP(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
     ImageId, Weight, Tag: AInteger; out ResIndex: AInteger): AError;
 begin
-  Result := AUiMenu_AddItemEx2P(ParentMenuItem, Name, Text, '', nil, 0, ImageId, Weight, Tag);
+  Result := AUiMenu_AddItemEx2P(ParentMenuItem, Name, '', Text, nil, 0, ImageId, Weight, Tag);
   ResIndex := _Find(ParentMenuItem, Result);
 end;
 
-function AUiMenu_AddItemEx2P(ParentMenuItem: AMenuItem; const Name, Text, Hint: APascalString;
+function AUiMenu_AddItemEx2P(Parent: AMenuItem; const Name, TextMin, Text: APascalString;
     OnClick: ACallbackProc; ItemType, ImageId, Weight, Tag: AInt): AMenuItem;
 var
   I: Integer;
@@ -340,12 +323,37 @@ var
   Value: AMenuItem;
   ResIndex: AInt;
 begin
-  try
-    {$ifdef UseToolMenu}
-    xxx
-    {$endif}
+  if (Parent = 0) then
+  begin
+    Result := 0;
+    Exit;
+  end;
 
-    Item := TMenuItem(ParentMenuItem);
+  try
+    if (TObject(Parent) is TMenu) then
+    begin
+      Parent := AUiMenu_GetItems(Parent);
+      if (Parent = 0) then
+      begin
+        Result := 0;
+        Exit;
+      end;
+    end;
+
+    if not(TObject(Parent) is TMenuItem) then
+    begin
+      {$ifdef UseToolMenu}
+      if ItemType = 0 then
+        Result := AUiToolMenu_AddButtonP(Parent, Name, Text, TextMin, OnClick, ImageId, Weight)
+      else
+        Result := AUiToolMenu_AddNewItemP(Parent, Name, TextMin, OnClick, ImageId, Weight);
+      {$else}
+      Result := 0;
+      {$endif}
+      Exit;
+    end;
+
+    Item := TMenuItem(Parent);
 
     if not(Assigned(Item)) then
     begin
@@ -353,13 +361,13 @@ begin
       Exit;
     end;
 
-    Value := AUiMenu_FindItemByNameP(ParentMenuItem, 'mi'+Name);
+    Value := AUiMenu_FindItemByNameP(Parent, 'mi'+Name);
 
     if (Value <> 0) then
     begin
       ResIndex := FindMenuItem(Value);
       if (ResIndex < 0) then
-        _AddMenuItem(ParentMenuItem, Value, 0);
+        _AddMenuItem(Parent, Value, 0);
       Result := FMenuItems[ResIndex].MenuItem;
       Exit;
     end;
@@ -369,7 +377,7 @@ begin
     WeightMax := High(Integer);
     for I := 0 to High(FMenuItems) do
     begin
-      if (FMenuItems[I].Parent = ParentMenuItem) and (FMenuItems[I].Weight > Weight) and (FMenuItems[I].Weight < WeightMax) then
+      if (FMenuItems[I].Parent = Parent) and (FMenuItems[I].Weight > Weight) and (FMenuItems[I].Weight < WeightMax) then
       begin
         IndexMax := I;
         WeightMax := FMenuItems[I].Weight;
@@ -389,7 +397,7 @@ begin
       Item.Add(mi);
 
     Value := AddObject(mi);
-    ResIndex := _AddMenuItem(ParentMenuItem, Value, Weight);
+    ResIndex := _AddMenuItem(Parent, Value, Weight);
 
     {$IFDEF A01}
       FMenuItems[ResIndex].OnClick02 := OnClick;
@@ -410,12 +418,18 @@ end;
 function AUiMenu_Clear(MenuItem: AMenuItem): AError;
 begin
   try
-    {$ifdef UseToolMenu}
-    xxx
-    {$endif}
-
-    TMenuItem(MenuItem).Clear();
-    Result := 0;
+    if (TObject(MenuItem) is TMenu) then
+    begin
+      TMenu(MenuItem).Items.Clear();
+      Result := 0;
+    end
+    else if (TObject(MenuItem) is TMenuItem) then
+    begin
+      TMenuItem(MenuItem).Clear();
+      Result := 0;
+    end
+    else
+      Result := -2;
   except
     Result := -1;
   end;
@@ -444,6 +458,16 @@ var
   Index: Integer;
 begin
   try
+    if not(TObject(Parent) is TMenuItem) then
+    begin
+      {$ifdef UseToolMenu}
+      Result := AUiToolMenu_GetSubMenuP(Parent, Name, Text, ImageId, Weight);
+      {$else}
+      Result := 0;
+      {$endif}
+      Exit;
+    end;
+
     Index := _FindByName(Parent, Name);
     if (Index >= 0) then
     begin
@@ -466,9 +490,11 @@ var
   I: Integer;
 begin
   try
-    {$ifdef UseToolMenu}
-    xxx
-    {$endif}
+    if not(TObject(MenuItem) is TMenuItem) then
+    begin
+      Result := 0;
+      Exit;
+    end;
 
     I := _FindByName(MenuItem, Name);
     if (I >= 0) then
@@ -482,11 +508,20 @@ end;
 
 function AUiMenu_New(MenuType: AInteger): AMenu;
 begin
-  try
-    {$ifdef UseToolMenu}
-    {$endif}
+  Result := AUiMenu_New2(0, MenuType);
+end;
 
-    Result := AMenu(TPopupMenu.Create(nil));
+function AUiMenu_New2(Parent: AControl; MenuType: AInt): AMenu;
+begin
+  try
+    if (MenuType = 1) then
+      Result := AMenu(TPopupMenu.Create(nil))
+    {$ifdef UseToolMenu}
+    else if (MenuType = 2) then
+      Result := AUiToolMenu_New(Parent)
+    {$endif}
+    else
+      Result := AMenu(TMainMenu.Create(nil));
   except
     Result := 0;
   end;
@@ -495,9 +530,11 @@ end;
 function AUiMenu_SetChecked(MenuItem: AMenuItem; Checked: ABoolean): AError;
 begin
   try
-    {$ifdef UseToolMenu}
-    xxx
-    {$endif}
+    if not(TObject(MenuItem) is TMenuItem) then
+    begin
+      Result := 0;
+      Exit;
+    end;
 
     TMenuItem(MenuItem).Checked := Checked;
     Result := -1;

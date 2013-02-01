@@ -2,7 +2,7 @@
 @Abstract AData - DatabaseStructure
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 19.07.2012
+@LastMod 30.01.2013
 }
 unit ADatabaseStructure;
 
@@ -13,7 +13,7 @@ uses
   {ASysDataBase;}
 
 type
-  TAFieldStructure = class{$IFDEF A01}(TInterfacedObject, IAFieldStructure){$ENDIF}
+  TAFieldStructure = class
   private
     FFieldDefault: WideString;
     FFieldName: WideString;
@@ -41,7 +41,7 @@ type
   end;
 
 type
-  TAIndexStructure = class{$IFDEF A01}(TInterfacedObject, IAIndexStructure){$ENDIF}
+  TAIndexStructure = class
   private
     FName: WideString;
     FIndexField: WideString;
@@ -60,7 +60,7 @@ type
   end;
 
 type
-  TATableStructure = class{$IFDEF A01}(TInterfacedObject, IATableStructure){$ENDIF}
+  TATableStructure = class
   private
     FAccess: TATableAccess;
     FDescription: WideString;
@@ -93,7 +93,7 @@ type
   end;
 
 type
-  TADatabaseStructure = class{$IFDEF A01}(TInterfacedObject, IADatabaseStructure){$ENDIF}
+  TADatabaseStructure = class
   private
     FTables: array of TATableStructure;
   protected

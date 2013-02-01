@@ -1,11 +1,11 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 01.10.2009
-@LastMod 18.12.2012
+@LastMod 30.01.2013
 }
 unit AStringLists;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
@@ -13,7 +13,7 @@ uses
   Classes,
   ABase,
   ABaseTypes,
-  AStrings;
+  AStringMain;
 
 // --- AStringList ---
 

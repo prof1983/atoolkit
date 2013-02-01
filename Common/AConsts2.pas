@@ -2,7 +2,7 @@
 @Abstract Global consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.10.2006
-@LastMod 16.11.2012
+@LastMod 29.01.2013
 }
 unit AConsts2;
 
@@ -60,7 +60,7 @@ const // --- Time consts ---
   DateTimeMinute = DateTimeHour / 60;
   DateTimeSecond = DateTimeMinute / 60;
 
-const //** @abstract(Для логирования всех ошибок)
+const
   err_Exception_Str = '%s <%s.%s>.';
 
 const
@@ -71,7 +71,11 @@ const
   cProgramVersion_en = 'Version: ';
   cProductVersion_en = 'Product version: ';
 
+{$ifdef DELPHI_XE_UP}
+{$I AConsts2.ru.utf8.inc}
+{$else}
 {$I AConsts2.ru.win1251.inc}
+{$endif}
 
 const
   {$IFDEF FPC}

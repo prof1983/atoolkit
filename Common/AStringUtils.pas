@@ -2,7 +2,7 @@
 @Abstract AString utils
 @Author Prof1983 <prof1983@ya.ru>
 @Created 01.08.2012
-@LastMod 25.12.2012
+@LastMod 28.01.2013
 }
 unit AStringUtils;
 
@@ -10,7 +10,8 @@ interface
 
 uses
   SysUtils,
-  ABase, AStrings;
+  ABase,
+  AStringMain;
 
 // --- AString ---
 
@@ -36,7 +37,7 @@ end;
 function AString_ToUpper(const S: AString_Type; out Res: AString_Type): AInteger;
 begin
   try
-    Result := AString_AssignWS(Res, SysUtils.AnsiUpperCase(AStrings.String_ToWideString(S)));
+    Result := AString_AssignP(Res, SysUtils.AnsiUpperCase(AString_ToPascalString(S)));
   except
     Result := 0;
   end;

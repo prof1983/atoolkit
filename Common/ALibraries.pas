@@ -2,7 +2,7 @@
 @Abstract ALibraries (.dll, .so)
 @Author Prof1983 <prof1983@ya.ru>
 @Created 02.10.2005
-@LastMod 17.12.2012
+@LastMod 31.01.2013
 }
 unit ALibraries;
 
@@ -26,27 +26,9 @@ function ALibrary_GetNameP(Lib: ALibrary): APascalString; stdcall;
 
 function ALibrary_GetProcAddressP(Lib: ALibrary; const Name: APascalString): Pointer; stdcall;
 
-function ALibrary_GetProcAddressWS(Lib: ALibrary; const Name: AWideString): Pointer; stdcall;
-
 function ALibrary_GetSymbolP(Lib: ALibrary; const SymbolName: APascalString; var Symbol: Pointer): ABoolean; stdcall;
 
 function ALibrary_OpenP(const FileName: APascalString; Flags: ALibraryFlags): ALibrary; stdcall;
-
-function ALibrary_OpenWS(const FileName: AWideString; Flags: ALibraryFlags): ALibrary; stdcall;
-
-// --- Library ---
-
-function Library_BuildPath(const Directory, LibraryName: APascalString): APascalString; stdcall; deprecated; // Use ALibrary_BuildPathP()
-
-function Library_Close(Lib: ALibrary): ABoolean; stdcall; deprecated; // Use ALibrary_Close()
-
-function Library_GetName(Lib: ALibrary): APascalString; stdcall; deprecated; // Use ALibrary_GetNameP()
-
-function Library_GetProcAddress(Lib: ALibrary; const Name: APascalString): Pointer; stdcall; deprecated; // Use ALibrary_GetProcAddressP()
-
-function Library_GetSymbol(Lib: ALibrary; const SymbolName: APascalString; var Symbol: Pointer): ABoolean; stdcall; deprecated; // Use ALibrary_GetSybmolP()
-
-function Library_Open(const FileName: APascalString; Flags: ALibraryFlags): ALibrary; stdcall; deprecated; // Use ALibrary_OpenP()
 
 implementation
 
@@ -249,38 +231,6 @@ begin
 end;
 
 function ALibrary_OpenWS(const FileName: AWideString; Flags: ALibraryFlags): ALibrary;
-begin
-  Result := ALibrary_OpenP(FileName, Flags);
-end;
-
-// --- Library ---
-
-function Library_BuildPath(const Directory, LibraryName: APascalString): APascalString; stdcall;
-begin
-  Result := ALibrary_BuildPathP(Directory, LibraryName);
-end;
-
-function Library_Close(Lib: ALibrary): ABoolean; stdcall;
-begin
-  Result := ALibrary_Close(Lib);
-end;
-
-function Library_GetName(Lib: ALibrary): APascalString; stdcall;
-begin
-  Result := ALibrary_GetNameP(Lib);
-end;
-
-function Library_GetProcAddress(Lib: ALibrary; const Name: APascalString): Pointer; stdcall;
-begin
-  Result := ALibrary_GetProcAddressP(Lib, Name);
-end;
-
-function Library_GetSymbol(Lib: ALibrary; const SymbolName: APascalString; var Symbol: Pointer): ABoolean; stdcall;
-begin
-  Result := ALibrary_GetSymbolP(Lib, SymbolName, Symbol);
-end;
-
-function Library_Open(const FileName: APascalString; Flags: ALibraryFlags): ALibrary; stdcall;
 begin
   Result := ALibrary_OpenP(FileName, Flags);
 end;

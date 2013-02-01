@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.11.2012
-@LastMod 28.11.2012
+@LastMod 29.01.2013
 }
 unit AStringBaseUtils;
 
@@ -126,7 +126,7 @@ end;
 
 function AStr_ToPascalString(S: AStr): APascalString;
 begin
-  Result := AnsiString(S);
+  Result := APascalString(AnsiString(S));
 end;
 
 end.

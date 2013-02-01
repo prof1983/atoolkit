@@ -2,7 +2,7 @@
 @Abstract User Interface base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 15.01.2013
+@LastMod 29.01.2013
 }
 unit AUiBase;
 
@@ -77,6 +77,18 @@ const
   uiakTop = $02;
   uiakRight = $04;
   uiakBottom = $08;
+
+type
+  AUiBevel = type AInt;
+const
+  AUiBevel_InnerNone = $01;
+  AUiBevel_InnerLowered = $02;
+  AUiBevel_InnerRaised = $03;
+  AUiBevel_InnerSpace = $04;
+  AUiBevel_OuterNone = $0100;
+  AUiBevel_OuterLowered = $0200;
+  AUiBevel_OuterRaised = $0300;
+  AUiBevel_OuterSpace = $0400;
 
 type
   TAUIButtonKind = (

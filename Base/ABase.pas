@@ -1,15 +1,12 @@
 {**
-@abstract Base types and consts
-@author Prof1983 <prof1983@ya.ru>
-@created 06.03.2008
-@lastmod 27.11.2012
+@Abstract Base types and consts
+@Author Prof1983 <prof1983@ya.ru>
+@Created 06.03.2008
+@LastMod 28.01.2013
 }
 unit ABase;
 
 {$I A.inc}
-
-{DEFINE A01}
-{DEFINE A02}
 
 interface
 
@@ -109,13 +106,8 @@ type
 
   AString_Type = AString_Type_4;
 
-type
   AStr = PAnsiChar;
-  {$IFDEF A01}
-  AString = AWideString;
-  {$ELSE}
   AString  = ^AString_Type;
-  {$ENDIF}
 
 {
 type
@@ -128,36 +120,18 @@ type
 // --- ---
 
 type
-  AProc01 = procedure; stdcall;
-  AProc02 = AProc01;
-  AProc03 = function(): AInteger; stdcall;
-  ACallbackProc01 = procedure(Obj, Data: AInteger); stdcall;
-  ACallbackProc02 = ACallbackProc01;
-  ACallbackProc03 = function(Obj, Data: AInteger): AError; stdcall;
+  AProc = function(): AInteger; stdcall;
+  ACallbackProc = function(Obj, Data: AInteger): AError; stdcall;
 
-type
-  {$IFDEF A01}
-    AProc = AProc01;
-    ACallbackProc = ACallbackProc01;
-  {$ELSE}
-    {$IFDEF A02}
-    AProc = AProc02;
-    ANotifyProc = procedure(Sender: AInteger); stdcall;
-    ACallbackProc = ACallbackProc02;
-    {$ELSE}
-    AProc = AProc03;
-    ACallbackProc = ACallbackProc03;
-    {$ENDIF}
-  {$ENDIF}
+  //ANotifyProc = procedure(Sender: AInteger); stdcall;
+  //AProc03 = AProc;
+  //ACallbackProc03 = ACallbackProc;
 
 type
   // = TAbstractSettings or TProfXmlNode1 or TProfXmlNode4
   AConfig = type AInteger;
   AEvent = type AInteger;       // = AEvent_Type^
   AColor = type AInteger;
-  {$IFDEF A02}
-  //AStrings = type AInteger; - Use ACollectionsBase.AStringList
-  {$ENDIF A02}
 
 type
   ALibrary = type AInteger;

@@ -2,13 +2,9 @@
 @Abstract ARuntime base consts and types
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.12.2011
-@LastMod 11.12.2012
+@LastMod 30.01.2013
 }
 unit ARuntimeBase;
-
-{$IFDEF A02}{$DEFINE ADepr}{$ENDIF}
-{$IFDEF A03}{$DEFINE ADepr}{$ENDIF}
-{$IFDEF A04}{$DEFINE ADepr}{$ENDIF}
 
 interface
 
@@ -21,16 +17,6 @@ type
   AModuleFinProc = function(): AError; stdcall;
   AModuleInitProc = function(): AError; stdcall;
   AModuleGetProc = function(ProcName: AStr): Pointer; stdcall;
-
-  {$IFDEF ADepr}
-  AModuleInitProc02 = function(): AInteger; stdcall;
-  AModuleDoneProc02 = procedure(); stdcall;
-  {$ENDIF}
-
-  {$IFDEF ADepr}
-  AModuleInitProc03 = function(): AInteger; stdcall;
-  AModuleDoneProc03 = function(): AInteger; stdcall;
-  {$ENDIF}
 
   {** Module description }
   AModuleDescription = Pointer;
@@ -60,42 +46,6 @@ type
     {** Module proc list }
     Procs: Pointer;
   end;
-
-  {$IFDEF ADepr}
-  AModule02 = ^AModule02_Type;
-  AModule02_Type = packed record
-    Version: AVersion;
-    Init: AModuleInitProc02;
-    Done: AModuleDoneProc02;
-    Name: AWideString;
-    Procs: Pointer;
-    Reserved1: AInteger;
-    Reserved2: AInteger;
-    Reserved3: AInteger;
-  end;
-  {$ENDIF}
-
-  {$IFDEF ADepr}
-  AModule03 = ^AModule03_Type;
-  AModule03_Type = packed record
-    {** Module version ($AABBCCDD) }
-    Version: AVersion;
-    {** Module unique identificator $YYMMDDxx YY - Year, MM - Month, DD - Day }
-    Uid: AModuleUid;
-    {** Module unuque name }
-    Name: PAnsiChar;
-    {** Module information and description }
-    Description: AModuleDescription;
-    {** Initialize proc }
-    Init: AProc;
-    {** Finalize proc }
-    Done: AProc;
-    {** Reserved }
-    Reserved06: AInteger;
-    {** Module proc list }
-    Procs: Pointer;
-  end;
-  {$ENDIF}
 
   ARuntime_GetProcByName_Proc = function(ModuleName, ProcName: AStr): Pointer; stdcall;
 

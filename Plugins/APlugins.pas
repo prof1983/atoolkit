@@ -2,9 +2,11 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.04.2009
-@LastMod 18.01.2013
+@LastMod 31.01.2013
 }
 unit APlugins;
+
+TODO: Use APluginsMain.pas
 
 interface
 
@@ -51,7 +53,7 @@ end;
 function AddPlugin(const FileName: APascalString): ABoolean; stdcall;
 begin
   try
-    Result := Plugins_AddPlugin(FileName);
+    Result := (APlugins_AddPluginP(FileName) >= 0);
   except
     Result := False;
   end;
@@ -60,7 +62,7 @@ end;
 function Clear(): ABoolean; stdcall;
 begin
   try
-    Result := Plugins_Clear();
+    Result := (APlugins_Clear() >= 0);
   except
     Result := False;
   end;

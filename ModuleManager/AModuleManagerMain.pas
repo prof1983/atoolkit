@@ -2,11 +2,11 @@
 @Abstract AModuleManager main functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.11.2012
-@LastMod 26.12.2012
+@LastMod 30.01.2013
 }
 unit AModuleManagerMain;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
@@ -105,30 +105,22 @@ begin
     Exit;
   end;
 
-  {$IFDEF A03}
   if (ASettings_Init() < 0) then
   begin
     Result := -3;
     Exit;
   end;
-  {$ENDIF A03}
 
-  {$IFDEF A03}
   if (ASystem_Init() < 0) then
   begin
     Result := -4;
     Exit;
   end;
-  {$ENDIF A03}
 
   SModules := ASystem_GetResourceStringP('', 'Modules', 'Modules');
 
   miHelp := AUiMainWindow_AddMenuItemP('', 'Help', '?', nil, 0, 10000);
-  {$IFDEF A02}
-  AUiMenu_AddItem2WS02(miHelp, 'Modules', 'Modules'{SModules}, DoMenuModuleClick02, 0, 10);
-  {$ELSE}
   AUiMenu_AddItem2P(miHelp, 'Modules', 'Modules'{SModules}, DoMenuModuleClick, 0, 10);
-  {$ENDIF}
 
   // --- Init recomended modules ---
 

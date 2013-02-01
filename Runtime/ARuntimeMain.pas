@@ -2,11 +2,11 @@
 @Abstract ARuntime
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.08.2012
-@LastMod 26.12.2012
+@LastMod 30.01.2013
 }
 unit ARuntimeMain;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
@@ -562,8 +562,6 @@ begin
       FOnBeforeRun;
     if Assigned(FOnRun) then
       FOnRun;
-    if Assigned(FOnRun02) then
-      FOnRun02;
     if Assigned(FOnAfterRun) then
       FOnAfterRun;
     Result := 0;
@@ -614,8 +612,6 @@ begin
   try
     if Assigned(FOnShutdown) then
       FOnShutdown;
-    if Assigned(FOnShutdown02) then
-      FOnShutdown02;
     Result := 0;
   except
     Result := -1;

@@ -2,14 +2,18 @@
 @Abstract AEvents
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.11.2011
-@LastMod 27.12.2012
+@LastMod 30.01.2013
 }
 unit AEventsMain;
+
+{define AStdCall}
 
 interface
 
 uses
-  ABase, AEventObj, AStrings;
+  ABase,
+  AEventObj,
+  AStringMain;
 
 // --- AEvents ---
 

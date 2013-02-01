@@ -2,14 +2,15 @@
 @Abstract Событие
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.10.2005
-@LastMod 27.12.2012
+@LastMod 01.02.2013
 }
 unit AEvents;
 
 interface
 
 uses
-  ABase, AStrings;
+  ABase,
+  AStringMain;
 
 function Init(): AError; stdcall;
 function Done(): AError; stdcall;

@@ -2,11 +2,11 @@
 @Abstract User Interface window functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 11.08.2011
-@LastMod 15.01.2013
+@LastMod 28.01.2013
 }
 unit AUiWindows;
 
-{$ifdef A04}{$define AStdCall}{$endif}
+{define AStdCall}
 
 interface
 
@@ -37,30 +37,6 @@ function AUiWindow_SetState(Window: AWindow; State: AInt): AError; {$ifdef AStdC
 function AUiWindow_ShowModal(Window: AWindow): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiWindow_ShowModal2(Window: AWindow): AInt; {$ifdef AStdCall}stdcall;{$endif}
-
-// --- UI_Window ---
-
-procedure UI_Window_Free(Window: AWindow); {$ifdef AStdCall}stdcall;{$endif} deprecated; // Use AUiWindow_Free()
-
-procedure UI_Window_FreeAndNil(var Window: AWindow); {$ifdef AStdCall}stdcall;{$endif}
-
-{** Возвращает главное меню указанного окна }
-function UI_Window_GetMenu(Window: AWindow): AMenu; {$ifdef AStdCall}stdcall;{$endif} deprecated; // Use AUiWindow_GetMenu()
-
-function UI_Window_New(): AControl; {$ifdef AStdCall}stdcall;{$endif} deprecated; // Use AUiWindow_New()
-
-{** Задает стить окантовки окна }
-procedure UI_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger); {$ifdef AStdCall}stdcall;{$endif} deprecated; // Use AUiWindow_SetBorderStyle()
-
-{** Задает стиль окна }
-procedure UI_Window_SetFormStyle(Window: AWindow; FormStyle: AInteger); {$ifdef AStdCall}stdcall;{$endif} deprecated; // Use AUiWindow_SetFormStyle()
-
-{** Задает позицию окна }
-procedure UI_Window_SetPosition(Window: AWindow; Position: AInteger); {$ifdef AStdCall}stdcall;{$endif} deprecated; // Use AUiWindow_SetPosition()
-
-procedure UI_Window_SetState(Window: AWindow; State: AInteger); {$ifdef AStdCall}stdcall;{$endif}
-
-function UI_Window_ShowModal(Window: AWindow): ABoolean; {$ifdef AStdCall}stdcall;{$endif} deprecated; // Use AUiWindow_ShowModal()
 
 implementation
 
@@ -215,53 +191,6 @@ begin
   except
     Result := 0;
   end;
-end;
-
-// --- UI_Window ---
-
-procedure UI_Window_Free(Window: AWindow);
-begin
-  AUiWindow_Free(Window);
-end;
-
-procedure UI_Window_FreeAndNil(var Window: AWindow);
-begin
-  AUiWindow_FreeAndNil(Window);
-end;
-
-function UI_Window_GetMenu(Window: AWindow): AMenu;
-begin
-  Result := AUiWindow_GetMenu(Window);
-end;
-
-function UI_Window_New(): AControl;
-begin
-  Result := AUiWindow_New();
-end;
-
-procedure UI_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInteger);
-begin
-  AUiWindow_SetBorderStyle(Window, BorderStyle);
-end;
-
-procedure UI_Window_SetFormStyle(Window: AWindow; FormStyle: AInteger);
-begin
-  AUiWindow_SetFormStyle(Window, FormStyle);
-end;
-
-procedure UI_Window_SetPosition(Window: AWindow; Position: AInteger);
-begin
-  AUiWindow_SetPosition(Window, Position);
-end;
-
-procedure UI_Window_SetState(Window: AWindow; State: AInteger);
-begin
-  AUiWindow_SetState(Window, State);
-end;
-
-function UI_Window_ShowModal(Window: AWindow): ABoolean;
-begin
-  Result := AUiWindow_ShowModal(Window);
 end;
 
 end.

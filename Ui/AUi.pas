@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 24.01.2013
+@LastMod 30.01.2013
 }
 unit AUi;
 
@@ -35,7 +35,8 @@ uses
   ABase, ABaseTypes,
   {$IFDEF USE_RUNTIME}ARuntime,{$ENDIF}
   {$IFDEF USE_SETTINGS}ASettings,{$ENDIF}
-  AStrings, ASystem,
+  AStringMain,
+  ASystem,
   AUiBase, AUiBox, AUiButtons, AUiCalendar, AUiControls, AUiControlsA,
   AUiData,
   AUiDataSource,
@@ -798,13 +799,6 @@ end;
 procedure SetOnMainFormCreate(Value: AProc); stdcall;
 begin
   AUi_SetOnMainFormCreate(Value);
-end;
-
-procedure SetOnMainFormCreate02(Value: AProc02); stdcall;
-begin
-  {$IFDEF A02}
-  FOnMainFormCreate := Value;
-  {$ENDIF A02}
 end;
 
 function SetProgramState(State: AUiProgramState): AError;
@@ -1642,7 +1636,7 @@ end;
 function Menu_AddItem3WS03(Parent: AMenuItem; const Name, Text: AWideString;
     OnClick: ACallbackProc03; ImageID, Weight, Tag: Integer): AMenuItem; stdcall;
 begin
-  Result := AUiMenu_AddItem3WS03(Parent, Name, Text, OnClick, ImageId, Weight, Tag);
+  Result := AUiMenu_AddItemEx2P(Parent, Name, '', Text, OnClick, 0, ImageId, Weight, Tag);
 end;
 
 function Menu_GetItems(Menu: AMenu): AMenuItem; stdcall;

@@ -1,11 +1,11 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.12.2012
-@LastMod 11.01.2013
+@LastMod 30.01.2013
 }
 unit AUiWaitWin;
 
-{$define AStdCall}
+{define AStdCall}
 {define UseWaitForm}
 
 interface
@@ -13,7 +13,7 @@ interface
 uses
   {$ifdef UseWaitForm}fWait,{$endif}
   ABase,
-  AStrings,
+  AStringMain,
   AUiBase,
   AUiControls,
   AUiData,
@@ -37,12 +37,6 @@ function AUiWaitWin_SetTextP(Window: AWindow; const Text: APascalString): AError
 
 function AUiWaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
-// --- UI_WaitWin ---
-
-function UI_WaitWin_New(const Caption, Text: APascalString; MaxPosition: Integer): AWindow; stdcall; deprecated; // Use AUiWaitWin_NewP()
-
-function UI_WaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger; stdcall; deprecated; // Use AUiWaitWin_StepBy()
-
 implementation
 
 uses
@@ -57,6 +51,8 @@ type
 
 var
   FWaitWin: array of TWaitWin;
+
+// --- Private ---
 
 function _FindWaitWin(Window: AWindow): Integer;
 var
@@ -284,18 +280,6 @@ begin
   {$else}
   Result := -2;
   {$endif}
-end;
-
-// --- UI_WaitWin ---
-
-function UI_WaitWin_New(const Caption, Text: APascalString; MaxPosition: AInteger): AWindow;
-begin
-  Result := AUiWaitWin_NewP(Caption, Text, MaxPosition);
-end;
-
-function UI_WaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger;
-begin
-  Result := AUiWaitWin_StepBy(Window, Step);
 end;
 
 end.

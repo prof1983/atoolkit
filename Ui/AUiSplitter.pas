@@ -2,9 +2,11 @@
 @Abstract AUi splitter
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.11.2012
-@LastMod 22.11.2012
+@LastMod 29.01.2013
 }
 unit AUiSplitter;
+
+{define AStdCall}
 
 interface
 
@@ -12,32 +14,16 @@ uses
   Controls, ExtCtrls,
   AUiBase, AUiData;
 
-// --- Splitter ---
+// --- AUiSplitter ---
 
 {** Создает динамический разделитель
     @param SplitterType 0 - HSplitter (Align=alTop); 1 - VSplitter (Align=alLeft);
         2 - HSplitter (Align=alBottom); 3 - VSplitter (Align=alRight) }
-function AUiSplitter_New(Parent: AControl; SplitterType: AUiSplitterType): AControl; stdcall;
-
-// --- AUi_Splitter ---
-
-{ SplitterType
-    0 - HSplitter (Align=alTop)
-    1 - VSplitter (Align=alLeft)
-    2 - HSplitter (Align=alBottom)
-    3 - VSplitter (Align=alRight) }
-function AUi_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl; stdcall;
-
-{ SplitterType
-    0 - HSplitter (Align=alTop)
-    1 - VSplitter (Align=alLeft)
-    2 - HSplitter (Align=alBottom)
-    3 - VSplitter (Align=alRight) }
-function UI_Splitter_New(Parent: AControl; SplitterType: AUiSplitterType): AControl; stdcall; deprecated; // Use AUiSplitter_New()
+function AUiSplitter_New(Parent: AControl; SplitterType: AUiSplitterType): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
-{ Splitter }
+// --- AUiSplitter ---
 
 function AUiSplitter_New(Parent: AControl; SplitterType: AUiSplitterType): AControl;
 var
@@ -64,24 +50,6 @@ begin
   except
     Result := 0;
   end;
-end;
-
-// --- AUi_Splitter ---
-
-function AUi_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl;
-begin
-  try
-    Result := AUiSplitter_New(Parent, SplitterType);
-  except
-    Result := 0;
-  end;
-end;
-
-{ UI_Splitter }
-
-function UI_Splitter_New(Parent: AControl; SplitterType: AUiSplitterType): AControl;
-begin
-  Result := AUiSplitter_New(Parent, SplitterType);
 end;
 
 end.

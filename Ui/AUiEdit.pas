@@ -2,13 +2,13 @@
 @Abstract AUiEdit
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.01.2010
-@LastMod 25.12.2012
+@LastMod 30.01.2013
 }
 unit AUiEdit;
 
 interface
 
-{$define AStdCall}
+{define AStdCall}
 
 uses
   Controls, StdCtrls,
@@ -36,23 +36,10 @@ function AUiEdit_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$end
     @param EditType
       0 - TEdit
       1 - TEdit + Button
-      3 - TSpinEdit }
-function AUiEdit_New02(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc02;
-    Left, Top, Width: AInteger): AControl; {$ifdef AStdCall}stdcall;{$endif}
-
-{** Создает новый элемент TEdit
-    @param EditType
-      0 - TEdit
-      1 - TEdit + Button
       3 - TSpinEdit
 }
 function AUiEdit_NewEx(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc;
     Left, Top, Width: AInteger): AControl; {$ifdef AStdCall}stdcall;{$endif}
-
-// ----
-
-// Создает новый элемент TEdit
-function A_UI_Edit_New(Parent: AControl): AControl; stdcall; deprecated; // Use AUiEdit_New()
 
 // ---
 
@@ -61,29 +48,6 @@ function Edit_CheckFloat(Edit: TCustomEdit; out Value: Double): ABoolean;
 function Edit_CheckFloat32(Edit: TCustomEdit; out Value: AFloat32): ABoolean;
 function Edit_CheckFloat64(Edit: TCustomEdit; out Value: AFloat64): ABoolean;
 function Edit_CheckInt(Edit: TCustomEdit; out Value: AInteger): ABoolean;
-
-function UI_Edit_CheckDate(Edit: AControl; out Value: TDateTime): ABoolean; stdcall;
-function UI_Edit_CheckFloat(Edit: AControl; out Value: Double): ABoolean; stdcall;
-function UI_Edit_CheckFloat32(Edit: AControl; out Value: AFloat32): ABoolean;
-function UI_Edit_CheckFloat64(Edit: AControl; out Value: AFloat64): ABoolean;
-// Переводит текст в Int. Если ошибка, то переходит на этот компонент и возвращает false.
-function UI_Edit_CheckInt(Edit: AControl; out Value: AInteger): ABoolean; stdcall;
-// Создает новый элемент TEdit.
-function UI_Edit_New(Parent: AControl): AControl; stdcall;
-
-{ Создает новый элемент TEdit.
-  EditType
-    0 - TEdit
-    1 - TEdit + Button }
-function UI_Edit_New02(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc02;
-    Left, Top, Width: AInteger): AControl; stdcall;
-
-{ Создает новый элемент TEdit.
-  EditType
-    0 - TEdit
-    1 - TEdit + Button }
-function UI_Edit_NewA(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc;
-    Left, Top, Width: AInteger): AControl; stdcall;
 
 implementation
 
@@ -161,24 +125,6 @@ begin
   end;
 end;
 
-function AUiEdit_New02(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc02;
-    Left, Top, Width: AInteger): AControl;
-begin
-  try
-    if (EditType = 3) then
-    begin
-      Result := AUiSpinEdit_New(Parent);
-      if (Result = 0) then Exit;
-      AUIControls.UI_Control_SetPosition(Result, Left, Top);
-      AUIControls.UI_Control_SetWidth(Result, Width);
-    end
-    else
-      Result := UI_Edit_New02(Parent, EditType, OnClick, Left, Top, Width);
-  except
-    Result := 0;
-  end;
-end;
-
 function AUiEdit_NewEx(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc;
     Left, Top, Width: AInteger): AControl;
 var
@@ -224,13 +170,6 @@ begin
   except
     Result := 0;
   end;
-end;
-
-{ A_UI_Edit }
-
-function A_UI_Edit_New(Parent: AControl): AControl; stdcall;
-begin
-  Result := AUiEdit_New(Parent);
 end;
 
 { Edit }
@@ -296,80 +235,6 @@ begin
   else
     Value := 0;
   Result := True;
-end;
-
-{ UI_Edit }
-
-function UI_Edit_CheckDate(Edit: AControl{TMaskEdit}; out Value: TDateTime): ABoolean; stdcall;
-begin
-  Result := (AUiEdit_CheckDate(Edit, Value) = 0);
-end;
-
-function UI_Edit_CheckFloat(Edit: AControl; out Value: Double): ABoolean; stdcall;
-begin
-  Result := (AUiEdit_CheckFloat(Edit, Value) = 0);
-end;
-
-function UI_Edit_CheckFloat32(Edit: AControl; out Value: AFloat32): ABoolean;
-begin
-  Result := (AUiEdit_CheckFloat32(Edit, Value) = 0);
-end;
-
-function UI_Edit_CheckFloat64(Edit: AControl; out Value: AFloat64): ABoolean;
-begin
-  Result := (AUiEdit_CheckFloat64(Edit, Value) = 0);
-end;
-
-function UI_Edit_CheckInt(Edit: AControl; out Value: AInteger): ABoolean; stdcall;
-begin
-  Result := (AUiEdit_CheckInt(Edit, Value) = 0);
-end;
-
-function UI_Edit_New(Parent: AControl): AControl; stdcall;
-begin
-  Result := AUiEdit_NewEx(Parent, 0, nil, 0, 0, 100);
-end;
-
-function UI_Edit_New02(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc02;
-    Left, Top, Width: AInteger): AControl; stdcall;
-var
-  Edit: TEdit;
-  Button: AControl;
-begin
-  case EditType of
-    0: // TEdit
-      begin
-        Edit := TEdit.Create(TWinControl(Parent));
-        Edit.Parent := TWinControl(Parent);
-        Edit.Left := Left;
-        Edit.Top := Top;
-        Edit.Width := Width;
-        Result := AddObject(Edit);
-      end;
-    1: // TEdit + Button
-      begin
-        Edit := TEdit.Create(TWinControl(Parent));
-        Edit.Parent := TWinControl(Parent);
-        Edit.Left := Left;
-        Edit.Top := Top;
-        Edit.Width := Width;
-        Result := AddObject(Edit);
-
-        Button := AUiButton_New(Parent);
-        AUiControl_SetPosition(Button, Left + Width - 20, Top + 2);
-        AUiControl_SetSize(Button, 18, 18);
-        AUiControl_SetTextP(Button, '...');
-        AUiControl_SetOnClick02(Button, OnClick);
-      end;
-  else
-    Result := 0;
-  end;
-end;
-
-function UI_Edit_NewA(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc;
-    Left, Top, Width: AInteger): AControl; stdcall;
-begin
-  Result := AUiEdit_NewEx(Parent, EditType, OnClick, Left, Top, Width);
 end;
 
 end.

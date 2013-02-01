@@ -2,11 +2,11 @@
 @Abstract AUi ToolBar
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.08.2011
-@LastMod 25.01.2013
+@LastMod 29.01.2013
 }
 unit AUiToolBar;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
@@ -14,7 +14,12 @@ uses
   Classes,
   ComCtrls,
   Controls,
-  ABase, AStrings, AUiBase, AUiButtons, AUiControls, AUiData;
+  ABase,
+  AStringMain,
+  AUiBase,
+  AUiButtons,
+  AUiControls,
+  AUiData;
 
 // --- AUiToolBar ---
 
@@ -36,22 +41,6 @@ function AUiToolBar_AddButton2P(ToolBar: AControl; const Name, Text, Hint: APasc
 function AUiToolBar_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiToolBar_Register(ToolBar: TToolBar): AControl;
-
-// --- UI_ToolBar ---
-
-function UI_ToolBar_AddButton(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    OnClick: ACallbackProc; ImageID, Weight: AInteger): AButton; deprecated; // Use AUiToolBar_AddButtonP()
-
-function UI_ToolBar_AddButton02(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    OnClick: ACallbackProc02; ImageID, Weight: AInteger): AButton;
-
-function UI_ToolBar_AddButton03(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    OnClick: ACallbackProc03; ImageID, Weight: AInteger): AButton;
-
-function UI_ToolBar_AddButton1(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    ImageID, Weight: AInteger): AButton; deprecated; // Use AUiToolBar_AddButton1P()
-
-function UI_ToolBar_New(Parent: AControl): AControl; deprecated; // Use AUiToolBar_New()
 
 implementation
 
@@ -237,45 +226,6 @@ begin
   except
     Result := 0;
   end;
-end;
-
-// --- UI_ToolBar ---
-
-function UI_ToolBar_AddButton(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    OnClick: ACallbackProc; ImageID, Weight: AInteger): AButton;
-begin
-  Result := AUiToolBar_AddButtonP(ToolBar, Name, Text, Hint, OnClick, ImageId, Weight);
-end;
-
-function UI_ToolBar_AddButton02(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    OnClick: ACallbackProc02; ImageID, Weight: AInteger): AButton;
-var
-  Button: AButton;
-begin
-  Button := AUiToolBar_AddButton1P(ToolBar, Name, Text, Hint, ImageId, Weight);
-  AUiControl_SetOnClick02(Button, OnClick);
-  Result := Button;
-end;
-
-function UI_ToolBar_AddButton03(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    OnClick: ACallbackProc03; ImageID, Weight: AInteger): AButton;
-var
-  Button: AButton;
-begin
-  Button := AUiToolBar_AddButton1P(ToolBar, Name, Text, Hint, ImageId, Weight);
-  AUiControl_SetOnClick03(Button, OnClick);
-  Result := Button;
-end;
-
-function UI_ToolBar_AddButton1(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    ImageID, Weight: AInteger): AButton;
-begin
-  Result := AUiToolBar_AddButton1P(ToolBar, Name, Text, Hint, ImageId, Weight);
-end;
-
-function UI_ToolBar_New(Parent: AControl): AControl;
-begin
-  Result := AUiToolBar_New(Parent);
 end;
 
 end.

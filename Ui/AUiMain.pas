@@ -2,25 +2,34 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 17.01.2013
+@LastMod 30.01.2013
 }
 unit AUiMain;
 
 {$I A.inc}
 {$I Defines.inc}
 
-{$define AStdCall}
+{define AStdCall}
+{define UseMainTrayIcon}
 
 {$IFDEF OLDMAINFORM2}
   {$DEFINE OLDMAINFORM}
 {$ENDIF}
 
 {$ifndef NoEvents}
-  {$DEFINE USE_EVENTS}
+  {$define UseEvents}
+{$endif}
+
+{$ifndef NoMainWindow}
+  {$define UseMainWindow}
+{$endif}
+
+{$ifndef NoRuntime}
+  {$define UseRuntime}
 {$endif}
 
 {$ifndef NoSettings}
-  {$DEFINE USE_SETTINGS}
+  {$define UseSettings}
 {$endif}
 
 interface
@@ -30,18 +39,26 @@ uses
   Forms,
   Graphics,
   ShellApi,
-  SysUtils,
   Windows,
   ABase,
   ABaseTypes,
-  AEventsMain,
-  ARuntimeMain,
-  ASettings,
-  AStrings,
+  {$ifdef UseEvents}AEventsMain,{$endif}
+  {$ifdef UseRuntime}ARuntimeMain,{$endif}
+  {$ifdef UseSettings}ASettingsMain,{$endif}
+  AStringMain,
   ASystemMain,
-  AUtilsMain,
   {$IFDEF OLDMAINFORM}fMain,{$ENDIF}
-  AUiBase, AUiData, AUiDialogs, AUiEventsObj, AUiMainWindow, AUiTrayIcon;
+  AUiBase,
+  AUiData,
+  AUiDialogs,
+  AUiErrorDialog,
+  {$ifdef UseMainWindow}
+  AUiMainWindow,
+  AUiMainWindowData,
+  AUiMainWindowEventsObj,
+  {$endif}
+  {$ifdef UseMainTrayIcon}AUiTrayIcon,{$endif}
+  AUtilsMain;
 
 // --- AUi ---
 
@@ -70,8 +87,6 @@ function AUi_SetAboutMemoDefaultSize(Width, Height: AInteger): AError; {$ifdef A
 
 function AUi_SetHideOnClose(Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-procedure AUi_SetHideOnClose_Old(Value: ABoolean); {$ifdef AStdCall}stdcall;{$endif} deprecated; // Use AUi_SetHideOnClose()
-
 function AUi_SetIsShowApp(Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_SetMainToolBar(ToolBar: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -94,10 +109,7 @@ function AUi_ShowHelp(): AError; {$ifdef AStdCall}stdcall;{$endif}
 function AUi_ShowHelp2(const FileName: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Отображает справочную информацию }
-function AUi_ShowHelp2P(const FileName: APascalString): AError; 
-
-{** Отображает справочную информацию }
-function AUi_ShowHelp2WS(const FileName: AWideString): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUi_ShowHelp2P(const FileName: APascalString): AError;
 
 function AUi_Shutdown(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -105,38 +117,7 @@ function AUi_TextWidthP(const S, FontName: APascalString; FontSize: AInt): AInt;
 
 // --- UI ---
 
-function UI_GetIsShowApp(): ABoolean; stdcall; deprecated; // Use AUi_GetIsShowApp()
-
-function UI_Init(): AError; stdcall; deprecated; // Use AUi_Init()
-
-function UI_MainMenuItem(): AMenuItem; stdcall; deprecated; // Use AUi_GetMainMenuItem()
-
-function UI_MainTrayIcon(): ATrayIcon; stdcall; deprecated; // Use AUi_GetMainTrayIcon()
-
 function UI_Object_Add(Value: AInteger): AInteger; stdcall;
-
-procedure UI_OnMainFormCreate_Set(Value: AProc); stdcall; deprecated; // Use AUi_SetOnMainFormCreate()
-
-function UI_ProcessMessages: AInteger; stdcall; deprecated; // Use AUi_ProcessMessages()
-
-procedure UI_ProcessMessages02(); stdcall; deprecated; // Use AUi_ProcessMessages()
-
-function UI_Run(): AInteger; stdcall; deprecated; // Use AUi_Run()
-
-procedure UI_Run02(); stdcall; deprecated; // Use AUi_Run()
-
-procedure UI_SetHideOnClose(Value: ABoolean); stdcall; deprecated; // Use AUi_SetHideOnClose()
-
-procedure UI_SetIsShowApp(Value: ABoolean); stdcall; deprecated; // Use AUi_SetIsShowApp()
-
-function UI_ShellExecute(const Operation, FileName, Parameters,
-    Directory: APascalString): AInteger; stdcall; deprecated; // Use AUi_ShellExecuteP()
-
-procedure UI_ShowHelp(); deprecated; // Use AUi_ShowHelp()
-
-procedure UI_ShowHelp2(const FileName: string); deprecated; // Use AUi_ShowHelp2()
-
-function UI_Shutdown(): AInteger; stdcall; deprecated; // Use AUi_Shutdown()
 
 implementation
 
@@ -154,7 +135,10 @@ end;
 
 function DoRun(): AInteger; stdcall;
 begin
-  _MainWindow_Init();
+  {$ifdef UseSettings}
+  if (FConfig <> 0) then
+    _MainWindow_LoadConfig(FConfig);
+  {$endif}
   Application.Run();
   Result := 0;
 end;
@@ -176,7 +160,7 @@ end;
 
 // --- AUi ---
 
-function AUi_CreateMainForm(): AError; stdcall;
+function AUi_CreateMainForm(): AError;
 var
   MainForm: TForm;
 begin
@@ -185,7 +169,7 @@ begin
   MainForm.Top := 0;
   {$IFDEF OLDMAINFORM}
     {$IFDEF OLDMAINFORM2}
-    _MainWindow_Create(MainForm, 0, Runtime_GetConfig);
+    _MainWindow_Create(MainForm, 0, ASystem_GetConfig());
     {$ELSE}
     _MainWindow_Create(MainForm, MainWindowFormatCreateMenu or MainWindowFormatCreateToolBar or MainWindowFormatCreateStatusBar, ASystem_GetConfig());
     {$ENDIF}
@@ -194,8 +178,12 @@ begin
     FMainWindow := AddObject(MainForm);
     MainForm.Name := 'MainForm';
     MainForm.Caption := ASystem_GetProgramNameP();
+    {$ifdef UseMainWindow}
     _MainWindow_Create(MainForm, MainWindowFormatCreateAll, ASystem_GetConfig());
-    MainForm.OnCloseQuery := UI_.MainFormCloseQuery;
+    if not(Assigned(UiEventsObj)) then
+      UiEventsObj := TUiEventsObj.Create();
+    MainForm.OnCloseQuery := UiEventsObj.MainFormCloseQuery;
+    {$endif}
   {$ENDIF}
   AddObject(MainForm.Menu);
   Result := 0;
@@ -203,16 +191,16 @@ end;
 
 function AUi_Fin(): AError;
 begin
-  {$IFDEF USE_EVENTS}
+  {$ifdef UseEvents}
   AEvent_Invoke(FOnDone, 0);
-  {$ENDIF}
+  {$endif}
 
   try
     if (FMainTrayIcon <> 0) then
     begin
-      {$IFNDEF FPC}
-      TrayIcon_Free(FMainTrayIcon);
-      {$ENDIF}
+      {$ifdef UseMainTrayIcon}
+      AUiTrayIcon_Free(FMainTrayIcon);
+      {$endif}
       FMainTrayIcon := 0;
     end;
     SetLength(FObjects, 0);
@@ -220,18 +208,21 @@ begin
   except
   end;
 
-  _MainWindow_Shutdown;
+  {$ifdef UseMainWindow}
+  _MainWindow_Shutdown();
+  {$endif}
 
   ASystem_SetOnProcessMessages(nil);
   ASystem_SetOnShowErrorA(nil);
   ASystem_SetOnShowMessageA(nil);
-  ASystem_SetOnShowMessageWS(nil);
+  {$ifdef UseRuntime}
   ARuntime_SetOnShutdown(nil);
   ARuntime_SetOnRun(nil);
+  {$endif}
 
-  {$IFDEF USE_EVENTS}
+  {$ifdef UseEvents}
   AEvent_Free(FOnDone);
-  {$ENDIF}
+  {$endif}
   FOnDone := 0;
 
   Result := 0;
@@ -249,7 +240,11 @@ end;
 
 function AUi_GetMainToolBar(): AControl;
 begin
+  {$ifdef UseMainWindow}
   Result := _MainWindow_ToolBar;
+  {$else}
+  Result := 0;
+  {$endif}
 end;
 
 function AUi_GetMainTrayIcon(): ATrayIcon;
@@ -272,23 +267,21 @@ begin
     Exit;
   end;
 
-  {$IFDEF USE_EVENTS}
+  {$ifdef UseEvents}
   if (AEvents_Init() < 0) then
   begin
     Result := -4;
     Exit;
   end;
-  {$ENDIF}
+  {$endif}
 
-  {$IFDEF USE_SETTINGS}
-  ASettings.Init();
-  {$ENDIF}
-
-  if (AStrings_Init() < 0) then
+  {$ifdef UseSettings}
+  if (ASettings_Init() < 0) then
   begin
-    Result := -2;
+    Result := -5;
     Exit;
   end;
+  {$endif}
 
   if (ASystem_Init() < 0) then
   begin
@@ -296,31 +289,21 @@ begin
     Exit;
   end;
 
-  {$IFDEF USE_EVENTS}
+  {$ifdef UseEvents}
   FOnDone := AEvent_NewP(0, '');
-  {$ENDIF}
+  {$endif}
 
   FHideOnClose := False;
   FIsShowApp := True;
 
-  {$IFDEF A02}
-  ASystem.SetOnProcessMessages02(UI_ProcessMessages02);
-  {$ELSE}
   ASystem_SetOnProcessMessages(DoProcessMessages);
-  {$ENDIF A02}
   ASystem_SetOnShowErrorA(DoShowErrorA);
   ASystem_SetOnShowMessageA(DoShowMessageA);
 
+  {$ifdef UseRuntime}
   ARuntime_SetOnShutdown(DoShutdown);
-  {$IFDEF A01}
-    ARuntime.OnRun_Set(UI_Run02);
-  {$ELSE}
-    {$IFDEF A02}
-    ARuntime.OnRun_Set(UI_Run02);
-    {$ELSE}
-    ARuntime_SetOnRun(DoRun);
-    {$ENDIF A02}
-  {$ENDIF A01}
+  ARuntime_SetOnRun(DoRun);
+  {$endif}
 
   {$IFNDEF FPC}
   Application.CreateHandle();
@@ -330,7 +313,7 @@ begin
   Application.Title := ASystem_GetTitleP();
   S := ASystem_GetDataDirectoryPathP() + ASystem_GetProgramNameP() + '.ico';
 
-  if SysUtils.FileExists(S) then
+  if AUtils_FileExistsP(S) then
   try
     Application.Icon.LoadFromFile(S);
   except
@@ -347,10 +330,6 @@ begin
     Result := -100;
     Exit;
   end;
-  {
-  if (FMainWindow <> 0) then
-    miMain := AddObject(TForm(FMainWindow).Menu.Items);
-  }
 
   Result := 0;
 end;
@@ -368,7 +347,10 @@ end;
 function AUi_Run(): AInteger;
 begin
   try
-    _MainWindow_Init();
+    {$ifdef UseMainWindow}
+    if (FConfig <> 0) then
+      _MainWindow_LoadConfig(FConfig);
+    {$endif}
     Application.Run();
     Result := 0;
   except
@@ -387,11 +369,6 @@ function AUi_SetHideOnClose(Value: ABoolean): AError;
 begin
   FHideOnClose := Value;
   Result := 0;
-end;
-
-procedure AUi_SetHideOnClose_Old(Value: ABoolean);
-begin
-  FHideOnClose := Value;
 end;
 
 function AUi_SetIsShowApp(Value: ABoolean): AError;
@@ -429,12 +406,16 @@ end;
 
 function AUi_SetMainToolBar(ToolBar: AControl): AError;
 begin
+  {$ifdef UseMainWindow}
   try
     _MainWindow_ToolBar_Set(ToolBar);
     Result := 0;
   except
     Result := -1;
   end;
+  {$else}
+  Result := 0;
+  {$endif}
 end;
 
 function AUi_SetOnAboutClick(Value: AProc): AError;
@@ -468,10 +449,10 @@ function AUi_ShellExecute(const Operation, FileName, Parameters, Directory: AStr
 begin
   try
     Result := AUi_ShellExecuteP(
-        AStrings.String_ToWideString(Operation),
-        AStrings.String_ToWideString(FileName),
-        AStrings.String_ToWideString(Parameters),
-        AStrings.String_ToWideString(Directory));
+        AString_ToPascalString(Operation),
+        AString_ToPascalString(FileName),
+        AString_ToPascalString(Parameters),
+        AString_ToPascalString(Directory));
   except
     Result := -1;
   end;
@@ -479,14 +460,18 @@ end;
 
 function AUi_ShellExecuteA(Operation, FileName, Parameters, Directory: AStr): AInt;
 begin
-  Result := AUi_ShellExecuteP(AnsiString(Operation), AnsiString(FileName),
-      AnsiString(Parameters), AnsiString(Directory));
+  Result := AUi_ShellExecuteP(
+      APascalString(AnsiString(Operation)),
+      APascalString(AnsiString(FileName)),
+      APascalString(AnsiString(Parameters)),
+      APascalString(AnsiString(Directory)));
 end;
 
 function AUi_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger;
 begin
   {$IFNDEF UNIX}
-  Result := ShellApi.ShellExecute(0{Handle}, PChar(string(Operation)), PChar(string(FileName)), PChar(string(Parameters)), PChar(string(Directory)), SW_SHOW);
+  Result := ShellApi.ShellExecute(0{Handle}, PChar(string(Operation)), PChar(string(FileName)),
+      PChar(string(Parameters)), PChar(string(Directory)), SW_SHOW);
   {$ENDIF}
 end;
 
@@ -517,15 +502,12 @@ begin
   end;
 end;
 
-function AUi_ShowHelp2WS(const FileName: AWideString): AError;
-begin
-  Result := AUi_ShowHelp2P(FileName);
-end;
-
 function AUi_Shutdown(): AError;
 begin
   try
+    {$ifdef UseMainWindow}
     _MainWindow_Shutdown();
+    {$endif}
     Result := 0;
   except
     Result := -1;
@@ -552,84 +534,9 @@ end;
 
 // --- UI ---
 
-function UI_GetIsShowApp(): ABoolean;
-begin
-  Result := AUi_GetIsShowApp();
-end;
-
-function UI_Init(): AError;
-begin
-  Result := AUi_Init();
-end;
-
-function UI_MainMenuItem(): AMenuItem;
-begin
-  Result := AUi_GetMainMenuItem();
-end;
-
-function UI_MainTrayIcon(): ATrayIcon;
-begin
-  Result := AUi_GetMainTrayIcon();
-end;
-
 function UI_Object_Add(Value: AInteger): AInteger;
 begin
   Result := AddObject(TObject(Value));
-end;
-
-procedure UI_OnMainFormCreate_Set(Value: AProc);
-begin
-  AUi_SetOnMainFormCreate(Value);
-end;
-
-function UI_ProcessMessages(): AInteger;
-begin
-  Result := AUi_ProcessMessages();
-end;
-
-procedure UI_ProcessMessages02();
-begin
-  AUi_ProcessMessages();
-end;
-
-function UI_Run(): AInteger;
-begin
-  Result := AUi_Run();
-end;
-
-procedure UI_Run02();
-begin
-  AUi_Run();
-end;
-
-procedure UI_SetHideOnClose(Value: ABoolean);
-begin
-  AUi_SetHideOnClose(Value);
-end;
-
-procedure UI_SetIsShowApp(Value: ABoolean);
-begin
-  AUi_SetIsShowApp(Value);
-end;
-
-function UI_ShellExecute(const Operation, FileName, Parameters, Directory: APascalString): AInteger;
-begin
-  Result := AUi_ShellExecuteP(Operation, FileName, Parameters, Directory);
-end;
-
-procedure UI_ShowHelp();
-begin
-  AUi_ShowHelp();
-end;
-
-procedure UI_ShowHelp2(const FileName: string);
-begin
-  AUi_ShowHelp2P(FileName);
-end;
-
-function UI_Shutdown(): AInteger;
-begin
-  Result := AUi_Shutdown();
 end;
 
 end.

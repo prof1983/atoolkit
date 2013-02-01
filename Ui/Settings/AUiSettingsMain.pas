@@ -1,14 +1,16 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.12.2012
-@LastMod 26.12.2012
+@LastMod 30.01.2013
 }
 unit AUiSettingsMain;
 
 interface
 
 uses
-  ABase, ABaseTypes, AStrings,
+  ABase,
+  ABaseTypes,
+  AStringMain,
   AUiBase,
   AUiControls,
   AUiDialogs,
@@ -31,9 +33,6 @@ function AUiSettings_NewItem(Parent: AUiSettingsItem;
 function AUiSettings_NewItemP(Parent: AUiSettingsItem;
     const Text: APascalString): AUiSettingsItem;
 
-function AUiSettings_NewItemWS(Parent: AUiSettingsItem;
-    const Text: AWideString): AUiSettingsItem; {$ifdef AStdCall}stdcall;{$endif}
-
 function AUiSettings_NewSettingsWin(): AWindow; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiSettings_ShowSettingsWin(): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -41,19 +40,6 @@ function AUiSettings_ShowSettingsWin(): AError; {$ifdef AStdCall}stdcall;{$endif
 // --- AUiSettingsItem ---
 
 function AUiSettingsItem_GetPage(Item: AUiSettingsItem): AControl; {$ifdef AStdCall}stdcall;{$endif}
-
-// --- UISettings ---
-
-function UISettings_Item_GetPage(Item: AUiSettingsItem): AControl; stdcall; deprecated; // Use AUiSettingsItem_GetPage()
-
-function UISettings_MainSettingsWin(): AWindow; stdcall; deprecated; // Use AUiSettings_GetMainSettingsWin()
-
-function UISettings_NewItem(Parent: AUiSettingsItem;
-    const Text: APascalString): AUiSettingsItem; stdcall; deprecated; // Use AUiSettings_NewItemP()
-
-function UISettings_SettingsWin_New(): AWindow; stdcall; deprecated; // Use AUiSettings_NewSettingsWin()
-
-procedure UISettings_ShowSettingsWin(); stdcall; deprecated; // Use AUiSettings_ShowSettingsWin()
 
 implementation
 
@@ -132,15 +118,7 @@ function AUiSettings_Fin(): AError;
 var
   I: Integer;
 begin
-  {$IFDEF A01}
-    AUi_OnDone_Disconnect(DoUiDone02);
-  {$ELSE}
-    {$IFDEF A02}
-    AUi_OnDone_Disconnect(DoUiDone02);
-    {$ELSE}
-    AUi_OnDone_Disconnect(DoUiDone);
-    {$ENDIF A02}
-  {$ENDIF A01}
+  AUi_OnDone_Disconnect(DoUiDone);
 
   if FInitialized then
   begin
@@ -180,30 +158,10 @@ begin
   end;
 
   try
-    {$IFDEF A01}
-      AUi_OnDone_Connect(DoUiDone02);
-    {$ELSE}
-      {$IFDEF A02}
-      AUi_OnDone_Connect(DoUiDone02);
-      {$ELSE}
-      AUi_OnDone_Connect(DoUiDone);
-      {$ENDIF A02}
-    {$ENDIF A01}
-
+    AUi_OnDone_Connect(DoUiDone);
     AUiMainWindow_AddMenuItemP('', 'Tools', miToolsText, nil, 0, 900);
-
-    {$IFDEF A01}
-      AUiMainWindow_AddMenuItemP('Tools', 'Settings', miSettingsText, miSettingsClick02, 0, 1000);
-    {$ELSE}
-      {$IFDEF A02}
-      AUiMainWindow_AddMenuItemP('Tools', 'Settings', miSettingsText, miSettingsClick02, 0, 1000);
-      {$ELSE}
-      AUiMainWindow_AddMenuItemP('Tools', 'Settings', miSettingsText, miSettingsClick, 0, 1000);
-      {$ENDIF A02}
-    {$ENDIF A01}
-
-    InitSettingsWin;
-
+    AUiMainWindow_AddMenuItemP('Tools', 'Settings', miSettingsText, miSettingsClick, 0, 1000);
+    InitSettingsWin();
     FInitialized := True;
     Result := 0;
   except
@@ -234,16 +192,6 @@ begin
     Page := AUiPageControl_AddPageP(FPageControl, '', Text);
 
     Result := AddSettingsItem(TreeNode, Page)+1;
-  except
-    Result := 0;
-  end;
-end;
-
-function AUiSettings_NewItemWS(Parent: AUiSettingsItem;
-    const Text: AWideString): AUiSettingsItem;
-begin
-  try
-    Result := AUiSettings_NewItemP(Parent, Text);
   except
     Result := 0;
   end;
@@ -288,33 +236,6 @@ begin
   except
     Result := -1;
   end;
-end;
-
-{ UISettings }
-
-function UISettings_Item_GetPage(Item: AUiSettingsItem): AControl;
-begin
-  Result := AUiSettingsItem_GetPage(Item);
-end;
-
-function UISettings_MainSettingsWin(): AWindow;
-begin
-  Result := AUiSettings_GetMainSettingsWin();
-end;
-
-function UISettings_NewItem(Parent: AUiSettingsItem; const Text: APascalString): AUiSettingsItem;
-begin
-  Result := AUiSettings_NewItemP(Parent, Text);
-end;
-
-function UISettings_SettingsWin_New(): AWindow;
-begin
-  Result := AUiSettings_NewSettingsWin();
-end;
-
-procedure UISettings_ShowSettingsWin();
-begin
-  AUiSettings_ShowSettingsWin();
 end;
 
 end.

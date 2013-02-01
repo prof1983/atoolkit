@@ -2,17 +2,34 @@
 @Abstract User Interface exports
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.04.2011
-@LastMod 13.12.2012
+@LastMod 31.01.2013
 }
 unit AUiExp;
 
 interface
 
 uses
-  AUi, AUiBox, AUiCalendar, AUiComboBox, AUiControls, AUiDialogs, AUiEdit,
-  AUiGrids, AUiImages, AUiInit, AUiLabels, AUiListBox,
-  AUiMain, AUiMainWindow, AUiMainWindow2, AUiMenus, AUiPageControl,
-  AUiSpin, AUiSpinEdit, AUiSplitter, AUiWaitWin;
+  //AUi,
+  AUiBox,
+  AUiCalendar,
+  AUiComboBox,
+  AUiControls,
+  AUiDialogs,
+  AUiEdit,
+  AUiGrids,
+  AUiImages,
+  AUiInit,
+  AUiLabels,
+  AUiListBox,
+  AUiMain,
+  AUiMainWindow,
+  AUiMainWindow2,
+  AUiMenus,
+  AUiPageControl,
+  AUiSpin,
+  AUiSpinEdit,
+  AUiSplitter,
+  AUiWaitWin;
 
 exports
   //A_UI_ApplicationHandle,

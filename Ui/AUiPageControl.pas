@@ -2,18 +2,21 @@
 @Abstract AUi PageControl
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.02.2012
-@LastMod 14.01.2013
+@LastMod 30.01.2013
 }
 unit AUiPageControl;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
 uses
-  ComCtrls, Controls,
-  ABase, AStrings,
-  AUiBase, AUiData;
+  ComCtrls,
+  Controls,
+  ABase,
+  AStringMain,
+  AUiBase,
+  AUiData;
 
 // --- AUiPageControl ---
 
@@ -27,22 +30,14 @@ function AUiPageControl_AddPageA(PageControl: AControl; Name, Text: AStr): ACont
 
 {** Создает новую вкладку
     @return 0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
-function AUiPageControl_AddPageP(PageControl: AControl; const Name, Text: APascalString): AControl; {$ifdef AStdCall}stdcall;{$endif}
+function AUiPageControl_AddPageP(PageControl: AControl; const Name, Text: APascalString): AControl;
 
 {** Создает новую вкладку
     @param Index - позиция вкладки
     @return 0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
-function AUiPageControl_InsertPageP(PageControl: AControl; const Name, Text: APascalString; Index: AInt): AControl; {$ifdef AStdCall}stdcall;{$endif}
+function AUiPageControl_InsertPageP(PageControl: AControl; const Name, Text: APascalString; Index: AInt): AControl;
 
 function AUiPageControl_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
-
-// --- UI_PageControl ---
-
-{ Создает новую вкладку. Возврашает:
-  0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
-function UI_PageControl_AddPage(PageControl: AControl; const Name, Text: APascalString): AControl; stdcall; deprecated; // Use AUiPageControl_AddPageP()
-
-function UI_PageControl_New(Parent: AControl): AControl; stdcall; deprecated; // Use AUiPageControl_New()
 
 implementation
 
@@ -112,8 +107,7 @@ begin
       I := Length(FPageControls);
       SetLength(FPageControls, I+1);
       FPageControls[I].PageControl := Obj;
-      FPageControls[I].OnChange02 := nil;
-      FPageControls[I].OnChange03 := nil;
+      FPageControls[I].OnChange := nil;
 
       Result := Obj;
     end
@@ -122,18 +116,6 @@ begin
   except
     Result := 0
   end;
-end;
-
-// --- UI_PageControl ---
-
-function UI_PageControl_AddPage(PageControl: AControl; const Name, Text: APascalString): AControl;
-begin
-  Result := AUiPageControl_AddPageP(PageControl, Name, Text);
-end;
-
-function UI_PageControl_New(Parent: AControl): AControl;
-begin
-  Result := AUiPageControl_New(Parent);
 end;
 
 end.

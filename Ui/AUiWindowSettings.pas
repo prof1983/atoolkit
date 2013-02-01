@@ -2,17 +2,20 @@
 @Abstract AUi window setting functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2012
-@LastMod 18.12.2012
+@LastMod 30.01.2013
 }
 unit AUiWindowSettings;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
 uses
   Forms,
-  ABase, ASettings, AStrings, AUiForm, AUiBase;
+  ABase,
+  AStringMain,
+  AUiForm,
+  AUiBase;
 
 // --- AUiWindow ---
 
@@ -29,29 +32,6 @@ function AUiWindow_SaveConfig(Window: AWindow; Config: AConfig): AError; {$ifdef
 function AUiWindow_SaveConfig2(Window: AWindow; Config: AConfig; const ConfigKey: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiWindow_SaveConfig2P(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): AError;
-
-// --- AUi_Window ---
-
-function AUi_Window_LoadConfig2(Window: AWindow; Config: AConfig;
-    const ConfigKey: AString_Type): ABoolean; stdcall; deprecated; // Use AUiWindow_LoadConfig2()
-
-function AUi_Window_LoadConfig2P(Window: AWindow; Config: AConfig;
-    const ConfigKey: APascalString): ABoolean; stdcall; deprecated; // Use AUiWindow_LoadConfig2P()
-
-function AUi_Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall; deprecated; // Use AUiWindow_SaveConfig()
-
-function AUi_Window_SaveConfig2(Window: AWindow; Config: AConfig;
-    const ConfigKey: AString_Type): ABoolean; stdcall; deprecated; // Use AUiWindow_SaveConfig2()
-
-// --- UI_Window ---
-
-function UI_Window_LoadConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall; deprecated; // Use AUi_Window_LoadConfig()
-
-function UI_Window_LoadConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean; stdcall; deprecated; // Use AUi_Window_LoadConfig2P()
-
-function UI_Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean; stdcall; deprecated; // Use AUi_Window_SaveConfig()
-
-function UI_Window_SaveConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean; stdcall; deprecated; // Use AUiWindow_SaveConfig2P()
 
 implementation
 
@@ -89,7 +69,7 @@ begin
       Result := -5;
       Exit;
     end;
-    Result := Form_LoadConfig2(TForm(Window), Config, AStrings.String_ToWideString(ConfigKey));
+    Result := Form_LoadConfig2(TForm(Window), Config, AString_ToPascalString(ConfigKey));
   except
     Result := -1;
   end;
@@ -165,7 +145,7 @@ begin
       Result := -5;
       Exit;
     end;
-    Result := AUiWindow_SaveConfig2P(Window, Config, AStrings.String_ToPascalString(ConfigKey));
+    Result := AUiWindow_SaveConfig2P(Window, Config, AString_ToPascalString(ConfigKey));
   except
     Result := -1;
   end;
@@ -188,50 +168,6 @@ begin
   except
     Result := -1;
   end;
-end;
-
-// --- AUi_Window ---
-
-function AUi_Window_LoadConfig2(Window: AWindow; Config: AConfig; const ConfigKey: AString_Type): ABoolean;
-begin
-  Result := (AUiWindow_LoadConfig2(Window, Config, ConfigKey) >= 0);
-end;
-
-function AUi_Window_LoadConfig2P(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean;
-begin
-  Result := (AUiWindow_LoadConfig2P(Window, Config, ConfigKey) >= 0);
-end;
-
-function AUi_Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean;
-begin
-  Result := (AUiWindow_SaveConfig(Window, Config) >= 0);
-end;
-
-function AUi_Window_SaveConfig2(Window: AWindow; Config: AConfig; const ConfigKey: AString_Type): ABoolean;
-begin
-  Result := (AUiWindow_SaveConfig2(Window, Config, ConfigKey) >= 0);
-end;
-
-// --- UI_Window ---
-
-function UI_Window_LoadConfig(Window: AWindow; Config: AConfig): ABoolean;
-begin
-  Result := (AUiWindow_LoadConfig(Window, Config) = 0);
-end;
-
-function UI_Window_LoadConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean;
-begin
-  Result := (AUiWindow_LoadConfig2P(Window, Config, ConfigKey) >= 0);
-end;
-
-function UI_Window_SaveConfig(Window: AWindow; Config: AConfig): ABoolean;
-begin
-  Result := (AUiWindow_SaveConfig(Window, Config) >= 0);
-end;
-
-function UI_Window_SaveConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABoolean;
-begin
-  Result := (AUiWindow_SaveConfig2P(Window, Config, ConfigKey) >= 0);
 end;
 
 end.

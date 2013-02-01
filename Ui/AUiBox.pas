@@ -2,11 +2,11 @@
 @Abstract User Interface box functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 11.08.2011
-@LastMod 14.01.2013
+@LastMod 28.01.2013
 }
 unit AUiBox;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 

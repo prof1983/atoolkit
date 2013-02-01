@@ -2,7 +2,7 @@
 @abstract AUi PropertyBox
 @author Prof1983 <prof1983@ya.ru>
 @created 24.08.2009
-@lastmod 22.11.2012
+@lastmod 01.02.2013
 }
 unit AUiPropertyBox;
 
@@ -13,8 +13,17 @@ unit AUiPropertyBox;
 interface
 
 uses
-  Controls, ExtCtrls, Forms, Graphics, StdCtrls, 
-  ABase, AStrings, AUiBase;
+  Controls,
+  ExtCtrls,
+  Forms,
+  Graphics,
+  StdCtrls,
+  ABase,
+  AStringMain,
+  AUiBase;
+
+type
+  TPropertyBoxChangeProc = function(Sender: AControl; ItemIndex: Integer; const Value: string): Boolean;
 
 // --- AUiPropertyBox ---
 
@@ -25,57 +34,39 @@ function AUiPropertyBox_Add2(PropertyBox: AControl; const Caption, Text, Hint: A
     EditWidth: AInteger): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiPropertyBox_Add2P(PropertyBox: AControl; const Caption, Text, Hint: APascalString;
-    EditWidth: AInt): AInt; {$ifdef AStdCall}stdcall;{$endif}
+    EditWidth: AInt): AInt;
 
-function AUiPropertyBox_AddP(PropertyBox: AControl;
-    const Caption: APascalString): AInt; {$ifdef AStdCall}stdcall;{$endif}
+function AUiPropertyBox_Add3P(PropertyBox: AControl; const Caption, Text, Hint: APascalString;
+    EditWidth: AInt; IsReadOnly: ABool): AInt;
+
+function AUiPropertyBox_AddP(PropertyBox: AControl; const Caption: APascalString): AInt;
+
+function AUiPropertyBox_GetUseBigFont(PropertyBox: AControl): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiPropertyBox_Item_GetValue(PropertyBox: AControl; Index: AInt;
     out Value: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiPropertyBox_Item_GetValueP(PropertyBox: AControl;
-    Index: AInt): APascalString; {$ifdef AStdCall}stdcall;{$endif}
+function AUiPropertyBox_Item_GetValueP(PropertyBox: AControl; Index: AInt): APascalString;
 
 function AUiPropertyBox_Item_SetValue(PropertyBox: AControl; Index: AInt;
     const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiPropertyBox_Item_SetValueP(PropertyBox: AControl; Index: AInt;
-    const Value: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
+    const Value: APascalString): AError;
 
 function AUiPropertyBox_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-// --- AUi_PropertyBox ---
+function AUiPropertyBox_SetIsAppPoints(PropertyBox: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUi_PropertyBox_Add(PropertyBox: AControl;
-    const Caption: AString_Type): Integer; stdcall; deprecated; // Use AUiPropertyBox_Add()
+function AUiPropertyBox_SetOnChange(PropertyBox: AControl; OnChange: TPropertyBoxChangeProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUi_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: AString_Type;
-    EditWidth: AInteger): AInteger; stdcall; deprecated; // Use AUiPropertyBox_Add2()
+function AUiPropertyBox_SetTextP(PropertyBox: AControl; Index: AInt; const Value: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUi_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer;
-    out Value: AString_Type): AInteger; stdcall; deprecated; // Use AUiPropertyBox_Item_GetValue()
+function AUiPropertyBox_SetUseBigFont(PropertyBox: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-procedure AUi_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer;
-    const Value: AString_Type); stdcall; deprecated; // Use AUiPropertyBox_Item_SetValue()
-
-function AUi_PropertyBox_New(Parent: AControl): AControl; stdcall; // Use AUiPropertyBox_New()
-
-// --- UI_PropertyBox ---
-
-function UI_PropertyBox_Add(PropertyBox: AControl; const Caption: APascalString): Integer; stdcall; deprecated;
-
-function UI_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: APascalString; EditWidth: AInteger): AInteger; stdcall; deprecated;
-
-function UI_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer): APascalString; stdcall; deprecated;
-
-procedure UI_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; const Value: APascalString); stdcall; deprecated;
-
-function UI_PropertyBox_New(Parent: AControl): AControl; stdcall; deprecated;
+implementation
 
 // --- Private ---
-
-type
-  TPropertyBoxChangeProc = function(Sender: AControl; ItemIndex: Integer; const Value: string): Boolean;
 
 type
   TPropertyBox1 = class(TScrollBox)
@@ -152,14 +143,12 @@ type
     property OnChange: TPropertyBoxChangeProc read FOnChange write FOnChange;
   end;
 
-implementation
-
 // --- AUiPropertyBox ---
 
 function AUiPropertyBox_Add(PropertyBox: AControl; const Caption: AString_Type): AInt;
 begin
   try
-    Result := AUiPropertyBox_AddP(PropertyBox, AStrings.String_ToPascalString(Caption));
+    Result := AUiPropertyBox_AddP(PropertyBox, AString_ToPascalString(Caption));
   except
     Result := 0;
   end;
@@ -170,9 +159,9 @@ function AUiPropertyBox_Add2(PropertyBox: AControl; const Caption, Text, Hint: A
 begin
   try
     Result := AUiPropertyBox_Add2P(PropertyBox,
-        AStrings.String_ToWideString(Caption),
-        AStrings.String_ToWideString(Text),
-        AStrings.String_ToWideString(Hint),
+        AString_ToPascalString(Caption),
+        AString_ToPascalString(Text),
+        AString_ToPascalString(Hint),
         EditWidth);
   except
     Result := 0;
@@ -188,12 +177,31 @@ begin
   end;
 end;
 
+function AUiPropertyBox_Add3P(PropertyBox: AControl; const Caption, Text, Hint: APascalString;
+    EditWidth: AInt; IsReadOnly: ABool): AInt;
+begin
+  try
+    Result := TPropertyBox1(PropertyBox).AddNew2(Caption, Text, Hint, EditWidth, IsReadOnly);
+  except
+    Result := 0;
+  end;
+end;
+
 function AUiPropertyBox_AddP(PropertyBox: AControl; const Caption: APascalString): AInt;
 begin
   try
     Result := TPropertyBox1(PropertyBox).AddNew(Caption);
   except
     Result := 0;
+  end;
+end;
+
+function AUiPropertyBox_GetUseBigFont(PropertyBox: AControl): ABool;
+begin
+  try
+    Result := TPropertyBox1(PropertyBox).GetUseBigFont();
+  except
+    Result := False;
   end;
 end;
 
@@ -220,7 +228,7 @@ function AUiPropertyBox_Item_SetValue(PropertyBox: AControl; Index: AInt;
     const Value: AString_Type): AError;
 begin
   try
-    Result := AUiPropertyBox_Item_SetValueP(PropertyBox, Index, AStrings.String_ToWideString(Value));
+    Result := AUiPropertyBox_Item_SetValueP(PropertyBox, Index, AString_ToPascalString(Value));
   except
     Result := -1;
   end;
@@ -246,59 +254,44 @@ begin
   end;
 end;
 
-// --- AUi_PropertyBox ---
-
-function AUi_PropertyBox_Add(PropertyBox: AControl; const Caption: AString_Type): AInt;
+function AUiPropertyBox_SetIsAppPoints(PropertyBox: AControl; Value: ABool): AError;
 begin
-  Result := AUiPropertyBox_Add(PropertyBox, Caption);
+  try
+    TPropertyBox1(PropertyBox).IsAddPoints := Value;
+    Result := 0;
+  except
+    Result := -1;
+  end;
 end;
 
-function AUi_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: AString_Type;
-    EditWidth: AInt): AInt;
+function AUiPropertyBox_SetOnChange(PropertyBox: AControl; OnChange: TPropertyBoxChangeProc): AError;
 begin
-  Result := AUiPropertyBox_Add2(PropertyBox, Caption, Text, Hint, EditWidth);
+  try
+    TPropertyBox1(PropertyBox).OnChange := OnChange;
+    Result := 0;
+  except
+    Result := -1;
+  end;
 end;
 
-function AUi_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: AInt; out Value: AString_Type): AInt;
+function AUiPropertyBox_SetTextP(PropertyBox: AControl; Index: AInt; const Value: APascalString): AError;
 begin
-  Result := AUiPropertyBox_Item_GetValue(PropertyBox, Index, Value);
+  try
+    TPropertyBox1(PropertyBox).SetText(Index, Value);
+    Result := 0;
+  except
+    Result := -1;
+  end;
 end;
 
-procedure AUi_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: AInt; const Value: AString_Type);
+function AUiPropertyBox_SetUseBigFont(PropertyBox: AControl; Value: ABool): AError;
 begin
-  AUiPropertyBox_Item_SetValue(PropertyBox, Index, Value);
-end;
-
-function AUi_PropertyBox_New(Parent: AControl): AControl;
-begin
-  Result := AUiPropertyBox_New(Parent);
-end;
-
-// --- UI_PropertyBox ---
-
-function UI_PropertyBox_Add(PropertyBox: AControl; const Caption: APascalString): Integer;
-begin
-  Result := AUiPropertyBox_AddP(PropertyBox, Caption);
-end;
-
-function UI_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: APascalString; EditWidth: AInteger): AInteger;
-begin
-  Result := AUiPropertyBox_Add2P(PropertyBox, Caption, Text, Hint, EditWidth);
-end;
-
-function UI_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer): APascalString;
-begin
-  Result := AUiPropertyBox_Item_GetValueP(PropertyBox, Index);
-end;
-
-procedure UI_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; const Value: APascalString);
-begin
-  AUiPropertyBox_Item_SetValueP(PropertyBox, Index, Value);
-end;
-
-function UI_PropertyBox_New(Parent: AControl): AControl;
-begin
-  Result := AUiPropertyBox_New(Parent);
+  try
+    TPropertyBox1(PropertyBox).SetUseBigFont(Value);
+    Result := 0;
+  except
+    Result := -1;
+  end;
 end;
 
 { TPropertyBox1 }

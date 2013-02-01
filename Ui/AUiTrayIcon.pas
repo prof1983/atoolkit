@@ -2,11 +2,11 @@
 @Abstract The icon in the system tray
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.12.2007
-@Lastmod 25.12.2012
+@Lastmod 30.01.2013
 }
 unit AUiTrayIcon;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
@@ -15,7 +15,7 @@ uses
   ExtCtrls,
   {$ELSE}
   Classes, Controls, Forms, Graphics, Menus, Messages, ShellApi, SysUtils, Windows,
-  AStrings,
+  AStringMain,
   {$ENDIF}
   ABase, AUiBase;
 
@@ -50,11 +50,7 @@ function AUiTrayIcon_SetOnRightClick(TrayIcon: ATrayIcon; Value: AProc): AError;
 
 function AUiTrayIcon_SetPopupMenu(TrayIcon: ATrayIcon; Value: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-// --- AUi_TrayIcon ---
-
-{$IFNDEF UNIX}
-function AUi_TrayIcon_GetMenuItems(TrayIcon: ATrayIcon): AMenuItem; stdcall;
-{$ENDIF}
+// ----
 
 {$IFDEF FPC}
 
@@ -99,7 +95,7 @@ type
     FOnRightClick: AProc;
   end;
 
-  TAUITrayIcon = class
+  TAUiTrayIcon = class
   private
     procedure OnChangeIcon(Sender: TObject);
     procedure WndProc(var AMsg: TMessage);
@@ -109,16 +105,6 @@ type
   public
     procedure ShowToolTip(ATimeOut: LongWord; AType: TLogTypeMessage; const ATitle, AInfo: AnsiString);
   end;
-
-procedure TrayIcon_Free(TrayIcon: Integer);
-function TrayIcon_GetHint(TrayIcon: Integer): APascalString; stdcall;
-function TrayIcon_GetPopupMenu(TrayIcon: Integer): Integer; stdcall;
-procedure TrayIcon_SetHint(TrayIcon: Integer; const Value: APascalString); stdcall;
-procedure TrayIcon_SetOnLeftClick(TrayIcon: Integer; Value: AProc); stdcall;
-procedure TrayIcon_SetOnRightClick(TrayIcon: Integer; Value: AProc); stdcall;
-procedure TrayIcon_SetPopupMenu(TrayIcon, Value: Integer); stdcall;
-
-function UI_TrayIcon_GetMenuItems(TrayIcon: ATrayIcon): AMenuItem; stdcall;
 
 {$ENDIF}
 
@@ -589,66 +575,15 @@ begin
   end;
 end;
 
-// --- AUi_TrayIcon ---
-
-function AUi_TrayIcon_GetMenuItems(TrayIcon: ATrayIcon): AMenuItem;
-begin
-  Result := AUiTrayIcon_GetMenuItems(TrayIcon);
-end;
-
-{ TrayIcon }
-
-procedure TrayIcon_Free(TrayIcon: Integer);
-begin
-  AUiTrayIcon_Free(TrayIcon);
-end;
-
-function TrayIcon_GetHint(TrayIcon: Integer): APascalString;
-begin
-  Result := AUiTrayIcon_GetHintP(TrayIcon);
-end;
-
-function TrayIcon_GetPopupMenu(TrayIcon: Integer): Integer;
-begin
-  Result := AUiTrayIcon_GetPopupMenu(TrayIcon);
-end;
-
-procedure TrayIcon_SetHint(TrayIcon: Integer; const Value: APascalString);
-begin
-  AUiTrayIcon_SetHintP(TrayIcon, Value);
-end;
-
-procedure TrayIcon_SetOnLeftClick(TrayIcon: Integer; Value: AProc);
-begin
-  AUiTrayIcon_SetOnLeftClick(TrayIcon, Value);
-end;
-
-procedure TrayIcon_SetOnRightClick(TrayIcon: Integer; Value: AProc);
-begin
-  AUiTrayIcon_SetOnRightClick(TrayIcon, Value);
-end;
-
-procedure TrayIcon_SetPopupMenu(TrayIcon, Value: Integer);
-begin
-  AUiTrayIcon_SetPopupMenu(TrayIcon, Value);
-end;
-
-// --- UI_TrayIcon ---
-
-function UI_TrayIcon_GetMenuItems(TrayIcon: ATrayIcon): AMenuItem;
-begin
-  Result := AUiTrayIcon_GetMenuItems(TrayIcon);
-end;
-
 { TAUITrayIcon }
 
-constructor TAUITrayIcon.Create;
+constructor TAUiTrayIcon.Create;
 begin
   inherited;
   _New(ATrayIcon(Self), OnChangeIcon, WndProc);
 end;
 
-destructor TAUITrayIcon.Destroy();
+destructor TAUiTrayIcon.Destroy();
 var
   I: AInteger;
 begin
@@ -659,7 +594,7 @@ begin
   inherited;
 end;
 
-procedure TAUITrayIcon.OnChangeIcon(Sender: TObject);
+procedure TAUiTrayIcon.OnChangeIcon(Sender: TObject);
 var
   I: AInteger;
 begin
@@ -670,7 +605,7 @@ begin
     _ModifyIcon(I, NIM_MODIFY);
 end;
 
-procedure TAUITrayIcon.WndProc(var AMsg: TMessage);
+procedure TAUiTrayIcon.WndProc(var AMsg: TMessage);
 var
   I: AInteger;
 begin
@@ -680,7 +615,7 @@ begin
   _WndProc(I, AMsg);
 end;
 
-procedure TAUITrayIcon.ShowToolTip(ATimeOut: LongWord; AType: TLogTypeMessage; const ATitle, AInfo: AnsiString);
+procedure TAUiTrayIcon.ShowToolTip(ATimeOut: LongWord; AType: TLogTypeMessage; const ATitle, AInfo: AnsiString);
 var
   I: AInteger;
 begin

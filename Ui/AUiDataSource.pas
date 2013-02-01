@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.12.2012
-@LastMod 12.12.2012
+@LastMod 30.01.2013
 }
 unit AUiDataSource;
 
@@ -13,17 +13,17 @@ uses
 
 // --- UI_DataSource ---
 
-function UI_DataSource_New(): PADataSource; stdcall;
+function AUiDataSource_New(): PADataSource; stdcall;
 
-//procedure UI_DataSource_SetDataSet(DataSource: PADataSource; Value: PADataSet); stdcall;
+//function AUiDataSource_SetDataSet(DataSource: PADataSource; Value: PADataSet): AError; stdcall;
 
-procedure UI_DataSource_SetOnDataChange(DataSource: PADataSource; OnDataChange: ACallbackProc02); stdcall;
+function AUiDataSource_SetOnDataChange(DataSource: PADataSource; OnDataChange: ACallbackProc): AError; stdcall;
 
 implementation
 
 // --- UI_DataSource ---
 
-function UI_DataSource_New(): PADataSource;
+function AUiDataSource_New(): PADataSource;
 var
   DataSource: TDataSource;
   i: Integer;
@@ -36,20 +36,22 @@ begin
   FDataSources[i].DataSource := Result;
 end;
 
-{procedure UI_DataSource_SetDataSet(DataSource: PADataSource; Value: PADataSet);
+{function AUiDataSource_SetDataSet(DataSource: PADataSource; Value: PADataSet): AError;
 begin
   TDataSource(DataSource).DataSet := TDataSet(DataSet);
+  Result := 0;
 end;}
 
-procedure UI_DataSource_SetOnDataChange(DataSource: PADataSource; OnDataChange: ACallbackProc02);
+function AUiDataSource_SetOnDataChange(DataSource: PADataSource; OnDataChange: ACallbackProc): AError;
 var
-  i: Integer;
+  I: Integer;
 begin
-  i := FindDataSource(DataSource);
-  if (i >= 0) then
+  I := FindDataSource(DataSource);
+  if (I >= 0) then
   begin
-    FDataSources[i].OnDataChange02 := OnDataChange;
+    FDataSources[I].OnDataChange := OnDataChange;
   end;
+  Result := 0;
 end;
 
 end.

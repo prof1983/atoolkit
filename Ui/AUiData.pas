@@ -2,7 +2,7 @@
 @Abstract AUi data
 @Author Prof1983 <prof1983@ya.ru>
 @Created 31.05.2011
-@LastMod 15.11.2012
+@LastMod 28.01.2013
 }
 unit AUiData;
 
@@ -16,16 +16,14 @@ uses
 type
   TAUiCalendar = record
     Calendar: AControl;
-    OnChange02: ACallbackProc02;
-    OnChange03: ACallbackProc03;
+    OnChange: ACallbackProc;
     OnChangeObj: AInteger;
   end;
 
 type
   TAUiDataSource = record
     DataSource: PADataSource;
-    OnDataChange02: ACallbackProc02;
-    OnDataChange03: ACallbackProc03;
+    OnDataChange: ACallbackProc;
   end;
 
 type
@@ -37,25 +35,22 @@ type
 type
   TAUiListBox = record
     ListBox: AControl;
-    OnClick02: ACallbackProc02;
-    OnClick03: ACallbackProc03;
-    OnDblClick: ACallbackProc03;
+    OnClick: ACallbackProc;
+    OnDblClick: ACallbackProc;
   end;
 
 type
   TAUiMenuItem = record
     Parent: Integer;
     MenuItem: AMenuItem;
-    OnClick02: ACallbackProc02;
-    OnClick03: ACallbackProc03;
+    OnClick: ACallbackProc;
     Weight: Integer;
   end;
 
 type
   TAUiPageControl = record
     PageControl: AControl;
-    OnChange02: ACallbackProc02;
-    OnChange03: ACallbackProc03;
+    OnChange: ACallbackProc;
   end;
 
 type
@@ -77,8 +72,7 @@ type
 var
   FButtons: array of record
     Button: AControl;
-    OnClick02: ACallbackProc02;
-    OnClick03: ACallbackProc03;
+    OnClick: ACallbackProc;
   end;
   FCalendars: array of TAUiCalendar;
   FDataSources: array of TAUiDataSource;

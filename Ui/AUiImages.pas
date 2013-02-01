@@ -2,18 +2,21 @@
 @Abstract AUiImage
 @Author Prof1983 <prof1983@ya.ru>
 @Created 05.09.2012
-@LastMod 05.09.2012
+@LastMod 29.01.2013
 }
 unit AUiImages;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
 uses
-  Controls, ExtCtrls,
-  ABase, AStrings,
-  AUiBase, AUiData;
+  Controls,
+  ExtCtrls,
+  ABase,
+  AStringMain,
+  AUiBase,
+  AUiData;
 
 // --- AUiImage ---
 
@@ -24,27 +27,14 @@ function AUiImage_LoadFromFile(Image: AControl; const FileName: AString_Type): A
 function AUiImage_LoadFromFileA(Image: AControl; FileName: AStr): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Загружает изображение из файла }
-function AUiImage_LoadFromFileP(Image: AControl; const FileName: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
-
-{** Загружает изображение из файла }
-function AUiImage_LoadFromFileWS(Image: AControl; const FileName: AWideString): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiImage_LoadFromFileP(Image: AControl; const FileName: APascalString): AError;
 
 {** Создает новый элемент-изображение }
 function AUiImage_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-// --- AUi_Image ---
+function AUiImage_SetCenter(Image: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUi_Image_LoadFromFile(Image: AControl; const FileName: AString_Type): ABoolean; stdcall;
-
-function AUi_Image_New(Parent: AControl): AControl; stdcall;
-
-// --- UI_Image ---
-
-{** Загружает изображение из файла }
-function UI_Image_LoadFromFile(Image: AControl; const FileName: APascalString): ABoolean; stdcall;
-
-{** Создает новый элемент-изображение }
-function UI_Image_New(Parent: AControl): AControl; stdcall;
+function AUiImage_SetTransparent(Image: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
@@ -63,16 +53,16 @@ end;
 function AUiImage_LoadFromFileP(Image: AControl; const FileName: APascalString): AError;
 begin
   try
+    if not(TObject(Image) is TImage) then
+    begin
+      Result := -2;
+      Exit;
+    end;
     TImage(Image).Picture.LoadFromFile(FileName);
     Result := 0
   except
     Result := -1;
   end;
-end;
-
-function AUiImage_LoadFromFileWS(Image: AControl; const FileName: AWideString): AError;
-begin
-  Result := AUiImage_LoadFromFileP(Image, FileName);
 end;
 
 function AUiImage_New(Parent: AControl): AControl;
@@ -88,32 +78,34 @@ begin
   end;
 end;
 
-// --- AUi_Image ---
-
-function AUi_Image_LoadFromFile(Image: AControl; const FileName: AString_Type): ABoolean;
+function AUiImage_SetCenter(Image: AControl; Value: ABool): AError;
 begin
   try
-    Result := (AUiImage_LoadFromFileP(Image, AString_ToPascalString(FileName)) = 0);
+    if not(TObject(Image) is TImage) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+    TImage(Image).Center := Value;
+    Result := 0;
   except
-    Result := False;
+    Result := -1;
   end;
 end;
 
-function AUi_Image_New(Parent: AControl): AControl;
+function AUiImage_SetTransparent(Image: AControl; Value: ABool): AError;
 begin
-  Result := AUiImage_New(Parent);
-end;
-
-// --- UI_Image ---
-
-function UI_Image_LoadFromFile(Image: AControl; const FileName: APascalString): ABoolean;
-begin
-  Result := (AUiImage_LoadFromFileP(Image, FileName) = 0);
-end;
-
-function UI_Image_New(Parent: AControl): AControl;
-begin
-  Result := AUiImage_New(Parent);
+  try
+    if not(TObject(Image) is TImage) then
+    begin
+      Result := -2;
+      Exit;
+    end;
+    TImage(Image).Transparent := Value;
+    Result := 0;
+  except
+    Result := -1;
+  end;
 end;
 
 end.

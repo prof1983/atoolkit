@@ -2,33 +2,31 @@
 @Abstract AUi
 @Author Prof1983 <prof1983@ya.ru>
 @Created 03.09.2012
-@LastMod 13.12.2012
+@LastMod 30.01.2013
 }
 unit AUiInit;
 
 {$I A.inc}
 {$I Defines.inc}
-{$define AStdCall}
+
+{define AStdCall}
 
 interface
 
 uses
-  ABase, ASystemMain,
-  AUiConsts, AUiData, AUiDialogs, AUiMenus, AUiTrayIcon;
+  ABase,
+  ASystemMain,
+  AUiAboutDialog,
+  AUiConsts,
+  AUiData,
+  AUiMenus,
+  AUiTrayIcon;
 
 // --- AUi ---
 
 function AUi_InitMainTrayIcon(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_InitMenus(): AError; {$ifdef AStdCall}stdcall;{$endif}
-
-// --- UI ---
-
-function UI_InitMainMenu(): AInteger; stdcall;
-
-function UI_InitMainTrayIcon(): AInteger; stdcall; deprecated; // Use AUi_InitMainTrayIcon()
-
-procedure UI_InitMenus(); stdcall; deprecated; // Use AUi_InitMenus()
 
 implementation
 
@@ -98,48 +96,11 @@ end;
 
 function AUi_InitMenus(): AError;
 begin
-  miFile := AUiMenus.Ui_MenuItem_Add(miMain, 'File', miFileText, nil, 0, 100, 0);
-
-  {$IFDEF A01}
-    AUiMenus.Ui_MenuItem_Add(miFile, 'Exit', miExitText, miExitClick02, 0, 10000, 0);
-  {$ELSE}
-    {$IFDEF A02}
-    AUiMenus.Ui_MenuItem_Add(miFile, 'Exit', miExitText, miExitClick02, 0, 10000, 0);
-    {$ELSE}
-    AUiMenus.Ui_MenuItem_Add(miFile, 'Exit', miExitText, miExitClick, 0, 10000, 0);
-    {$ENDIF A02}
-  {$ENDIF A01}
-
-  miHelp := AUiMenus.Ui_MenuItem_Add(miMain, 'Help', miHelpText, nil, 0, 1000, 0);
-
-  {$IFDEF A01}
-    AUiMenus.Ui_MenuItem_Add(miHelp, 'About', miAboutText, miAboutClick1, 0, 1000, 0);
-  {$ELSE}
-    {$IFDEF A02}
-    AUiMenus.Ui_MenuItem_Add(miHelp, 'About', miAboutText, miAboutClick1, 0, 1000, 0);
-    {$ELSE}
-    AUiMenus.Ui_MenuItem_Add(miHelp, 'About', miAboutText, miAboutClick, 0, 1000, 0);
-    {$ENDIF A02}
-  {$ENDIF A01}
-
+  miFile := AUiMenu_AddItem1P(miMain, 'File', miFileText, nil, 0, 100);
+  AUiMenu_AddItem1P(miFile, 'Exit', miExitText, miExitClick, 0, 10000);
+  miHelp := AUiMenu_AddItem1P(miMain, 'Help', miHelpText, nil, 0, 1000);
+  AUiMenu_AddItem1P(miHelp, 'About', miAboutText, miAboutClick, 0, 1000);
   Result := 0;
-end;
-
-// --- UI ---
-
-function UI_InitMainMenu(): AInteger;
-begin
-  Result := 0;
-end;
-
-function UI_InitMainTrayIcon(): AInteger;
-begin
-  Result := AUi_InitMainTrayIcon();
-end;
-
-procedure UI_InitMenus();
-begin
-  AUi_InitMenus();
 end;
 
 end.

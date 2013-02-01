@@ -2,11 +2,11 @@
 @Abstract AUiLabel
 @Author Prof1983 <prof1983@ya.ru>
 @Created 05.09.2012
-@LastMod 14.12.2012
+@LastMod 28.01.2013
 }
 unit AUiLabels;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
@@ -24,18 +24,9 @@ function AUiLabel_SetAlignment(Control: AControl; Value: AUiAlignment): AError; 
 
 function AUiLabel_SetAutoSize(Control: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiLabel_SetFontP(TextLabel: AControl; const FontName: APascalString; FontSize: AInt): AError;
+
 function AUiLabel_SetWordWrap(Control: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
-
-// --- AUi_Label ---
-
-function AUi_Label_New(Parent: AControl): AControl; stdcall; deprecated; // Use AUiLabel_New()
-
-// --- UI_Label ---
-
-function UI_Label_New(Parent: AControl): AControl; stdcall; deprecated; // Use AUiLabel_New()
-
-procedure UI_Label_SetFont(TextLabel: AControl; const FontName: APascalString;
-    FontSize: AInteger); stdcall; {$IFNDEF A02}deprecated;{$ENDIF}
 
 implementation
 
@@ -125,6 +116,17 @@ begin
   end;
 end;
 
+function AUiLabel_SetFontP(TextLabel: AControl; const FontName: APascalString; FontSize: AInt): AError;
+begin
+  try
+    TLabel(TextLabel).Font.Name := FontName;
+    TLabel(TextLabel).Font.Size := FontSize;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
 function AUiLabel_SetWordWrap(Control: AControl; Value: ABoolean): AError;
 var
   Obj: TObject;
@@ -157,26 +159,6 @@ begin
   except
     Result := -1;
   end;
-end;
-
-// --- AUi_Label ---
-
-function AUi_Label_New(Parent: AControl): AControl;
-begin
-  Result := AUiLabel_New(Parent);
-end;
-
-// --- UI_Label ---
-
-function UI_Label_New(Parent: AControl): AControl; stdcall;
-begin
-  Result := AUiLabel_New(Parent);
-end;
-
-procedure UI_Label_SetFont(TextLabel: AControl; const FontName: APascalString; FontSize: AInteger); stdcall;
-begin
-  TLabel(TextLabel).Font.Name := FontName;
-  TLabel(TextLabel).Font.Size := FontSize;
 end;
 
 end.

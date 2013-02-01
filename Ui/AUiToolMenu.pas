@@ -2,18 +2,18 @@
 @abstract AUi ToolMenu
 @author Prof1983 <prof1983@ya.ru>
 @created 28.02.2012
-@lastmod 12.12.2012
+@lastmod 30.01.2013
 }
 unit AUiToolMenu;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
 uses
   ComCtrls, Menus,
   ABase,
-  AStrings,
+  AStringMain,
   AUiBase,
   AUiControls,
   AUiData,
@@ -24,7 +24,7 @@ uses
 // --- AUiToolMenu ---
 
 function AUiToolMenu_AddButtonP(ToolMenu: AToolMenu; const Name, Text, Hint: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight: AInt): AButton; {$ifdef AStdCall}stdcall;{$endif}
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AButton;
 
 function AUiToolMenu_AddNewItem(Parent: AToolMenu; const Name, Text: AString_Type;
     OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu; {$ifdef AStdCall}stdcall;{$endif}
@@ -45,17 +45,6 @@ function AUiToolMenu_GetSubMenuP(Parent: AToolMenu; const Name, Text: APascalStr
     ImageId, Weight: AInteger): AToolMenu;
 
 function AUiToolMenu_New(Parent: AControl): AToolMenu; {$ifdef AStdCall}stdcall;{$endif}
-
-// --- UI_ToolMenu ---
-
-function UI_ToolMenu_AddNewItem(Parent: AToolMenu; const Name, Text: AWideString;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu; deprecated; // Use AUiToolMenu_AddNewItemP()
-
-function UI_ToolMenu_AddNewSubMenu(Parent: AToolMenu; const Name, Text: APascalString;
-    ImageId, Weight: AInteger): AToolMenu; deprecated; // Use AUiToolMenu_AddNewSubMenuP()
-
-function UI_ToolMenu_GetSubMenu(Parent: AToolMenu; const Name, Text: APascalString;
-    ImageId, Weight: AInteger): AToolMenu; deprecated; // Use AUiToolMenu_GetSubMenuP()
 
 implementation
 
@@ -143,7 +132,7 @@ begin
     Index := AUiData.FindMenuItem(Parent);
     if (Index >= 0) then
     begin
-      Result := AToolMenu(AUIMenus.UI_MenuItem_Add(AMenuItem(Parent), Name, Text, OnClick, ImageId, Weight, 0));
+      Result := AToolMenu(AUiMenu_AddItem1P(AMenuItem(Parent), Name, Text, OnClick, ImageId, Weight));
       Exit;
     end;
 
@@ -236,26 +225,6 @@ begin
   except
     Result := 0;
   end;
-end;
-
-// --- UI_ToolMenu ---
-
-function UI_ToolMenu_AddNewItem(Parent: AToolMenu; const Name, Text: AWideString;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu;
-begin
-  Result := AUiToolMenu_AddNewItemP(Parent, Name, Text, OnClick, ImageId, Weight);
-end;
-
-function UI_ToolMenu_AddNewSubMenu(Parent: AToolMenu; const Name, Text: APascalString;
-    ImageId, Weight: AInteger): AToolMenu;
-begin
-  Result := AUiToolMenu_AddNewSubMenuP(Parent, Name, Text, ImageId, Weight);
-end;
-
-function UI_ToolMenu_GetSubMenu(Parent: AToolMenu; const Name, Text: APascalString;
-    ImageId, Weight: AInteger): AToolMenu;
-begin
-  Result := AUiToolMenu_GetSubMenuP(Parent, Name, Text, ImageId, Weight);
 end;
 
 end.

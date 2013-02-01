@@ -2,7 +2,7 @@
 @Abstract Report building RichEdit form
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.11.2008
-@LastMod 27.07.2012
+@LastMod 30.01.2013
 }
 unit fReport;
 
@@ -12,7 +12,9 @@ uses
   {$IFDEF FPC}LResources,{$ENDIF}
   Buttons, Classes, ClipBrd, ComCtrls, Controls, Dialogs, ExtCtrls, Forms, Graphics, ImgList,
   Menus, Messages, Printers, RichEdit, StdCtrls, SysUtils, ToolWin, Windows,
-  ABase, ASettings, AUiForm;
+  ABase,
+  ASettingsMain,
+  AUiForm;
 
 type
   TReportForm = class(TForm)
@@ -144,7 +146,6 @@ const
   GutterWid = 6;
 
 const
-  //cReport = 'FOtrcet';
   cReportFont = 'Font';
 
 {$IFNDEF FPC}
@@ -759,15 +760,15 @@ end;
 procedure TReportForm.LoadConfiguration(Config: AConfig);
 begin
   Form_LoadConfig(Self, Config);
-  Editor.Font.Name := ASettings.Config_ReadStringDefWS(Config, Self.Name+'\'+cReportFont, 'Name', 'Courier New Cyr');
-  Editor.Font.Size := ASettings.Config_ReadIntegerDefWS(Config, Self.Name+'\'+cReportFont, 'Size', 10);
+  Editor.Font.Name := ASettings_ReadStringDefP(Config, Self.Name+'\'+cReportFont, 'Name', 'Courier New Cyr');
+  Editor.Font.Size := ASettings_ReadIntegerDefP(Config, Self.Name+'\'+cReportFont, 'Size', 10);
 end;
 
 procedure TReportForm.SaveConfiguration(Config: AConfig);
 begin
   Form_SaveConfig(Self, Config);
-  ASettings.Config_WriteStringWS(Config, Self.Name+'\'+cReportFont, 'Name', Editor.Font.Name);
-  ASettings.Config_WriteIntegerWS(Config, Self.Name+'\'+cReportFont, 'Size', Editor.Font.Size);
+  ASettings_WriteStringP(Config, Self.Name+'\'+cReportFont, 'Name', Editor.Font.Name);
+  ASettings_WriteIntegerP(Config, Self.Name+'\'+cReportFont, 'Size', Editor.Font.Size);
 end;
 
 procedure TReportForm.SelectAllText;

@@ -2,17 +2,13 @@
 @Abstract AUiMainWindow
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2008
-@LastMod 16.11.2012
+@LastMod 01.02.2013
 }
 unit AUiMainWindow;
 
 {$I Defines.inc}
 
-{$IFNDEF NoSettings}
-  {$DEFINE USE_SETTINGS}
-{$ENDIF}
-
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
@@ -20,9 +16,14 @@ uses
   Classes, ComCtrls, Controls, ExtCtrls, Forms, Graphics, Menus, StdCtrls, SysUtils, {$IFNDEF UNIX}Windows,{$ENDIF}
   ABase,
   {$IFDEF OLDMAINFORM}fMain,{$ENDIF}
-  AUiBase, AUiBox, AUiControls, AUiData,
-  {$IFDEF USE_SETTINGS}AUiWindowSettings{AUiForm},{$ENDIF}
-  AUiMainWindowData, AUiSplitter, AUiToolBar;
+  AUiBase,
+  AUiBox,
+  AUiControls,
+  AUiData,
+  AUiMainWindowData,
+  AUiSplitter,
+  AUiToolBar,
+  AUiWindowSettings;
 
 type
   TMainWindowFormat = type Integer;
@@ -59,7 +60,6 @@ procedure _MainWindow_LoadConfig(Config: AConfig);
 procedure _MainWindow_SaveConfig(Config: AConfig);
 
 procedure _MainWindow_Create(Form: TForm; Format: TMainWindowFormat; Config: AConfig);
-procedure _MainWindow_Init;
 procedure _MainWindow_Set(Value: AWindow); stdcall;
 procedure _MainWindow_SetA(Window: AWindow; ToolBar, StatusBar: AControl; Config: AConfig);
 procedure _MainWindow_Shutdown;
@@ -177,8 +177,8 @@ var
 begin
   if (Format and MainWindowFormatCreateToolBar = MainWindowFormatCreateToolBar) then
   begin
-    MainToolBar := AUIToolBar.UI_ToolBar_New(AWindow(Form));
-    AUIControls.UI_Control_SetVisible(MainToolBar, False);
+    MainToolBar := AUiToolBar_New(AWindow(Form));
+    AUiControl_SetVisible(MainToolBar, False);
   end
   else
     MainToolBar := 0;
@@ -260,12 +260,6 @@ end;
 function _MainWindow_GetRightContainer: AControl;
 begin
   Result := Integer(RightPanel);
-end;
-
-procedure _MainWindow_Init;
-begin
-  if (FConfig <> 0) then
-    _MainWindow_LoadConfig(FConfig);
 end;
 
 procedure _MainWindow_LoadConfig(Config: AConfig);
@@ -514,7 +508,6 @@ begin
     Exit;
   end;
 
-  //FControl.OnResize := nil;
   MainForm.OnCloseQuery := nil;
 
   if (FConfig <> 0) then
@@ -523,21 +516,15 @@ begin
     FConfig := 0;
   end;
 
-  {IFNDEF A02}
-  //MainForm.Close;
-  {ENDIF}
-  // Prof1983: 11.01.2010
-  MainForm := nil;
+  MainForm := nil; // Do not remove
   _MainWindow_Set(0);
 
   Application.Terminate;
 
   if (FMainWindow <> 0) then
   begin
-    //TForm(FMainWindow).OnCloseQuery := nil;
     TForm(FMainWindow).Close;
     FMainWindow := 0;
-    //Application.Terminate;
   end;
 end;
 

@@ -2,9 +2,11 @@
 @Abstract Util functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.09.2009
-@LastMod 25.12.2012
+@LastMod 30.01.2013
 }
 unit AUtils;
+
+TODO: Use AUtilsMain.pas
 
 {$ifdef A04}{$DEFINE ADepr}{$endif}
 
@@ -327,76 +329,33 @@ function Time_Now(): TDateTime; stdcall; // Use GetNowDateTime()
 
 {$ifdef ADepr}
 
-// TODO: Убрать stdcall
-// TODO: Перенести в AUtilsMain
-
-{** Преобразует число в строку }
-function Utils_FloatToStr(Value: AFloat): APascalString; stdcall; deprecated; // Use FloatToStrWS()
-
-{** Преобразует число в строку c двумя знаками после запятой }
-function Utils_FloatToStrA(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall; deprecated; // Use FloatToStrAWS()
-
-// Преобразует число в строку для записи в БД (SQL). Для SQL необходим разделитель - точка.
-function Utils_FloatToStrB(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall; deprecated; { Use FloatToStrBP() }
-
-function Utils_FloatToStrC(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString; stdcall; deprecated; { Use FloatToStrCP() }
-
-function Utils_FloatToStrD(Value: AFloat): APascalString; stdcall; deprecated; { Use FloatToStrDP() }
-
 function Utils_NormalizeFloat(Value: AFloat): AFloat; stdcall;
 
 // Заменяет не отображаемые символы строки на #
 function Utils_NormalizeStr(const Value: APascalString): APascalString; stdcall;
-
-// Заменяет не отображаемые символы строки на пробелы, перенос строки #13#10 заменяет на один пробел
-function Utils_NormalizeStrSpace(const Value: APascalString): APascalString; stdcall; deprecated; // Use NormalizeStrSpaceP()
-
-{ Заменяет все точки на запятые или все запятые на точки в зависимости от региональных настроек.
-  Если параметр DecimalSeparator указан, то региональные настройки игнорируются. }
-function Utils_ReplaceComma(const S: APascalString; DecimalSeparator: AChar = #0;
-    ClearSpace: ABoolean = True): APascalString; stdcall; deprecated; // Use ReplaceComma()
 
 procedure Utils_Sleep(Milliseconds: AUInt); stdcall;
 
 function Utils_Time_Now: TDateTime; stdcall; // Use GetNowDateTime()
 
 function Utils_StrToFloat(const Value: APascalString): AFloat; stdcall;
-function Utils_StrToFloat1(const S: APascalString; DefValue: AFloat = 0): AFloat; stdcall; deprecated;
+
 function Utils_StrToInt(const Value: APascalString): AInteger; stdcall;
-function Utils_StrToInt1(const S: APascalString; DefValue: AInteger = 0): AInteger; stdcall; deprecated; // Use AUtils.StrToInt1
 
 { Возведение числа Base в степень Exponent.
   Analog: SysUtils.Power(Base, Exponent) }
 function Utils_Power(Base, Exponent: AFloat): AFloat; stdcall;
 
-function Utils_TryStrToDate(const S: APascalString; var Value: TDateTime): ABoolean; stdcall; deprecated; // Use TryStrToDateWS()
-
-{ Преобразует строку в Float. Разделителем может быть как точка, так и запятая.
-  В исходной строке могут присутствовать начальные и конечные пробелы. }
-function Utils_TryStrToFloat(const S: APascalString; var Value: AFloat): ABoolean; stdcall; deprecated; // Use TryStrToFloat()
-
-{ Преобразует строку в Float32. Разделителем может быть как точка, так и запятая.
-  В исходной строке могут присутствовать начальные и конечные пробелы. }
-function Utils_TryStrToFloat32(const S: APascalString; var Value: AFloat32): ABoolean; stdcall; deprecated; // Use TryStrToFloat32()
-
-{ Преобразует строку в Float64. Разделителем может быть как точка, так и запятая.
-  В исходной строке могут присутствовать начальные и конечные пробелы. }
-function Utils_TryStrToFloat64(const S: APascalString; var Value: AFloat64): ABoolean; stdcall; deprecated; // Use TryStrToFloat64()
-
-function Utils_TryStrToInt(const S: APascalString; var Value: AInteger): ABoolean; stdcall; deprecated; // Use TryStrToInt()
-
-function Utils_UpperString(const S: APascalString): APascalString; stdcall; deprecated; // Use AString_ToUpperP()
-
-function Utils_FormatFloat(Value: AFloat; Count, Digits: AInteger): APascalString; stdcall; deprecated; // Use FormatFloatWS()
-
 // Преобразует число в строку формата "%Nd".
 function Utils_FormatInt(Value, Count: AInteger): APascalString; stdcall;
+
 function Utils_FormatStr(const Value: APascalString; Len: AInteger): APascalString; stdcall;
+
 function Utils_FormatStrAnsi(const Value: AnsiString; Len: AInteger): AnsiString; stdcall;
+
 function Utils_StrToDate(const Value: APascalString): TDateTime; stdcall;
 
 function Utils_String_ToLower(const S: APascalString): APascalString;
-function Utils_String_ToUpper(const S: APascalString): APascalString; deprecated; // Use AString_ToUpperP()
 
 { Private }
 

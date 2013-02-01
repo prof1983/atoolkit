@@ -2,7 +2,7 @@
 @Abstract ASystem prepare function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 01.08.2011
-@LastMod 24.07.2012
+@LastMod 29.01.2013
 }
 unit ASystemPrepare;
 
@@ -57,7 +57,7 @@ var
 {$ENDIF}
 
 var
-  S: string;
+  S: AnsiString;
 begin
   if FIsPrepare then Exit;
 

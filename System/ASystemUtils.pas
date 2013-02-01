@@ -1,9 +1,7 @@
 {**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(29.05.2011)
-@LastMod(04.07.2012)
-@Version(0.5)
+@Author Prof1983 <prof1983@ya.ru>
+@Created 29.05.2011
+@LastMod 29.01.2013
 }
 unit ASystemUtils;
 
@@ -158,14 +156,13 @@ end;
 function NormalizePath(const Path: AnsiString): AnsiString;
 begin
   if (Length(Path) = 0) then
-    Result := FExePath
+    Result := AnsiString(FExePath)
   else
   begin
-    // Prof1983: 07.08.2011a
     if (Path[1] = '.') then
     begin
       {$IFDEF MSWINDOWS}
-      Result := ExpandFileName(FExePath+Path);
+      Result := AnsiString(ExpandFileName(AnsiString(FExePath+Path)));
       {$ELSE}
       Result := Copy(FExePath, 1, Length(FExePath)-1) + Copy(Result, 2, Length(Result)-1);
       {$ENDIF MSWINDOWS}
@@ -181,11 +178,10 @@ begin
     Result := FExePath
   else
   begin
-    // Prof1983: 07.08.2011a
     if (Path[1] = '.') then
     begin
       {$IFDEF MSWINDOWS}
-      Result := ExpandFileName(FExePath+Path);
+      Result := ExpandFileName(AnsiString(FExePath+Path));
       {$ELSE}
       Result := Copy(FExePath, 1, Length(FExePath)-1) + Copy(Result, 2, Length(Result)-1);
       {$ENDIF MSWINDOWS}

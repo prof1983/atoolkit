@@ -2,24 +2,24 @@
 @Abstract ASystem resource
 @Author Prof1983 <prof1983@ya.ru>
 @Created 29.05.2011
-@LastMod 27.11.2012
+@LastMod 30.01.2013
 }
 unit ASystemResourceString;
 
 {$I A.inc}
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
 uses
-  ABase, AStrings;
+  ABase,
+  AStringMain;
 
-function ASystem_GetResourceString(const Section, Name, Default: AString_Type; out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function ASystem_GetResourceString(const Section, Name, Default: AString_Type;
+    out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
-function ASystem_GetResourceStringP(const Section, Name, Default: APascalString): APascalString; {$ifdef AStdCall}stdcall;{$endif}
-
-function Runtime_GetResourceString(const Section, Name, Default: APascalString): APascalString; stdcall;
+function ASystem_GetResourceStringP(const Section, Name, Default: APascalString): APascalString;
 
 implementation
 
@@ -34,12 +34,13 @@ const
 
 // --- ASystem ---
 
-function ASystem_GetResourceString(const Section, Name, Default: AString_Type; out Value: AString_Type): AInteger;
+function ASystem_GetResourceString(const Section, Name, Default: AString_Type;
+    out Value: AString_Type): AInteger;
 var
   Res: APascalString;
 begin
   try
-    Res := ASystemResourceString.Runtime_GetResourceString(
+    Res := ASystem_GetResourceStringP(
             AString_ToPascalString(Section),
             AString_ToPascalString(Name),
             AString_ToPascalString(Default));
@@ -71,13 +72,6 @@ begin
   except
     Result := '';
   end;
-end;
-
-// --- Runtime ---
-
-function Runtime_GetResourceString(const Section, Name, Default: APascalString): APascalString; stdcall;
-begin
-  Result := ASystem_GetResourceStringP(Section, Name, Default);
 end;
 
 end.

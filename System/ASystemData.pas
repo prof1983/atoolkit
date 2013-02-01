@@ -2,15 +2,15 @@
 @Abstract ASystem data
 @Author Prof1983 <prof1983@ya.ru>
 @Created 29.05.2011
-@LastMod 19.12.2012
+@LastMod 28.01.2013
 }
 unit ASystemData;
 
 {$I Defines.inc}
 
-{$IFNDEF NoRuntimeEvents}
-  {$DEFINE USE_EVENTS}
-{$ENDIF NoRuntimeEvents}
+{$ifndef NoRuntimeEvents}
+  {$define UseEvents}
+{$endif}
 
 interface
 
@@ -43,16 +43,13 @@ var
   FProgramVersionStr: APascalString;
   FTitle: APascalString;
   FUrl: APascalString;
-  FOnProcessMessages02: AProc02;
-  FOnProcessMessages03: AProc03;
+  FOnProcessMessages: AProc;
   FOnShowErrorA: AShowErrorA_Proc;
-  FOnShowErrorWS: TAShowErrorWSProc;
   FOnShowMessageA: AShowMessageA_Proc;
-  FOnShowMessageWS: TAShowMessageWSProc;
-  {$IFDEF USE_EVENTS}
+  {$ifdef UseEvents}
   FOnAfterRunEvent: AEvent;
   FOnBeforeRunEvent: AEvent;
-  {$ENDIF USE_EVENTS}
+  {$endif}
 
 implementation
 

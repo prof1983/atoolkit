@@ -1,1 +1,0 @@
-﻿Use AObjectImpl.pas

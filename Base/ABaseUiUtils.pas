@@ -2,7 +2,7 @@
 @Abstract Базовый модуль основных типов и их преобразования. Базовые функции for Delphi 5,7,2005,2006
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.06.2004
-@LastMod 09.01.2013
+@LastMod 04.02.2013
 }
 unit ABaseUiUtils;
 
@@ -19,34 +19,53 @@ type
   TWndType = type AInt; // Windows.UINT
   TWndRes = type AInt;
 
-{IFNDEF VER170}
+{** Close window }
 function wndClose(Handle: THandle32): AError;
+
+{** Диалог выбора файла }
 function wndDialogOpen(var AFileName: WideString): WordBool;
 
-// wnd_Input2
+{** Input query window
+    @param HParent - Идентификатор родительского окна
+    @param Caption - Заголовок окна
+    @param Text - Текст окна
+    @param Value - (in/out) Указатель на строку
+    @param uType - Тип окна
+    @return - Нажатая кнопка }
 function wnd_Input(
-  HParent: THandle32;          {in}{Идентификатор родительского окна}
-  Caption: String;              {in}{Заголовок окна}
-  Text: String;                 {in}{Текст окна}
-  var Value: String;            {in/out}{Указатель на строку}
-  uType: TWndType = 1           {in}{Тип окна}
-  ): TWndRes;                   {Нажатая кнопка}
-
-function wnd_InputUInt064( {}
-  HParent: THandle32;          {in}{Идентификатор родительского окна}
-  Caption: String;              {in}{Заголовок окна}
-  Text: String;                 {in}{Текст окна}
-  var Value: AUInt64;           {in/out}{Значение}
-  uType: TWndType = 1           {in}{Тип окна}
+  HParent: THandle32;
+  Caption: String;
+  Text: String;
+  var Value: String;
+  uType: TWndType = 1
   ): TWndRes;
 
-function wnd_Message( {Выводит окно с сообщением}
-  HParent: THandle32;          {in}{Идентификатор родительского окна}
-  Caption: String;              {in}{Заголовок окна}
-  Text: String;                 {in}{Текст окна}
-  uType: TWndType = 0           {in}{=mb_OkCancel}
-  ): TWndRes;                   {Нажатая кнопка}
-{ENDIF}
+{** Input Int64 query window
+  @param HParent - Идентификатор родительского окна
+  @param Caption - Заголовок окна
+  @param Text - Текст окна
+  @param Value - (in/out) Значение
+  @param uType - Тип окна }
+function wnd_InputUInt064(
+  HParent: THandle32;
+  Caption: String;
+  Text: String;
+  var Value: AUInt64;
+  uType: TWndType = 1
+  ): TWndRes;
+
+{** Выводит окно с сообщением
+  @param HParent - Идентификатор родительского окна
+  @param Caption - Заголовок окна
+  @param Text - Текст окна
+  @param uType =mb_OkCancel
+  @return - Нажатая кнопка }
+function wnd_Message(
+  HParent: THandle32;
+  Caption: String;
+  Text: String;
+  uType: TWndType = 0
+  ): TWndRes;
 
 implementation
 
@@ -57,15 +76,12 @@ function __GetLastError(): AInt32; stdcall; external 'kernel32.dll' name 'GetLas
 
 // --- Public ---
 
-{IFNDEF VER170}
 function wndClose(Handle: THandle32): AError;
 begin
   Result := (Integer(__CloseHandle(Handle)));
 end;
-{ENDIF}
 
 function wndDialogOpen(var AFileName: WideString): WordBool;
-// Диалог выбора файла
 var
   Dialog: TOpenDialog;
 begin
@@ -87,7 +103,6 @@ begin
     Result := 1;
 end;
 
-{IFNDEF VER170}
 function wnd_InputUInt064(HParent: THandle32; Caption, Text: String; var Value: AUInt64; uType: TWndType = 1): TWndRes;
 var
   S: String;
@@ -106,6 +121,5 @@ function wnd_Message(HParent: THandle32; Caption, Text: String; uType: TWndType 
 begin
   Result := MessageBox(HParent, PChar(Text), PChar(Caption), uType);
 end;
-{ENDIF}
 
 end.

@@ -1,8 +1,7 @@
-﻿{**
-@Abstract Базовый модуль основных типов для Delphi 5,7,9
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.06.2004
-@LastMod 20.12.2012
+@LastMod 04.02.2013
 }
 unit ABase2;
 
@@ -11,93 +10,95 @@ unit ABase2;
 interface
 
 uses
-  ABase, ATypes;
+  ABase;
+  //ATypes;
 
-// Простые типы ----------------------------------------------------------------
-{$IFDEF VER130}
+// --- Simple types ---
 type
-  UInt64 = Int64;
-{$ENDIF}
-
-type // Другие простые типы ----------------------------------------------------
   Char08 = Char;
   Char16 = WideChar;
   Char016 = WideChar;
+  {$ifdef ADepr}
   Int008 = AInt08;
   Int016 = AInt16;
   Int032 = AInt32;
   Int064 = AInt64;
-  Int128 = record I1, I2: Int064 end;
+  {$endif}
+  Int128 = record I1, I2: AInt64 end;
   Int256 = record I1, I2: Int128 end;
   Float32 = Single;
   Float64 = Double;
+  {$ifdef ADepr}
   UInt008 = AUInt08;
   UInt016 = AUInt16;
   UInt032 = AUInt32;
   UInt064 = AUInt64;
-  UInt128 = record I1, I2: UInt064 end;
+  {$endif}
+  {$ifdef DELPHI_5}
+  UInt64 = Int64;
+  {$endif}
+  UInt128 = record I1, I2: AUInt64 end;
   UInt256 = record I1, I2: UInt128 end;
 
-type
-  TDateTime32 = ATypes.TDateTime32;
-  TDateTime64 = ATypes.TDateTime64;
-  THandle = ATypes.THandle;
-  THandle32 = ATypes.THandle32;
-  THandle64 = ATypes.THandle64;
-  TId = ATypes.TId;
-  TId32 = ATypes.TId32;
-  TId64 = ATypes.TId64;
+// --- Constants ---
 
-// Константы -------------------------------------------------------------------
 const
   HighInt08 = High(AInt08);
-  HighInt16 = High(Int16);
-  HighInt32 = High(Int32);
-  HighInt64 = High(Int64);
+  HighInt16 = High(AInt16);
+  HighInt32 = High(AInt32);
+  HighInt64 = High(AInt64);
   HighUInt08 = High(AUInt08);
-  HighUInt16 = High(UInt16);
-  HighUInt32 = High(UInt32);
-  HighUInt64 = High(UInt64);
+  HighUInt16 = High(AUInt16);
+  HighUInt32 = High(AUInt32);
+  HighUInt64 = High(AUInt64);
+  LowInt08 = Low(AInt08);
+  LowInt16 = Low(AInt16);
+  LowInt32 = Low(AInt32);
 
-const // Константы времени -----------------------------------------------------
+  // --- Time constsnts ---
   DateTimeDay = 1;
   DateTimeHour = DateTimeDay / 24;
   DateTimeMinute = DateTimeHour / 60;
   DateTimeSecond = DateTimeMinute / 60;
 
-type // Тип callback функции для добавления в лог файл -------------------------
-  TProfAddToLog = function(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg, AParams: WideString; AParentId: Integer): Integer of object;
+  HighInt008 = HighInt08;
+  HighInt016 = HighInt16;
+  HighInt032 = HighInt32;
+  HighInt064 = HighInt64;
+  HighUInt008 = HighUInt08;
+  HighUInt016 = HighUInt16;
+  HighUInt032 = HighUInt32;
+  HighUInt064 = HighUInt64;
+  LowInt008 = LowInt08;
+  LowInt016 = LowInt16;
+  LowInt032 = LowInt32;
+  //LowInt064 = -9223372036854775808
+  timeHour = DateTimeHour;
+  timeMin = DateTimeMinute;
+  timeSec = DateTimeSecond;
 
-const // Стандартные сообщения -------------------------------------------------
-  info_ConfigureLoad = 'Конфигурации загружены';
-  info_ConfigureSave = 'Конфигурации сохранены';
-  stConfigureLoadOk = 'Конфигурации загружены';
-  stConfigureLoadError = 'Конфигурации не загружены';
-  stConfigureLoadStart = 'Загрузка конфигураций';
-  stConfigureSaveStart = 'Сохранение конфигураций';
-  stConfigureSaveOk = 'Конфигурации сохранены';
-  stConfigureSaveError = 'Конфигурации не сохранены';
-  stCreateOk = 'Объект создан';
-  stCreateOkA = 'Объект "%s" создан';
-  stFinalize = 'Финализация';
-  stFinalizeError = 'Не финализировано';
-  stFinalizeOk = 'Финализировано';
-  stFinalizeStart = 'Финализация';
-  stFreeOk = 'Объект уничтожен';
-  stInitialize = 'Инициализация';
-  stInitializeError = 'Ошибка при инициализации';
-  stInitializedA = 'Объект "%s" инициализирован';
-  stInitializeOk = 'Инициализировано';
-  stInitialize_Error = 'Ошибка при инициализации объекта "%s"';
-  stInitialize_Ok = 'Объект "%s" инициализирован';
-  stInitialize_Start = 'Инициализация обекта "%s"';
-  stNotActive = 'Не активирован';
-  stNotAssigned = '"%s.%s" не задан';
-  stNotInitialized = 'Не инициализировано';
-  stNotOverride = 'Функция не переопределена';
-  stNotOverrideA = 'Функция "%s" не переопределена';
-  stNotOverrideB = 'Функция не переопределена "%s.%s"';
-  stProgram = 'Сообщения программы';
+//type // --- ALog callback object func ---
+  //TProfAddToLog = function(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg, AParams: WideString; AParentId: Integer): Integer of object;
+
+type
+  THandle32 = Integer;
+
+type
+  TArrayChar08 = array of AChar;
+  TArrayStr = array of string;
+  {** Convert type: 0-Date+Time, 1-Date, 2-Time }
+  TConvertDT = type AUInt32;
+  {** Simple proc type }
+  TProc = procedure;
+  {** Simple info proc.
+      First char of Str:
+      #0 - clear all,
+      #1 - write string,
+      #2 - write substring
+      #3#v - set progress (v = [0..255] - progress value),
+      #4#n#v - set progress n=[1..] - progress bar num, v - [0..255] progress value,
+      #4#0 - clear all progress }
+  TProcInfo = procedure(Str: string);
 
 implementation
 

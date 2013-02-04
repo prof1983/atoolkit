@@ -1,8 +1,7 @@
-﻿{**
-@Abstract Базовый модуль основных типов и их преобразования. Базовые функции for Delphi 5,7,9
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.06.2004
-@LastMod 20.12.2012
+@LastMod 04.02.2013
 }
 unit ABaseUtils3;
 
@@ -17,7 +16,6 @@ uses
 function cByteToStr(Value: Byte): string;
 function cDateTime64ToStr(T: TDateTime64): string;
 function cDateTime64ToStr2(T: TDateTime64; Typ: TConvertDT): string;
-// Конвертирует тип TDateTime064 в String
 function cDateTime64ToStrF(Format: TDateTimeFormat; T: TDateTime64): string;
 function cDateTimeToStr(Value: TDateTime): string;
 function cDateToStr(D: TDateTime64): string;
@@ -28,9 +26,7 @@ function cInt16ToStr(I: Int016): string;
 function cInt32ToStr(Value: Int032): string;
 function cInt64ToStr(I: Int064): string;
 function cSingleToStr(Value: Single): string;
-// Делает все заглавные буквы строчными
 function cStrCaseLower(St: string): string;
-// Делает все строчныме буквы заглавными
 function cStrCaseUpper(St: string): string;
 function cStrToDate(S: string): TDateTime64;
 function cStrToDateTime(S: string): TDateTime64;
@@ -50,13 +46,8 @@ function mathMinUInt32(V1: UInt032; V2: UInt032): UInt032;
 function mathPower(Base, Exponent: Float64): Float64;
 function strCaseLower(const S: string): string;
 function strCaseLowerEng(const S: string): string;
-// Заменяет все строчные буквы на заглавные с учетом русских букв
 procedure strCaseUpper(var S: string);
-// Разделяет строку на слова и выражения, удаляет префиксные и постфиксные пробелы. Разделителем является запятая.
-// Words - Слова и выражения по порядку (out)
-// Result - Номер символа, в котором произошла ошибка или 0, если успешно
 function strDivisionComma(const S: string; var Words: TArrayString): UInt032;
-// Возвращает текущее время
 function timeNow: TDateTime64;
 
 function _StrToDateTime(const S: String; var Value: TDateTime): Boolean;
@@ -78,7 +69,6 @@ end;
 function cDateTime64ToStr(T: TDateTime64): String;
 begin
   try
-    {Result := DateTimeToStr(T);}
     DateTimeToString(Result, 'dd.mm.yyyy hh:nn:ss', T);
   except
     //on EConvertError do ErrorUMyBaseConvert := ER_Convert + 2;
@@ -87,15 +77,12 @@ begin
 end;
 
 function cDateTime64ToStr2(T: TDateTime64; Typ: TConvertDT): String;
-// Конвертирует тип TDateTime064 в String
-// T   - Значение
-// Typ - Вид вывода 0-Дата+Время, 1-Дата, 2-Время
 begin
   try
   case Typ of
     1: Result := DateToStr(T);
     2: Result := TimeToStr(T);
-    3: Result := cDateTime64ToStrF('s"."zzz', T); //FormatDateTime('hh:nn:ss', T);
+    3: Result := cDateTime64ToStrF('s"."zzz', T);
   else
     Result := DateTimeToStr(T);
   end;
@@ -120,7 +107,6 @@ begin
 end;
 
 function cFloat64ToStrP(Value: Float64): String;
-// Вводит тезультат с разделителем - точкой
 var
   I: Int32;
 begin
@@ -284,9 +270,6 @@ begin
 end;
 
 function mathMinUInt32(V1, V2: UInt032): UInt032;
-//Возвращает меньшее из двех заданых чисел
-//V1 - Первое значение
-//V2 - Второе значение
 begin
   if V1 > V2 then Result := V2 else Result := V1;
 end;
@@ -297,13 +280,11 @@ begin
 end;
 
 function strCaseLower(const S: String): String;
-// Заменяет все заглавные буквы на строчные с учетом русских букв
 begin
   Result := AnsiLowerCase(S);
 end;
 
 function strCaseLowerEng(const S: String): String;
-// Заменяет все заглавные буквы на строчные (только латиница)
 begin
   Result := AnsiLowerCase(S);
 end;
@@ -322,7 +303,6 @@ begin
   Result := 0; if strLength(S) = 0 then Exit;
   Q := S;
   SetLength(Words, 0);
-  // Разделение на отдельные выражения
   while strLength(Q) > 0 do begin
     I := strPos(Q, ',');
     I2 := Length(Words); SetLength(Words, I2+1);
@@ -337,7 +317,6 @@ begin
     end;
   end;
   if Length(Words) = 0 then Exit;
-  // Удаление префиксных и постфиксных пробелов
   for I := 0 to High(Words) do Words[I] := strDeleteSpace(Words[I]);
 end;
 
@@ -366,7 +345,6 @@ begin
 end;
 
 function cFloat64ToStr(Value: Float64): String;
-// Выводит результат с разделителем по установкам Windos
 begin
   try
     Result := FloatToStr(Value);

@@ -1,8 +1,7 @@
-﻿{**
-@Abstract Базовый модуль основных типов и их преобразования. Базовые функции for Delphi 5,7,2005,2006
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.06.2004
-@LastMod 20.12.2012
+@LastMod 04.02.2013
 }
 unit ABaseUtils2;
 
@@ -11,60 +10,25 @@ interface
 uses
   ABase, ABase2, ATypes;
 
-// ---
-type // from unBase-20061023.pas
-  THandle32 = Integer;
-// ---
-
-type // Простые типы -----------------------------------------------------------
-  //** Массив Char08
-  TArrayChar08 = array of AChar;
-  //** Массив строк string
-  TArrayStr = array of string;
-  //** Вид конвентарции: 0-Дата+Время, 1-Дата, 2-Время
-  TConvertDT = type AUInt32;
-  //** Простой тип для процедуры
-  TProc = procedure;
-  //** Информация. Певый символ: #0-очистить все, #1-вывести строку. #2-вывести подстроку. #3-прогресс(второй символ [0..255]-прогресс), #4#n#p-прогресс n=[1..] p-текущий прогресс[0..255], #4#0-очистить все прогрессы
-  TProcInfo = procedure(Str: string);
-
 type // ------------------------------------------------------------------------
-  TWndRes         = Integer;
-  TWndType        = Integer;
+  TWndRes = AInt;
+  TWndType = AInt;
   TDateTimeFormat = string;
-  TStrPosChar     = Integer;
-  {0 - Нет символа
-   1 - .
-   2 - !
-   3 - ?
-   4 - ...
-   5 - ,
-   6 - ;
-   7 - (
-   8 - )
-   9 - {
-   10 - Закрывающаяся фигурная кавычка
-   11 - [
-   12 - ]
-  }
-
-const // Глобальные константы --------------------------------------------------
-  HighInt008 = 127;
-  HighInt016 = 32767;
-  HighInt032 = 2147483647;
-  HighInt064 = 9223372036854775807;
-  HighUInt008 = 255;
-  HighUInt016 = 65535;
-  HighUInt032 = 4294967295;
-  HighUInt064 = $FFFFFFFFFFFFFFFF;
-  //HighUInt128 = $FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
-  LowInt008 = -128;
-  LowInt016 = -32768;
-  //LowInt032 = -2147483648;
-  //LowInt064 = -9223372036854775808
-  timeHour: TDateTime = 1 / 24; //Величина 1 часа в типе TDateTime064
-  timeMin: TDateTime = 1 / (24 * 60);
-  timeSec: TDateTime = 1 / (24 * 60 * 60);
+  TStrPosChar = AInt;
+  (*0 - no symbol
+    1 - .
+    2 - !
+    3 - ?
+    4 - ...
+    5 - ,
+    6 - ;
+    7 - (
+    8 - )
+    9 - {
+    10 - }
+    11 - [
+    12 - ]
+  *)
 
 type // ------------------------------------------------------------------------
   TVariantType = type UInt32;
@@ -84,7 +48,7 @@ type // ------------------------------------------------------------------------
   end;
 
 type
-  //** Для передичи параметров меджду процедурами. Формат: <name1>=<value1>&<name2>=<value2>
+  //** Format: <name1>=<value1>&<name2>=<value2>
   TUrlParams = type String;
   TUrlParams2 = array of TUrlParam;
 
@@ -101,9 +65,8 @@ function cFloat32ToInt32(Value: Float32): Int32;
 function cFloat64ToArrayByte(Value: Float64): TArrayByte;
 function cFloat64ToUInt32(F: Float64): UInt32;
 function cHexToUInt08(H: Char): AUInt08;
+{** Delimer #9 }
 function cStringToArrayString(Value: string): TArrayString;
-// Преобразует строку к виду ... F0 A1 B2 ...
-// Delimer - Разделитель
 function cStrToHex(Value: string; Delimiter: string = ''): string;
 function cStrToHtmlStr(Str: string): string;
 function cStrToInt32(Str: string): Int32; deprecated; // Use ABaseUtils3.pas
@@ -121,33 +84,19 @@ function IsCharRus(C: Char): Boolean;
 function IsCharRusEng(C: Char): Boolean;
 function mathMinInt32(V1, V2: Int32): Int32;
 function mathMinUInt32(V1: UInt32; V2: UInt32): UInt32;
-// Сравнивает 2 строки
-// Result - Позиция, в которой строки имеют различия или 0, если они одинаковые
 function strEqual(Str1, Str2: string): UInt32;
 function strEqual2(S1, S2: string; A1: Float64 = 0; A2: Float64 = 0; A3: Float64 = 0): Float64;
-// Выделяет слово Num по счету c разделителями Delims
 function StrExtractWord(Num: Integer; Str: WideString; Delims: TArrayChar): WideString;
 function StrHtmlFromStr(Value: string): string;
 function StrHtmlToStr(Value: WideString): WideString;
-//** Вставляет подстроку SubSt в строку St, начиная с символа с номеров Index
 procedure strInsert(var S: String; SubSt: String; Index: UInt32);
-//** Возвращает длину строки
 function strLength(const S: String): UInt32;
-//** Возвращает в строке St первое вхождение подстроки SubSt и возвращает номер позиции с которой она начинается. Если подстрока не найдена, возвращает ноль.
 function strPos(St: String; SubSt: String): UInt32;
-// Ищет в строке первое вхождение . ! ? ...
-// S  - {in}{Строка}
-// Ch - {out}{Код окончания предложения}
-// Result - Позиция в строке или 0, если не найдено
+// Search first symbol . ! ? ...
 function strPos3(S: String; var Ch: TStrPosChar): UInt32;
-// Ищет индекс символа C в строке St с конца строки. Возвращает 0, если символ не найден.
-// St - Строка
-// C - Символ
 function StrPosEnd(const St: WideString; C: WideChar): Integer;
-//** Преобразует символы, записанные в виде URLencoded
 function urlDecode(Value: string): string;
 function urlParamDecode(const InParams: TUrlParams; var Params: TURLParams2): AError;
-//** Возвращает значение атрибута заданного в качестве параметра функции из строки данных
 function urlParamByName(InParams: TUrlParams; Name: string): string;
 function urlParamByName_UInt064(InParams: TUrlParams; Name: String): UInt64;
 
@@ -165,9 +114,7 @@ function _StrToUInt16(const S: String; var Value: UInt16): UInt32;
 function _StrToUInt32(const S: String; var Value: UInt32): UInt32;
 function _StrToUInt64(const S: String; var Value: UInt64): UInt32;
 
-{**
-  Удаление префиксных, постфиксных, повторяющихся пробелов и префиксных и поствиксных #13#10
-}
+{** Delete prefix and postfix space (probel) and delete prefix and postfix #13#10 }
 function _StrDeleteSpace(var S: APascalString; Options: TDeleteSpaceOptionSet): AError;
 
 function cBoolToStr(Value: Boolean): String;
@@ -176,9 +123,7 @@ procedure strAdd(var Str: String; S2: String);
 function strCopy(SIn: String; Index, Count: Int32): String;
 function strDelete(var St: String; Index, Count: UInt32): AError;
 
-{**
-  Удаление префиксных, постфиксных, повторяющихся пробелов и префиксных и поствиксных #13#10
-}
+{** Delete prefix and postfix space (probel) and delete prefix and postfix #13#10 }
 function StrDeleteSpace(const SIn: WideString; Options: TDeleteSpaceOptionsSet = [dsFirst, dsLast, dsRep]): APascalString;
 
 function Tag(Name, Value: String): String;
@@ -261,7 +206,6 @@ begin
 end;
 
 function cStringToArrayString(Value: String): TArrayString;
-// Разделение строка на части. Разделитель #9
 var
   I: Int32;
   Index: Int32;
@@ -451,9 +395,6 @@ begin
 end;
 
 function mathMinUInt32(V1, V2: UInt32): UInt32;
-//Возвращает меньшее из двех заданых чисел
-//V1 - Первое значение
-//V2 - Второе значение
 begin
   if V1 > V2 then Result := V2 else Result := V1;
 end;
@@ -472,15 +413,10 @@ begin
 end;
 
 function strEqual2(S1, S2: String; A1: Float64 = 0; A2: Float64 = 0; A3: Float64 = 0): Float64;
-{A1-коэффициент, учитывающий разницу длин строк (0..1)
- A2-коэффициент, учитывающий сдвиг сравниваемых строк (0..1)
- A3-коэффициент, учитывающий несоответствие букв (0..1)
- Результат (0..1) 0 - не похоже, 1 - похоже
-}
 var
-  K1: Float64; // Коэффициент разници длин строк
-  K2: Float64; // Коэффициент сдвига строк
-  K3: Float64; // Коэффициент несоответствия букв
+  K1: Float64;
+  K2: Float64;
+  K3: Float64;
   K: Float64;
   L1: UInt32;
   L2: UInt32;
@@ -491,7 +427,6 @@ var
   I, I2: UInt32;
 begin
   Result := 0;
-  // Длины строк
   L1 := strLength(S1);
   L2 := strLength(S2);
   if L1 < L2 then begin S := S1; S1 := S2; S2 := S; L := L1; L1 := L2; L2 := L; end;
@@ -513,8 +448,8 @@ end;
 
 function StrExtractWord(Num: Integer; Str: WideString; Delims: TArrayChar): WideString;
 var
-  INum: Int32;        // Текущее слово по порядку
-  Pos: Int32;         // Позиция начала строки для выделения слова
+  INum: Int32;
+  Pos: Int32;
   MinDelimPos: Int32;
 
   function GetMinDelimPos(Str: WideString; Start: UInt32; Delims: TArrayChar): Int32;
@@ -561,7 +496,6 @@ begin
 end;
 
 function StrHtmlFromStr(Value: String): String;
-// Переводит строку со спец символими в строку Html формата со спецсимволами
 var
   I: Int32;
 begin
@@ -575,8 +509,6 @@ begin
 end;
 
 function StrHtmlToStr(Value: WideString): WideString;
-// Переводит строку Html формата с тегами в простую строку с символами
-// Обратная процедура StrHtmlFromStr
 var
   Igt: Int32;
   Ilt: Int32;
@@ -608,7 +540,6 @@ end;
 
 function strLength(const S: String): UInt32;
 begin
-  // Вычисляет реальную длину (без учета конца строки #0)
   Result := Length(S);
 end;
 
@@ -642,7 +573,6 @@ begin
 end;
 
 function StrPosEnd(const St: WideString; C: WideChar): Integer;
-// Ищет индекс символа C в строке St с конца строки. Возвращает 0, если символ не найден.
 var
   I: Integer;
 begin
@@ -651,7 +581,6 @@ begin
 end;
 
 function urlDecode(Value: string): string;
-// Преобразует символы, записанные в виде URLencoded
 var
   i, L: integer;
 begin
@@ -711,7 +640,6 @@ begin
 end;
 
 function urlParamByName(InParams: TUrlParams; Name: string): string;
-// Фнкция возвращает значение атрибута заданного в качестве параметра функции из строки данных
 var
   SS: String;
   ST: String;
@@ -828,46 +756,43 @@ begin
 end;
 
 function _StrDeleteSpace(var S: APascalString; Options: TDeleteSpaceOptionSet): AError;
-// Удаление префиксных, постфиксных, повторяющихся пробелов и префиксных и поствиксных #13#10
 var
   B: Boolean;
   I: UInt32;
 begin
   repeat
-  B := False;
+    B := False;
 
-  Result := 0; if (strLength(S) = 0) then Exit;
-  // Удаление префиксных пробелов
-  if (dsFirst in Options) then while (S[1] = ' ') do begin
-    strDelete(S, 1, 1);
-    if strLength(S) = 0 then Exit;
-    B := True;
-  end;
-  // Удаление постфиксных пробелов
-  if (dsLast in Options) then while (S[strLength(S)] = ' ') do begin
-    strDelete(S, strLength(S), 1);
-    if strLength(S) = 0 then Exit;
-    B := True
-  end;
-  // Удаление повторяющихся промежуточных пробелов
-  if (dsRep in Options) then repeat
-    I := strPos(S, '  ');
-    if I = 0 then Break;
-    Delete(S, I, 1);
-  until False;
+    Result := 0; if (strLength(S) = 0) then Exit;
+    // Delete prefix space
+    if (dsFirst in Options) then while (S[1] = ' ') do begin
+      strDelete(S, 1, 1);
+      if strLength(S) = 0 then Exit;
+      B := True;
+    end;
+    // Delete postfix space
+    if (dsLast in Options) then while (S[strLength(S)] = ' ') do begin
+      strDelete(S, strLength(S), 1);
+      if strLength(S) = 0 then Exit;
+      B := True
+    end;
+    // Delete repeat space
+    if (dsRep in Options) then repeat
+      I := strPos(S, '  ');
+      if I = 0 then Break;
+      Delete(S, I, 1);
+    until False;
 
-  // Удаление префиксных #13#10
-  if (Length(S) >= 2) and (S[1]=#13) and (S[2]=#10) then begin
-    Delete(S, 1, 2);
-    B := True;
-  end;
-  // Удаление постфиксных #13#10
-  if (Length(S) >= 2) and (S[Length(S)-1]=#13) and (S[Length(S)]=#10) then begin
-    Delete(S, Length(S)-1, 2);
-    B := True;
-  end;
-
-  // Повтор удаления
+    // Delete prefix #13#10
+    if (Length(S) >= 2) and (S[1]=#13) and (S[2]=#10) then begin
+      Delete(S, 1, 2);
+      B := True;
+    end;
+    // Delete postfix #13#10
+    if (Length(S) >= 2) and (S[Length(S)-1]=#13) and (S[Length(S)]=#10) then begin
+      Delete(S, Length(S)-1, 2);
+      B := True;
+    end;
   until (B = False);
 end;
 

@@ -1,8 +1,8 @@
 {**
-@Abstract(Base consts)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(06.03.2008)
-@LastMod(23.07.2012)
+@Abstract Base consts
+@Author Prof1983 <prof1983@ya.ru>
+@Created 06.03.2008
+@LastMod 23.07.2012
 }
 unit ABaseConsts;
 

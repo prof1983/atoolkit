@@ -448,6 +448,7 @@ var
 begin
   try
     I := Length(FEvents);
+    SetLength(FEvents, I + 1);
     FEvents[I].Id := I + 1;
     FEvents[I].Name := Name;
     FEvents[I].Description := '';

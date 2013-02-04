@@ -1,8 +1,8 @@
 {**
-@Abstract(ABaseUtils)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(05.03.2008)
-@LastMod(23.07.2012)
+@Abstract ABaseUtils
+@Author Prof1983 <prof1983@ya.ru>
+@Created 05.03.2008
+@LastMod 23.07.2012
 }
 unit ABaseUtils;
 

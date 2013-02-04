@@ -2,7 +2,7 @@
 @Abstract Base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 28.01.2013
+@LastMod 04.02.2013
 }
 unit ABase;
 
@@ -130,7 +130,7 @@ type
 type
   // = TAbstractSettings or TProfXmlNode1 or TProfXmlNode4
   AConfig = type AInteger;
-  AEvent = type AInteger;       // = AEvent_Type^
+  AEvent = type AInt; // = AEvent_Type.Id
   AColor = type AInteger;
 
 type

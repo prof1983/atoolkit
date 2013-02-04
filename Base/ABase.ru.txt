@@ -112,3 +112,36 @@ function cDateTime64ToStr2(T: TDateTime64; Typ: TConvertDT): string;
 
 {** Вводит тезультат с разделителем - точкой }
 function cFloat64ToStrP(Value: Float64): String;
+
+=== ABaseUtils4 ===
+
+{**
+  @abstract(Декодирует код OLE ошибки в текстовое представление)
+  ACode:   код ошибки
+  Result:  текстовое представление
+}
+function DecodeOleError(ACode: LongWord): string;
+
+{**
+  @abstract(Имя компьютера на котором запущена прога)
+  Result: имя компьютера
+}
+function GetCompName(): string;
+
+{** Возвращает версию файла в формате x.x.x.x
+    @param AFileName - имя файла }
+function GetFileVersionString4(const AFileName: string): string;
+
+{** Возвращает строковое представление IP адреса по наименованию хоста
+    @param AHostName - имя компьютера
+    @return - строковое представление IP }
+function GetStrIPAddress(const AHostName: string): string;
+
+{** Возвращает строковое представление IP адреса по наименованию хоста
+    @param AHostName - имя компьютера
+    @return строковое представление IP }
+function GetStrIPAddressA(const AHostName: AnsiString): string;
+
+{** Версия операционной системы под которой запущена прога
+    @return версия операционной системы }
+function GetWinVersion: TWinVersion;

@@ -1,9 +1,7 @@
-﻿{**
-@Abstract(Некоторые часто используемые функции)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(13.03.2007)
-@LastMod(02.05.2012)
-@Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 13.03.2007
+@LastMod 04.02.2013
 }
 unit AUtils1;
 
@@ -13,44 +11,19 @@ uses
   SysUtils, Windows, WinSock,
   ATypes;
 
-{**
-  @abstract(Декодирует код OLE ошибки в текстовое представление)
-  ACode:   код ошибки
-  Result:  текстовое представление
-}
 function DecodeOleError(ACode: LongWord): string;
 
-{**
-  @abstract(Имя компьютера на котором запущена прога)
-  Result: имя компьютера
-}
 function GetCompName(): string;
 
-{**
-  @abstract(Возвращает версию файла в формате x.x.x.x)
-  AFileName: имя файла
-  Result:    версию файла
-}
+{** Return version x.x.x.x }
 function GetFileVersionString4(const AFileName: string): string;
 
-{**
-  @abstract(Возвращает строковое представление IP адреса по наименованию хоста)
-  AHostName: имя компьютера
-  Result:    строковое представление IP
-}
+{** Return string IP addres by host name }
 function GetStrIPAddress(const AHostName: string): string;
 
-{**
-  @abstract(Возвращает строковое представление IP адреса по наименованию хоста)
-  AHostName: имя компьютера
-  Result:    строковое представление IP
-}
+{** Return string IP addres by host name }
 function GetStrIPAddressA(const AHostName: AnsiString): string;
 
-{**
-  @abstract(Версия операционной системы под которой запущена прога)
-  Result: версия операционной системы
-}
 function GetWinVersion: TWinVersion;
 
 implementation

@@ -2,7 +2,7 @@
 @Abstract AUi common about dialog win
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.11.2012
-@LastMod 01.02.2013
+@LastMod 04.02.2013
 }
 unit AUiAboutDialog;
 
@@ -169,6 +169,8 @@ begin
 end;
 
 function _CreateAboutWin(Dialog: ADialog): AError;
+var
+  H: AInt;
 begin
   AboutWin.Dialog := Dialog;
   AboutWin.Window := AUiDialog_GetWindow(Dialog);
@@ -183,11 +185,12 @@ begin
   // -- ButtonsBox --
 
   AboutWin.ButtonsBox := AUiDialog_GetButtonsBox(Dialog);
+  H := AUiControl_GetClientHeight(AboutWin.Window);
 
   // -- UrlText --
 
   AboutWin.UrlText := AUiLabel_New(AboutWin.Window);
-  AUiControl_SetPosition(AboutWin.UrlText, 4, 143);
+  AUiControl_SetPosition(AboutWin.UrlText, 4, H - 16 - DialogButtonsBoxHeight);
   AUiControl_SetAnchors(AboutWin.UrlText, uiakLeft + uiakBottom);
   AUiControl_SetCursor(AboutWin.UrlText, crHandPoint);
   AUiControl_SetFontColor(AboutWin.UrlText, clBlue);
@@ -201,7 +204,7 @@ begin
   AUiControl_SetSize(AboutWin.Panel, 83, 83);
   AUiControl_SetBevel(AboutWin.Panel, AUiBevel_InnerLowered, -1);
 
-  AboutWin.Image := AUiImage_New(AboutWin.Window);
+  AboutWin.Image := AUiImage_New(AboutWin.Panel);
   AUiControl_SetPosition(AboutWin.Image, 2, 2);
   AUiControl_SetAlign(AboutWin.Image, uiAlignClient);
   AUiImage_SetCenter(AboutWin.Image, True);
@@ -224,7 +227,7 @@ begin
   AboutWin.Memo := AUiTextView_New(AboutWin.Window, 0);
   AUiControl_SetColor(AboutWin.Memo, clBtnFace);
   AUiControl_SetPosition(AboutWin.Memo, 96, 40);
-  AUiControl_SetSize(AboutWin.Memo, 250, 114);
+  AUiControl_SetSize(AboutWin.Memo, 260, 140);
   AUiTextView_SetScrollBars(AboutWin.Memo, AInt(ssVertical));
   AUiTextView_SetReadOnly(AboutWin.Memo, True);
   AUiTextView_SetWordWrap(AboutWin.Memo, True);

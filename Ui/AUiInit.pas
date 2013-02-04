@@ -2,7 +2,7 @@
 @Abstract AUi
 @Author Prof1983 <prof1983@ya.ru>
 @Created 03.09.2012
-@LastMod 30.01.2013
+@LastMod 04.02.2013
 }
 unit AUiInit;
 
@@ -41,14 +41,6 @@ begin
   Result := 0;
 end;
 
-procedure miAboutClick1(Obj, Data: AInteger); stdcall;
-begin
-  if Assigned(UiAboutClick) then
-    UiAboutClick
-  else
-    AUi_ExecuteAboutDialog();
-end;
-
 function miExitClick(Obj, Data: AInteger): AError; stdcall;
 begin
   {$IFDEF NoRuntimeEvents}
@@ -57,15 +49,6 @@ begin
   ASystem_Shutdown();
   {$ENDIF}
   Result := 0;
-end;
-
-procedure miExitClick02(Obj, Data: AInteger); stdcall;
-begin
-  {$IFDEF NoRuntimeEvents}
-  AUi_Shutdown();
-  {$ELSE}
-  ASystem_Shutdown();
-  {$ENDIF}
 end;
 
 // --- AUi ---

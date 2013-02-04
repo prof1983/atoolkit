@@ -2,7 +2,7 @@
 @Abstract AUiDialogs
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 01.02.2013
+@LastMod 04.02.2013
 }
 unit AUiDialogs;
 
@@ -298,13 +298,14 @@ begin
 
     I := Length(_DialogArray);
     SetLength(_DialogArray, I + 1);
+    _DialogArray[I].DialogId := I + 1;
     _DialogArray[I].Window := Window;
     _DialogArray[I].ButtonsBox := Box;
 
     AUiWindow_SetPosition(Window, AUiWindowPosition_OwnerFormCenter);
     if (Buttons = MB_OK) then
     begin
-      Button := AUiButton_New(Window);
+      Button := AUiButton_New(Box);
       AUiControl_SetTextP(Button, cOkText);
       AUiControl_SetPosition(Button, 5, 5);
       AUiButton_SetKind(Button, uibkOk);

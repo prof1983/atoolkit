@@ -1,8 +1,8 @@
-﻿{**
-@Abstract(Interface IProfNode implementation)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(11.04.2007)
-@LastMod(18.07.2012)
+{**
+@Abstract Interface IProfNode implementation
+@Author Prof1983 <prof1983@ya.ru>
+@Created 11.04.2007
+@LastMod 04.02.2013
 
 Uses
   @link AAttributesIntf
@@ -19,7 +19,6 @@ uses
   AAttributesIntf, AAttributesImpl, ABase, AEntityImpl, ANodeIntf;
 
 type
-  {** Реализация интерфейса IProfNode }
   TANode = class(TANamedEntity, IProfNode)
   protected
     FAttributes: IProfAttributes;
@@ -34,14 +33,14 @@ type
     property Attributes: IProfAttributes read GetAttributes;
     property ChildNodes: ANodeList read GetChildNodes;
   end;
-  TProfNode = TANode;
+  //TProfNode = TANode;
 
 implementation
 
 uses
   ANodesImpl;
 
-{ TProfNode }
+{ TANode }
 
 constructor TANode.Create();
 begin

@@ -1,8 +1,7 @@
-﻿{**
-@Abstract Базовый класс потока ввода/вывода
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 18.04.2004
-@LastMod 23.11.2012
+@LastMod 04.02.2013
 }
 unit AStreamObj;
 
@@ -12,7 +11,7 @@ uses
   Classes, SysUtils,
   ABase, AIoTypes, ATypes;
 
-type //** Поток
+type
   TProfStream = class
   private
     FOpened: Boolean;
@@ -35,7 +34,6 @@ type //** Поток
     function ReadUInt16(var Value: UInt16): AError; virtual;
     function ReadUInt32(var Value: UInt32): AError; virtual;
     function ReadUInt64(var Value: UInt64): AError; virtual;
-    //function SaveToFile(F: TProfFile): Boolean; virtual; - Use AStream_SaveToFile()
     function Seek(Offset: Int64; Mode: TStreamSeekMode): AError; virtual;
     procedure SetPosition(Value: Integer);
     procedure SetSize(Value: UInt64);
@@ -56,8 +54,7 @@ type //** Поток
     property Size: UInt64 read GetSize write SetSize;
   end;
 
-type //** Поток
-  TProfStreamAdapter = class(TProfStream) //(TStreamAdapter, IProfStream)
+  TProfStreamAdapter = class(TProfStream)
   private
     FStream: TStream{TStreamAdapter};
     FOpened: Boolean;
@@ -77,7 +74,6 @@ type //** Поток
     function ReadUInt16(var Value: UInt16): AError; override;
     function ReadUInt32(var Value: UInt32): AError; override;
     function ReadUInt64(var Value: UInt64): AError; override;
-    //function SaveToFile(F: TProfFile{TMyFile}): TError; override; - Use AStream_SaveToFile()
     function Seek(Offset: Int64; Mode: TStreamSeekMode): AError; override;
     function WriteArray(A: TArrayByte; Count: UInt64): UInt64; override;
     function WriteInt08(Value: AInt08): AError; override;
@@ -107,7 +103,6 @@ type //** Файл
     property FileName: String read FFileName write FFileName;
     procedure Free();
     function GetStream(): TProfStream;
-    //function Read(var A: TArrayByte; Count: UInt64): UInt64;
     function ReadFloat32(var Value: AFloat32): AError;
     function ReadFloat64(var Value: AFloat64): AError;
     function ReadInt08(var Value: AInt08): AError;
@@ -120,7 +115,6 @@ type //** Файл
     function ReadUInt64(var Value: UInt64): AError;
     function Open(FileName: String; Mode: TProfFileOpenMode): Boolean; virtual;
     function OpenCreate(FileName: String): AError;
-    //function Write(A: TArrayByte; Count: UInt64): UInt64;
     function WriteFloat32(Value: AFloat32): AError;
     function WriteFloat64(Value: AFloat64): AError;
     function WriteInt08(Value: AInt08): AError;
@@ -135,16 +129,6 @@ type //** Файл
     function SetStream(Value: TProfStream): AError;
   end;
 
-  //** Директория (Папка)
-  TProfFileDir = class
-  private
-    FName: String;
-  public
-    function GetName(): String;
-    function SetName(Value: String): AError;
-  end;
-
-  //** Текстовый файл
   TProfFileText = class
   private
     F: TextFile;
@@ -163,10 +147,6 @@ type //** Файл
     function WriteLn(const S: String): AError;
   end;
 
-{type //** Поток-файл
-  TProfStreamFile = TProfStream;}
-
-type //** Поток-память
   TProfMemoryStream = class(TProfStream)
   private
     FBytes: array of AUInt08;
@@ -174,7 +154,7 @@ type //** Поток-память
     function Clear(): AError; override;
     function LoadFromFileN(FileName: String): AError; override;
   end;
-  TProfStreamMemory = TProfMemoryStream;
+  //TProfStreamMemory = TProfMemoryStream;
 
 // Functions -------------------------------------------------------------------
 
@@ -288,11 +268,6 @@ end;
 function TProfFile.FileExist(FileName: String): Boolean;
 begin
   Result := SysUtils.FileExists(FileName);
-  {H := ioFileOpen(FileName, 0);
-  if (H > 0) then begin
-    ioFileClose(H);
-    Result := True;
-  end else Result := False;}
 end;
 
 procedure TProfFile.Free;
@@ -311,12 +286,6 @@ var
   Stream: TFileStream;
 begin
   Close;
-
-  {if not(Assigned(FStream)) then
-  begin
-    Result := False;
-    Exit;
-  end;}
 
   if (FileName <> '') then
     FFileName := FileName;
@@ -353,14 +322,6 @@ begin
     FFileName := FileName;
   FStream := TProfStreamAdapter.Create(TFileStream.Create(FFileName, Classes.fmCreate));
 end;
-
-{function TProfFile.Read(var A: TArrayByte; Count: UInt64): UInt64;
-begin
-  if Assigned(FStream) then
-    Result := FStream.Read(A, Count)
-  else
-    Result := 1;
-end;}
 
 function TProfFile.ReadFloat32(var Value: AFloat32): AError;
 begin
@@ -442,8 +403,7 @@ begin
     Result := -1;
 end;
 
-function TProfFile.Seek(Offset: Int64; Origin: TStreamSeekMode = Prof_soBeginning): AError;
-{(soBeginning, soCurrent, soEnd)}
+function TProfFile.Seek(Offset: Int64; Origin: TStreamSeekMode): AError;
 begin
   Result := -1;
   if not(Assigned(FStream)) then Exit;
@@ -456,14 +416,6 @@ begin
   FStream := Value;
   Result := 0;
 end;
-
-{function TProfFile.Write(A: TArrayByte; Count: UInt64): UInt64;
-begin
-  if Assigned(FStream) then
-    Result := FStream.Write(A, Count)
-  else
-    Result := False;
-end;}
 
 function TProfFile.WriteFloat32(Value: AFloat32): AError;
 begin
@@ -543,19 +495,6 @@ begin
     Result := FStream.WriteUInt64(Value)
   else
     Result := -1;
-end;
-
-{ TProfFileDir }
-
-function TProfFileDir.GetName: String;
-begin
-  Result := FName;
-end;
-
-function TProfFileDir.SetName(Value: String): AError;
-begin
-  FName := Value;
-  Result := 0;
 end;
 
 { TProfFileText }
@@ -763,29 +702,6 @@ function TProfStream.ReadUInt64(var Value: UInt64): AError;
 begin
   Result := -1;
 end;
-
-// Use AStream_SaveToFile()
-(*function TProfStream.SaveToFile(F: TProfFile): Boolean;
-{const
-  BufSize = 4096;
-var
-  Buf: TArrayByte;
-  I: Int32;
-  Size: Int32;}
-begin
-  {SetLength(Buf, BufSize);
-  Size := GetSize;
-  I := 0;
-  repeat
-    Inc(I);
-    if I * BufSize > Size then
-      SetLength(Buf, Size - (I - 1) * BufSize);
-    Read(Buf, Length(Buf));
-    F.Write(Buf, Length(Buf));
-  until I * BufSize < Size;
-  Result := True;}
-  Result := False;
-end;*)
 
 function TProfStream.Seek(Offset: Int64; Mode: TStreamSeekMode): AError;
 begin

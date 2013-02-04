@@ -1,9 +1,7 @@
-﻿{**
-@Abstract(Коллекция объектов)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(03.06.2007)
-@LastMod(27.06.2012)
-@Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 03.06.2007
+@LastMod 04.02.2013
 
 Prototype: java.lang.Collection.java 1.49 06/28/04
 }

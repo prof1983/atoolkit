@@ -1,13 +1,7 @@
-﻿{**
-@Abstract(Работа с файлом конфигураций и настроек)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(20.05.2005)
-@LastMod(03.05.2012)
-@Version(0.5)
-
-0.0.0.3 - 25.02.2006 - Format
-0.0.0.2 - 04.10.2005 - ReadFloat64, WriteFloat64
-0.0.0.1 - 20.05.2005
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 20.05.2005
+@LastMod 04.02.2013
 }
 unit AConfigObject2;
 

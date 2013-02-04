@@ -1,9 +1,8 @@
 {**
-@Abstract(Property list)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(31.08.2007)
-@LastMod(05.05.2012)
-@Version(0.5)
+@Abstract Property list
+@Author Prof1983 <prof1983@ya.ru>
+@Created 31.08.2007
+@LastMod 04.02.2014
 }
 unit APropertyList;
 

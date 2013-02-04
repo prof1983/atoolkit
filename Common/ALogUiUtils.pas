@@ -1,9 +1,8 @@
 {**
-@Abstract(At log util functions)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(09.06.2012)
-@LastMod(09.06.2012)
-@Version(0.5)
+@Abstract At log util functions
+@Author Prof1983 <prof1983@ya.ru>
+@Created 09.06.2012
+@LastMod 04.02.2013
 }
 unit ALogUiUtils;
 

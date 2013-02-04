@@ -2,7 +2,7 @@
 @Abstract AArrays
 @Author Prof1983 <prof1983@ya.ru>
 @Created 15.09.2011
-@LastMod 24.07.2012
+@LastMod 04.02.2013
 }
 unit AArrays;
 
@@ -96,12 +96,6 @@ begin
   Result := Arr.Len - 1;
 end;
 
-{procedure Array_Clear(Arr: AArray);
-begin
-  if not(Assigned(Arr)) then
-    Exit;
-  Arr^.Len := 0;
-end;}
 procedure Array_Clear(var Arr: AArray_Type);
 begin
   Arr.Len := 0;
@@ -122,15 +116,6 @@ begin
     Result := nil;
 end;
 
-{function Array_Reallocate(Arr: AArray; NewSize: AInteger): AInteger;
-begin
-  if not(Assigned(Arr)) then
-  begin
-    Result := 0;
-    Exit;
-  end;
-  Result := _Reallocate(Arr^, NewSize);
-end;}
 function Array_Reallocate(var Arr: AArray_Type; NewSize: AInteger): AInteger;
 var
   P: Pointer;

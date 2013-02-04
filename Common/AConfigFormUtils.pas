@@ -1,9 +1,7 @@
-﻿{**
-@Abstract(Конфигурации формы)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(18.03.2006)
-@LastMod(12.07.2012)
-@Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 18.03.2006
+@LastMod 04.02.2013
 }
 unit AConfigFormUtils;
 
@@ -14,37 +12,19 @@ uses
   ABase, AConfig2007, ANodeIntf, ATypes, AXmlNodeUtils, AXmlUtils;
 
 type
-  TConfigForm = class //(TProfObject)
+  TConfigForm = class
   protected
     FConfig: AConfig;
-    //FConfigNode: IProfNode;
-    //FConfigNode: TConfigNode1;
-    //FConfigNodeXml: IXmlNode;
     FForm: TForm;
   public
-      //** Загрузить конфигурации формы
     function ConfigureLoad(): WordBool;
-      //** Сохранить конфигурации формы
     function ConfigureSave(): WordBool;
   public
-    //constructor Create(AConfigDocument: IXmlDocument = nil; ANodeName: WideString = ''; AForm: TForm = nil; AAddToLog: TAddToLog = nil); overload;
-    //constructor Create(AConfigNode: IXmlNode = nil; AForm: TForm = nil; AAddToLog: TAddToLog = nil); overload;
     constructor Create(AConfigDocument: TConfigDocument = nil; ANodeName: WideString = ''; AForm: TForm = nil; AAddToLog: TAddToLog = nil); overload;
     constructor Create(AConfigNode: TConfigNode1 = nil; AForm: TForm = nil; AAddToLog: TAddToLog = nil); overload;
   public
-      //** Элемент конфигураций из которого загружать и сохранять
-    //property ConfigNode: IProfNode read FConfigNode write FConfigNode;
-      //** Элемент конфигураций из которого загружать и сохранять
-    //property ConfigNode: TConfigNode1 read FConfigNode write FConfigNode;
-      //** Элемент конфигураций из которого загружать и сохранять
-    //property ConfigNodeXml: IXmlNode read FConfigNodeXml write FConfigNodeXml;
-      //** Форма
     property Form: TForm read FForm write FForm;
   end;
-
-resourcestring // Сообщения ----------------------------------------------------
-  stLoadOk = 'Конфигурации загружены';
-  stSaveOk = 'Конфигурации созранены';
 
 {** Load from form }
 function AConfig_PullFromForm(Config: AConfig; Form: TForm): AError;
@@ -98,8 +78,7 @@ begin
       AConfig.WriteInt32('Height', AForm.Height);
     end;
     AConfig.WriteInt32('WindowState', Integer(AForm.WindowState));
-    AConfig.WriteString('Caption', AForm.Caption); // Заголовок окна
-    //AddToLog(lgGeneral, ltInformation, stSaveOk, []);
+    AConfig.WriteString('Caption', AForm.Caption);
   except
     Result := False;
   end;
@@ -118,8 +97,7 @@ begin
       TProfXmlNode.WriteIntegerA(AConfig, 'Height', AForm.Height);
     end;
     TProfXmlNode.WriteIntegerA(AConfig, 'WindowState', Integer(AForm.WindowState));
-    TProfXmlNode.WriteStringA(AConfig, 'Caption', AForm.Caption); // Заголовок окна
-    //AddToLog(lgGeneral, ltInformation, stSaveOk, []);
+    TProfXmlNode.WriteStringA(AConfig, 'Caption', AForm.Caption);
   except
     Result := False;
   end;}
@@ -139,8 +117,7 @@ begin
       ProfXmlNode_WriteInt32(AConfig, 'Height', AForm.Height);
     end;
     ProfXmlNode_WriteInt32(AConfig, 'WindowState', Integer(AForm.WindowState));
-    ProfXmlNode_WriteString(AConfig, 'Caption', AForm.Caption); // Заголовок окна
-    //AddToLog(lgGeneral, ltInformation, stSaveOk, []);
+    ProfXmlNode_WriteString(AConfig, 'Caption', AForm.Caption);
   except
     Result := False;
   end;
@@ -172,8 +149,7 @@ begin
     if AConfig.ReadInt32('Width', I) then AForm.Width := I;
     if AConfig.ReadInt32('Height', I) then AForm.Height := I;
     if AConfig.ReadInt32('WindowState', I) then AForm.WindowState := TWindowState(I);
-    if AConfig.ReadString('Caption', S) then AForm.Caption := S; // Заголовок окна
-    //AddToLog(lgGeneral, ltInformation, stLoadOk, []);
+    if AConfig.ReadString('Caption', S) then AForm.Caption := S;
   except
     Result := False;
   end;
@@ -192,8 +168,7 @@ begin
     if TProfXmlNode.ReadIntegerA(AConfig, 'Width', I) then AForm.Width := I;
     if TProfXmlNode.ReadIntegerA(AConfig, 'Height', I) then AForm.Height := I;
     if TProfXmlNode.ReadIntegerA(AConfig, 'WindowState', I) then AForm.WindowState := TWindowState(I);
-    if TProfXmlNode.ReadStringA(AConfig, 'Caption', S) then AForm.Caption := S; // Заголовок окна
-    //AddToLog(lgGeneral, ltInformation, stLoadOk, []);
+    if TProfXmlNode.ReadStringA(AConfig, 'Caption', S) then AForm.Caption := S;
   except
     Result := False;
   end;}
@@ -213,8 +188,7 @@ begin
     if ProfXmlNode_ReadInt32(AConfig, 'Width', I) then AForm.Width := I;
     if ProfXmlNode_ReadInt32(AConfig, 'Height', I) then AForm.Height := I;
     if ProfXmlNode_ReadInt32(AConfig, 'WindowState', I) then AForm.WindowState := TWindowState(I);
-    if ProfXmlNode_ReadString(AConfig, 'Caption', S) then AForm.Caption := S; // Заголовок окна
-    //AddToLog(lgGeneral, ltInformation, stLoadOk, []);
+    if ProfXmlNode_ReadString(AConfig, 'Caption', S) then AForm.Caption := S;
   except
     Result := False;
   end;
@@ -245,16 +219,6 @@ begin
     C.Free();
   end;
 end;
-(*function XmlFromFormConfig(var AXml: WideString; AForm: TForm): WordBool;
-//var
-//  c: IXmlDocument;
-begin
-  Result := False;
-  {c := IProfXmlDocument.Create();
-  Result := ConfigFromForm(c.DocumentElement, AForm);
-  AXml := c.DocumentElement.Xml;
-  c.Free();}
-end;*)
 
 function XmlToFormConfig(const AXml: WideString; AForm: TForm): WordBool;
 var
@@ -265,33 +229,17 @@ begin
   Result := (AConfig_PushToForm(C.DocumentElement, AForm) >= 0);
   C.Free();
 end;
-(*function XmlToFormConfig(const AXml: WideString; AForm: TForm): WordBool;
-//var
-//  c: TConfigDocument;
-begin
-  Result := False;
-  {c := TConfigDocument.Create();
-  c.DocumentElement.Xml := AXml;
-  Result := ConfigToForm(c.DocumentElement, AForm);
-  c.Free();}
-end;*)
 
 { TConfigForm }
 
 function TConfigForm.ConfigureLoad(): WordBool;
 begin
-  {if Assigned(FConfigNode) then
-    Result := ConfigToForm(FConfigNode, FForm)
-  else}
-    Result := (AConfig_PullFromForm(FConfig, FForm) >= 0);
+  Result := (AConfig_PullFromForm(FConfig, FForm) >= 0);
 end;
 
 function TConfigForm.ConfigureSave(): WordBool;
 begin
-  {if Assigned(FConfigNode) then
-    Result := ConfigFromForm(FConfigNode, FForm)
-  else}
-    Result := (AConfig_PushToForm(FConfig, FForm) >= 0);
+  Result := (AConfig_PushToForm(FConfig, FForm) >= 0);
 end;
 
 constructor TConfigForm.Create(AConfigDocument: TConfigDocument; ANodeName: WideString;
@@ -301,12 +249,6 @@ begin
   FConfig := AXmlNode_GetChildNodeByName(AConfigDocument.DocumentElement, ANodeName);
   FForm := AForm;
 end;
-{constructor TConfigForm.Create(AConfigDocument: IXmlDocument = nil; ANodeName: WideString = ''; AForm: TForm = nil; AAddToLog: TAddToLog = nil);
-begin
-  inherited Create();
-  FConfigNode := TProfXmlNode.GetNodeByNameA(AConfigDocument.DocumentElement, ANodeName);
-  FForm := AForm;
-end;}
 
 constructor TConfigForm.Create(AConfigNode: TConfigNode1; AForm: TForm; AAddToLog: TAddToLog);
 begin
@@ -314,11 +256,5 @@ begin
   FConfig := AConfig(AConfigNode);
   FForm := AForm;
 end;
-{constructor TConfigForm.Create(AConfigNode: IXmlNode = nil; AForm: TForm = nil; AAddToLog: TAddToLog = nil);
-begin
-  inherited Create();
-  FConfigNode := AConfigNode;
-  FForm := AForm;
-end;}
 
 end.

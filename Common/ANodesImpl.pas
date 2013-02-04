@@ -1,8 +1,7 @@
-﻿{**
-@Abstract(Узлы)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(15.04.2007)
-@LastMod(18.07.2012)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 15.04.2007
+@LastMod 04.02.2013
 }
 unit ANodesImpl;
 
@@ -11,7 +10,7 @@ interface
 uses
   ABase, AEntityImpl, ANodeIntf, ANodeImpl;
 
-type //** Узлы (Ноды)
+type
   TANodeList = class(TANamedEntity, IProfNodes)
   private
     FNodes: array of IProfNode;
@@ -34,11 +33,9 @@ type //** Узлы (Ноды)
     property NodeCount: Integer read GetNodeCount;
   end;
 
-  TProfNodes3 = TANodeList;
-
 implementation
 
-{ TProfNodes3 }
+{ TANodeList }
 
 function TANodeList.Add(Node: IProfNode): Integer;
 begin

@@ -1,9 +1,8 @@
-﻿{**
-@Abstract(UMyFile)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(?)
-@LastMod(25.04.2012)
-@Version(0.5)
+{**
+@Abstract UMyFile
+@Author Prof1983 <prof1983@ya.ru>
+@Created ?
+@LastMod 04.02.2013
 }
 unit AFileUtils;
 

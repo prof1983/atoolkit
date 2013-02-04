@@ -1,8 +1,8 @@
-﻿{**
-@Abstract(ANode functions)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(25.02.2007)
-@LastMod(18.07.2012)
+{**
+@Abstract ANode functions
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.02.2007
+@LastMod 18.07.2012
 }
 unit ANodeUtils;
 

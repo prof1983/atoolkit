@@ -1,9 +1,7 @@
-﻿{**
-@Abstract(AArrayList)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(23.09.2007)
-@LastMod(27.06.2012)
-@Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 23.09.2007
+@LastMod 04.02.2013
 
 Prototype: java.lang.ArrayList
 }
@@ -51,19 +49,13 @@ type
     function HashCode(): AInt;
   public
     function GetElementByIndex(Index: Integer): AId;
-    {** Вставить элемент }
     procedure Insert(Index: Integer; Element: TObject);
-    {** Удалить элемент из списка по индексу }
     procedure RemoveByIndex(Index: Integer);
     function ToString(): APascalString;
   public
-    {** Колличество элементов в списке }
     property Count: Integer read GetCount;
-    {** Элемент по индексу }
     property ElementByIndex[Index: Integer]: AId read GetElementByIndex;
-    {** Итератор }
     property Iterator: IAIterator read GetIterator;
-    {** Список пуст }
     property IsEmpty: Boolean read GetIsEmpty;
   end;
 

@@ -1,9 +1,7 @@
-﻿{**
-@Abstract(Универсальный контрол)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(08.11.2006)
-@LastMod(26.04.2012)
-@Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 08.11.2006
+@LastMod 04.02.2013
 }
 unit AControlEx;
 
@@ -13,12 +11,11 @@ uses
   Controls,
   AObjectEx;
 
-type //** Универсальный контрол
+type
   TProfControlEx = class(TProfObjectEx)
   protected
     FControl: TWinControl;
   public
-      //** Контрол
     property Control: TWinControl read FControl write FControl;
   end;
 

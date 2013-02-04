@@ -1,9 +1,8 @@
 {**
-@Abstract(AToolkit Iterable interface)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(07.05.2007)
-@LastMod(25.06.2012)
-@Version(0.5)
+@Abstract AToolkit Iterable interface
+@Author Prof1983 <prof1983@ya.ru>
+@Created 07.05.2007
+@LastMod 04.02.2013
 
 Prototype: java.lang.Iterable
 }
@@ -36,8 +35,6 @@ type
     {** Returns an iterator over a set of elements }
     property Iterator: IAIterator read GetIterator;
   end;
-
-  //IJavaIterable = IAIterable;
 
 implementation
 

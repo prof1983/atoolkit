@@ -1,9 +1,8 @@
 {**
-@Abstract(ACollection util functions)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(08.06.2012)
-@LastMod(08.06.2012)
-@Version(0.5)
+@Abstract ACollection util functions
+@Author Prof1983 <prof1983@ya.ru>
+@Created 08.06.2012
+@LastMod 04.02.2013
 }
 unit ACollectionUtils;
 

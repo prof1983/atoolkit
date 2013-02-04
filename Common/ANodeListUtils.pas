@@ -1,8 +1,8 @@
 {**
-@Abstract(ANodeList functions)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(18.07.2012)
-@LastMod(18.07.2012)
+@Abstract ANodeList functions
+@Author Prof1983 <prof1983@ya.ru>
+@Created 18.07.2012
+@LastMod 18.07.2012
 }
 unit ANodeListUtils;
 

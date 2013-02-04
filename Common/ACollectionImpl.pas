@@ -1,9 +1,8 @@
 {**
-@Abstract(ACollection interface implementation)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(08.06.2012)
-@LastMod(25.06.2012)
-@Version(0.5)
+@Abstract ACollection interface implementation
+@Author Prof1983 <prof1983@ya.ru>
+@Created 08.06.2012
+@LastMod 25.06.2012
 }
 unit ACollectionImpl;
 

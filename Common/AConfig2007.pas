@@ -1,8 +1,8 @@
-﻿{**
+{**
 @Abstract Configurations in XML
 @Author Prof1983 <prof1983@ya.ru>
 @Created 04.01.2006
-@LastMod 27.11.2012
+@LastMod 04.02.2013
 }
 unit AConfig2007;
 
@@ -659,7 +659,6 @@ begin
   if not(Assigned(AConfig)) or not(Assigned(AObj)) then Exit;
   //if (not FStorage.OpenKey(AReestrKey)) then
   //  Exit;
-  // Получим информацию о свойствах
   tmpTypeData := GetTypeData(AObj.ClassInfo);
   n := tmpTypeData.PropCount;
   if (n <= 0) then Exit;

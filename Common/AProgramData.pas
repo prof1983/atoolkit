@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 18.12.2012
-@LastMod 19.12.2012
+@LastMod 04.02.2013
 }
 unit AProgramData;
 
@@ -18,10 +18,6 @@ var
   FDependencies: WideString;
   FExeFullName: WideString;
   FFileVersionInfo: TFileVersionInfoA;
-  //FMaxClientAccount: Integer;
-  //FObjectGlobalId: Integer;
-  //FObjectOwnerName: WideString;
-  //FOrgOwnerName: WideString;
   FProgramDescription: WideString;
   FProgramId: LongWord;
   FProgramIdStr: WideString;

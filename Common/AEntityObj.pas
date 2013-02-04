@@ -1,9 +1,7 @@
-﻿{**
-@Abstract(Сущность)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(11.05.2007)
-@LastMod(21.06.2012)
-@Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 11.05.2007
+@LastMod 04.02.2013
 }
 unit AEntityObj;
 
@@ -20,15 +18,13 @@ type
   public
     constructor Create(EntityId, EntityType: TAId);
   public
-    // TODO: Убрать "write FEntityId"
     property EntityId: TAId read FEntityId write FEntityId;
     property EntityType: TAId read FEntityType;
   end;
-  //TAEntity = TAEntityObject;
 
 implementation
 
-{ TAEntity }
+{ TAEntityObject }
 
 constructor TAEntityObject.Create(EntityId, EntityType: TAId);
 begin

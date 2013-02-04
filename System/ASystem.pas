@@ -2,16 +2,13 @@
 @Abstract ASystem function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.08.2009
-@LastMod 12.12.2012
+@LastMod 01.02.2013
 }
 unit ASystem;
 
 {DEFINE NoRuntimeConfig}
 
 {$I Defines.inc}
-
-{DEFINE A01}
-{DEFINE A02}
 
 {$IFDEF UNIX}
   {$DEFINE NoRuntimeSysUtils}
@@ -49,7 +46,12 @@ uses
   {$IFDEF USE_EVENTS}ASystemEvents,{$ENDIF}
   ABase, ABaseTypes, ABaseUtils,
   {$IFDEF USE_RUNTIME}ARuntime,{$ENDIF}
-  AStrings, ASystemData, ASystemMain, ASystemPrepare, ASystemResourceString, ASystemUtils;
+  AStringMain,
+  ASystemData,
+  ASystemMain,
+  ASystemPrepare,
+  ASystemResourceString,
+  ASystemUtils;
 
 // --- Info functions ---
 
@@ -239,6 +241,8 @@ function Config(): AConfig; stdcall; deprecated; // Use GetConfig()
 
 function FileTextClose(FileID: AInteger): AError; stdcall;
 function FileTextEof(FileID: AInteger): ABoolean; stdcall;
+function FileTextGetIndex(FileID: AInt): AInt; stdcall;
+function FileTextOpenP(const FileName: APascalString): AInt; stdcall;
 function FileTextOpenWS(const FileName: AWideString): AInteger; stdcall;
 function FileTextReadLnAnsi(FileID: AInteger; var Stroka: AnsiString): AError; stdcall;
 
@@ -252,11 +256,7 @@ function ParamStrWS(Index: AInteger): AWideString; stdcall;
 
 function ProcessMessages(): AError; stdcall;
 
-procedure ProcessMessages02(); stdcall;
-
 function ShowMessage(const Msg: AString_Type): ADialogBoxCommands; stdcall;
-
-function ShowMessage02(const Msg: AWideString): ADialogBoxCommands; stdcall;
 
 function ShowMessage2P(const Text, Caption: APascalString; Flags: AMessageBoxFlags
     ): ADialogBoxCommands; stdcall; deprecated; // Use ShowMessageExP()
@@ -269,30 +269,18 @@ function ShowMessageExA(const Text, Caption: PAnsiChar; Flags: AMessageBoxFlags)
 
 function ShowMessageExP(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 
-function ShowMessageExWS(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
-
 function ShowMessageP(const Msg: APascalString): ADialogBoxCommands; stdcall;
-
-function ShowMessageWS(const Msg: AWideString): ADialogBoxCommands; stdcall;
 
 function SetDataDirectoryPathP(const DataDir: APascalString): AError; stdcall;
 
-function SetDataDirectoryPathWS(const DataDir: AWideString): AError; stdcall;
-
 procedure SetOnProcessMessages(Value: AProc); stdcall;
-procedure SetOnProcessMessages02(Value: AProc02); stdcall;
-procedure SetOnProcessMessages03(Value: AProc03); stdcall;
-procedure SetOnShowError(Value: TAShowErrorWSProc); stdcall;
-procedure SetOnShowMessage(Value: TAShowMessageWSProc); stdcall;
 
 {$IFDEF USE_EVENTS}
 function OnAfterRun: AEvent; stdcall;
 function OnBeforeRun: AEvent; stdcall;
 function OnAfterRun_Connect(Callback: ACallbackProc; Weight: AInteger = High(AInteger)): Integer; stdcall;
-{$IFDEF A02}function OnAfterRun_Connect02(Callback: ACallbackProc02; Weight: AInteger): Integer; stdcall;{$ENDIF}
 function OnAfterRun_Disconnect(Callback: ACallbackProc): AInteger; stdcall;
 function OnBeforeRun_Connect(Callback: ACallbackProc; Weight: AInteger = High(AInteger)): AInteger; stdcall;
-{$IFDEF A02}function OnBeforeRun_Connect02(Callback: ACallbackProc02; Weight: AInteger = High(AInteger)): AInteger; stdcall;{$ENDIF}
 function OnBeforeRun_Disconnect(Callback: ACallbackProc): AInteger; stdcall;
 {$ENDIF USE_EVENTS}
 
@@ -317,11 +305,6 @@ function Prepare2P(const Title, ProgramName: APascalString; ProgramVersion: AVer
     const ProductName: APascalString; ProductVersion: AVersion;
     const CompanyName, Copyright, Url, Description, DataPath: APascalString): AError; stdcall;
 
-// Prepare system.
-procedure Prepare2WS(const Title, ProgramName: AWideString; ProgramVersion: AVersion;
-    const ProductName: AWideString; ProductVersion: AVersion;
-    const CompanyName, Copyright, Url, Description, DataPath: AWideString); stdcall;
-
 {** Prepare system }
 function Prepare3A(Title, ProgramName: AStr; ProgramVersion: AVersion;
     ProductName: AStr; ProductVersion: AVersion;
@@ -331,11 +314,6 @@ function Prepare3A(Title, ProgramName: AStr; ProgramVersion: AVersion;
 function Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
     const ProductName: APascalString; ProductVersion: AVersion;
     const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString): AError; stdcall;
-
-// Prepare system.
-function Prepare3WS(const Title, ProgramName: AWideString; ProgramVersion: AVersion;
-    const ProductName: AWideString; ProductVersion: AVersion;
-    const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: AWideString): AError; stdcall;
 
 {** Prepare system }
 function Prepare4A(Title, ProgramName: AStr; ProgramVersion: AVersion;
@@ -347,22 +325,11 @@ function Prepare4P(const Title, ProgramName: APascalString; ProgramVersion: AVer
     const ProductName: APascalString; ProductVersion: AVersion;
     const CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath: APascalString): AError; stdcall;
 
-// Prepare system.
-procedure Prepare4P_Old(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
-    const ProductName: APascalString; ProductVersion: AVersion;
-    const CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath: APascalString); stdcall;
-
-// Initialise system.
+{** Initialise system }
 function Init(): AError; stdcall;
 
-// Initialise system.
-function Init03(): AInteger; stdcall;
-
-// Done system.
-function Done(): AError; stdcall;
-
-// Done system.
-function Done03(): AInteger; stdcall;
+{** Finalize system }
+function Fin(): AError; stdcall;
 
 // Initialise system config file (ini).
 function InitConfig(): AInteger; stdcall;
@@ -395,8 +362,6 @@ function GetExePath(out Value: AString_Type): AInteger; stdcall;
 
 function GetExePathP(): APascalString; stdcall; deprecated; // Use GetDirectoryPathP()
 
-function GetExePathWS(): AWideString; stdcall;
-
 function GetProductName(): APascalString; stdcall; //deprecated;
 
 function GetProductVersion(): APascalString; stdcall; //deprecated;
@@ -409,17 +374,9 @@ function GetExeNameWS(): AWideString; stdcall;
     Prototype: System.Application.Info.AssemblyName }
 function GetProgramName(): APascalString; stdcall; deprecated; // Use GetProgramNameWS
 
-{** Gets the name, without the extension, of the assembly file for the application.
-    Prototype: System.Application.Info.AssemblyName }
-function GetProgramNameWS(): AWideString; stdcall;
-
 function GetProgramVersion(): APascalString; stdcall; deprecated;
 
-function GetProgramVersionWS(): AWideString; stdcall;
-
 function GetTitle(): APascalString; stdcall; deprecated; // Use Info_GetTitleWS()
-
-function GetTitleWS(): AWideString; stdcall;
 
 function GetUrl(): APascalString; stdcall; deprecated;
 
@@ -429,8 +386,6 @@ function GetDataPath: APascalString; stdcall; //deprecated; // Use GetDataDirect
 
 function GetResourceString(const Section, Name, Default: AString_Type;
     out Value: AString_Type): AInteger; stdcall;
-
-function GetResourceStringWS(const Section, Name, Default: AWideString): AWideString; stdcall;
 
 function Runtime_GetCompanyName(): APascalString; stdcall; deprecated;
 function Runtime_GetCopyright(): APascalString; stdcall; deprecated;
@@ -455,11 +410,7 @@ function ShellExecute(const Operation, FileName, Parameters, Directory: AString_
 
 function ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
 
-function ShellExecuteWS(const Operation, FileName, Parameters, Directory: AWideString): AInteger; stdcall;
-
 function ShowError(const UserMessage, ExceptMessage: AString_Type): AError; stdcall;
-
-procedure ShowError02(const UserMessage, ExceptMessage: AWideString); stdcall;
 
 {$IFDEF USE_RUNTIME}
 procedure Shutdown(); stdcall;
@@ -501,16 +452,6 @@ begin
   Result := -1;
 end;
 
-{ Events }
-
-function DoShowMessage(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
-begin
-  if (Length(Caption) <= 0) then
-    Result := Windows.MessageBox(0, PChar(string(Text)), PChar(string(FTitle)), Flags)
-  else
-    Result := Windows.MessageBox(0, PChar(string(Text)), PChar(string(Caption)), Flags);
-end;
-
 { Info }
 
 function Info_CompanyName: APascalString; stdcall;
@@ -545,7 +486,7 @@ end;
 
 function Info_GetCompanyName(out Value: AString_Type): AInteger; stdcall;
 begin
-  Result := AStrings.String_AssignP(Value, FCompanyName);
+  Result := AString_AssignP(Value, FCompanyName);
 end;
 
 function Info_GetCompanyNameP: APascalString; stdcall;
@@ -560,12 +501,12 @@ end;
 
 function Info_GetCommentsWS(): AWideString; stdcall;
 begin
-  Result := FComments;
+  Result := ASystem_GetCommentsP();
 end;
 
 function Info_GetCopyright(out Value: AString_Type): AInteger; stdcall;
 begin
-  Result := AStrings.String_AssignP(Value, FCopyright);
+  Result := AString_AssignP(Value, FCopyright);
 end;
 
 function Info_GetCopyrightP: APascalString; stdcall;
@@ -590,7 +531,7 @@ end;
 
 function Info_GetDescription(out Value: AString_Type): AInteger; stdcall;
 begin
-  Result := AStrings.String_AssignP(Value, FDescription);
+  Result := AString_AssignP(Value, FDescription);
 end;
 
 function Info_GetDescriptionP: APascalString; stdcall;
@@ -605,7 +546,7 @@ end;
 
 function Info_GetDirectoryPath(out Value: AString_Type): AInteger; stdcall;
 begin
-  Result := AStrings.String_AssignP(Value, FExePath);
+  Result := AString_AssignP(Value, FExePath);
 end;
 
 function Info_GetDirectoryPathP: APascalString; stdcall;
@@ -620,7 +561,7 @@ end;
 
 function Info_GetProductName(out Value: AString_Type): AInteger; stdcall;
 begin
-  Result := AStrings.String_AssignP(Value, FProductName);
+  Result := AString_AssignP(Value, FProductName);
 end;
 
 function Info_GetProductNameP: APascalString; stdcall;
@@ -650,7 +591,7 @@ end;
 
 function Info_GetProgramName(out Value: AString_Type): AInteger; stdcall;
 begin
-  Result := AStrings.String_AssignP(Value, FProgramName);
+  Result := AString_AssignP(Value, FProgramName);
 end;
 
 function Info_GetProgramNameP: APascalString; stdcall;
@@ -680,7 +621,7 @@ end;
 
 function Info_GetTitle(out Value: AString_Type): AInteger; stdcall;
 begin
-  Result := AStrings.String_AssignP(Value, FTitle);
+  Result := AString_AssignP(Value, FTitle);
 end;
 
 function Info_GetTitleP: APascalString; stdcall;
@@ -695,7 +636,7 @@ end;
 
 function Info_GetUrl(out Value: AString_Type): AInteger; stdcall;
 begin
-  Result := AStrings.String_AssignP(Value, FUrl);
+  Result := AString_AssignP(Value, FUrl);
 end;
 
 function Info_GetUrlP: APascalString; stdcall;
@@ -755,60 +696,42 @@ begin
 end;
 
 {$IFDEF USE_EVENTS}
-function OnAfterRun: AEvent; stdcall;
+function OnAfterRun(): AEvent;
 begin
   Result := FOnAfterRunEvent;
 end;
 {$ENDIF USE_EVENTS}
 
 {$IFDEF USE_EVENTS}
-function OnAfterRun_Connect(Callback: ACallbackProc; Weight: AInteger): Integer; stdcall;
+function OnAfterRun_Connect(Callback: ACallbackProc; Weight: AInt): AInt;
 begin
   Result := ASystem_OnAfterRun_Connect(Callback, Weight);
 end;
 {$ENDIF USE_EVENTS}
 
 {$IFDEF USE_EVENTS}
-{$IFDEF A02}
-function OnAfterRun_Connect02(Callback: ACallbackProc02; Weight: AInteger): Integer; stdcall;
-begin
-  Result := AEvents.Event_Connect(FOnAfterRunEvent, Callback, Weight);
-end;
-{$ENDIF A02}
-{$ENDIF USE_EVENTS}
-
-{$IFDEF USE_EVENTS}
-function OnAfterRun_Disconnect(Callback: ACallbackProc): Integer; stdcall;
+function OnAfterRun_Disconnect(Callback: ACallbackProc): AInt;
 begin
   Result := ASystem_OnAfterRun_Disconnect(Callback);
 end;
 {$ENDIF USE_EVENTS}
 
 {$IFDEF USE_EVENTS}
-function OnBeforeRun: AEvent; stdcall;
+function OnBeforeRun(): AEvent;
 begin
   Result := FOnBeforeRunEvent;
 end;
 {$ENDIF USE_EVENTS}
 
 {$IFDEF USE_EVENTS}
-function OnBeforeRun_Connect(Callback: ACallbackProc; Weight: AInteger = High(AInteger)): AInteger; stdcall;
+function OnBeforeRun_Connect(Callback: ACallbackProc; Weight: AInt): AInt;
 begin
   Result := ASystem_OnBeforeRun_Connect(Callback, Weight);
 end;
 {$ENDIF USE_EVENTS}
 
 {$IFDEF USE_EVENTS}
-{$IFDEF A02}
-function OnBeforeRun_Connect02(Callback: ACallbackProc02; Weight: AInteger = High(AInteger)): AInteger; stdcall;
-begin
-  Result := AEvents.Event_Connect(FOnBeforeRunEvent, Callback, Weight);
-end;
-{$ENDIF A02}
-{$ENDIF USE_EVENTS}
-
-{$IFDEF USE_EVENTS}
-function OnBeforeRun_Disconnect(Callback: ACallbackProc): Integer; stdcall;
+function OnBeforeRun_Disconnect(Callback: ACallbackProc): AInt;
 begin
   Result := ASystem_OnBeforeRun_Disconnect(Callback);
 end;
@@ -816,7 +739,7 @@ end;
 
 { System public procs }
 
-function Config: AConfig; stdcall;
+function Config(): AConfig;
 begin
   Result := FConfig;
 end;
@@ -838,12 +761,7 @@ end;
 
 function Prepare(): AError;
 begin
-  try
-    Prepare1();
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := ASystem_Prepare();
 end;
 
 procedure Prepare1(); stdcall;
@@ -853,20 +771,20 @@ end;
 
 function Prepare2(const Title, ProgramName: AString_Type; ProgramVersion: AVersion;
     const ProductName: AString_Type; ProductVersion: AVersion;
-    const CompanyName, Copyright, Url, Description, DataPath: AString_Type): AError; stdcall;
+    const CompanyName, Copyright, Url, Description, DataPath: AString_Type): AError;
 begin
   try
     Prepare2P(
-        AStrings.String_ToWideString(Title),
-        AStrings.String_ToWideString(ProgramName),
+        AString_ToPascalString(Title),
+        AString_ToPascalString(ProgramName),
         ProgramVersion,
-        AStrings.String_ToWideString(ProductName),
+        AString_ToPascalString(ProductName),
         ProductVersion,
-        AStrings.String_ToWideString(CompanyName),
-        AStrings.String_ToWideString(Copyright),
-        AStrings.String_ToWideString(Url),
-        AStrings.String_ToWideString(Description),
-        AStrings.String_ToWideString(DataPath));
+        AString_ToPascalString(CompanyName),
+        AString_ToPascalString(Copyright),
+        AString_ToPascalString(Url),
+        AString_ToPascalString(Description),
+        AString_ToPascalString(DataPath));
     Result := 0;
   except
     Result := -1;
@@ -875,7 +793,7 @@ end;
 
 function Prepare2A(Title, ProgramName: PAnsiChar; ProgramVersion: AVersion;
     ProductName: PAnsiChar; ProductVersion: AVersion;
-    CompanyName, Copyright, Url, Description, DataPath: PAnsiChar): AError; stdcall;
+    CompanyName, Copyright, Url, Description, DataPath: PAnsiChar): AError;
 begin
   try
     Prepare2P(
@@ -897,17 +815,9 @@ end;
 
 function Prepare2P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
     const ProductName: APascalString; ProductVersion: AVersion;
-    const CompanyName, Copyright, Url, Description, DataPath: APascalString): AError; stdcall;
+    const CompanyName, Copyright, Url, Description, DataPath: APascalString): AError;
 begin
-  Result := Prepare3WS(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
-      CompanyName, Copyright, Url, Description, DataPath, '');
-end;
-
-procedure Prepare2WS(const Title, ProgramName: AWideString; ProgramVersion: AVersion;
-    const ProductName: AWideString; ProductVersion: AVersion;
-    const CompanyName, Copyright, Url, Description, DataPath: AWideString); stdcall;
-begin
-  Prepare3WS(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
+  Result := ASystem_Prepare3P(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
       CompanyName, Copyright, Url, Description, DataPath, '');
 end;
 
@@ -915,7 +825,7 @@ function Prepare3A(Title, ProgramName: AStr; ProgramVersion: AVersion;
     ProductName: AStr; ProductVersion: AVersion;
     CompanyName, Copyright, Url, Description, DataPath, ConfigPath: AStr): AError;
 begin
-  Result := Prepare3P(AnsiString(Title), AnsiString(ProgramName), ProgramVersion,
+  Result := ASyStem_Prepare3P(AnsiString(Title), AnsiString(ProgramName), ProgramVersion,
       AnsiString(ProductName), ProductVersion,
       AnsiString(CompanyName), AnsiString(Copyright),
       AnsiString(Url), AnsiString(Description),
@@ -924,32 +834,10 @@ end;
 
 function Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
     const ProductName: APascalString; ProductVersion: AVersion;
-    const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString): AError; stdcall;
+    const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString): AError;
 begin
-  Result := Prepare3WS(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
+  Result := ASystem_Prepare3P(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
       CompanyName, Copyright, Url, Description, DataPath, ConfigPath);
-end;
-
-function Prepare3WS(const Title, ProgramName: AWideString; ProgramVersion: AVersion;
-    const ProductName: AWideString; ProductVersion: AVersion;
-    const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: AWideString): AError; stdcall;
-var
-  R: AError;
-begin
-  SetOnShowMessage(DoShowMessage);
-  {$IFDEF USE_EVENTS}
-  R := ASystemEvents_Init();
-  if (R < 0) then
-  begin
-    Result := R;
-    Exit;
-  end;
-  {$ENDIF USE_EVENTS}
-
-  System_Prepare(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
-      CompanyName, Copyright, Url, Description, '', DataPath, ConfigPath);
-
-  Result := 0;
 end;
 
 function Prepare4A(Title, ProgramName: AStr; ProgramVersion: AVersion;
@@ -976,25 +864,7 @@ begin
   Result := 0;
 end;
 
-procedure Prepare4P_Old(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
-    const ProductName: APascalString; ProductVersion: AVersion;
-    const CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath: APascalString); stdcall;
-begin
-  Prepare4P(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
-      CompanyName, Copyright, Url, Description, Comments, DataPath, ConfigPath);
-end;
-
-function Done(): AError; stdcall;
-begin
-  Result := ASystem_Fin();
-end;
-
-function Done03(): AInteger; stdcall;
-begin
-  Result := ASystem_Fin();
-end;
-
-function DoneConfig: AInteger; stdcall;
+function DoneConfig(): AInt;
 begin
   {$IFDEF USE_CONFIG}
   System_DoneConfig;
@@ -1002,193 +872,76 @@ begin
   Result := 0;
 end;
 
-function ProcessMessages(): AError; stdcall;
+function Fin(): AError;
+begin
+  Result := ASystem_Fin();
+end;
+
+function ProcessMessages(): AError;
 begin
   Result := ASystem_ProcessMessages();
 end;
 
-procedure ProcessMessages02(); stdcall;
+{ --- }
+
+function FileTextClose(FileID: AInt): AError;
 begin
-  ASystem_ProcessMessages();
+  Result := ASystem_FileTextClose(FileId);
+end;
+
+function FileTextEof(FileID: AInt): ABool;
+begin
+  Result := ASystem_FileTextEof(FileId);
+end;
+
+function FileTextGetIndex(FileID: AInt): AInt;
+begin
+  Result := ASystem_FileTextGetIndex(FileId);
+end;
+
+function FileTextOpenP(const FileName: APascalString): AInt;
+begin
+  Result := ASystem_FileTextOpenP(FileName);
+end;
+
+function FileTextOpenWS(const FileName: AWideString): AInt;
+begin
+  Result := ASystem_FileTextOpenP(FileName);
+end;
+
+function FileTextReadLnAnsi(FileID: AInt; var Stroka: AnsiString): AError;
+begin
+  Result := ASystem_FileTextReadLnAnsi(FileId, Stroka);
 end;
 
 { --- }
 
-function FileTextClose(FileID: AInteger): AError; stdcall;
-var
-  I: Integer;
+function GetCompanyName(): APascalString;
 begin
-  try
-    I := _FileText_GetIndex(FileID);
-    if (I < 0) then
-    begin
-      Result := -2;
-      Exit;
-    end;
-    {$I-}CloseFile(FTextFiles[I].F);{$I+}
-
-    if (I < High(FTextFiles)) then
-      FTextFiles[I] := FTextFiles[High(FTextFiles)];
-    SetLength(FTextFiles, High(FTextFiles));
-
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := ASystem_GetCompanyNameP();
 end;
 
-function FileTextEof(FileID: AInteger): ABoolean; stdcall;
-var
-  I: Integer;
-  Value: Boolean;
-begin
-  try
-    I := _FileText_GetIndex(FileID);
-    if (I < 0) then
-    begin
-      Result := True;
-      Exit;
-    end;
-
-    {$I-}Value := Eof(FTextFiles[I].F);{$I+}
-    if (IOResult() <> 0) then
-    begin
-      Result := True;
-      Exit;
-    end
-    else
-      Result := Value;
-  except
-    Result := True;
-  end;
-end;
-
-function FileTextGetIndex(FileID: AInteger): Integer; stdcall;
-begin
-  try
-    Result := _FileText_GetIndex(FileID);
-  except
-    Result := -1;
-  end;
-end;
-
-function FileTextOpenWS(const FileName: AWideString): AInteger; stdcall;
-var
-  I: Integer;
-  J: Integer;
-  Max: Integer;
-begin
-  I := Length(FTextFiles);
-  SetLength(FTextFiles, I + 1);
-  FTextFiles[I].ID := 0;
-  try
-    AssignFile(FTextFiles[I].F, FileName);
-    {$I-}Reset(FTextFiles[I].F);{$I+}
-    if (IOResult() <> 0) then
-    begin
-      {$I-}Reset(FTextFiles[I].F);{$I+}
-      if (IOResult() <> 0) then
-      begin
-        Result := -2;
-        Exit;
-      end;
-    end;
-
-    Max := 0;
-    for J := 0 to High(FTextFiles)-1 do
-    begin
-      if (FTextFiles[J].ID > Max) then
-        Max := FTextFiles[J].ID;
-    end;
-
-    FTextFiles[I].ID := Max + 1;
-
-    Result := Max + 1;
-  except
-    Result := -1;
-  end;
-  (*I := Length(FTextFiles);
-  try
-    AssignFile(F, FileName);
-    {$I-}Reset(F);{$I+}
-    if (IOResult() <> 0) then
-    begin
-      {$I-}Reset(F);{$I+}
-      if (IOResult() <> 0) then
-      begin
-        Result := -2;
-        Exit;
-      end;
-    end;
-
-    Max := 0;
-    for J := 0 to High(FTextFiles) do
-    begin
-      if (FTextFiles[J].ID > Max) then
-        Max := FTextFiles[J].ID;
-    end;
-
-    SetLength(FTextFiles, I + 1);
-    FTextFiles[I].ID := Max + 1;
-    FTextFiles[I].F := F;
-
-    Result := Max + 1;
-  except
-    Result := -1;
-  end;*)
-end;
-
-function FileTextReadLnAnsi(FileID: AInteger; var Stroka: AnsiString): AError; stdcall;
-var
-  I: Integer;
-begin
-  try
-    I := _FileText_GetIndex(FileID);
-    if (I < 0) then
-    begin
-      Result := -2;
-      Exit;
-    end;
-    {$I-}ReadLn(FTextFiles[I].F, Stroka);{$I+}
-    if (IOResult() <> 0) then
-    begin
-      Result := -3;
-      Exit;
-    end;
-    Result := 0;
-  except
-    Result := -1;
-  end;
-end;
-
-{ --- }
-
-function GetCompanyName(): APascalString; stdcall;
-begin
-  Result := FCompanyName;
-end;
-
-function GetConfig(): AConfig; stdcall;
+function GetConfig(): AConfig;
 begin
   Result := FConfig;
 end;
 
-function GetCopyright(): APascalString; stdcall;
+function GetCopyright(): APascalString;
 begin
-  Result := FCopyright;
+  Result := ASystem_GetCopyrightP();
 end;
 
-function GetDataDirectoryPathWS(): APascalString; stdcall;
-begin
-  Result := FDataPath;
-end;
-
-function GetDataPath(): APascalString; stdcall;
+function GetDataDirectoryPathWS(): APascalString;
 begin
   Result := FDataPath;
 end;
 
-function GetDescription(): AWideString; stdcall;
+function GetDataPath(): APascalString;
+begin
+  Result := FDataPath;
+end;
+
+function GetDescription(): AWideString;
 begin
   Result := FDescription;
 end;
@@ -1203,19 +956,19 @@ begin
   Result := FExePath;
 end;
 
-function GetExeName(): APascalString; stdcall;
+function GetExeName(): APascalString;
 begin
   Result := FExeName;
 end;
 
-function GetExeNameWS(): AWideString; stdcall;
+function GetExeNameWS(): AWideString;
 begin
   Result := FExeName;
 end;
 
 function GetExePath(out Value: AString_Type): AInteger;
 begin
-  Result := AStrings.String_AssignP(Value, FExePath);
+  Result := AString_AssignP(Value, FExePath);
 end;
 
 function GetExePathP(): APascalString;
@@ -1223,71 +976,46 @@ begin
   Result := FExePath;
 end;
 
-function GetExePathWS(): AWideString; stdcall;
-begin
-  Result := FExePath;
-end;
-
 {$IFDEF USE_RUNTIME}
-function GetIsShutdown(): ABoolean; stdcall;
+function GetIsShutdown(): ABoolean;
 begin
   Result := ARuntime.GetIsShutdown;
 end;
 {$ENDIF USE_RUNTIME}
 
-function GetProductName(): APascalString; stdcall;
+function GetProductName(): APascalString;
 begin
-  Result := FProductName;
+  Result := ASystem_GetProductNameP();
 end;
 
-function GetProductVersion(): APascalString; stdcall;
+function GetProductVersion(): APascalString;
 begin
-  Result := FProductVersionStr;
+  Result := ASystem_GetProductVersionStrP();
 end;
 
-function GetProgramName(): APascalString; stdcall;
-begin
-  Result := FProgramName;
-end;
-
-function GetProgramNameWS(): AWideString; stdcall;
+function GetProgramName(): APascalString;
 begin
   Result := FProgramName;
 end;
 
-function GetProgramVersion(): APascalString; stdcall;
+function GetProgramVersion(): APascalString;
 begin
-  Result := FProgramVersionStr;
+  Result := ASystem_GetProgramVersionStrP();
 end;
 
-function GetProgramVersionWS(): AWideString; stdcall;
-begin
-  Result := FProgramVersionStr;
-end;
-
-function GetResourceString(const Section, Name, Default: AString_Type; out Value: AString_Type): AInteger; stdcall;
+function GetResourceString(const Section, Name, Default: AString_Type; out Value: AString_Type): AInt;
 begin
   Result := ASystem_GetResourceString(Section, Name, Default, Value);
 end;
 
-function GetResourceStringWS(const Section, Name, Default: AWideString): AWideString; stdcall;
-begin
-  Result := ASystem_GetResourceStringP(Section, Name, Default);
-end;
-
-function GetTitle(): APascalString; stdcall;
+function GetTitle(): APascalString;
 begin
   Result := ASystem_GetTitleP();
 end;
 
-function GetTitleWS(): AWideString; stdcall;
+function GetUrl(): APascalString;
 begin
-  Result := FTitle;
-end;
-
-function GetUrl(): APascalString; stdcall;
-begin
-  Result := FUrl;
+  Result := ASystem_GetUrlP();
 end;
 
 { Runtime }
@@ -1362,11 +1090,6 @@ begin
   Result := ASystem_Init();
 end;
 
-function Init03(): AInteger; stdcall;
-begin
-  Result := ASystem_Init();
-end;
-
 function InitConfig(): AInteger; stdcall;
 begin
   {$IFDEF USE_CONFIG}
@@ -1392,139 +1115,76 @@ end;
 
 function Runtime_ShowMessage(const Msg: AWideString): ADialogBoxCommands; stdcall;
 begin
-  Result := ASystem_ShowMessageWS(Msg);
+  Result := ASystem_ShowMessageP(Msg);
 end;
 
 function Runtime_ShowMessageA(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 begin
-  Result := ASystem_ShowMessageExWS(Text, Caption, Flags);
+  Result := ASystem_ShowMessageExP(Text, Caption, Flags);
 end;
 
-function SetDataDirectoryPathP(const DataDir: APascalString): AError; stdcall;
+function SetDataDirectoryPathP(const DataDir: APascalString): AError;
 begin
-  FDataPath := DataDir;
-  Result := 0;
+  Result := ASystem_SetDataDirectoryPathP(DataDir);
 end;
 
-function SetDataDirectoryPathWS(const DataDir: AWideString): AError; stdcall;
+procedure SetOnProcessMessages(Value: AProc);
 begin
-  FDataPath := DataDir;
-  Result := 0;
+  FOnProcessMessages := Value;
 end;
 
-procedure SetOnProcessMessages(Value: AProc); stdcall;
-begin
-  {$IFDEF A02}
-  FOnProcessMessages02 := Value;
-  {$ELSE}
-  FOnProcessMessages03 := Value;
-  {$ENDIF}
-end;
-
-procedure SetOnProcessMessages02(Value: AProc02); stdcall;
-begin
-  FOnProcessMessages02 := Value;
-end;
-
-procedure SetOnProcessMessages03(Value: AProc03); stdcall;
-begin
-  FOnProcessMessages03 := Value;
-end;
-
-procedure SetOnShowError(Value: TAShowErrorWSProc); stdcall;
-begin
-  FOnShowErrorWS := Value;
-end;
-
-procedure SetOnShowMessage(Value: TAShowMessageWSProc); stdcall;
-begin
-  ASystem_SetOnShowMessageWS(Value);
-end;
-
-function ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; stdcall;
+function ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger;
 begin
   Result := ASystem_ShellExecute(Operation, FileName, Parameters, Directory);
 end;
 
-function ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
+function ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger;
 begin
   Result := ASystem_ShellExecuteP(Operation, FileName, Parameters, Directory);
 end;
 
-function ShellExecuteWS(const Operation, FileName, Parameters, Directory: AWideString): AInteger; stdcall;
-begin
-  {IFNDEF UNIX}
-  Result := ShellExecuteA(0,
-      PAnsiChar(AnsiString(Operation)),
-      PAnsiChar(AnsiString(FileName)),
-      PAnsiChar(AnsiString(Parameters)),
-      PAnsiChar(AnsiString(Directory)),
-      SW_SHOW);
-  {ENDIF}
-end;
-
-function ShowError(const UserMessage, ExceptMessage: AString_Type): AError; stdcall;
+function ShowError(const UserMessage, ExceptMessage: AString_Type): AError;
 begin
   Result := ASystem_ShowError(UserMessage, ExceptMessage);
 end;
 
-procedure ShowError02(const UserMessage, ExceptMessage: AWideString); stdcall;
-begin
-  ASystem_ShowErrorP(UserMessage, ExceptMessage);
-end;
-
-function ShowMessage(const Msg: AString_Type): ADialogBoxCommands; stdcall;
+function ShowMessage(const Msg: AString_Type): ADialogBoxCommands;
 begin
   Result := ASystem_ShowMessage(Msg);
 end;
 
-function ShowMessage02(const Msg: AWideString): ADialogBoxCommands; stdcall;
-begin
-  Result := ASystem_ShowMessageWS(Msg);
-end;
-
-function ShowMessage2P(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+function ShowMessage2P(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands;
 begin
   Result := ASystem_ShowMessageExP(Text, Caption, Flags);
 end;
 
-function ShowMessageA(const Msg: PAnsiChar): ADialogBoxCommands; stdcall;
+function ShowMessageA(const Msg: PAnsiChar): ADialogBoxCommands;
 begin
   Result := ASystem_ShowMessageA(Msg);
 end;
 
-function ShowMessageEx(const Text, Caption: AString_Type; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+function ShowMessageEx(const Text, Caption: AString_Type; Flags: AMessageBoxFlags): ADialogBoxCommands;
 begin
   Result := ASystem_ShowMessageEx(Text, Caption, Flags);
 end;
 
-function ShowMessageExA(const Text, Caption: PAnsiChar; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+function ShowMessageExA(const Text, Caption: PAnsiChar; Flags: AMessageBoxFlags): ADialogBoxCommands;
 begin
   Result := ASystem_ShowMessageExA(Text, Caption, Flags);
 end;
 
-function ShowMessageExP(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+function ShowMessageExP(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands;
 begin
   Result := ASystem_ShowMessageExP(Text, Caption, Flags);
 end;
 
-function ShowMessageExWS(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
-begin
-  Result := ASystem_ShowMessageExWS(Text, Caption, Flags);
-end;
-
-function ShowMessageP(const Msg: APascalString): ADialogBoxCommands; stdcall;
+function ShowMessageP(const Msg: APascalString): ADialogBoxCommands;
 begin
   Result := ASystem_ShowMessageP(Msg);
 end;
 
-function ShowMessageWS(const Msg: AWideString): ADialogBoxCommands; stdcall;
-begin
-  Result := ASystem_ShowMessageWS(Msg);
-end;
-
 {$IFDEF USE_RUNTIME}
-procedure Shutdown(); stdcall;
+procedure Shutdown();
 begin
   ASystem_Shutdown();
 end;

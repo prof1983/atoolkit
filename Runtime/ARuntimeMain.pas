@@ -2,7 +2,7 @@
 @Abstract ARuntime
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.08.2012
-@LastMod 30.01.2013
+@LastMod 05.02.2013
 }
 unit ARuntimeMain;
 
@@ -226,7 +226,7 @@ end;
 function ARuntime_FindModuleByName(Name: AStr): AInteger;
 begin
   try
-    Result := _FindModuleByName(Name);
+    Result := _FindModuleByName(String(Name));
   except
     Result := -1;
   end;
@@ -307,7 +307,7 @@ end;
 function ARuntime_GetModuleNameByIndexP(Index: AInteger): APascalString;
 begin
   if (Index >= 0) and (Index < Length(FModules)) then
-    Result := FModules[Index].Name
+    Result := AnsiString(FModules[Index].Name)
   else
     Result := '';
 end;
@@ -315,7 +315,7 @@ end;
 function ARuntime_GetModuleNameByIndexWS(Index: AInteger): AWideString;
 begin
   if (Index >= 0) and (Index < Length(FModules)) then
-    Result := FModules[Index].Name
+    Result := AnsiString(FModules[Index].Name)
   else
     Result := '';
 end;

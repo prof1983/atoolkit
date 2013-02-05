@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.12.2012
-@LastMod 27.12.2012
+@LastMod 05.02.2013
 }
 unit ADataConnections;
 
@@ -16,9 +16,6 @@ uses
 
 function ADataConnection_ChangeDataSetP(Database: ADataConnection; DataSet: ADataSet;
     const SelectSql: APascalString): AError;
-
-function ADataConnection_ChangeDataSetWS(Database: ADataConnection; DataSet: ADataSet;
-    const SelectSql: AWideString): AError;
 
 function ADataConnection_CheckDatabaseStructure(Database: ADataConnection;
     Struct: ADataStructure; Logger: TAddToLogWSProc): ABoolean;
@@ -37,28 +34,18 @@ function ADataConnection_Disconnect(Database: ADataConnection): AError; {$ifdef 
 function ADataConnection_ExecuteSqlP(Database: ADataConnection;
     const Sql: APascalString): ABoolean;
 
-function ADataConnection_ExecuteSqlWS(Database: ADataConnection;
-    const Sql: AWideString): ABoolean;
-
 function ADataConnection_GetConnected(Database: ADataConnection): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
 
-function ADataConnection_GetConnectionStringWS(Database: ADataConnection): AWideString;
+function ADataConnection_GetConnectionStringP(Database: ADataConnection): AWideString;
 
 function ADataConnection_NewDataSet2P(Database: ADataConnection;
-    const SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText,
-    RefreshSqlText: AWideString): ADataSet;
-
-function ADataConnection_NewDataSet2WS(Database: ADataConnection;
     const SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText,
     RefreshSqlText: AWideString): ADataSet;
 
 function ADataConnection_NewDataSetP(Database: ADataConnection;
     const SelectSqlText: APascalString; ReadOnly: ABoolean): ADataSet;
 
-function ADataConnection_NewDataSetWS(Database: ADataConnection;
-    const SelectSqlText: AWideString; ReadOnly: ABoolean): ADataSet;
-
-function ADataConnection_SetConnectionStringWS(Database: ADataConnection;
+function ADataConnection_SetConnectionStringP(Database: ADataConnection;
     const Value: AWideString): AError;
 
 implementation
@@ -67,17 +54,6 @@ implementation
 
 function ADataConnection_ChangeDataSetP(Database: ADataConnection; DataSet: ADataSet;
     const SelectSql: APascalString): AError;
-begin
-  try
-    ADataUtils.Database_ChangeDataSet(Database, DataSet, SelectSql);
-    Result := 0;
-  except
-    Result := -1;
-  end;
-end;
-
-function ADataConnection_ChangeDataSetWS(Database: ADataConnection; DataSet: ADataSet;
-    const SelectSql: AWideString): AError;
 begin
   try
     ADataUtils.Database_ChangeDataSet(Database, DataSet, SelectSql);
@@ -195,22 +171,6 @@ begin
   end;
 end;
 
-function ADataConnection_ExecuteSqlWS(Database: ADataConnection;
-    const Sql: AWideString): ABoolean;
-var
-  I: IADatabase;
-begin
-  try
-    I := IADatabase(Database);
-    if Assigned(I) then
-      Result := I.ExecuteSql(Sql)
-    else
-      Result := False;
-  except
-    Result := False;
-  end;
-end;
-
 function ADataConnection_GetConnected(Database: ADataConnection): ABoolean;
 var
   I: IADatabase;
@@ -226,7 +186,7 @@ begin
   end;
 end;
 
-function ADataConnection_GetConnectionStringWS(Database: ADataConnection): AWideString;
+function ADataConnection_GetConnectionStringP(Database: ADataConnection): AWideString;
 var
   I: IADatabase;
 begin
@@ -257,22 +217,6 @@ begin
   end;
 end;
 
-function ADataConnection_NewDataSet2WS(Database: ADataConnection;
-    const SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText,
-    RefreshSqlText: AWideString): ADataSet;
-var
-  FDatabase: IADatabase;
-begin
-  try
-    FDatabase := IADatabase(Database);
-    FDatabase._AddRef();
-    Result := FDatabase.NewDataSetA(SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText, RefreshSqlText);
-    FDatabase._Release();
-  except
-    Result := 0;
-  end;
-end;
-
 function ADataConnection_NewDataSetP(Database: ADataConnection;
     const SelectSqlText: APascalString; ReadOnly: ABoolean): ADataSet;
 var
@@ -288,22 +232,7 @@ begin
   end;
 end;
 
-function ADataConnection_NewDataSetWS(Database: ADataConnection;
-    const SelectSqlText: AWideString; ReadOnly: ABoolean): ADataSet;
-var
-  FDatabase: IADatabase;
-begin
-  try
-    FDatabase := IADatabase(Database);
-    FDatabase._AddRef();
-    Result := FDatabase.NewDataSet(SelectSqlText, ReadOnly);
-    FDatabase._Release();
-  except
-    Result := 0;
-  end;
-end;
-
-function ADataConnection_SetConnectionStringWS(Database: ADataConnection;
+function ADataConnection_SetConnectionStringP(Database: ADataConnection;
     const Value: AWideString): AError;
 begin
   if (Database = 0) then

@@ -1,8 +1,7 @@
 {**
-@Abstract Утилиты для проверки и создания базы данных по определенной структуре
 @Author Prof1983 <prof1983@ya.ru>
 @Created 04.07.2008
-@LastMod 26.12.2012
+@LastMod 05.02.2013
 }
 unit ADatabaseUtils;
 
@@ -24,7 +23,7 @@ const
     'INTEGER',   //aftInteger,
     'INT64',     //aftInt64
     'NUMERIC',   //aftNumeric
-    'CHAR',      //aftBoolean, // Аналогично 'CHAR(1)'
+    'CHAR',      //aftBoolean, // Analog 'CHAR(1)'
     'FLOAT',     //aftFloat,
     'DATE',      //aftDate,
     'TIME',      //aftTime,
@@ -40,7 +39,7 @@ function ReadDateTime(Field: TField): TDateTime;
 function ReadFloat(Field: TField): Double;
 function ReadInteger(Field: TField): Integer;
 function ReadString(Field: TField): string;
-// Читает значение из Field и возвращает в формате для записи в SQL
+{** Read value from Field and return in SQL format }
 function ReadValue(Field: TField): string;
 procedure RefreshDataSet(DS: TDataSet; const FieldName: string);
 

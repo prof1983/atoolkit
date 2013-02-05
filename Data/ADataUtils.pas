@@ -1,5 +1,4 @@
 {**
-@Abstract ћодуль работы с базами и структурами данных
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2008
 @LastMod 30.01.2013

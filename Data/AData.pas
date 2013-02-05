@@ -1,8 +1,7 @@
 {**
-@Abstract ћодуль работы с базами и структурами данных
-@Author Prof1983 <prof1983@ya.ru>)
+@Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2008
-@LastMod 27.12.2012
+@LastMod 05.02.2013
 
 Analog System.Data.*
 }
@@ -19,8 +18,8 @@ uses
   ADataModelMain,
   ADataStruct;
 
+function Fin(): AError; stdcall;
 function Init(): AError; stdcall;
-function Done(): AError; stdcall;
 
 function NewDatabaseW(const DriverName: AWideString): ADataConnection; stdcall;
 function NewDatabaseStructure(): ADataStructure; stdcall;
@@ -48,9 +47,6 @@ procedure DataSet_SetReadOnly(DataSet: ADataSet; ReadOnly: ABoolean); stdcall;
 function Struct_AddTableWS(Struct: ADataStructure; const TableName: WideString): ATableStructure;
 function Struct_Clear(Struct: ADataStructure): AError; stdcall;
 
-{function Driver_GetName: AWideString;
-function Driver_NewDatabase: PADatabase;}
-
 implementation
 
 uses
@@ -58,7 +54,7 @@ uses
 
 { Public }
 
-function NewDatabaseW(const DriverName: AWideString): ADataConnection; stdcall;
+function NewDatabaseW(const DriverName: AWideString): ADataConnection;
 begin
   try
     Result := ADataUtils.Data_NewDatabase(DriverName);
@@ -67,7 +63,7 @@ begin
   end;
 end;
 
-function NewDatabaseStructure(): ADataStructure; stdcall;
+function NewDatabaseStructure(): ADataStructure;
 begin
   try
     Result := ADataUtils.Data_NewDatabaseStructure();
@@ -78,81 +74,81 @@ end;
 
 { Database }
 
-function Database_ChangeDataSet(Database: ADataConnection; DataSet: ADataSet; const SelectSql: AWideString): AError; stdcall;
+function Database_ChangeDataSet(Database: ADataConnection; DataSet: ADataSet; const SelectSql: AWideString): AError;
 begin
   Result := ADataConnection_ChangeDataSetWS(Database, DataSet, SelectSql);
 end;
 
-function Database_CheckDatabaseStructure(Database: ADataConnection; Struct: ADataStructure; Logger: TAddToLogWSProc): ABoolean; stdcall;
+function Database_CheckDatabaseStructure(Database: ADataConnection; Struct: ADataStructure; Logger: TAddToLogWSProc): ABool;
 begin
   Result := ADataConnection_CheckDatabaseStructure(Database, Struct, Logger);
 end;
 
-function Database_CheckTableStructure(Database: ADataConnection; TableStruct: ATableStructure; Logger: TAddToLogWSProc): ABoolean; stdcall;
+function Database_CheckTableStructure(Database: ADataConnection; TableStruct: ATableStructure; Logger: TAddToLogWSProc): ABool;
 begin
   Result := ADataConnection_CheckTableStructure(Database, TableStruct, Logger);
 end;
 
-procedure Database_Close(Database: ADataConnection); stdcall;
+procedure Database_Close(Database: ADataConnection);
 begin
   ADataConnection_Close(Database);
 end;
 
-function Database_Connect(Database: ADataConnection): ABoolean; stdcall;
+function Database_Connect(Database: ADataConnection): ABool;
 begin
   Result := ADataConnection_Connect(Database);
 end;
 
-function Database_CreateDatabase(Database: ADataConnection): ABoolean; stdcall;
+function Database_CreateDatabase(Database: ADataConnection): ABool;
 begin
   Result := ADataConnection_CreateDatabase(Database);
 end;
 
-procedure Database_Disconnect(Database: ADataConnection); stdcall;
+procedure Database_Disconnect(Database: ADataConnection);
 begin
   ADataConnection_Disconnect(Database);
 end;
 
-function Database_ExecuteSql(Database: ADataConnection; const Sql: AWideString): ABoolean; stdcall;
+function Database_ExecuteSql(Database: ADataConnection; const Sql: AWideString): ABool;
 begin
   Result := ADataConnection_ExecuteSqlWS(Database, Sql);
 end;
 
-function Database_GetConnected(Database: ADataConnection): ABoolean; stdcall;
+function Database_GetConnected(Database: ADataConnection): ABool;
 begin
   Result := ADataConnection_GetConnected(Database);
 end;
 
-function Database_GetConnectionString(Database: ADataConnection): AWideString; stdcall;
+function Database_GetConnectionString(Database: ADataConnection): AWideString;
 begin
   Result := ADataConnection_GetConnectionStringWS(Database);
 end;
 
-function Database_NewDataSet(Database: ADataConnection; const SelectSqlText: AWideString; ReadOnly: ABoolean): ADataSet; stdcall;
+function Database_NewDataSet(Database: ADataConnection; const SelectSqlText: AWideString; ReadOnly: ABool): ADataSet;
 begin
   Result := ADataConnection_NewDataSetWS(Database, SelectSqlText, ReadOnly);
 end;
 
-function Database_NewDataSetA(Database: ADataConnection; const SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText, RefreshSqlText: AWideString): ADataSet; stdcall;
+function Database_NewDataSetA(Database: ADataConnection; const SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText, RefreshSqlText: AWideString): ADataSet;
 begin
   Result := ADataConnection_NewDataSet2WS(Database, SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText, RefreshSqlText);
 end;
 
-procedure Database_SetConnectionString(Database: ADataConnection; const Value: AWideString); stdcall;
+procedure Database_SetConnectionString(Database: ADataConnection; const Value: AWideString);
 begin
   ADataConnection_SetConnectionStringWS(Database, Value);
 end;
 
 { DataSet }
 
-procedure DataSet_SetReadOnly(DataSet: ADataSet; ReadOnly: ABoolean); stdcall;
+procedure DataSet_SetReadOnly(DataSet: ADataSet; ReadOnly: ABool);
 begin
   ADataModel_SetReadOnly(DataSet, ReadOnly);
 end;
 
 { Drivers }
 
-function Drivers_RegisterDriver(DataDriver: ADataDriver): AInteger; stdcall;
+function Drivers_RegisterDriver(DataDriver: ADataDriver): AInt;
 begin
   Result := AData_RegisterDriver(DataDriver);
 end;
@@ -164,21 +160,21 @@ begin
   Result := ADataStruct_AddTableP(Struct, TableName);
 end;
 
-function Struct_Clear(Struct: ADataStructure): AError; stdcall;
+function Struct_Clear(Struct: ADataStructure): AError;
 begin
   Result := ADataStruct_Clear(Struct);
 end;
 
 { Module }
 
-function Done(): AError; stdcall;
+function Fin(): AError;
 begin
-  Result := Data_Done();
+  Result := AData_Fin();
 end;
 
-function Init(): AError; stdcall;
+function Init(): AError;
 begin
-  Result := Data_Init();
+  Result := AData_Init();
 end;
 
 end.

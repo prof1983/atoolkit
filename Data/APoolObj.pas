@@ -1,9 +1,7 @@
 {**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(04.06.2012)
-@LastMod(08.06.2012)
-@Version(0.5)
+@Author Prof1983 <prof1983@ya.ru>
+@Created 04.06.2012
+@LastMod 08.06.2012
 }
 unit APoolObj;
 

@@ -2,7 +2,7 @@
 @Abstract AData - DatabaseStructure
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 30.01.2013
+@LastMod 05.02.2013
 }
 unit ADatabaseStructure;
 
@@ -10,7 +10,6 @@ interface
 
 uses
   ADataTypes;
-  {ASysDataBase;}
 
 type
   TAFieldStructure = class
@@ -51,11 +50,8 @@ type
     function Get_IndexType: TAIndexType;
     function Get_Name: WideString;
   public
-    // Имя индекса
     property Name: WideString read FName write FName;
-    // Список полей
     property IndexField: WideString read FIndexField write FIndexField;
-    // Тип индекса
     property IndexType: TAIndexType read FIndexType write FIndexType;
   end;
 
@@ -136,15 +132,10 @@ begin
   Result := Length(FTables);
   SetLength(FTables, Result + 1);
   FTables[Result] := Table;
-  //IInterface(Table)._AddRef();
 end;
 
 procedure TADatabaseStructure.Clear();
-{var
-  I: Integer;}
 begin
-  {for I := 0 to High(FTables) do
-    IInterface(FTables[I])._Release();}
   SetLength(FTables, 0);
 end;
 
@@ -310,7 +301,6 @@ begin
   Result := Length(FFields);
   SetLength(FFields, Result + 1);
   FFields[Result] := Field;
-  //IInterface(Field)._AddRef();
 end;
 
 function TATableStructure.AddIndex(const IndexName: WideString; IndexType: TAIndexType;
@@ -331,7 +321,6 @@ begin
   Result := Length(FIndexs);
   SetLength(FIndexs, Result + 1);
   FIndexs[Result] := Index;
-  //Index._AddRef();
 end;
 
 constructor TATableStructure.Create(const TableName: WideString);

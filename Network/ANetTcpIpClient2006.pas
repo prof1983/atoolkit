@@ -1,5 +1,4 @@
-﻿{**
-@Abstract Надстройка над модулем ATcpIpClient
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.12.2005
 @LastMod 18.12.2012

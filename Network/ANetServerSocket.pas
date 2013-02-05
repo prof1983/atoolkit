@@ -1,8 +1,8 @@
-﻿{**
+{**
 @Abstract Server socket
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.10.2005
-@LastMod 18.12.2012
+@LastMod 05.02.2013
 }
 unit ANetServerSocket;
 
@@ -51,7 +51,6 @@ implementation
 function TProfServerSocket.ConfigureLoad: WordBool;
 var
   I: AInt32;
-  {S: String;}
 begin
   if (FConfig = 0) then
   begin
@@ -82,7 +81,6 @@ var
   I: Integer;
   I2: Integer;
 begin
-  {Удаление клиента}
   for I := 0 to High(FClients) do
     if FClients[I].CustomWinSocket = Socket then
     begin
@@ -102,7 +100,7 @@ begin
   if FInitialized then
     Finalize();
 
-  {Послать всем сообщения об отбое}
+  {Send all messages on the rebound}
   {...}
   SetLength(FClients, 0);
   inherited Free;
@@ -112,7 +110,6 @@ function TProfServerSocket.Initialize: WordBool;
 begin
   if FInitialized then
   begin
-    //AddToLog(lgGeneral, ltInformation, stAlreadyInitialize, []);
     Result := True;
     Exit;
   end;
@@ -137,7 +134,6 @@ procedure TProfServerSocket.ServClientConnect(Sender: TObject; Socket: TCustomWi
 var
   I: Integer;
 begin
-  {Связь с клиентом}
   I := Length(FClients);
   SetLength(FClients, I + 1);
   FClients[I].CustomWinSocket := Socket;
@@ -161,9 +157,9 @@ begin
         Inc(FClients[I].Error);
         Exit;
       end else begin
-        {Если ошибка 2 раз то удаление}
+        {If the error is 2 times the destruction of}
         {DeleteSocket(Socket);}
-        {Если ошибка 10 раз подрят, то вызываем событие}
+        {If the error 10 times erosion, the call event}
         DoError(FClients[I]);
       end;
     end;
@@ -178,7 +174,7 @@ begin
   (*Socket.ReceiveBuf(Buf, SizeOf(Buf));
   if Buf.Ident <> 0 then Exit;
   case Buf.Com of
-    0:begin {Возвращение имени}
+    0:begin {Returning the name of the}
       for I := 0 to High(A) do
         {if A[I].CustomWinSocket.RemoteAddress = Buf.AddressFrom then}
         if A[I].CustomWinSocket = Socket then
@@ -188,7 +184,7 @@ begin
           Break;
         end;
     end;
-    1:begin {Отослать сообщение}
+    1:begin {Send a message}
       {Memo1.Lines.Add(Buf.S);}
       if Buf.AddressOut = 'All' then
       begin
@@ -205,7 +201,7 @@ begin
           end;
       end;
     end;
-    2:begin {Запрос на возвращение списка имен}
+    2:begin {The request for the return of the list of names}
       if Buf.S = '0' then
       begin
         Buf.AddressFrom := ServerSocket1.Socket.LocalAddress;
@@ -235,11 +231,11 @@ begin
         end;
       end;
     end;
-    3:begin {Сообщение об изменении}
+    3:begin {Notice of changes in}
       Refresh(Socket);
       RefreshA;
     end;
-    4:begin {Возвращение цвета}
+    4:begin {Return color}
       for I := 0 to High(A) do
         if A[I].CustomWinSocket.RemoteAddress = Buf.AddressFrom then
         begin
@@ -252,7 +248,7 @@ begin
 end;
 
 procedure TProfServerSocket.DoError(Client: TClient);
-{Вызывается, если ошибка прозошла 10 раз подрят}
+{Invoked when an error прозошла 10 times erosion}
 begin
 
 end;

@@ -1,8 +1,7 @@
 ﻿{**
-@Abstract(TcpIpGlobals)
-@Author(Prof1983 <prof1983@ya.ru>)
-@Created(25.04.2006)
-@LastMod(04.05.2012)
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.04.2006
+@LastMod 04.05.2012
 }
 unit ANetTcpIpGlobals;
 

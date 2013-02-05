@@ -1,29 +1,26 @@
-﻿{**
-@Abstract Пустая форма с картинками. Шаблон для создания форм в не визуальном режиме
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 17.03.2006
-@LastMod 12.11.2012
+@LastMod 05.02.2013
 }
 unit fShablon;
+
+// TODO: Use AShablonForm.pas
 
 interface
 
 uses
   Classes, Controls, Forms, ImgList,
-  AFormObj{AFormImpl};
+  AFormObj;
 
-type //** Шаблон для создания форм в не визуальном режиме
-  TfmShablon = class(TAFormObject{TProfForm})
+type
+  TfmShablon = class(TAFormObject)
     RunImages: TImageList;
   protected
-      //** Срабатывает при изменении размеров
     procedure DoResize(Sender: TObject); virtual;
   public
-      //** Конструктор
     constructor Create(AOwner: TComponent); override;
   end;
-
-  //TProfShablon3 = TfmShablon;
 
 implementation
 

@@ -1,9 +1,7 @@
-﻿{**
-@Abstract(Интерфейс для модулей импорта, экспорта и синхронизации)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(06.04.2006)
-@LastMod(02.05.2012)
-@Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 06.04.2006
+@LastMod 05.02.2013
 }
 unit ADbConsts;
 
@@ -13,7 +11,7 @@ resourcestring
   qInsertDefault = 'INSERT INTO %TableName% (%FieldNames%) VALUES (%FieldValues%)';
   qUpdateDefault = 'UPDATE %TableName% %FieldsSet% WHERE %Where%';
 
-const // Имена полей в конфигурации --------------------------------------------
+const
   config_AutoEnabled      = 'AutoEnabled';
   config_AutoInterval     = 'AutoInterval';
   config_ConnectionString = 'ConnectionString';

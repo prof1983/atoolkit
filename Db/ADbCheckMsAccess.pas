@@ -1,12 +1,9 @@
 ﻿{**
-@Abstract(Главный объект проверки БД)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.04.2006)
-@LastMod(03.07.2012)
-@Version(0.5)
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.04.2006
+@LastMod 05.02.2013
 
-Как получить последнюю версию пакета обновлений для Microsoft Jet 4.0 Database Engine
-http://support.microsoft.com/kb/239114/ru
+See ADb.txt
 }
 unit ADbCheckMsAccess;
 

@@ -1,17 +1,9 @@
 ﻿{**
-@Abstract(Интерфейс для модулей импорта, экспорта и синхронизации)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(06.04.2006)
-@LastMod(11.07.2012)
-@Version(0.5)
+@Author Prof1983 <prof1983@ya.ru>
+@Created 06.04.2006
+@LastMod 11.07.2012
 
-  Команды формарования строк вставки и обновления данных (SqlInsert, SqlUpdate)
-  %OutTableName%   - Имя внешней таблици
-  %OutFieldNames%  - Список имен полей внешней таблици через запятую
-  %OutFieldValues% - Список значений полей внешенй таблици через запятую
-  %InTableName%    - Имя локальной таблици
-  %InFieldNames%   - Список имен полей локальной таблици через запятую
-  %InFieldValues%  - Список значений локальной таблици через запятую
+See ADb.txt
 }
 unit ADbDataModules;
 

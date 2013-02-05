@@ -1,17 +1,9 @@
-﻿{**
-@Abstract(Интерфейс для модулей импорта, экспорта и синхронизации)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(06.04.2006)
-@LastMod(03.07.2012)
-@Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 06.04.2006
+@LastMod 05.02.2013
 
-  Команды формарования строк вставки и обновления данных (SqlInsert, SqlUpdate)
-  %OutTableName%   - Имя внешней таблици
-  %OutFieldNames%  - Список имен полей внешней таблици через запятую
-  %OutFieldValues% - Список значений полей внешенй таблици через запятую
-  %InTableName%    - Имя локальной таблици
-  %InFieldNames%   - Список имен полей локальной таблици через запятую
-  %InFieldValues%  - Список значений локальной таблици через запятую
+See ADb.txt
 }
 unit ADbTable;
 
@@ -21,7 +13,8 @@ uses
   AdoDb, Classes, Variants,
   AConfig2007, ADbTypes, ADbUtils, AStorageObj, ATypes;
 
-type // Настроки таблици и полей для импорта, экспорта и синхронизации
+type
+  {** Setup table and fields for the import, export and synchronization }
   TTableDM = class
   private
     FFieldsIn: TStringList;
@@ -34,8 +27,8 @@ type // Настроки таблици и полей для импорта, э�
     FKeyFieldsIn_Descr: TStringList;
     FKeyFieldsOut_Descr: TStringList;
 
-    FSqlInsert: WideString; // Строка для вставки данных
-    FSqlUpdate: WideString; // Строка для обновления данных
+    FSqlInsert: WideString;
+    FSqlUpdate: WideString;
 
     FOwner: TObject{TDataModule2};
     FTableNameIn: WideString;
@@ -46,9 +39,7 @@ type // Настроки таблици и полей для импорта, э�
     function FieldsToStr(RecordSet: _RecordSet): string;
     function FieldValuesToStr(RecordSet: _RecordSet): string;
     function GetTitle(): WideString;
-    // Добавление новой записи
     function Insert(AConnectionIn, AConnectionOut: TAdoConnection; AFieldsIn, AFieldsOut: TStringList; ATableNameIn, ATableNameOut, AWhereIn: string): Boolean;
-    // Обновление записи
     function Update(AConnectionIn, AConnectionOut: TAdoConnection; AFieldsIn, AFieldsOut: TStringList; ATableNameIn, ATableNameOut, AWhereIn, AWhereOut: string): Boolean;
     function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
       const AStrMsg: WideString; AParams: array of const): Integer;
@@ -62,7 +53,7 @@ type // Настроки таблици и полей для импорта, э�
     property IOType: TDMType read FIOType write FIOType;
     function LoadParams(AStorageName, AKeyName: string): Boolean;
     function SaveParams(AStorageName, AKeyName: string): Boolean;
-  public // Также для внешнего использования
+  public
     class function GetFieldList(List: TStrings): string;
     class function GetFieldListSet(List: TStrings): string;
     class function QueryInsert(const ATableName: WideString; AFields: TStrings; AValues: WideString; const AShablon: WideString = ''): WideString;
@@ -74,16 +65,16 @@ type // Настроки таблици и полей для импорта, э�
     function MoveData(AConnectionIn, AConnectionOut: TAdoConnection;
       AKeyFieldsIn, AKeyFieldsOut, AFieldsIn, AFieldsOut: TStringList;
       ATableNameIn, ATableNameOut: string): Boolean;
-    // Обновить данные из In в Out
+    // Refresh the data from In to Out
     function SynchronizeData(): Boolean;
   published
-    // Поля для копирования в локальной БД
+    // Field to copy in the local database
     property FieldsIn: TStringList read FFieldsIn;
-    // Поля для копирования во внешней БД
+    // Field to copy to an external database
     property FieldsOut: TStringList read FFieldsOut;
-    // Ключевые поля, по которым будет происходить сравнение в локальной БД
+    // The key fields that will be a comparison in the local database
     property KeyFieldsIn: TStringList read FKeyFieldsIn;
-    // Ключевые поля, по которым будет происходить сравнение во внешней БД
+    // The key fields that will be comparing the external database
     property KeyFieldsOut: TStringList read FKeyFieldsOut;
 
     property FieldsIn_Descr: TStringList read FFieldsIn_Descr;
@@ -96,11 +87,11 @@ type // Настроки таблици и полей для импорта, э�
     property SqlInsert: WideString read FSqlInsert write FSqlInsert;
     property SqlUpdate: WideString read FSqlUpdate write FSqlUpdate;
 
-    // Имя таблици в локальной БД
+    // The name of the table in the local database
     property TableNameIn: WideString read FTableNameIn write FTableNameIn;
-    // Имя таблици во внешней БД
+    // The name of the table in an external database
     property TableNameOut: WideString read FTableNameOut write FTableNameOut;
-    // Название таблици (для отображения)
+    // The name of the таблици (for display)
     property Title: WideString read GetTitle write FTitle;
   end;
 
@@ -108,6 +99,8 @@ implementation
 
 uses
   ADbDataModule2;
+
+{$I ADbTable.inc}
 
 { TTableDM }
 
@@ -119,50 +112,50 @@ begin
   Result := False;
   if not(Assigned(FFieldsIn)) then
   begin
-    ToLog(lgDataBase, ltError, 'FieldsIn не задано', []);
+    ToLog(lgDataBase, ltError, SFieldIn, []);
     Exit;
   end;
   if not(Assigned(FFieldsOut)) then
   begin
-    ToLog(lgDataBase, ltError, 'FieldsOut не задано', []);
+    ToLog(lgDataBase, ltError, SFieldOut, []);
     Exit;
   end;
   if not(Assigned(FKeyFieldsIn)) then
   begin
-    ToLog(lgDataBase, ltError, 'KeyFieldsIn не задано', []);
+    ToLog(lgDataBase, ltError, SKeyFieldsIn, []);
     Exit;
   end;
   if not(Assigned(FKeyFieldsOut)) then
   begin
-    ToLog(lgDataBase, ltError, 'KeyFieldsOut не задано', []);
+    ToLog(lgDataBase, ltError, SKeyFieldsOut, []);
     Exit;
   end;
 
-  // Сравнение колличесва полей
+  // Comparison of колличесва fields
   if (FFieldsIn.Count <> FFieldsOut.Count) then
   begin
-    ToLog(lgDataBase, ltError, 'Колличество полей в FieldsIn и FieldsOut не одинаковое', []);
+    ToLog(lgDataBase, ltError, SFieldsCount, []);
     Exit;
   end;
   if (FKeyFieldsIn.Count <> FKeyFieldsOut.Count) then
   begin
-    ToLog(lgDataBase, ltError, 'Колличество ключевых полей для сравнения в KeyFieldsIn и KeyFieldsOut не одинаковое', []);
+    ToLog(lgDataBase, ltError, SKeyFieldsCount, []);
     Exit;
   end;
 
-  // Проверка на повторяемость
+  // Check the frequency of occurrence
   for I := 0 to FKeyFieldsIn.Count - 1 do
     for I2 := 0 to FFieldsIn.Count - 1 do
       if FKeyFieldsIn.Strings[I] = FFieldsIn.Strings[I2] then
       begin
-        ToLog(lgDataBase, ltError, 'Поле %s присутствует в списке ключевых полей и полей для обновления внутренней таблици %s', [FKeyFieldsIn.Strings[I], FTableNameIn]);
+        ToLog(lgDataBase, ltError, SFieldInError, [FKeyFieldsIn.Strings[I], FTableNameIn]);
         Exit;
       end;
   for I := 0 to FKeyFieldsOut.Count - 1 do
     for I2 := 0 to FFieldsOut.Count - 1 do
       if FKeyFieldsOut.Strings[I] = FFieldsOut.Strings[I2] then
       begin
-        ToLog(lgDataBase, ltError, 'Поле %s присутствует в списке ключевых полей и полей для обновления внешней таблици %s', [FKeyFieldsIn.Strings[I], FTableNameOut]);
+        ToLog(lgDataBase, ltError, SFieldOutError, [FKeyFieldsIn.Strings[I], FTableNameOut]);
         Exit;
       end;
 
@@ -186,8 +179,6 @@ begin
   if not(Result) then Exit;
 
   Clear();
-
-  //unConfig.LoadObjectFromConfig(AConfigNode, Self, AddToLog);
 
   AConfigNode.ReadString('TableNameIn', FTableNameIn);
   AConfigNode.ReadString('TableNameOut', FTableNameOut);
@@ -376,10 +367,8 @@ var
   sOut: string;
 begin
   try
-    //sIn := 'SELECT ' + GetFieldList(AFieldsIn) + ' FROM ' + ATableNameIn + ' WHERE ' + AWhereIn;
     sIn := QuerySelect(ATableNameIn, AFieldsIn, AWhereIn);
     rIn := AConnectionIn.Execute(sIn);
-    //sOut := 'INSERT INTO ' + ATableNameOut + ' (' + GetFieldList(FFieldsOut) + ') VALUES (' + FieldValuesToStr(rIn) + ')';
     sOut := QueryInsert(ATableNameOut, FFieldsOut, FieldValuesToStr(rIn));
     AConnectionOut.Execute(sOut);
     Result := True;
@@ -423,25 +412,20 @@ var
   rOut: _RecordSet;
   I: Integer;
   Res: Boolean;
-  //AWhereIn: string;
-  //AWhereOut: string;
 begin
   Result := Check();
   if not(Result) then Exit;
   Result := False;
   try
-    // Поиск записей по ключевым полям
     sIn := QuerySelect(ATableNameIn, AKeyFieldsIn);
     rIn := TDataModule2(FOwner).ConnectionIn.Execute(sIn);
-    //sOut := 'SELECT ' + GetFieldList(AKeyFieldsOut) + ' FROM ' + ATableNameOut;
     sOut := QuerySelect(ATableNameOut, AKeyFieldsOut);
     rOut := AConnectionOut.Execute(sOut);
-    //Res := True;
 
-    // Сравнение записей
+    // Compare
     for I := 0 to rIn.Fields.Count - 1 do
     begin
-      Res := {Res and} (rIn.Fields.Item[I].Value = rOut.Fields.Item[I].Value);
+      Res := (rIn.Fields.Item[I].Value = rOut.Fields.Item[I].Value);
       if Res then
         Update(AConnectionOut, AConnectionIn, AFieldsOut, AFieldsIn, ATableNameIn, ATableNameOut, FieldsToStr(rIn), FieldsToStr(rOut))
       else
@@ -479,7 +463,6 @@ begin
   try
     ps.Open();
     ps.OpenKey(AKeyName + '\FieldsIn');
-    //ps.DeleteSubKey('FieldsIn');
     ps.ClearKey();
     for I := 0 to FFieldsIn.Count - 1 do
       ps.WriteString(FFieldsIn.Strings[I], '');
@@ -532,12 +515,10 @@ var
   I: Integer;
 begin
   try
-    //sIn := 'SELECT ' + GetFieldList(AFieldsIn) + ' FROM ' + ATableNameIn + ' WHERE ' + AWhereIn;
     sIn := QuerySelect(ATableNameIn, AFieldsIn, AWhereIn);
     rIn := AConnectionIn.Execute(sIn);
     for I := 0 to rIn.Fields.Count - 1 do          // ???
       AFieldsOut.Values[AFieldsOut.Strings[I]] := VarToStr(rIn.Fields.Item[I].Value);
-    //sOut := 'UPDATE ' + ATableNameOut + ' ' + GetFieldListSet(FFieldsOut) + ' WHERE ' + AWhereOut;
     sOut := QueryUpdate(ATableNameOut, FFieldsOut, AWhereOut);
     AConnectionOut.Execute(sOut);
     Result := True;

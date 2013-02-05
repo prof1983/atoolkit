@@ -1,9 +1,7 @@
-﻿{**
-@Abstract(Класс оболочка для TConnection)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(26.10.2005)
-@LastMod(27.04.2012)
-Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 26.10.2005
+@LastMod 05.02.2013
 }
 unit ADbConnection1;
 
@@ -12,21 +10,19 @@ interface
 uses
   AdoDB, Classes, SysUtils;
 
-type //** @abstract(Оболочка для TConnection)
+type
   TProfAdoConnection = class(TAdoConnection)
   private
     FDBFileName: WideString;
   public
     constructor Create(AOwner: TComponent = nil); override;
-      //** Закрытие Connection
+    {** Close Connection }
     function Finalize(): WordBool; virtual;
     procedure Free(); virtual;
-      //** Открытие Connection
+    {** Open Connection }
     function Initialize(): WordBool; virtual;
-      //** Создать соединение TAdoConnection
     class function OpenConnection(const AConnectionString: WideString): TAdoConnection;
   public
-      //** Имя файла БД
     property DBFileName: WideString read FDBFileName write FDBFileName;
   end;
 
@@ -58,7 +54,6 @@ end;
 function TProfAdoConnection.Initialize(): WordBool;
 begin
   try
-    // Если уже открыт -> выход
     Result := Connected;
     if Result then Exit;
 

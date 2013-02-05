@@ -1,9 +1,7 @@
-﻿{**
-@Abstract(Константы для модуля проверки структуры БД)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.04.2006)
-@LastMod(27.04.2012)
-@Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.04.2006
+@LastMod 27.04.2012
 }
 unit ADbCheckConst;
 

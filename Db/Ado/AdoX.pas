@@ -1,7 +1,6 @@
 {**
-@Created(08.08.2006)
-@LastMod(27.04.2012)
-@Version(0.5)
+@Created 08.08.2006
+@LastMod 27.04.2012
 }
 unit AdoX;
 

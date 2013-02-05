@@ -1,17 +1,7 @@
-﻿{**
-@Abstract(Интерфейс для модулей импорта, экспорта и синхронизации)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(06.04.2006)
-@LastMod(03.07.2012)
-@Version(0.5)
-
-  Команды формарования строк вставки и обновления данных (SqlInsert, SqlUpdate)
-  %OutTableName%   - Имя внешней таблици
-  %OutFieldNames%  - Список имен полей внешней таблици через запятую
-  %OutFieldValues% - Список значений полей внешенй таблици через запятую
-  %InTableName%    - Имя локальной таблици
-  %InFieldNames%   - Список имен полей локальной таблици через запятую
-  %InFieldValues%  - Список значений локальной таблици через запятую
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 06.04.2006
+@LastMod 05.02.2013
 }
 unit ADbUtils;
 
@@ -38,10 +28,6 @@ function StringListToXml(AXml: TProfXmlNode1; AStrings: TStringList; ADescr: TSt
 function XmlToStringList(AXml: TProfXmlNode1; AStrings: TStringList; ADescr: TStringList = nil): Boolean;
 
 implementation
-
-const
-  LOG_NAME_DM = 'AReason_DM.log';
-  LOG_NAME_DM_OLD = 'AReason_DM_Old.log';
 
 { Public }
 

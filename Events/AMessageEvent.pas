@@ -1,4 +1,4 @@
-﻿{**
+{**
 @Abstract ProfMessageEvent
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.04.2007
@@ -18,11 +18,8 @@ type
   protected
     function GetCount(): Integer; override;
   public
-    //** Подписаться на получение события
     function Connect(Proc: TProcMessageStr): WordBool;
-    //** Отписаться от события
     function Disconnect(Proc: TProcMessageStr): WordBool;
-    //** Выполнить при возникновении события
     function Run(const Msg: WideString): Integer; safecall;
   end;
 

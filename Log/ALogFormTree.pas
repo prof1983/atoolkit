@@ -1,8 +1,7 @@
-﻿{**
-@Abstract Окно вывода сообщений программы в виде дерева
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2005
-@LastMod 19.12.2012
+@LastMod 05.02.2013
 }
 unit ALogFormTree;
 
@@ -15,7 +14,7 @@ uses
   AShablonForm,
   ATypes;
 
-type //** Окно вывода сообщений программы в виде дерева
+type
   TALogTreeForm = class(TfmShablon)
     procedure NClearClick(Sender: TObject);
   protected
@@ -33,22 +32,15 @@ type //** Окно вывода сообщений программы в вид�
     function GetOnCommand(): TProcMessageStr; virtual;
     procedure SetOnCommand(Value: TProcMessageStr); virtual;
   public
-    {** Добавляет сообщение }
     function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
         StrMsg: APascalString): AInt; virtual;
-    {** Добавляет Node }
     function AddNode(AType: TLogTypeMessage; AId, AParentId: Integer; const AStr: WideString): TTreeNode;
-    {** Добавляет сообщение }
     procedure AddMsg(const AMsg: WideString);
-    {** Добавляет строку }
     procedure AddStr(const AStr: WideString);
-    {** Добавляет сообщение }
     function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: WideString; AParams: array of const): Integer; virtual; deprecated; // Use AddToLog()
-    {** Добавляет сообщение }
     function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: WideString): Integer; virtual; deprecated; // Use AddToLog()
-    {** Добавляет сообщение }
     function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
         const AStrMsg: WideString): Integer; virtual; deprecated; // Use AddToLog()
   public
@@ -73,7 +65,6 @@ function TALogTreeForm.AddNode(AType: TLogTypeMessage; AId, AParentId: Integer; 
     tmpStr := FormatDateTime('nn:ss:zzzz', Now) + ' ' + AStr;
     if AParentId = 0 then
     begin
-      //AddMsg(AStr)
       Result := FTreeView.Items.AddFirst(nil, tmpStr);
     end
     else
@@ -90,13 +81,11 @@ function TALogTreeForm.AddNode(AType: TLogTypeMessage; AId, AParentId: Integer; 
 var
   I: Integer;
 begin
-  // Очистка
   if Length(FNodes) > 10000 then
   begin
     SetLength(FNodes, 0);
     FTreeView.Items.Clear();
   end;
-  // Добавление новой записи
   I := Length(FNodes);
   SetLength(FNodes, I + 1);
   FNodes[I].Id := AId;
@@ -150,16 +139,9 @@ begin
   if (Key = 13) and not(ssCtrl in Shift) then
   begin
     if FMemoCommand.Text = '' then Exit;
-    AddToLog(lgNone, ltInformation, Format('Команда "%s"', [FMemoCommand.Text]));
+    AddToLog(lgNone, ltInformation, Format('Command "%s"', [FMemoCommand.Text]));
     if Assigned(FOnCommand) then
     try
-      {// Разбор строки
-      if FMemoCommand.Text[1] <> '<' then
-        c := '<' + FMemoCommand.Text + ' />'
-      else
-        c := FMemoCommand.Text;
-      GetNameAndAttributes(...);}
-
       FOnCommand(FMemoCommand.Text);
     except
     end;
@@ -174,7 +156,7 @@ begin
   Left := 0;
   Width := Screen.Width;
 
-  Caption := 'Сообщения программы';
+  Caption := 'Logs';
 
   FProgressPanel := TPanel.Create(Self);
   FProgressPanel.Parent := Self;
@@ -189,7 +171,6 @@ begin
   FMemoCommand.OnKeyDown := CommandKeyPress;
   FMemoCommand.Visible := False;
 
-  //FImages := TCustomImageList.Create;
   if not(Assigned(FTreeView)) then FTreeView := TTreeView.Create(Self);
   FTreeView.Parent := Self;
   FTreeView.Align := alClient;

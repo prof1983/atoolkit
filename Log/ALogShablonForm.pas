@@ -1,5 +1,4 @@
-﻿{**
-@Abstract Шаблон для создания формы логирования в не визуальном режиме
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.07.2006
 @LastMod 18.12.2012
@@ -12,7 +11,7 @@ uses
   ATypes,
   fShablon;
 
-type //** Шаблон для создания формы логирования
+type
   TfmLogShablon = class(TfmShablon)
   protected
     function GetOnCommand(): TProcMessageStr; virtual;

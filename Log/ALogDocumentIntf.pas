@@ -1,8 +1,7 @@
-﻿{**
-@Abstract Общие интерфейсы для всех проектов
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.02.2007
-@LastMod 28.11.2012
+@LastMod 05.02.2013
 }
 unit ALogDocumentIntf;
 
@@ -12,20 +11,14 @@ uses
   ADocumentIntf, ALogNodeIntf, ATypes;
 
 type
-    //** Интерфейс документа логирования
   IALogDocument = interface
     function GetDocumentElement(): ALogNode;
 
-    {**
-      Добавить лог-сообщение
-      @returns(Возвращает номер добавленого лог-сообщения или 0)
-    }
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer;
 
     property DocumentElement: ALogNode read GetDocumentElement;
   end;
 
-    //** Интерфейс документов логирования
   IALogDocuments = interface(IALogDocument)
     function GetDocumentByID(ID: Int64): ALogDocument;
     function GetDocumentByIndex(Index: Integer): ALogDocument;

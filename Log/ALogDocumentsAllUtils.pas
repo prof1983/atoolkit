@@ -1,8 +1,7 @@
-﻿{**
-@Abstract Класс, объединяющий вывод логов сразу в несколько мест
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.09.2006
-@LastMod 18.12.2012
+@LastMod 05.02.2013
 }
 unit ALogDocumentsAllUtils;
 
@@ -18,8 +17,6 @@ uses
   ASystemMain,
   ATypes,
   AUtilsMain;
-
-  //TLogDocumentsAll = TALogDocumentListObject;
 
 function ALogDocumentsAll_Create(SetLogType: TLogTypeSet; const LogFilePath: WideString = ''): TALogDocumentListObject;
 

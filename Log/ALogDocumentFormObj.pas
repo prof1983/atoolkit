@@ -1,8 +1,7 @@
-﻿{**
-@Abstract Показывать Log в окне
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.10.2005
-@LastMod 18.12.2012
+@LastMod 05.02.2013
 }
 unit ALogDocumentFormObj;
 
@@ -19,7 +18,7 @@ uses
   ALogNodeUtils,
   ATypes;
 
-type //** Показывать Log в окне
+type
   TALogFormDocument = class(TALogDocumentObject)
   protected
     FFormLog: TALogTreeForm;
@@ -27,24 +26,17 @@ type //** Показывать Log в окне
   public
     function AddMsg(const AMsg: WideString): Integer; override;
     function AddStr(const AStr: WideString): Integer; override;
-    {** Добавляет сообщение }
     function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
         const StrMsg: APascalString): AInt; override;
-    {** Добавляет сообщение }
     function AddToLogW(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
         const StrMsg: WideString): AInt; override;
-    function ConfigureLoad(AConfig: IXmlNode = nil): WordBool; deprecated; // Delete
     function ConfigureLoad2(AConfig: IXmlNode = nil): WordBool; virtual;
-    function ConfigureSave(AConfig: IXmlNode = nil): WordBool; deprecated; // Delete
     function ConfigureSave2(AConfig: IXmlNode = nil): WordBool; virtual;
     function Finalize(): AError; override;
     function NewNode(LogType: TLogTypeMessage; const Prefix: WideString;
         Parent: AInt = 0; Id: AInt = 0): ALogNode; override;
-    {** Скрывает окно }
     procedure Hide(); virtual;
-    {** Показывает окно }
     procedure Show(); virtual;
-    {** Добавляет сообщение }
     function ToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: WideString; AParams: array of const): Integer; virtual;
     function ToLogA(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
@@ -57,8 +49,6 @@ type //** Показывать Log в окне
   public
     property FormLog: TALogTreeForm read FFormLog write FFormLog;
   end;
-
-  //TLogForm = TALogFormDocument;
 
 implementation
 
@@ -88,22 +78,12 @@ begin
   Result := AddToLog(LogGroup, LogType, StrMsg);
 end;
 
-function TALogFormDocument.ConfigureLoad(AConfig: IXmlNode): WordBool;
-begin
-  Result := ConfigureLoad2(AConfig);
-end;
-
 function TALogFormDocument.ConfigureLoad2(AConfig: IXmlNode = nil): WordBool;
 begin
   if Assigned(FConfigFormLog) then
     Result := FConfigFormLog.ConfigureLoad()
   else
     Result := False;
-end;
-
-function TALogFormDocument.ConfigureSave(AConfig: IXmlNode): WordBool;
-begin
-  Result := ConfigureSave2(AConfig);
 end;
 
 function TALogFormDocument.ConfigureSave2(AConfig: IXmlNode = nil): WordBool;
@@ -134,7 +114,6 @@ end;
 
 procedure TALogFormDocument.Free();
 begin
-  //FFormLog.Finalize;
   if Assigned(FFormLog) then
   try
     FFormLog.Free();

@@ -1,7 +1,7 @@
-﻿{**
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 23.05.2005
-@LastMod 18.12.2012
+@LastMod 05.02.2013
 }
 unit ALogProgramObj;
 
@@ -12,7 +12,7 @@ uses
   ALogDocumentObj,
   ATypes;
 
-type //** @abstract(Работа с Log. Передает сообщения классу TProgram)
+type
   TALogProgramObject = class(TALogDocumentObject)
   public
     function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
@@ -21,8 +21,6 @@ type //** @abstract(Работа с Log. Передает сообщения к�
     constructor Create();
     procedure Show(); virtual;
   end;
-
-  //TLogProgram = TALogProgramObject;
 
 implementation
 
@@ -57,17 +55,7 @@ begin
 end;
 
 procedure TALogProgramObject.Show();
-//var
-  //FProgram: TAProgramObject;
 begin
-  {
-  try
-    FProgram := TAProgramObject.GetInstance();
-    if Assigned(FProgram) and (FProgram is TProgramLog) then
-      TProgramLog(FProgram).LogDocuments.Show();
-  except
-  end;
-  }
 end;
 
 end.

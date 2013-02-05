@@ -2,7 +2,7 @@
 @Abstract ALogNode object
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2005
-@LastMod 28.11.2012
+@LastMod 05.02.2013
 }
 unit ALogNodeObj;
 
@@ -21,21 +21,17 @@ type
     {** Message }
     Msg: WideString;
     OnAddToLog: TAddToLogProc;
-    {** Параметры в виде XML }
     Params: WideString;
-    {** Тип сообщения }
     Typ: TLogTypeMessage;
-    {** Группа сообщения }
     Group: TLogGroupMessage;
-    {** Документ логирования к которому принадлежит этот нод }
+    {** The document logging to whom belongs this node }
     LogDoc: ALogDocument;
-    {** Родительский нод логирования к которому принадлежит этот нод }
+    {** Parental nod logging to whom belongs this node }
     Parent: ALogNode;
-    {** Статус нода }
+    {** Node status }
     Status: TLogNodeStatus;
   end;
 
-  //** Нод логирования - элемент дерева логирования
   TALogNodeObject = class
   public
     FLogNode: ALogNode_Type;
@@ -55,11 +51,7 @@ type
     procedure SetStatus(Value: TLogNodeStatus);
     procedure SetStrMsg(const Value: WideString);
   public
-    {** Добавить сообщение
-        @returns(Возвращает номер добавленого сообщения или 0) }
     function AddMsg(const AMsg: WideString): Integer; virtual;
-    {** Добавить строку
-        @returns(Возвращает номер добавленой строки или 0) }
     function AddStr(const AStr: WideString): Integer; virtual;
     function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
         const StrMsg: WideString): AInteger; virtual;
@@ -72,8 +64,6 @@ type
   public
     property Id: Integer read GetId write SetId;
     property Msg: WideString read GetStrMsg write SetStrMsg;
-    //property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
-    //property Params: WideString read FParams write FParams;
     property Group: TLogGroupMessage read GetGroup write SetGroup;
     property Status: TLogNodeStatus read GetStatus write SetStatus;
     property Typ: TLogTypeMessage read GetLogType write SetLogType;

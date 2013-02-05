@@ -1,5 +1,4 @@
-﻿{**
-@Abstract Класс, объединяющий вывод логов сразу в несколько мест
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.01.2006
 @LastMod 18.12.2012
@@ -14,7 +13,7 @@ uses
   ALogNodeUtils,
   ATypes;
 
-type //** Класс для записи Log сразу в несколько мест
+type
   TALogDocumentListObject = class(TALogDocumentObject)
   protected
     FDocuments: array of TALogDocumentObject;
@@ -42,8 +41,6 @@ type //** Класс для записи Log сразу в несколько м
     property DocumentByIndex[Index: Integer]: ALogDocument read GetDocumentByIndex;
     property DocumentCount: Integer read GetDocumentCount;
   end;
-
-  //TALogDocuments = TALogDocumentListObject;
 
 implementation
 

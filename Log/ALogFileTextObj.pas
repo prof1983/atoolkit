@@ -1,8 +1,7 @@
-﻿{**
-@Abstract Классы для записи собщений программы в БД или файл
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2005
-@LastMod 18.12.2012
+@LastMod 05.02.2013
 
 Uses
   @link ABase
@@ -21,22 +20,19 @@ uses
   ATypes,
   AUtilsMain;
 
-type //** Запись в файл
+type
   TALogFileText = class(TALogDocumentObject)
   private
-    //** Имя файла
     FFileName: WideString;
   public
     procedure SetFileName(const Value: WideString);
   public
-    //** Добавить сообщение
     function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
         const StrMsg: APascalString): AInt; override;
     function Initialize(): AError; override;
   public
     constructor Create();
   public
-    //** Имя файла
     property FileName: WideString read FFileName write SetFileName;
   end;
 
@@ -69,14 +65,12 @@ end;
 function TALogFileText.Initialize(): AError;
 begin
   Result := inherited Initialize();
-  // Проверка сущестрования директории
   AUtils_ForceDirectoriesP(AUtils_ExtractFilePathP(FFileName));
 end;
 
 procedure TALogFileText.SetFileName(const Value: WideString);
 begin
   FFileName := Value;
-  // Проверка сущестрования директории
   AUtils_ForceDirectoriesP(AUtils_ExtractFilePathP(FFileName));
 end;
 

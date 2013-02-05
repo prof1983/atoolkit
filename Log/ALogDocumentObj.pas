@@ -1,8 +1,7 @@
-﻿{**
-@Abstract Работа с Log. Классы для записи собщений программы в БД или файл или отображения в окне Log
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2005
-@LastMod 18.12.2012
+@LastMod 05.02.2013
 }
 unit ALogDocumentObj;
 
@@ -11,7 +10,7 @@ interface
 uses
   ABase, ALogDocumentUtils, ALogNodeObj, AMessageConst, ATypes;
 
-type //** Документ работы с Log
+type
   TALogDocumentObject = class
   public
     FOnAddToLog: TAddToLogProc;
@@ -24,24 +23,14 @@ type //** Документ работы с Log
     procedure SetOnCommand(Value: TProcMessageStr); virtual;
     procedure SetLogType(Value: TLogType);
   public
-    {** Добавить сообщение
-        @returns(Возвращает номер добавленого сообщения или 0) }
     function AddMsg(const Msg: WideString): AInt; virtual;
-    {** Добавить строку
-        @returns(Возвращает номер добавленой строки или 0) }
     function AddStr(const Str: WideString): AInt; virtual;
-    {** Добавляет лог-сообщение
-        @returns(Возвращает номер добавленого лог-сообщения или 0) }
     function AddToLog(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
         const StrMsg: APascalString): AInt; virtual;
-    {** Добавляет лог-сообщение
-        @returns(Возвращает номер добавленого лог-сообщения или 0) }
     function AddToLogW(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
         const StrMsg: WideString): AInt; virtual;
   public
-    {** Финализировать }
     function Finalize(): AError; virtual;
-    {** Инициализировать }
     function Initialize(): AError; virtual;
   public
     function AddNode(Node: ALogNode): AError;
@@ -50,7 +39,6 @@ type //** Документ работы с Log
     function GetSelf(): ALogDocument;
     function NewNode(LogType: TLogTypeMessage; const Msg: WideString; Parent: AInt = 0; Id: AInt = 0): ALogNode; virtual;
   published
-    {** Тип лог-документа }
     property LogType: TLogType read FLogType;
     property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
     property OnCommand: TProcMessageStr read FOnCommand write SetOnCommand;

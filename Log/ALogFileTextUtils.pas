@@ -1,9 +1,7 @@
-﻿{**
-@Abstract(Функции для работы с текстовыми лог-файлами)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(20.03.2012)
-@LastMod(26.04.2012)
-@Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 20.03.2012
+@LastMod 05.02.2013
 }
 unit ALogFileTextUtils;
 
@@ -93,7 +91,6 @@ begin
       SysUtils.FindClose(SearchRec);
     end;
 
-    // запись сообщений в LOG файл
     AssignFile(ErrorIni, AFileName);
     {$I-}
     if FileExists(AFileName) then
@@ -116,8 +113,6 @@ begin
     Result := True;
   except
     Result := False;
-    //on E: Exception do
-    //  ShowError(0, 'Ошибка при записи логов', '"%s" <%s.%s>', [E.Message, 'unProfGlobals', 'SaveLog']);
   end;
 end;
 

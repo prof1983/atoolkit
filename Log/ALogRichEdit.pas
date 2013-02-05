@@ -1,15 +1,7 @@
-﻿{**
-@Abstract(Лог-журнал для вывода лог-сообщений в RichEdit)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(23.06.2007)
-@LastMod(25.04.2012)
-@Version(0.5)
-
-История версий
-0.0.1.0 - 06.07.2007 - AIRichEditLog -> RichEditLog
-0.0.0.3 - 03.07.2007
-0.0.0.2 - 24.06.2007
-0.0.0.1 - 23.06.2007
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 23.06.2007
+@LastMod 05.02.2013
 }
 unit ALogRichEdit;
 
@@ -19,16 +11,13 @@ uses
   ComCtrls, Graphics,
   ALogJournal;
 
-type //** @abstract(Лог-журнал для вывода лог-сообщений в RichEdit)
+type
   TRichEditLog = class(TLogJournal)
   private
-    //** Компонент для вывода сообщений
     FRichEdit: TRichEdit;
   public
-    //** Функция добавления лог-сообщения
     function AddToLog(Msg: WideString): Integer; override;
   public
-    //** Компонент для вывода сообщений
     property RichEdit: TRichEdit read FRichEdit write FRichEdit;
   end;
 

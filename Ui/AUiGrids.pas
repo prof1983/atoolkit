@@ -2,7 +2,7 @@
 @Abstract AUi grids
 @Author Prof1983 <prof1983@ya.ru>
 @Created 11.01.2010
-@LastMod 30.01.2013
+@LastMod 05.02.2013
 }
 unit AUiGrids;
 
@@ -39,6 +39,10 @@ function AUiGrid_DeleteRow(Grid: AControl): AError; {$ifdef AStdCall}stdcall;{$e
 
 {** ”дал€ет указанную строку }
 function AUiGrid_DeleteRow2(Grid: AControl; Row: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+{** ѕроизводит поиск указанного значени€ в определенной колонке
+    @return ¬озвращает номер строки с указанным значением в указанной €чейке }
+function AUiGrid_Find2P(Grid: AControl; const Value: APascalString; Col, FromRow, ToRow: AInt): AInt;
 
 {** ѕроизводит поиск значени€ в заданной колонке. –аботает пока только дл€ TStringGrid. }
 function AUiGrid_FindInt(Grid: AControl; Col, Value: AInteger): AInteger; {$ifdef AStdCall}stdcall;{$endif}
@@ -110,6 +114,10 @@ procedure StringGrid_DeleteRowByValue(Grid: TStringGrid; Col: Integer; const Val
 
 // ¬озвращает номер строки с указанным значением в указанной €чейке.
 function StringGrid_Find(Grid: TStringGrid; Col: Integer; const Value: string): Integer;
+
+{** ѕроизводит поиск указанного значени€ в определенной колонке
+    @return ¬озвращает номер строки с указанным значением в указанной €чейке }
+function StringGrid_Find2P(Grid: TStringGrid; const Value: APascalString; Col, FromRow, ToRow: AInt): AInt;
 
 // ¬озвращает номер строки с указанным значением в указанной €чейке.
 function StringGrid_FindInt(Grid: TStringGrid; Col, Value: Integer): Integer;
@@ -222,6 +230,15 @@ begin
   try
     StringGrid_RowDeleteA(TStringGrid(Grid), Row);
     Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiGrid_Find2P(Grid: AControl; const Value: APascalString; Col, FromRow, ToRow: AInt): AInt;
+begin
+  try
+    Result := StringGrid_Find2P(TStringGrid(Grid), Value, Col, FromRow, ToRow);
   except
     Result := -1;
   end;
@@ -585,6 +602,35 @@ begin
   begin
     if (Grid.Cells[Col,I] = Value) then
     begin
+      Result := I;
+      Exit;
+    end;
+  end;
+  Result := -1;
+end;
+
+function StringGrid_Find2P(Grid: TStringGrid; const Value: APascalString; Col, FromRow, ToRow: AInt): AInt;
+var
+  TR: Integer;
+  I: Integer;
+  SRect: TGridRect;
+begin
+  Tr := Grid.Row;
+  for I := FromRow to ToRow do
+  begin
+    if (Grid.Cells[Col,I] = Value) then
+    begin
+      SRect.Top := I;
+      SRect.Left := Col;
+      SRect.Bottom := I;
+      SRect.Right := Col;
+      if ((I < Grid.TopRow) or (I > Grid.TopRow+Grid.VisibleRowCount)) then
+        TR := I-2;
+      if (TR > 2) then
+        Grid.TopRow := TR
+      else
+        Grid.TopRow := 2;
+      Grid.Selection := SRect;
       Result := I;
       Exit;
     end;

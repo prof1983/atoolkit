@@ -1,17 +1,12 @@
 ﻿{**
-@Abstract(Центральная часть (микроядро) выполнения программы)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(20.08.2007)
-@LastMod(05.07.2011)
-@Version(0.5)
+@Abstract Центральная часть (микроядро) выполнения программы
+@Author Prof1983 <prof1983@ya.ru>
+@Created 20.08.2007
+@LastMod 05.07.2011
 
 Prototype: jade.Runtime
 
 Runtime предназначен для передачи сообщений между модулями.
--У runtime модуля есть конвеер входящих сообщений.
-
-0.0.1.12 Prof1983
-[*] TRuntime -> TARuntime
 }
 unit AKernelRuntime;
 

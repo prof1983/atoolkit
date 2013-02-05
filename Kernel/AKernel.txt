@@ -1,0 +1,50 @@
+Задачи микроядра (Kernel):
+- Создавать подпроцессы-обертки для модулей(компонент).
+- Загружать модули из DLL файлов и создавать обертки для них.
+
+
+AThreatedModule - Этот класс используется для подключения потокового модуля в общий Runtime.
+
+--- AModuleThread ---
+
+Для каждого плугина создается свой подпроцесс.
+Сообщения передаются через очередь сообщений.
+
+const
+  // Максимальное количество попыток обратится к очереди сообщений
+  ChechBusyMaxCount = 10;
+  // Время ожидания освобождения очереди сообщений
+  CheckBusySleep = 1;
+
+psNone
+  - Exit
+  - Intialize
+    - psInitializing
+      - psInitializeError
+        - Exit
+      - psInitialized
+        - Finalize
+          - psFinalizeError
+            - Exit
+          - psFinalized
+            - Initialize
+            - Exit
+        - Start
+          - psStarting
+            - psStartError
+              - Finalize
+            - psStarted
+              - Stop
+                - psStoping
+                  - psStopError
+                    - Finalize
+                  - psStoped
+                    - Start
+                    - Finalize
+              - Pause
+                - psPausing
+                  - psPauseError
+                    - Stop
+                  - psPaused
+                    - Start
+                    - Stop

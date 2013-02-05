@@ -1,21 +1,7 @@
 ﻿{**
-@Abstract(Модуль)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(28.08.2007)
-@LastMod(04.07.2011)
-@Version(0.5)
-
--Модуль может иметь неограниченное число точек расширения (ExtensionPoint).
--Модуль может зависеть от других модулей (Dependences).
--Зависимости определяются в информации о модуле (Information).
-
-20.06.2011 - Prof1983
-[*] Сменил версию на 0.0.3
-25.03.2008 - Prof1983
-[+] TAAbstractModule
-0.0.1.12
-[*] Initialize
-[+] DoInitialize, DoFinalize, IAModule
+@Author Prof1983 <prof1983@ya.ru>
+@Created 28.08.2007
+@LastMod 04.07.2011
 }
 unit AModule;
 

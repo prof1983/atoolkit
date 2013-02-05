@@ -1,9 +1,7 @@
-﻿{**
-@Abstract(Клиент для DLL плагинов)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(16.03.2008)
-@LastMod(04.07.2011)
-@Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 16.03.2008
+@LastMod 04.07.2011
 }
 unit APluginClient;
 
@@ -14,7 +12,6 @@ uses
   ABase, AModuleClient;
 
 type
-  //** @abstract(Возвращяет версию модуля)
   TAGetVersionProc = function(): AVersion; stdcall;
 
 type

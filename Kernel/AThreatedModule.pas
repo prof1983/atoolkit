@@ -1,11 +1,7 @@
-﻿{**
-@Abstract(Модуль, функционирующий в своем подпроцессе)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.03.2008)
-@LastMod(05.07.2011)
-@Version(0.5)
-
-Этот класс используется для подключения потокового модуля в общий Runtime.
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.03.2008
+@LastMod 05.02.2013
 }
 unit AThreatedModule;
 
@@ -20,22 +16,18 @@ type
   private
     FModuleThread: TAModuleThread;
   protected
-    //** @abstract(Возвращяет идентификатор модуля)
     function GetModuleID(): TAModuleID; override; safecall;
-    //** @abstract(Возвращяет имя модуля)
     function GetModuleName(): WideString; override; safecall;
   public
     constructor Create(Module: TAModule);
     destructor Destroy(); override;
-    //** @abstract(Финализировать модуль)
     function Finalize(): Integer; override; safecall;
-    //** @abstract(Инициализировать модуль)
     function Initialize(AModuleID: TAModuleID; ASendMessage: TACoreRunMessageProc2): Integer; override; safecall;
-    //** @abstract(Добавляет сообщение для обработки в порядке очереди)
+    {** Adds the message to be processed in the order of the }
     function RunMessage(Command: TACommand; P0, P1, P2: Integer; Data: Pointer): Integer; override; safecall;
-    //** @abstract(Обрабатывает сообщение)
+    {** Process the message }
     function RunMessageC(Msg: PAMessageRec): Integer; override; safecall;
-    //** @abstract(Обрабатывает сообщение вне очереди)
+    {** Process the message out of turn }
     function RunMessageNow(Command: TACommand; P0, P1, P2: Integer; Data: Pointer): Integer;
   end;
 
@@ -56,18 +48,18 @@ destructor TAThreatedModule.Destroy();
 var
   i: Integer;
 begin
-  // Если подпроцесс в работе, то завершаем работу с ожиданием
+  // If the subprocess in the work, then finish with the expectation of
   if (FModuleThread.State <> psTerminated) then
   begin
     FModuleThread.Terminate();
-    // Подождем завершения
+    // Wait
     i := 0;
     repeat
       Sleep(10);
       if (FModuleThread.State = psTerminated) then
         Break;
     until (i < 10);
-    // Принудительно останавливаем подпроцесс
+    // Stop process
     FModuleThread.Suspend();
   end;
   FModuleThread.Free();
@@ -77,8 +69,6 @@ end;
 
 function TAThreatedModule.Finalize(): Integer;
 begin
-  //Self.RunMessageNow(cmdModuleFinalize, 0, 0, 0, nil);
-  // Останавливаем выполнение подпроцесса
   FModuleThread.Terminate();
 end;
 
@@ -94,10 +84,8 @@ end;
 
 function TAThreatedModule.Initialize(AModuleID: TAModuleID; ASendMessage: TACoreRunMessageProc2): Integer;
 begin
-  // Назначаем идентификатор модуля и CallBack функцию
   FModuleThread.ModuleID := AModuleID;
   FModuleThread.SendMessage := ASendMessage;
-  // Запускаем выполнение подпроцесса
   FModuleThread.Resume();
   Result := Kernel.NextMessageID;
   FModuleThread.InitializePlugin(Result);

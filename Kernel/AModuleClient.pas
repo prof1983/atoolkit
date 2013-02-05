@@ -1,9 +1,7 @@
-﻿{**
-@Abstract(Абстрактный класс клиента для модулей)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(16.03.2008)
-@LastMod(04.07.2011)
-@Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 16.03.2008
+@LastMod 04.07.2011
 }
 unit AModuleClient;
 
@@ -20,9 +18,7 @@ type
     function DoFinalize(): Integer; override;
     function DoInitialize(): Integer; override;
   public
-    //** @abstract(Обрабатывает сообщение)
     function RunMessage(Command: TACommand; P0, P1, P2: Integer; Data: Pointer): Integer; override; safecall;
-    //** @abstract(Обрабатывает сообщение)
     function RunMessageC(Msg: PAMessageRec): Integer; override; safecall;
   public
     property RunMessageProc: TAModuleRunMessageProc read FRunMessage write FRunMessage;

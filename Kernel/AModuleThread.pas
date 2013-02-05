@@ -1,55 +1,11 @@
-﻿{**
-@Abstract(Подпроцесс для модуля)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(04.03.2008)
-@LastMod(04.07.2011)
-@Version(0.5)
-
-Для каждого плугина создается свой подпроцесс.
-Сообщения передаются через очередь сообщений.
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 04.03.2008
+@LastMod 05.02.2013
 }
 unit AModuleThread;
 
-{
-Для каждого плугина создаем подпроцесс.
-
-psNone
-  - Exit
-  - Intialize
-    - psInitializing
-      - psInitializeError
-        - Exit
-      - psInitialized
-        - Finalize
-          - psFinalizeError
-            - Exit
-          - psFinalized
-            - Initialize
-            - Exit
-        - Start
-          - psStarting
-            - psStartError
-              - Finalize
-            - psStarted
-              - Stop
-                - psStoping
-                  - psStopError
-                    - Finalize
-                  - psStoped
-                    - Start
-                    - Finalize
-              - Pause
-                - psPausing
-                  - psPauseError
-                    - Stop
-                  - psPaused
-                    - Start
-                    - Stop
-}
-
 interface
-
-// TODO: Реализовать CallBack функцию для плугина
 
 uses
   Classes, Contnrs, Windows,
@@ -78,8 +34,7 @@ type
 
 type
   TAModuleThread = class(TThread)
-  private // Для внеочередного сообщения
-    //FNowMessageBusy: Boolean;
+  private // For the posts of the extraordinary
     FNowMessageResult: Integer;
     FNowMessageRun: Boolean;
   private
@@ -87,15 +42,11 @@ type
     FState: TPluginState;
     FMessageQueue: TQueue;
     FModuleID: TAModuleID;
-    {**
-      @abstract(True, если очередь сообщения занята)
-      Обращение к FMessageQueue разрешается только когда FMessageQueueBysy = False.
-    }
+    {** All posts busy }
     FMessageQueueBusy: Boolean;
     FNowMessage: TAMessageRec;
     FSendMessage: TACoreRunMessageProc2;
     function GetIsTerminated(): Boolean;
-    //** @abstract()
     function GetNextMessage(): PAMessageRec;
     function RunMessage(msg: PAMessageRec): Integer;
   protected
@@ -103,66 +54,56 @@ type
   public
     constructor Create(Module: TAAbstractModule);
     destructor Destroy(); override;
-    //** @abstract(Финализировать плугин)
     function FinalizePlugin(MessageID: TAMessageID): Integer;
-    //** @abstract(Инициализировать плугин)
     function InitializePlugin(MessageID: TAMessageID): Integer;
-    //** @abstract(Начать/продолжить выполнение внутреннего подпроцесса в модуле (если он есть))
+    {** Start/continue execution of internal subprocess module (if it is) }
     function StartPlugin(MessageID: Integer): Integer;
-    //** @abstract(Завершить выполнение внутреннего подпроцесса в модуле (если он есть))
+    {** The completion of the internal sub-module (if it is) }
     function StopPlugin(MessageID: Integer): Integer;
-    //** @abstract(Приостановить выполнение внутреннего подпроцесса в модуле (если он есть))
+    {** Suspend the execution of internal subprocess module (if it is) }
     function PausePlugin(MessageID: TAMessageID): Integer;
-    {**
-      @abstract(Поместить сообщение в стек)
-      IsNow - True, если требуется выполнить немедленно. В этом случае сообщение
-          помещается как внеочередное и функция ожидает выполнения некоторое время.
-          Если выполнение обработки сообщения не завершено(или не начато) за определенное время, то
-          возвращяется ошибка, иначе возвращяется результат обработки сообщения.
-    }
+    {** Puts a message in the stack
+        @param IsNow - you want to immediately.
+            In this case, the message is placed as the extraordinary and function pending for some time.
+            If the message processing is not completed(or not yet started) for a certain period of time,
+            the возвращяется error, otherwise возвращяется the result of processing the message. }
     function PushMessage(MessageID: TAMessageID; Command: TACommand; Param0, Param1, Param2: Integer;
       Data: Pointer; IsNow: Boolean = False): Integer;
-    //** @abstract(Поместить сообщение в стек)
+    {** Puts a message in the stack }
     function PushMessageC(MessageRec: PAMessageRec): Integer;
   public
-    {**
-      @abstract(CallBack функция обработки сообщения ядром)
-      Должна задаваться до инициализации модуля. Передается модулю как параметр при инициализации.
-      Вызывается модулем.
-    }
+    {** The CallBack function of processing of the messages the kernel
+        Should be set to initialize the module.
+        Passed to the module as a parameter in the initialization. }
     property SendMessage: TACoreRunMessageProc2 read FSendMessage write FSendMessage;
-    {**
-      @abstract(True, если идет завершение подпроцесса)
-      После завершения подпроцесса State = psTerminated.
-    }
+    {** Is the completion of a subprocess
+        After the completion of the subprocess State = psTerminated. }
     property IsTerminated: Boolean read GetIsTerminated;
-    //** @abstract(Идентификатор модуля. Используется только при инициализации)
+    {** The ID of the module. Is used only when initializing }
     property ModuleID: TAModuleID read FModuleID write FModuleID;
-    //** @abstract(Структура, полученая при загрузке плугина)
-    property Module: TAAbstractModule read FModule; //write SetModule;
-    //** @abstract(Текущее состояние модуля)
+    {** Structure, returned at plugin boot }
+    property Module: TAAbstractModule read FModule;
+    {** The current state of the module }
     property State: TPluginState read FState;
   end;
 
 implementation
 
 const
-  // Максимальное количество попыток обратится к очереди сообщений
+  // The maximum number of attempts to return to a message queue
   ChechBusyMaxCount = 10;
-  // Время ожидания освобождения очереди сообщений
+  // Waiting time to a message queue
   CheckBusySleep = 1;
 
-{ TAssistantModuleThread }
+{ TAModuleThread }
 
 constructor TAModuleThread.Create(Module: TAAbstractModule);
 begin
   inherited Create(True);
   FModule := Module;
-  // Делаем приоритет подпроцесса чуть ниже, чем приоритет основной программы (ядра)
   Self.Priority := tpLower;
-  // Создаем очередь сообщений
   FMessageQueue := TQueue.Create();
-  // Разрешаем обращения к очереди сообщений
+  // Allow access to a message queue
   FMessageQueueBusy := False;
   FState := psNone;
 end;
@@ -179,30 +120,25 @@ var
   msg: PAMessageRec;
   data: Pointer;
   dataSize: Integer;
-  //msg1: TAMessageRec;
 begin
-  //msg1.Command := cmdInitialize();
-  //FModule.RunMessage(cmdinitialize, 0, 0, 0, nil);
   repeat
     if FMessageQueueBusy then
       Continue;
 
-    // Если есть внеочередное сообщение, то обрабатываем сначала его
+    // If there is a special message, then process it first
     if FNowMessageRun then
     begin
       FNowMessageResult := RunMessage(PAMessageRec(Addr(FNowMessage)));
       FNowMessageRun := False;
     end;
 
-    // Получаем очередное сообщение
     msg := GetNextMessage();
 
     if Assigned(msg) then
     begin
-      // Обработаем сообщение
       RunMessage(msg);
 
-      // Удаляем отработаное сообщение
+      // Remove the spent message
       data := Pointer(msg^.Data);
       if Assigned(data) then
       begin
@@ -231,16 +167,16 @@ end;
 
 function TAModuleThread.GetNextMessage(): PAMessageRec;
 begin
-  // Запрещаем обращения к очереди сообщений
+  // Prohibit recourse to a message queue
   FMessageQueueBusy := True;
 
-  // Получаем очередное сообщение
+  // Get another message
   if FMessageQueue.Count > 0 then
     Result := FMessageQueue.Pop()
   else
     Result := nil;
 
-  // Разрешаем обращения к очереди сообщений
+  // Allow access to a message queue
   FMessageQueueBusy := False;
 end;
 
@@ -263,32 +199,27 @@ begin
   Result := 0;
   if IsNow then
   begin
-    // Если в данный момент выполняется внеочередная функция, то выходим
+    // If you are currently an extraordinary function, then go
     if FNowMessageRun then
     begin
       Result := rFalse;
       Exit;
     end;
-    // Блокируем FNowMessage
-    //FIsNowMessageBusy := True;
-    // Формируем сообщение
     FNowMessage.MessageID := MessageID;
     FNowMessage.SenderModuleID := midCore;
-    FNowMessage.ReceiverModuleID := FModule.ModuleID; // Фактически не используется
+    FNowMessage.ReceiverModuleID := FModule.ModuleID; // No used
     FNowMessage.Command := Command;
     FNowMessage.Param0 := Param0;
     FNowMessage.Param1 := Param1;
     FNowMessage.Param2 := Param2;
     FNowMessage.Data := Data;
-    // Разблокируем FNowMessage
-    //FIsNowMessageBusy := False;
-    // Указываем обработать внеочередное сообщение
+    // Specify the process extraordinary message
     FNowMessageRun := True;
-    // Немного подождем, пока сообщение обработается
+    // Wait a little bit until the message processing
     i := 0;
     repeat
       Sleep(10);
-      // Если сообщение обработано, то возврящаем результат и выходим
+      // If a message is processed, the возврящаем result and go
       if not(FNowMessageRun) then
       begin
         Result := FNowMessageResult;
@@ -301,7 +232,7 @@ begin
   begin
     msg.MessageID := MessageID;
     msg.SenderModuleID := midCore;
-    msg.ReceiverModuleID := FModule.ModuleID; // Фактически не используется
+    msg.ReceiverModuleID := FModule.ModuleID; // No used
     msg.Command := Command;
     msg.Param0 := Param0;
     msg.Param1 := Param1;
@@ -320,23 +251,21 @@ begin
   Result := -1;
   for i := 0 to ChechBusyMaxCount do
   begin
-    // Если в данный момент мы можем обратится к очереди сообщений,
-    // то добавляем сообщение в очередь, иначе маленько ждем и пробуем снова,
-    // но не более ChechBusyCount раз.
+    // At this point, if we may turn to a message queue, then add the message to the queue,
+    // or else a little forward and trying again, but not more than ChechBusyCount time.
     if (FMessageQueueBusy = False) then
     begin
-      // Запрещаем другим обращения к очереди сообщений
+      // Prohibit other treatment to a message queue
       FMessageQueueBusy := True;
-      // Копируем сообщение полностью (включая и данные)
+      // Copy the entire message (including the data)
       GetMem(msg, SizeOf(TAMessageRec));
       Move(MessageRec^, msg^, SizeOf(TAMessageRec));
       if Assigned(msg^.Data) then
         Move(MessageRec^.Data^, msg^.Data^, Integer(msg^.Data^));
-      // Добавляем сообщение в очередь
+      // Add a message in queue
       FMessageQueue.Push(msg);
-      // Разрешаем другим обращения к очереди сообщений
+      // Allow others access to a message queue
       FMessageQueueBusy := False;
-      // Сообщение добавлено -> выходим
       Result := 0;
       Exit;
     end
@@ -388,8 +317,6 @@ begin
         except
           FState := psStartError;
           MessageBox(0, PChar(errStartPlugin), PChar(stTitle), MB_OK or MB_ICONSTOP or MB_TASKMODAL);
-          // TODO: Завершение процесса только для модуля GUI
-          //Self.Terminate();
         end;
       end;
     cmdModuleStop:

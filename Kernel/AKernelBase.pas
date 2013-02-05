@@ -1,9 +1,7 @@
-﻿{**
-@Abstract()
-@Author(Prof1983 prof1983@ya.ru)
-@Created(20.06.2011)
-@LastMod(04.07.2011)
-@Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 20.06.2011
+@LastMod 04.07.2011
 }
 unit AKernelBase;
 
@@ -14,9 +12,8 @@ uses
 
 var
   APlatformName: string;
-  // Базовая версия ядра и модулей
+  // The basic version of the kernel and modules
   APlatformVersion: AVersion;
-  //APlatformVersion = (APlatformMajorVersion shl 24) or (APlatformMinorVersion shl 16);
 
 implementation
 

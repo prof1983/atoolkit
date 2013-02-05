@@ -1,9 +1,7 @@
 ﻿{**
-@Abstract(Текстовые сообщения)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(04.03.2008)
-@LastMod(07.07.2011)
-@Version(0.5)
+@Author Prof1983 <prof1983@ya.ru>
+@Created 04.03.2008
+@LastMod 07.07.2011
 }
 unit AMessages;
 

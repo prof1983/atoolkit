@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Центральная часть (микроядро) выполнения программы)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(20.08.2007)
-@LastMod(05.05.2012)
-@Version(0.5)
+@Abstract Центральная часть (микроядро) выполнения программы
+@Author Prof1983 <prof1983@ya.ru>
+@Created 20.08.2007
+@LastMod 05.05.2012
 
 Prototype: Jade.Runtime
 }

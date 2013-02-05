@@ -2,7 +2,7 @@
 @Abstract ASystem function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.08.2009
-@LastMod 01.02.2013
+@LastMod 05.02.2013
 }
 unit ASystem;
 
@@ -48,6 +48,7 @@ uses
   {$IFDEF USE_RUNTIME}ARuntime,{$ENDIF}
   AStringMain,
   ASystemData,
+  ASystemFileText,
   ASystemMain,
   ASystemPrepare,
   ASystemResourceString,
@@ -63,12 +64,6 @@ function Info_GetCompanyName(out Value: AString_Type): AInteger; stdcall;
     Prototype: System.Application.Info.CompanyName }
 function Info_GetCompanyNameP: APascalString; stdcall;
 
-{** Gets the company name associated with the application.
-    Prototype: System.Application.Info.CompanyName }
-function Info_GetCompanyNameWS(): AWideString; stdcall;
-
-function Info_GetCommentsWS(): AWideString; stdcall;
-
 {** Gets the copyright notice associated with the application.
     Prototype: System.Application.Info.Copyright }
 function Info_GetCopyright(out Value: AString_Type): AInteger; stdcall;
@@ -77,13 +72,7 @@ function Info_GetCopyright(out Value: AString_Type): AInteger; stdcall;
     Prototype: System.Application.Info.Copyright }
 function Info_GetCopyrightP: APascalString; stdcall;
 
-{** Gets the copyright notice associated with the application.
-    Prototype: System.Application.Info.Copyright }
-function Info_GetCopyrightWS(): AWideString; stdcall;
-
 function Info_GetDataDirectoryPathP: APascalString; stdcall; deprecated; // Use ASystem_GetDataDirectoryPathP()
-
-function Info_GetDataDirectoryPathWS(): AWideString; stdcall; deprecated; // Use ASystem_GetDataDirectoryPathP()
 
 {** Gets the description associated with the application.
     Prototype: System.Application.Info.Description }
@@ -93,10 +82,6 @@ function Info_GetDescription(out Value: AString_Type): AInteger; stdcall;
     Prototype: System.Application.Info.Description }
 function Info_GetDescriptionP: APascalString; stdcall;
 
-{** Gets the description associated with the application.
-    Prototype: System.Application.Info.Description }
-function Info_GetDescriptionWS(): AWideString; stdcall;
-
 {** Gets the directory where the application is stored.
     Prototype: System.Application.Info.DirectoryPath }
 function Info_GetDirectoryPath(out Value: AString_Type): AInteger; stdcall;
@@ -104,10 +89,6 @@ function Info_GetDirectoryPath(out Value: AString_Type): AInteger; stdcall;
 {** Gets the directory where the application is stored.
     Prototype: System.Application.Info.DirectoryPath }
 function Info_GetDirectoryPathP: APascalString; stdcall;
-
-{** Gets the directory where the application is stored.
-    Prototype: System.Application.Info.DirectoryPath }
-function Info_GetDirectoryPathWS(): AWideString; stdcall;
 
 {** Gets the product name associated with the application.
     Prototype: System.Application.Info.ProductName }
@@ -117,10 +98,6 @@ function Info_GetProductName(out Value: AString_Type): AInteger; stdcall;
     Prototype: System.Application.Info.ProductName }
 function Info_GetProductNameP: APascalString; stdcall;
 
-{** Gets the product name associated with the application.
-    Prototype: System.Application.Info.ProductName }
-function Info_GetProductNameWS(): AWideString; stdcall;
-
 {** Get product version
     Prototype: System.Application.Info.ProductVersion }
 function Info_GetProductVersion(): AVersion; stdcall;
@@ -128,10 +105,6 @@ function Info_GetProductVersion(): AVersion; stdcall;
 {** Get product version as string
     Prototype: System.Application.Info.ProductVersion }
 function Info_GetProductVersionStrP: APascalString; stdcall; deprecated;
-
-{** Get product version as WideString
-    Prototype: System.Application.Info.ProductVersion }
-function Info_GetProductVersionStrWS(): AWideString; stdcall;
 
 {** Gets the name, without the extension, of the assembly file for the application.
     Prototype: System.Application.Info.AssemblyName }
@@ -141,10 +114,6 @@ function Info_GetProgramName(out Value: AString_Type): AInteger; stdcall; deprec
     Prototype: System.Application.Info.AssemblyName }
 function Info_GetProgramNameP: APascalString; stdcall; deprecated; // Use ASystem_GetProgramNameP()
 
-{** Gets the name, without the extension, of the assembly file for the application.
-    Prototype: System.Application.Info.AssemblyName }
-function Info_GetProgramNameWS(): AWideString; stdcall; deprecated; // Use ASystem_GetProgramNameP()
-
 {** Gets the version number of the application.
     Prototype: System.Application.Info.Version }
 function Info_GetProgramVersion(): AVersion; stdcall;
@@ -152,10 +121,6 @@ function Info_GetProgramVersion(): AVersion; stdcall;
 {** Gets the version number of the application.
     Prototype: System.Application.Info.Version }
 function Info_GetProgramVersionStrP: APascalString; stdcall;
-
-{** Gets the version number of the application.
-    Prototype: System.Application.Info.Version }
-function Info_GetProgramVersionStrWS(): AWideString; stdcall;
 
 {** Gets the title associated with the application.
     Prototype: System.Application.Info.Title }
@@ -165,10 +130,6 @@ function Info_GetTitle(out Value: AString_Type): AInteger; stdcall;
     Prototype: System.Application.Info.Title }
 function Info_GetTitleP: APascalString; stdcall;
 
-{** Gets the title associated with the application.
-    Prototype: System.Application.Info.Title }
-function Info_GetTitleWS(): AWideString; stdcall;
-
 {** Get program about page url
     Prototype: System.Application.Info.Url }
 function Info_GetUrl(out Value: AString_Type): AInteger; stdcall;
@@ -176,10 +137,6 @@ function Info_GetUrl(out Value: AString_Type): AInteger; stdcall;
 {** Get program about page url
     Prototype: System.Application.Info.Url }
 function Info_GetUrlP: APascalString; stdcall;
-
-{** Get program about page url
-    Prototype: System.Application.Info.Url }
-function Info_GetUrlWS(): AWideString; stdcall;
 
 {** Gets the company name associated with the application.
     Prototype: System.Application.Info.CompanyName }
@@ -221,7 +178,7 @@ function Info_ProgramVersion: AVersion; stdcall;
     Prototype: System.Application.Info.Version }
 function Info_ProgramVersionStr: APascalString; stdcall; deprecated; // Use Info_GetProgramVersionStrP
 
-function Info_SetDataDirectoryPathP(const DataDir: string): AError; stdcall;
+function Info_SetDataDirectoryPathP(const DataDir: APascalString): AError; stdcall;
 
 {** Gets the title associated with the application.
     Prototype: System.Application.Info.Title }
@@ -243,7 +200,6 @@ function FileTextClose(FileID: AInteger): AError; stdcall;
 function FileTextEof(FileID: AInteger): ABoolean; stdcall;
 function FileTextGetIndex(FileID: AInt): AInt; stdcall;
 function FileTextOpenP(const FileName: APascalString): AInt; stdcall;
-function FileTextOpenWS(const FileName: AWideString): AInteger; stdcall;
 function FileTextReadLnAnsi(FileID: AInteger; var Stroka: AnsiString): AError; stdcall;
 
 // ---
@@ -251,8 +207,6 @@ function FileTextReadLnAnsi(FileID: AInteger; var Stroka: AnsiString): AError; s
 function ParamStr(Index: AInteger; out Value: AString_Type): AInteger; stdcall;
 
 function ParamStrP(Index: AInteger): APascalString; stdcall;
-
-function ParamStrWS(Index: AInteger): AWideString; stdcall;
 
 function ProcessMessages(): AError; stdcall;
 
@@ -339,14 +293,7 @@ function DoneConfig: AInteger; stdcall;
 
 { Old }
 
-procedure Runtime_SetConfig(Value: AConfig); stdcall; {deprecated}
-
-function Runtime_ShowMessage(const Msg: AWideString): ADialogBoxCommands; stdcall; deprecated; // Use ASystem_ShowMessageP() or ASystem_ShowMessageWS()
-
-function Runtime_ShowMessageA(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall; deprecated; // Use ASystem_ShowMessageExP() or ASystem_ShowMessageExWS()
-
-// Use ShellExecuteP()
-function Runtime_ShellExecute(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall; deprecated;
+procedure Runtime_SetConfig(Value: AConfig); stdcall; deprecated
 
 function GetCompanyName(): APascalString; stdcall; deprecated;
 
@@ -358,6 +305,8 @@ function GetDirectoryPath(out Value: AString_Type): AInteger; stdcall;
 
 function GetDirectoryPathP(): APascalString; stdcall;
 
+function GetExeName(): APascalString; stdcall;
+
 function GetExePath(out Value: AString_Type): AInteger; stdcall;
 
 function GetExePathP(): APascalString; stdcall; deprecated; // Use GetDirectoryPathP()
@@ -366,39 +315,20 @@ function GetProductName(): APascalString; stdcall; //deprecated;
 
 function GetProductVersion(): APascalString; stdcall; //deprecated;
 
-function GetExeName(): APascalString; stdcall;
-
-function GetExeNameWS(): AWideString; stdcall;
-
 {** Gets the name, without the extension, of the assembly file for the application.
     Prototype: System.Application.Info.AssemblyName }
-function GetProgramName(): APascalString; stdcall; deprecated; // Use GetProgramNameWS
+function GetProgramName(): APascalString; stdcall; deprecated {$ifdef ADeprText}'Use ASystem_GetProgramNameP()'{$endif};
 
 function GetProgramVersion(): APascalString; stdcall; deprecated;
 
-function GetTitle(): APascalString; stdcall; deprecated; // Use Info_GetTitleWS()
+function GetTitle(): APascalString; stdcall; deprecated {$ifdef ADeprText}'Use ASystem_GetTitleP()'{$endif};
 
 function GetUrl(): APascalString; stdcall; deprecated;
 
-function GetDataDirectoryPathWS(): APascalString; stdcall;
-
-function GetDataPath: APascalString; stdcall; //deprecated; // Use GetDataDirectoryPathWS()
+function GetDataPath: APascalString; stdcall; deprecated {$ifdef ADeprText}'Use ASystem_GetDataDirectoryPathP()'{$endif};
 
 function GetResourceString(const Section, Name, Default: AString_Type;
     out Value: AString_Type): AInteger; stdcall;
-
-function Runtime_GetCompanyName(): APascalString; stdcall; deprecated;
-function Runtime_GetCopyright(): APascalString; stdcall; deprecated;
-function Runtime_GetDescription(): APascalString; stdcall; deprecated;
-function Runtime_GetExePath(): APascalString; stdcall; deprecated; // Use ASystem_GetExePath()
-function Runtime_GetProductName(): APascalString; stdcall; deprecated;
-function Runtime_GetProductVersion(): APascalString; stdcall; deprecated;
-function Runtime_GetExeName(): APascalString; stdcall; deprecated;
-function Runtime_GetProgramName(): APascalString; stdcall; deprecated; // Use ASystem_GetProgramNameP()
-function Runtime_GetProgramVersion(): APascalString; stdcall; deprecated;
-function Runtime_GetTitle(): APascalString; stdcall; deprecated;
-function Runtime_GetUrl(): APascalString; stdcall; deprecated;
-function Runtime_GetDataPath(): APascalString; stdcall; deprecated; // Use ASystem_GetDataDirectoryPathP()
 
 function GetConfig(): AConfig; stdcall;
 
@@ -429,14 +359,6 @@ type
 var
   FTextFiles: array of TATextFile;
 
-{
-function TryStrToVersion(const S: APascalString; out Version: AVersion): ABoolean;
-begin
-  // ...
-  Result := False;
-end;
-}
-
 function _FileText_GetIndex(FileID: AInteger): Integer;
 var
   J: Integer;
@@ -454,243 +376,183 @@ end;
 
 { Info }
 
-function Info_CompanyName: APascalString; stdcall;
+function Info_CompanyName(): APascalString;
 begin
   Result := FCompanyName;
 end;
 
-function Info_ConfigDirectoryPath: APascalString; stdcall;
+function Info_ConfigDirectoryPath(): APascalString;
 begin
   Result := FConfigPath;
 end;
 
-function Info_Copyright(): APascalString; stdcall;
+function Info_Copyright(): APascalString;
 begin
   Result := FCopyright;
 end;
 
-function Info_DataDirectoryPath: APascalString; stdcall;
+function Info_DataDirectoryPath(): APascalString;
 begin
   Result := FDataPath;
 end;
 
-function Info_Description: APascalString; stdcall;
+function Info_Description(): APascalString;
 begin
   Result := FDescription;
 end;
 
-function Info_DirectoryPath: APascalString; stdcall;
+function Info_DirectoryPath(): APascalString;
 begin
   Result := FExePath;
 end;
 
-function Info_GetCompanyName(out Value: AString_Type): AInteger; stdcall;
+function Info_GetCompanyName(out Value: AString_Type): AInt;
 begin
   Result := AString_AssignP(Value, FCompanyName);
 end;
 
-function Info_GetCompanyNameP: APascalString; stdcall;
+function Info_GetCompanyNameP(): APascalString;
 begin
   Result := FCompanyName;
 end;
 
-function Info_GetCompanyNameWS(): AWideString; stdcall;
-begin
-  Result := FCompanyName;
-end;
-
-function Info_GetCommentsWS(): AWideString; stdcall;
-begin
-  Result := ASystem_GetCommentsP();
-end;
-
-function Info_GetCopyright(out Value: AString_Type): AInteger; stdcall;
+function Info_GetCopyright(out Value: AString_Type): AInt;
 begin
   Result := AString_AssignP(Value, FCopyright);
 end;
 
-function Info_GetCopyrightP: APascalString; stdcall;
+function Info_GetCopyrightP(): APascalString;
 begin
   Result := FCopyright;
 end;
 
-function Info_GetCopyrightWS(): AWideString; stdcall;
-begin
-  Result := FCopyright;
-end;
-
-function Info_GetDataDirectoryPathP: APascalString; stdcall;
+function Info_GetDataDirectoryPathP(): APascalString;
 begin
   Result := FDataPath;
 end;
 
-function Info_GetDataDirectoryPathWS(): AWideString; stdcall;
-begin
-  Result := FDataPath;
-end;
-
-function Info_GetDescription(out Value: AString_Type): AInteger; stdcall;
+function Info_GetDescription(out Value: AString_Type): AInt;
 begin
   Result := AString_AssignP(Value, FDescription);
 end;
 
-function Info_GetDescriptionP: APascalString; stdcall;
+function Info_GetDescriptionP(): APascalString;
 begin
   Result := FDescription;
 end;
 
-function Info_GetDescriptionWS(): AWideString; stdcall;
-begin
-  Result := FDescription;
-end;
-
-function Info_GetDirectoryPath(out Value: AString_Type): AInteger; stdcall;
+function Info_GetDirectoryPath(out Value: AString_Type): AInt;
 begin
   Result := AString_AssignP(Value, FExePath);
 end;
 
-function Info_GetDirectoryPathP: APascalString; stdcall;
+function Info_GetDirectoryPathP(): APascalString;
 begin
   Result := FExePath;
 end;
 
-function Info_GetDirectoryPathWS(): AWideString; stdcall;
-begin
-  Result := FExePath;
-end;
-
-function Info_GetProductName(out Value: AString_Type): AInteger; stdcall;
+function Info_GetProductName(out Value: AString_Type): AInt;
 begin
   Result := AString_AssignP(Value, FProductName);
 end;
 
-function Info_GetProductNameP: APascalString; stdcall;
+function Info_GetProductNameP(): APascalString;
 begin
   Result := FProductName;
 end;
 
-function Info_GetProductNameWS(): AWideString; stdcall;
-begin
-  Result := FProductName;
-end;
-
-function Info_GetProductVersion(): AVersion; stdcall;
+function Info_GetProductVersion(): AVersion;
 begin
   Result := FProductVersion;
 end;
 
-function Info_GetProductVersionStrP: APascalString; stdcall;
+function Info_GetProductVersionStrP(): APascalString;
 begin
   Result := FProductVersionStr;
 end;
 
-function Info_GetProductVersionStrWS(): AWideString; stdcall;
-begin
-  Result := FProductVersionStr;
-end;
-
-function Info_GetProgramName(out Value: AString_Type): AInteger; stdcall;
+function Info_GetProgramName(out Value: AString_Type): AInt;
 begin
   Result := AString_AssignP(Value, FProgramName);
 end;
 
-function Info_GetProgramNameP: APascalString; stdcall;
+function Info_GetProgramNameP(): APascalString;
 begin
   Result := FProgramName;
 end;
 
-function Info_GetProgramNameWS(): AWideString; stdcall;
-begin
-  Result := FProgramName;
-end;
-
-function Info_GetProgramVersion(): AVersion; stdcall;
+function Info_GetProgramVersion(): AVersion;
 begin
   Result := FProgramVersion;
 end;
 
-function Info_GetProgramVersionStrP: APascalString; stdcall;
+function Info_GetProgramVersionStrP(): APascalString;
 begin
   Result := FProgramVersionStr;
 end;
 
-function Info_GetProgramVersionStrWS(): AWideString; stdcall;
-begin
-  Result := FProgramVersionStr;
-end;
-
-function Info_GetTitle(out Value: AString_Type): AInteger; stdcall;
+function Info_GetTitle(out Value: AString_Type): AInt;
 begin
   Result := AString_AssignP(Value, FTitle);
 end;
 
-function Info_GetTitleP: APascalString; stdcall;
+function Info_GetTitleP(): APascalString;
 begin
   Result := FTitle;
 end;
 
-function Info_GetTitleWS(): AWideString; stdcall;
-begin
-  Result := FTitle;
-end;
-
-function Info_GetUrl(out Value: AString_Type): AInteger; stdcall;
+function Info_GetUrl(out Value: AString_Type): AInt;
 begin
   Result := AString_AssignP(Value, FUrl);
 end;
 
-function Info_GetUrlP: APascalString; stdcall;
+function Info_GetUrlP(): APascalString;
 begin
   Result := FUrl;
 end;
 
-function Info_GetUrlWS(): AWideString; stdcall;
-begin
-  Result := FUrl;
-end;
-
-function Info_ProductName: APascalString; stdcall;
+function Info_ProductName(): APascalString;
 begin
   Result := FProductName;
 end;
 
-function Info_ProductVersion: AVersion; stdcall;
+function Info_ProductVersion(): AVersion;
 begin
   Result := FProductVersion;
 end;
 
-function Info_ProductVersionStr: APascalString; stdcall;
+function Info_ProductVersionStr(): APascalString;
 begin
   Result := FProductVersionStr;
 end;
 
-function Info_ProgramName: APascalString; stdcall;
+function Info_ProgramName(): APascalString;
 begin
   Result := FProgramName;
 end;
 
-function Info_ProgramVersion: AVersion; stdcall;
+function Info_ProgramVersion(): AVersion;
 begin
   Result := FProgramVersion;
 end;
 
-function Info_ProgramVersionStr: APascalString; stdcall;
+function Info_ProgramVersionStr(): APascalString;
 begin
   Result := FProgramVersionStr;
 end;
 
-function Info_SetDataDirectoryPathP(const DataDir: string): AError; stdcall;
+function Info_SetDataDirectoryPathP(const DataDir: APascalString): AError;
 begin
   FDataPath := DataDir;
   Result := 0;
 end;
 
-function Info_Title: APascalString; stdcall;
+function Info_Title(): APascalString;
 begin
   Result := FTitle;
 end;
 
-function Info_Url: APascalString; stdcall;
+function Info_Url(): APascalString;
 begin
   Result := FUrl;
 end;
@@ -754,19 +616,14 @@ begin
   Result := ASystem_ParamStrP(Index);
 end;
 
-function ParamStrWS(Index: AInteger): AWideString;
-begin
-  Result := ASystem_ParamStrP(Index);
-end;
-
 function Prepare(): AError;
 begin
-  Result := ASystem_Prepare();
+  Result := ASystem_PrepareP('', '', $00000000, '', $00000000, '', '', '', '', '', '');
 end;
 
-procedure Prepare1(); stdcall;
+procedure Prepare1();
 begin
-  Prepare2P('', '', $00000000, '', $00000000, '', '', '', '', '');
+  ASystem_PrepareP('', '', $00000000, '', $00000000, '', '', '', '', '', '');
 end;
 
 function Prepare2(const Title, ProgramName: AString_Type; ProgramVersion: AVersion;
@@ -817,7 +674,7 @@ function Prepare2P(const Title, ProgramName: APascalString; ProgramVersion: AVer
     const ProductName: APascalString; ProductVersion: AVersion;
     const CompanyName, Copyright, Url, Description, DataPath: APascalString): AError;
 begin
-  Result := ASystem_Prepare3P(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
+  Result := ASystem_PrepareP(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
       CompanyName, Copyright, Url, Description, DataPath, '');
 end;
 
@@ -825,7 +682,7 @@ function Prepare3A(Title, ProgramName: AStr; ProgramVersion: AVersion;
     ProductName: AStr; ProductVersion: AVersion;
     CompanyName, Copyright, Url, Description, DataPath, ConfigPath: AStr): AError;
 begin
-  Result := ASyStem_Prepare3P(AnsiString(Title), AnsiString(ProgramName), ProgramVersion,
+  Result := ASyStem_PrepareP(AnsiString(Title), AnsiString(ProgramName), ProgramVersion,
       AnsiString(ProductName), ProductVersion,
       AnsiString(CompanyName), AnsiString(Copyright),
       AnsiString(Url), AnsiString(Description),
@@ -836,7 +693,7 @@ function Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVer
     const ProductName: APascalString; ProductVersion: AVersion;
     const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString): AError;
 begin
-  Result := ASystem_Prepare3P(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
+  Result := ASystem_PrepareP(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
       CompanyName, Copyright, Url, Description, DataPath, ConfigPath);
 end;
 
@@ -904,11 +761,6 @@ begin
   Result := ASystem_FileTextOpenP(FileName);
 end;
 
-function FileTextOpenWS(const FileName: AWideString): AInt;
-begin
-  Result := ASystem_FileTextOpenP(FileName);
-end;
-
 function FileTextReadLnAnsi(FileID: AInt; var Stroka: AnsiString): AError;
 begin
   Result := ASystem_FileTextReadLnAnsi(FileId, Stroka);
@@ -929,11 +781,6 @@ end;
 function GetCopyright(): APascalString;
 begin
   Result := ASystem_GetCopyrightP();
-end;
-
-function GetDataDirectoryPathWS(): APascalString;
-begin
-  Result := FDataPath;
 end;
 
 function GetDataPath(): APascalString;
@@ -957,11 +804,6 @@ begin
 end;
 
 function GetExeName(): APascalString;
-begin
-  Result := FExeName;
-end;
-
-function GetExeNameWS(): AWideString;
 begin
   Result := FExeName;
 end;
@@ -1018,79 +860,12 @@ begin
   Result := ASystem_GetUrlP();
 end;
 
-{ Runtime }
-
-function Runtime_GetCompanyName: APascalString; stdcall;
-begin
-  Result := FCompanyName;
-end;
-
-function Runtime_GetConfig: AConfig; stdcall;
-begin
-  Result := FConfig;
-end;
-
-function Runtime_GetCopyright: APascalString; stdcall;
-begin
-  Result := FCopyright;
-end;
-
-function Runtime_GetDataPath: APascalString; stdcall;
-begin
-  Result := Info_DataDirectoryPath;
-end;
-
-function Runtime_GetDescription: APascalString; stdcall;
-begin
-  Result := FDescription;
-end;
-
-function Runtime_GetExeName: APascalString; stdcall;
-begin
-  Result := FExeName;
-end;
-
-function Runtime_GetExePath: APascalString; stdcall;
-begin
-  Result := FExePath;
-end;
-
-function Runtime_GetProductName: APascalString; stdcall;
-begin
-  Result := FProductName;
-end;
-
-function Runtime_GetProductVersion: APascalString; stdcall;
-begin
-  Result := FProductVersionStr;
-end;
-
-function Runtime_GetProgramName: APascalString; stdcall;
-begin
-  Result := FProgramName;
-end;
-
-function Runtime_GetProgramVersion: APascalString; stdcall;
-begin
-  Result := FProgramVersionStr;
-end;
-
-function Runtime_GetTitle: APascalString; stdcall;
-begin
-  Result := FTitle;
-end;
-
-function Runtime_GetUrl: APascalString; stdcall;
-begin
-  Result := FUrl;
-end;
-
-function Init(): AError; stdcall;
+function Init(): AError;
 begin
   Result := ASystem_Init();
 end;
 
-function InitConfig(): AInteger; stdcall;
+function InitConfig(): AInt;
 begin
   {$IFDEF USE_CONFIG}
   System_InitConfig;
@@ -1098,29 +873,11 @@ begin
   Result := 0;
 end;
 
-procedure Runtime_SetConfig(Value: AConfig); stdcall;
+{ Runtime }
+
+procedure Runtime_SetConfig(Value: AConfig);
 begin
   FConfig := Value;
-end;
-
-function Runtime_ShellExecute(const Operation, FileName, Parameters, Directory: APascalString): AInteger; stdcall;
-begin
-  Result := ShellExecuteA(0,
-      PAnsiChar(AnsiString(Operation)),
-      PAnsiChar(AnsiString(FileName)),
-      PAnsiChar(AnsiString(Parameters)),
-      PAnsiChar(AnsiString(Directory)),
-      SW_SHOW);
-end;
-
-function Runtime_ShowMessage(const Msg: AWideString): ADialogBoxCommands; stdcall;
-begin
-  Result := ASystem_ShowMessageP(Msg);
-end;
-
-function Runtime_ShowMessageA(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
-begin
-  Result := ASystem_ShowMessageExP(Text, Caption, Flags);
 end;
 
 function SetDataDirectoryPathP(const DataDir: APascalString): AError;

@@ -2,7 +2,7 @@
 @Abstract Реализация основной функциональности для сервиса WindowsNT
 @Author Prof1983 <prof1983@ya.ru>
 @Created 17.05.2006
-@LastMod 18.12.2012
+@LastMod 04.02.2013
 
 Возможные состояния сервиса для процедуры ReportStatus
   SERVICE_STOPPED        - сервис успешно остановлен
@@ -24,10 +24,17 @@ interface
 uses
   ActiveX, Classes, ComObj, ComServ, Messages, SysUtils, Windows, WinSock, WinSvc,
   {$IFNDEF Delphi6Up}Variants,{$ENDIF}
-  ABase, AStdWinDialog,
-  AConnectedAccount, AConsts2, {ProfGlobals,}
-  AModuleList, AObjectImpl, {ProfProcessImpl,} AProgramImpl,
-  AServiceTypes, AServiceUtils, ATypes, AUtils1;
+  ABase,
+  ABaseUtils4,
+  AConnectedAccount,
+  AConsts2,
+  AModuleList,
+  AObjectImpl,
+  AProgramImpl,
+  AServiceTypes,
+  AServiceUtils,
+  AStdWinDialog,
+  ATypes;
 
 type //** Основной объект сервиса
   TProfService = class(TAObject)
@@ -54,7 +61,7 @@ type //** Основной объект сервиса
     procedure ServiceProc(argc: LongWord; var argv: array of PChar);
     function ServiceCtrl(dwControl: LongWord; dwEventType: LongWord; lpEventData: pointer; lpContext: pointer): LongWord;
   protected
-    FProgram: TProfProgram;
+    FProgram: TAProgram;
     FTimerInterval: Integer;
   protected
     //** Сообщить о своем состоянии
@@ -67,12 +74,10 @@ type //** Основной объект сервиса
     procedure DoCreated(); override; safecall;
     //** Срабатывает при начале запуска
     function DoStart(): WordBool; virtual; safecall;
-    //function DoStart(): WordBool; override; safecall;
     //** Срабатывает после удачного запуска
     function DoStarted(): WordBool; virtual; safecall;
     //** Срабатывает при начале процедуры остановки
     function DoStop(AIsShutDown: WordBool): WordBool; virtual; safecall;
-    //function DoStop(AIsShutDown: WordBool): WordBool; override; safecall;
     //** Срабатывает при завершении процедуры остановки
     function DoStoped(AIsShutDown: WordBool): WordBool; virtual; safecall;
   public
@@ -80,7 +85,7 @@ type //** Основной объект сервиса
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: WideString): Integer; override;
     constructor Create(); override;
-    constructor Create2(Prog: TProfProgram);
+    constructor Create2(Prog: TAProgram);
     class function GetInstance(): TProfService;
     destructor Destroy(); override;
     //** Запуск сервиса на исполнение
@@ -411,7 +416,7 @@ begin
   FServiceStatusHandle := 0;
 end;
 
-constructor TProfService.Create2(Prog: TProfProgram);
+constructor TProfService.Create2(Prog: TAProgram);
 begin
   FProgram := Prog;
   Create();

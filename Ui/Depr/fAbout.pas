@@ -2,7 +2,7 @@
 @Abstract AUi about form
 @Author Prof1983 <prof1983@ya.ru>
 @Created 04.04.2006
-@LastMod 20.11.2012
+@LastMod 05.02.2013
 }
 unit fAbout;
 
@@ -16,7 +16,9 @@ uses
   {$IFDEF FPC}LResources,{$ENDIF}
   {$IFDEF MSWINDOWS}ShellAPI, Windows,{$ENDIF}
   Buttons, Classes, Controls, Dialogs, ExtCtrls, Graphics, Forms, Messages, StdCtrls, SysUtils,
-  ABase, ABaseUtils, ASystem,
+  ABase,
+  ABaseUtils,
+  ASystemMain,
   AUiAboutDialog, AUiBase, AUiButtons, AUiControls, AUiLabels, AUiTextView;
 
 type
@@ -37,10 +39,6 @@ type
   public
     function AddButton(Left, Width: Integer; const Text: APascalString; OnClick: ACallbackProc): AControl;
     function AddButton02(Left, Width: Integer; const Text: APascalString; OnClick: ACallbackProc02): AControl;
-    //procedure Init(); deprecated; // Use AboutForm_InitR()
-    //procedure Init1(Flags: AUIAboutFlags); deprecated; // Use AboutForm_InitR()
-    //procedure Init2(Flags: AUIAboutFlags; MemoWidth, MemoHeight: Integer); deprecated; // Use AboutForm_InitR()
-    //procedure InitA(MemoWidth, MemoHeight: Integer); deprecated; // Use AboutForm_InitR()
     procedure LoadApplicationIcon;
   public
     {** Картинка для отображения }
@@ -201,26 +199,6 @@ function TAboutForm.GetReference(): APascalString;
 begin
   Result := FAboutForm.UrlText.Caption;
 end;
-
-{procedure TAboutForm.Init();
-begin
-  AboutForm_Init2(FRec, AUiAboutFlags_ShowAll + AUiAboutFlags_NoShowComment, 0, 115);
-end;}
-
-{procedure TAboutForm.Init1(Flags: AUIAboutFlags);
-begin
-  AboutForm_Init2(FRec, 0, 115, Flags);
-end;}
-
-{procedure TAboutForm.Init2(Flags: AUiAboutFlags; MemoWidth, MemoHeight: AInt);
-begin
-  AboutForm_Init2(FRec, Flags, MemoWidth, MemoHeight);
-end;}
-
-{procedure TAboutForm.InitA(MemoWidth, MemoHeight: Integer);
-begin
-  AboutForm_Init2(FRec, AUiAboutFlags_ShowAll + AUiAboutFlags_NoShowComment, MemoWidth, MemoHeight);
-end;}
 
 procedure TAboutForm.LoadApplicationIcon();
 begin

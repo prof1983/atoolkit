@@ -2,7 +2,7 @@
 @Abstract Объект подключения клиента. Создается автоматический системой для каждого клиента
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.04.2006
-@LastMod 17.12.2012
+@LastMod 04.02.2013
 }
 unit AAutoObject;
 
@@ -30,7 +30,7 @@ type
     FRaiseEvents: Variant;
     FSinkList: TList;
   protected
-    FProgram: TProfProgram;
+    FProgram: TAProgram;
   protected
     procedure EventSinkChanged(const EventSink: IUnknown); override;
     property ConnectionPoints: TConnectionPoints read FConnectionPoints implements IConnectionPointContainer;
@@ -67,7 +67,7 @@ type
     //** Хост на котором работает клиент
     property ClientHost: WideString read FClientHost;
     //** Программа владелец
-    property Prog: TProfProgram read FProgram;
+    property Prog: TAProgram read FProgram;
   end;
 
 implementation
@@ -148,7 +148,7 @@ var
   tmpUse: LongWord;
 begin
   inherited;
-  FProgram := TProfProgram.GetInstance();
+  FProgram := TAProgram.GetInstance();
   {while (ServiceNT.ServiceStatus.dwCurrentState = SERVICE_START_PENDING) do
     Sleep(10);}
   try

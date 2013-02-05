@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Сущность)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(10.04.2007)
-@LastMod(20.06.2012)
-@Version(0.5)
+@Abstract Сущность
+@Author Prof1983 <prof1983@ya.ru>
+@Created 10.04.2007
+@LastMod 04.02.2013
 }
 unit AEntityImpl;
 
@@ -63,8 +62,6 @@ type //** Сущность
       //** CallBack функция функция. Срабатывает при поступлении лог-сообщения.
     property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
   end;
-
-  //TProfEntity = TANamedEntity;
 
 implementation
 

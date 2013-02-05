@@ -2,7 +2,7 @@
 @Abstract Класс главной форма - оболочка для TForm
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.11.2005
-@LastMod 19.12.2012
+@LastMod 04.02.2013
 }
 unit AFormMain;
 
@@ -25,12 +25,8 @@ uses
 type
   TProfFormMain = class(TAFormObject)
   protected
-    //FConfigDir: APascalString; - Use ASystemData
-    //FConfigFileName: WideString; - Use ASystemData
     FIsConfigDocumentInit: Boolean; // ConfigDocument инициализирован в этом объекте
     FIsLogDocumentsInit: Boolean;   // LogDocuments инициализирован в этом объекте
-    //FLogDir: APascalString; - Use ASystemData
-    //FLogFilePath: WideString; - Use ASystemData
     FLogID: Integer;
     FLogName: string;
     FLogTypeSet: TLogTypeSet;
@@ -38,10 +34,7 @@ type
     FLogDocuments: TALogDocumentListObject;
   public
       //** Финализация программы (конфигурации, логирование)
-    procedure Done(); virtual; deprecated; // Use Finalize()
-      //** Финализация программы (конфигурации, логирование)
     function Finalize(): AError; override;
-    function GetExePath(): APascalString; deprecated; // Use AFormMain_GetExePath()
       //** Инициализация программы (конфигурации, логирование)
     procedure Init(); virtual;
       //** Initialize config
@@ -51,13 +44,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property ALog: TALogDocumentListObject{TALogDocuments} read FLogDocuments write FLogDocuments;
-      //** Имя файла конфигураций (с путем или без него)
-    //property ConfigFileName: WideString read FConfigFileName write FConfigFileName; - Use ASystemData
-      //** Путь к файлу конфигураций (если ConfigFileName = '' то берется имя .exe файла без расширения)
-    //property ConfigFilePath: WideString read FConfigFilePath write FConfigFilePath; - Use ASystem
-      //** Путь к файлу логирования .txt
-    //property LogFilePath: WideString read FLogFilePath write FLogFilePath; - Use ASystemData
+    property ALog: TALogDocumentListObject read FLogDocuments write FLogDocuments;
       //** ID программы для подключения к системе логирования
     property LogID: Integer read FLogID write FLogID;
       //** Имя программы для подключения к системе логирования
@@ -71,7 +58,6 @@ implementation
 // Function --------------------------------------------------------------------
 
 function StrPosEnd(const St: WideString; C: WideChar): Integer;
-// Ищет индекс символа C в строке St с конца строки. Возвращает 0, если символ не найден.
 var
   I: Integer;
 begin
@@ -90,17 +76,11 @@ begin
   FIsLogDocumentsInit := False;
 end;
 
-procedure TProfFormMain.Done();
-begin
-  Finalize();
-end;
-
 function TProfFormMain.Finalize(): AError;
 begin
-  if {FIsLogDocumentsInit and} Assigned(FLogDocuments) then
+  if Assigned(FLogDocuments) then
   try
     FLogDocuments.Finalize();
-    //FLogDocuments.Free();
   finally
     FLogDocuments := nil;
   end;
@@ -111,10 +91,8 @@ begin
 
   if FIsConfigDocumentInit and (FConfigDocument1 <> 0) then
   try
-    // Проверим наличие файла
     if not(FileExists(FConfigFileName)) then
     begin
-      // Создадим каталог, если надо
       ForceDirectories(ExtractFilePath(FConfigFileName));
     end;
 
@@ -122,11 +100,6 @@ begin
     FreeAndNil(FConfigDocument1);
   except
   end;
-end;
-
-function TProfFormMain.GetExePath(): APascalString;
-begin
-  Result := AFormMain_GetExePathP();
 end;
 
 procedure TProfFormMain.Init();

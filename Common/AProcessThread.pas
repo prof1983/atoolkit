@@ -1,9 +1,8 @@
-﻿{**
-@Abstract(AProcess thread)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(21.08.2007)
-@LastMod(05.05.2012)
-@Version(0.5)
+{**
+@Abstract AProcess thread
+@Author Prof1983 <prof1983@ya.ru>
+@Created 21.08.2007
+@LastMod 05.05.2012
 }
 unit AProcessThread;
 
@@ -40,7 +39,6 @@ end;
 
 procedure TProcessThread.Execute();
 begin
-  // Если AKernel, то осуществляется передача сообщений от одного модуля к другому, используя фильтры и каналы
   repeat
     FRunnable.Run();
   until Terminated;

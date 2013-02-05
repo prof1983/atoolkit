@@ -1,16 +1,15 @@
 ﻿{**
-@Abstract(Команды системе логирования для построения лога в виде дерева)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(27.02.2007)
-@LastMod(26.04.2012)
-@Version(0.5)
+@Abstract Команды системе логирования для построения лога в виде дерева
+@Author Prof1983 <prof1983@ya.ru>
+@Created 27.02.2007
+@LastMod 04.02.2013
 }
 unit AMessageConst;
 
 interface
 
 const // Команды системе логирования для построения лога в виде дерева
-  //** Создань новую ветку логирования
+  //** Создать новую ветку логирования
   lcNewNode = '###<NewNode ParentNodeID=%d>%s</NewNode>';
   lcNewNodeById = '###<NewNode ParentNodeID=%d NodeName="%s" NodeID=%d>%s</NewNode>';
   lcNewNodeByName = '###<NewNode ParentNodeName="%s" NodeName="%s">%s</NewNode>';

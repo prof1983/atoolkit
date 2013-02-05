@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Простой способ сжатия повторяющихся символов)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(27.01.2004)
-@LastMod(26.04.2012)
-@Version(0.5)
+@Abstract Простой способ сжатия повторяющихся символов
+@Author Prof1983 <prof1983@ya.ru>
+@Created 27.01.2004
+@LastMod 04.02.2013
 
 Если символы не повторяются, то размер увеличивается вдвое.
 }
@@ -80,8 +79,8 @@ type
 
 implementation
 
-// TArhiv ----------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+{ TArhiv }
+
 constructor TArhiv.Create();
 begin
   inherited Create(True);
@@ -91,7 +90,6 @@ begin
   FSizeModule := 1024;
 end;
 
-// -----------------------------------------------------------------------------
 procedure TArhiv.Execute();
 var
   B: Byte;
@@ -208,31 +206,26 @@ begin
   FRuned := False;
 end;
 
-// -----------------------------------------------------------------------------
 procedure TArhiv.Run();
 begin
   SetRuned(True);
 end;
 
-// -----------------------------------------------------------------------------
 procedure TArhiv.SetFileNameIn(Value: WideString);
 begin
   if FRuned = False then FFileNameIn := Value;
 end;
 
-// -----------------------------------------------------------------------------
 procedure TArhiv.SetFileNameOut(Value: WideString);
 begin
   if FRuned = False then FFileNameOut := Value;
 end;
 
-// -----------------------------------------------------------------------------
 procedure TArhiv.SetMode(Value: TMode);
 begin
   if Runed = False then FMode := Value;
 end;
 
-// -----------------------------------------------------------------------------
 procedure TArhiv.SetRuned(Value: Boolean);
 begin
   if FRuned <> Value then
@@ -242,7 +235,6 @@ begin
   end;
 end;
 
-// -----------------------------------------------------------------------------
 procedure TArhiv.SetSizeModule(Value: Integer);
 begin
   if (FRuned = False) and (Value < FMaxSizeModule) then
@@ -251,7 +243,6 @@ begin
     FSizeModule := FMaxSizeModule;
 end;
 
-// -----------------------------------------------------------------------------
 procedure TArhiv.UpdateCaption();
 begin
   if Assigned(FOnUpdate) then FOnUpdate;

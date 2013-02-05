@@ -1,9 +1,9 @@
 ﻿{**
-@Abstract(Стандартные диалоговые окна без использования VCL)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(01.09.2005)
-@LastMod(05.05.2012)
-@Version(0.5)
+@Author Prof1983 <prof1983@ya.ru>
+@Created 01.09.2005
+@LastMod 04.02.2013
+
+See AStdWinDialog.txt
 }
 unit AStdWinDialog;
 
@@ -53,74 +53,20 @@ type
   end;
   {$Z1}
 
-{**
-  Показвает стандартное окно об ошибке
-  AWindow:   хендл родительского окна или 0
-  ACaption:  заголовок окна
-  AMsgText:  текст сообщения
-}
 procedure ShowError(AWindow: THandle; const ACaption: string; const AMsgText: string);
 
-{**
-  Показвает стандартное окно об ошибке
-  AWindow:   хендл родительского окна или 0
-  ACaption:  заголовок окна
-  AMsgText:  текст сообщения
-  AParam:    параметры для форматирования текста сообщения (функция Format)
-}
 procedure ShowError1(AWindow: THandle; const ACaption: WideString; const AMsgText: WideString; const AParam: array of const);
 
-{
-Показвает стандартное окно предупреждение
-AWindow:   хендл родительского окна или 0
-ACaption:  заголовок окна
-AMsgText:  текст сообщения
-AParam:    параметры для форматирования текста сообщения (функция Format)
-}
 procedure ShowWarning(AWindow: THandle; const ACaption: WideString; const AMsgText: WideString; const AParam: array of const);
 
-{
-Показвает стандартное окно информации
-AWindow:   хендл родительского окна или 0
-ACaption:  заголовок окна
-AMsgText:  текст сообщения
-AParam:    параметры для форматирования текста сообщения (функция Format)
-}
 procedure ShowInfo(AWindow: THandle; const ACaption: WideString; const AMsgText: WideString; const AParam: array of const);
 
-{
-Показвает стандартное окно с кнопками ДА/НЕТ
-AWindow:   хендл родительского окна или 0
-ACaption:  заголовок окна
-AMsgText:  текст сообщения
-AParam:    параметры для форматирования текста сообщения (функция Format)
-Result:    True если пользователь ответил ДА
-}
 function ShowQueryYesNo(AWindow: THandle; const ACaption: WideString; const AMsgText: WideString; const AParam: array of const): boolean;
 
-{
-Показвает стандартное окно выбора каталога
-AWindow:   хендл родительского окна
-ACaption:  заголовок окна
-ARootDir:  корневая директория с которой начинается просмотр
-ASelDir:   директория выбранная пользователем
-Result:    True если пользователь выбрал директорию
-}
 function SelectDir(AWindow: THandle; const ACaption: string; const ARootDir: string; var ASelDir: string): boolean;
 
-{
-Показвает стандартное окно выбора хоста
-AWindow:   хендл родительского окна
-ASelHost:  хост выбранный пользователем
-Result:    True если пользователь выбрал хост
-}
 function ShowServerDialog(AWindow: THandle; var ASelHost: string): boolean;
 
-{
-Показвает стандартное окно выбора файла
-AOpenFile: структура описывающая параметры выбора файла
-Result:    True если пользователь выбрал файл
-}
 function SelectFileDialog(var AOpenFile: TOpenFilename): Boolean;
 
 implementation
@@ -130,7 +76,6 @@ const
 
 { External }
 
-//function SHParseDisplayName(pszPath: PChar; pbc: pointer; var pidl: PItemIDList; sfgaoIn: LongWord; var psfgaoOut: LongWord): LongInt; stdcall; external 'shell32.dll' name 'SHParseDisplayName';
 function GetOpenFileName(var OpenFile: TOpenFilename): Bool; stdcall; external 'comdlg32.dll' name 'GetOpenFileNameA';
 function CommDlgExtendedError(): LongWord; stdcall; external 'comdlg32.dll' name 'CommDlgExtendedError';
 
@@ -158,7 +103,6 @@ var
 begin
   Result := False;
 
-  // <Prof>
   h := LoadLibrary('shell32.dll');
   if h < 32 then Exit;
   SHParseDisplayName := GetProcAddress(h, 'SHParseDisplayName');
@@ -184,21 +128,20 @@ begin
 
     Exit;
   end;
-  // </Prof>
 
   FillChar(BrowseInfo, SizeOf(TBrowseInfo), #0);
-  // Общая информация
+  // General information
   BrowseInfo.hwndOwner := AWindow;
   BrowseInfo.pszDisplayName := @DisplayName;
   BrowseInfo.lpszTitle := PChar(ACaption);
   BrowseInfo.ulFlags := BIF_RETURNONLYFSDIRS;
-  // Получим корневую директорию
+  // Root directory
   tmpLongWord := SFGAO_FOLDER;
   tmpStrDir := ARootDir + #0;
   if (SHParseDisplayName(PAnsiChar(PWideChar(tmpStrDir)), nil, lpItemID, tmpLongWord, tmpLongWord) <> S_OK) then
     lpItemID := nil;
   BrowseInfo.pidlRoot := lpItemID;
-  // Отобразим диалог
+  // Show dialog
   lpItemID := SHBrowseForFolder(BrowseInfo);
   if (lpItemId <> nil) then
     if SHGetPathFromIDList(lpItemID, TempPath) then
@@ -207,9 +150,7 @@ begin
       GlobalFreePtr(lpItemID);
       Result := True;
     end;
-  // <Prof>
   FreeLibrary(h);
-  // </Prof>
 end;
 
 function ShowServerDialog(AWindow: THandle; var ASelHost: string): boolean;

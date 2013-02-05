@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Сушность. Общий интерфейс для все элементов)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.02.2007)
-@LastMod(20.06.2012)
-@Version(0.5)
+@Abstract Сушность. Общий интерфейс для все элементов
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.02.2007
+@LastMod 04.02.2013
 }
 unit AEntityIntf;
 
@@ -53,15 +52,6 @@ type //** Сущность - базовый интерфейс для предс
           aterm.ATerm.Name }
     property Name: WideString read GetName write SetName;
   end;
-
-  (*IProfEntity = interface(IANamedEntity)
-    {** Добавляет лог-сообщение.
-        @returns(Возвращает номер добавленого лог-сообщения или 0) }
-    {function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-        const AStrMsg: WideString): Integer;}
-  end;*)
-
-  //IProfNamedEntity = IANamedEntity;
 
 type
   IProfEntities = interface(IANamedEntity)

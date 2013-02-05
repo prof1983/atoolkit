@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Базовый класс ввода/вывода)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(18.04.2004)
-@LastMod(15.05.2012)
-@Version(0.5)
+@Abstract Базовый класс ввода/вывода
+@Author Prof1983 <prof1983@ya.ru>
+@Created 18.04.2004
+@LastMod 04.02.2013
 }
 unit AIoTypes;
 

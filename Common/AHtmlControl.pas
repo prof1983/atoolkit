@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Контрол для работы с XHTML)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(11.03.2007)
-@LastMod(11.07.2012)
-@Version(0.5)
+@Abstract Контрол для работы с XHTML
+@Author Prof1983 <prof1983@ya.ru>
+@Created 11.03.2007
+@LastMod 04.02.2013
 }
 unit AHtmlControl;
 
@@ -16,8 +15,6 @@ uses
 type
   //** @abstract(Класс для отрисовки элементов управления XHTML)
   THtmlControl = class
-  private
-    //FEdit: TEdit;
   private
     //** Панель для отрисовки элементов
     FController: TPanel;
@@ -57,11 +54,6 @@ begin
     end;
   except
   end;
-//  if Assigned(FEdit) then
-//  begin
-//    FEdit.Free();
-//    FEdit := nil;
-//  end;
 end;
 
 procedure THtmlControl.Refresh();

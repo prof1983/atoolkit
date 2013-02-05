@@ -1,9 +1,8 @@
-﻿{**
-@Abstract(AProcess implementation)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(02.09.2007)
-@LastMod(05.05.2012)
-@Version(0.5)
+{**
+@Abstract AProcess implementation
+@Author Prof1983 <prof1983@ya.ru>
+@Created 02.09.2007
+@LastMod 04.02.2013
 }
 unit AProcessImpl2007;
 
@@ -28,14 +27,10 @@ type
     procedure Stop(); virtual;
     procedure Pause(); virtual;
   public
-    // Приоритет
     property Priority: Integer read GetPriority write SetPriority;
     property Runnable: IARunnable read FRunnable write FRunnable;
-    // Состояние процесса
     property State: Integer read GetState;
   end;
-
-  //TRuntimeProcess = TProcess;
 
 implementation
 

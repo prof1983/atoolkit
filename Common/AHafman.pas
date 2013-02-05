@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Алгоритм уплотнения данных по методу Хафмана)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(02.02.2004)
-@LastMod(26.04.2012)
-@Version(0.5)
+@Abstract Алгоритм уплотнения данных по методу Хафмана
+@Author Prof1983 <prof1983@ya.ru>
+@Created 02.02.2004
+@LastMod 26.04.2012
 
 Prototype:
 http://www.compression.ru/download/sources/huff/archaf.rar

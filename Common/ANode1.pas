@@ -1,9 +1,7 @@
 ﻿{**
-@Abstract(Узел)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(20.08.2007)
-@LastMod(27.06.2012)
-@Version(0.5)
+@Author Prof1983 <prof1983@ya.ru>
+@Created 20.08.2007
+@LastMod 27.06.2012
 }
 unit ANode1;
 

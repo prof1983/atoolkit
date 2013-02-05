@@ -2,7 +2,7 @@
 @Abstract Оболочка для процесса
 @Author Prof1983 <prof1983@ya.ru>
 @Created 03.10.2005
-@LastMod 19.12.2012
+@LastMod 04.02.2013
 }
 unit AThreadObj;
 
@@ -95,32 +95,6 @@ function TAThread.AddToLogW(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage
 begin
   Result := AddToLog(LogGroup, LogType, StrMsg);
 end;
-
-{function TProfThread.ConfigureLoad: WordBool;
-var
-  I: Int32;
-  iPriority: Integer;
-  tmpPriority: TThreadPriority;
-begin
-  Result := Assigned(FConfig);
-  if not(Result) then Exit;
-  if Config.ReadInteger('Priority', iPriority) then
-    for tmpPriority := Low(TThreadPriority) to High(TThreadPriority) do
-      if INT_THREAD_PRIORITY[tmpPriority] = iPriority then begin
-        Priority := tmpPriority;
-        AddToLog(lgGeneral, ltInformation, stConfigureLoadOk, [STR_THREAD_PRIORITY[Priority]]);
-        Exit;
-      end;
-  //Priority := Int32ToThreadPriority(I);
-  //AddToLog(lgGeneral, ltInformation, stConfigureLoadOk, [ThreadPriority_String[Priority]]);
-end;}
-
-{function TProfThread.ConfigureSave: WordBool;
-begin
-  Result := Assigned(FConfig);
-  if not(Result) then Exit;
-  Config.WriteInt32('Priority', INT_THREAD_PRIORITY[Priority]);
-end;}
 
 constructor TAThread.Create();
 begin

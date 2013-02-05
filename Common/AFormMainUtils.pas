@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.12.2012
-@LastMod 19.12.2012
+@LastMod 04.02.2013
 }
 unit AFormMainUtils;
 
@@ -49,7 +49,7 @@ begin
     ExeName := AUtils_ExtractFileNameP(ParamStr(0));
     if (FConfigFileName = '') then
       FConfigFileName := AUtils_ChangeFileExtP(ExeName, '.'+FILE_EXT_CONF);
-    // Получение полного имени файла
+
     if AUtils_ExtractFilePathP(FConfigFileName) = '' then
     begin
       if (FConfigPath = '') then
@@ -68,9 +68,9 @@ begin
         FConfigFileName := FConfigPath + FConfigFileName;
     end;
     FConfigFileName := AUtils_ExpandFileNameP(FConfigFileName);
-    // Проверка существования директории
+
     AUtils_ForceDirectoriesP(AUtils_ExtractFilePathP(FConfigFileName));
-    // Создание объекта
+
     ConfigDocument := AXmlDocument_New();
     AXmlDocument_SetFileNameP(ConfigDocument, FConfigFileName);
     AXmlDocument_Initialize(ConfigDocument);

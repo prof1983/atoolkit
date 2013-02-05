@@ -2,7 +2,7 @@
 @Abstract TForm with Logging and Configurations
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.10.2005
-@LastMod 09.01.2013
+@LastMod 04.02.2013
 }
 unit AFormObj;
 
@@ -10,7 +10,6 @@ interface
 
 uses
   Classes, Forms, SysUtils, XmlIntf,
-  {$ifdef ADepr}AUiForm,{$endif}
   ABase, AConfig2007, AConfigUtils, ALogGlobals, ALogNodeUtils, ATypes;
 
 type
@@ -45,12 +44,6 @@ type
     function ToLogE(AGroup: EnumGroupMessage; AType: EnumTypeMessage;
         const AStrMsg: WideString): Integer; virtual;
   public
-    {$ifdef ADepr}
-    function ConfigureLoad(): WordBool; virtual; deprecated; // Use AUiForm.Form_LoadConfig()
-    function ConfigureLoad2(FConfig: AConfig): AError; deprecated; // Use AUiForm.Form_LoadConfig()
-    function ConfigureSave(): WordBool; virtual; deprecated; // Use AUiForm.Form_SaveConfig()
-    function ConfigureSave2(FConfig: AConfig): AError; deprecated; // Use AUiForm.Form_SaveConfig()
-    {$endif ADepr}
     function Finalize(): AError; virtual;
     function Initialize(): AError; virtual;
   public
@@ -62,8 +55,6 @@ type
     property Log: ALogNode read FLog write FLog;
     property OnAddToLog: TAddToLogProc read FOnAddToLog write FOnAddToLog;
   end;
-
-  //TProfForm = TAFormObject;
 
 // --- Messages ---
 {$IFDEF DELPHI_XE_UP}
@@ -109,28 +100,6 @@ function TAFormObject.AddToLogW(AGroup: TLogGroupMessage; AType: TLogTypeMessage
 begin
   Result := AddToLog(AGroup, AType, AStrMsg);
 end;
-
-{$ifdef ADepr}
-function TAFormObject.ConfigureLoad(): WordBool;
-begin
-  Result := (AUiForm.Form_LoadConfig(Self, FConfig) >= 0);
-end;
-
-function TAFormObject.ConfigureLoad2(FConfig: AConfig): AError;
-begin
-  Result := AUiForm.Form_LoadConfig(Self, FConfig);
-end;
-
-function TAFormObject.ConfigureSave(): WordBool;
-begin
-  Result := (AUiForm.Form_SaveConfig(Self, FConfig) >= 0);
-end;
-
-function TAFormObject.ConfigureSave2(FConfig: AConfig): AError;
-begin
-  Result := AUiForm.Form_SaveConfig(Self, FConfig);
-end;
-{$endif ADepr}
 
 procedure TAFormObject.DoDestroy();
 begin

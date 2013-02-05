@@ -2,7 +2,7 @@
 @Abstract Реализация основной функциональности для главного объекта
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.05.2006
-@LastMod 18.12.2012
+@LastMod 04.02.2013
 }
 unit AProgramImpl;
 
@@ -21,10 +21,6 @@ uses
   AXmlDocumentUtils;
 
 type
-  {$IFDEF UseComXml}
-  //IXmlDocument = IXmlDomDocument;
-  {$ENDIF}
-
   //** Основной объект программы
   TAProgram = class(TProfProcess)
   protected
@@ -82,10 +78,6 @@ type
     function DoTime(): WordBool; safecall;
     //** Полный путь и имя фийла "C:\example\program.exe"
     property ExeFullName: WideString read FExeFullName;
-    //** Имя файла "program.exe"
-    //property ExeName: WideString read FExeName; - Use ASystemData.FExeName
-    //** Путь расположения программы "C:\example\"
-    //property ExePath: WideString read FExePath; - Use ASystemData.FExePath
     //** Информация прошитая в файле
     property FileVersionInfo: TFileVersionInfoA read FFileVersionInfo;
     //** Максимальное число клиентов
@@ -146,8 +138,7 @@ type
     property IsTest: Boolean read FIsTest write FIsTest default False;
   end;
 
-  TProfProgram = TAProgram;
-  //TProgram = TProfProgram;
+  //TProfProgram = TAProgram;
 
 implementation
 

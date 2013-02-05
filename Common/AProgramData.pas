@@ -13,7 +13,6 @@ uses
   ATypes;
 
 var
-  {** Критическая секция добавления в лог }
   FCSAddToLog: TRTLCriticalSection;
   FDependencies: WideString;
   FExeFullName: WideString;

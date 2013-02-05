@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Константы для работы с HTML и XHTML)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(11.03.2007)
-@LastMod(27.04.2012)
-@Version(0.5)
+@Abstract Константы для работы с HTML и XHTML
+@Author Prof1983 <prof1983@ya.ru>
+@Created 11.03.2007
+@LastMod 27.04.2012
 }
 unit AHtmlConst;
 

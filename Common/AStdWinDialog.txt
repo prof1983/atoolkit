@@ -1,0 +1,55 @@
+Стандартные диалоговые окна без использования VCL
+
+{** Показвает стандартное окно об ошибке
+    @param AWindow - хендл родительского окна или 0
+    @param ACaption - заголовок окна
+    @param AMsgText - текст сообщения }
+procedure ShowError(AWindow: THandle; const ACaption: string; const AMsgText: string);
+
+{** Показвает стандартное окно об ошибке
+    @param AWindow - хендл родительского окна или 0
+    @param ACaption - заголовок окна
+    @param AMsgText - текст сообщения
+    @param AParam - параметры для форматирования текста сообщения (функция Format) }
+procedure ShowError1(AWindow: THandle; const ACaption: WideString; const AMsgText: WideString; const AParam: array of const);
+
+{** Показвает стандартное окно предупреждение
+    @param AWindow - хендл родительского окна или 0
+    @param ACaption - заголовок окна
+    @param AMsgText - текст сообщения
+    @param AParam - параметры для форматирования текста сообщения (функция Format) }
+procedure ShowWarning(AWindow: THandle; const ACaption: WideString; const AMsgText: WideString; const AParam: array of const);
+
+{** Показвает стандартное окно информации
+    @param AWindow - хендл родительского окна или 0
+    @param ACaption - заголовок окна
+    @param AMsgText - текст сообщения
+    @param AParam - параметры для форматирования текста сообщения (функция Format) }
+procedure ShowInfo(AWindow: THandle; const ACaption: WideString; const AMsgText: WideString; const AParam: array of const);
+
+{** Показвает стандартное окно с кнопками ДА/НЕТ
+    @param AWindow - хендл родительского окна или 0
+    @param ACaption - заголовок окна
+    @param AMsgText - текст сообщения
+    @param AParam - параметры для форматирования текста сообщения (функция Format)
+    @return - True если пользователь ответил ДА }
+function ShowQueryYesNo(AWindow: THandle; const ACaption: WideString; const AMsgText: WideString; const AParam: array of const): boolean;
+
+{** Показвает стандартное окно выбора каталога
+    @param AWindow - хендл родительского окна
+    @param ACaption - заголовок окна
+    @param ARootDir - корневая директория с которой начинается просмотр
+    @param ASelDir - директория выбранная пользователем
+    @return - True если пользователь выбрал директорию }
+function SelectDir(AWindow: THandle; const ACaption: string; const ARootDir: string; var ASelDir: string): boolean;
+
+{** Показвает стандартное окно выбора хоста
+    @param AWindow - хендл родительского окна
+    @param ASelHost - хост выбранный пользователем
+    @return - True если пользователь выбрал хост }
+function ShowServerDialog(AWindow: THandle; var ASelHost: string): boolean;
+
+{** Показвает стандартное окно выбора файла
+    @param AOpenFile - структура описывающая параметры выбора файла
+    @return - True если пользователь выбрал файл }
+function SelectFileDialog(var AOpenFile: TOpenFilename): Boolean;

@@ -1,13 +1,11 @@
-﻿{**
-@Abstract(Итератор сущностей)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(19.03.2008)
-@LastMod(04.06.2011)
-@Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 19.03.2008
+@LastMod 05.02.2013
 }
 unit AEntityIterator;
 
-// TODO: Rename to AEntityIteratorIntf.pas
+Use AIteratorIntf.pas
 
 interface
 

@@ -1,9 +1,11 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.11.2012
-@LastMod 29.01.2013
+@LastMod 05.02.2013
 }
 unit AStringBaseUtils;
+
+{$I A.inc}
 
 interface
 
@@ -16,7 +18,9 @@ function AStr_AssignA(S: AStr; Source: AStr; MaxLen: AInt): AError;
 
 function AStr_AssignP(S: AStr; const Source: APascalString; MaxLen: AInt): AError;
 
-function AStr_GetLength(S: AStr): AInt;
+function AStr_Cmp(S, S2: AStr): AInt;
+
+function AStr_GetLength(S: AStr): AInt; {$ifdef DELPHI_XE_UP}inline;{$endif}
 
 function AStr_ToPascalString(S: AStr): APascalString;
 
@@ -117,6 +121,28 @@ begin
   except
     Result := -1;
   end;
+end;
+
+function AStr_Cmp(S, S2: AStr): AInt;
+var
+  I: AInt;
+  C: AInt;
+begin
+  C := AStr_GetLength(S);
+  if (C <> AStr_GetLength(S2)) then
+  begin
+    Result := -1;
+    Exit;
+  end;
+  for I := 0 to C - 1 do
+  begin
+    if (AnsiChar(S[I]) <> AnsiChar(S2[I])) then
+    begin
+      Result := I;
+      Exit;
+    end;
+  end;
+  Result := 0;
 end;
 
 function AStr_GetLength(S: AStr): AInt;

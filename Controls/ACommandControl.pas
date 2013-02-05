@@ -1,8 +1,7 @@
-﻿{**
-@Abstract Контрол ввода команд
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 01.04.2007
-@LastMod 17.12.2012
+@LastMod 05.02.2013
 }
 unit ACommandControl;
 
@@ -31,7 +30,6 @@ implementation
 function TCommandControl.AddMessage(const Msg: WideString): Integer;
 begin
   Result := 0;
-  // Ничего не делаем
 end;
 
 function TCommandControl.DoInitialize(): AError;
@@ -55,9 +53,6 @@ begin
     if Length(s) <= 0 then Exit;
     if s[Length(s)] = #13 then Delete(s, Length(s), 1);
     if Length(s) <= 0 then Exit;
-
-    // Вызываем событие OnMessage
-    //DoMessage(s);
     FInputMemo.Clear();
   end;
 end;

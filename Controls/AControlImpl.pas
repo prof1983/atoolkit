@@ -1,8 +1,7 @@
-﻿{**
-@Abstract Универсальный контрол
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 08.11.2006
-@LastMod 13.11.2012
+@LastMod 05.02.2013
 }
 unit AControlImpl;
 
@@ -12,17 +11,13 @@ uses
   Controls,
   AObjectImpl;
 
-type //** Универсальный контрол
+type
   TAControl = class(TAObject)
   protected
-      //** Контрол
     FControl: TWinControl;
   public
-      //** Контрол
     property Control: TWinControl read FControl write FControl;
   end;
-
-  //TProfControl = TAControl;
 
 implementation
 

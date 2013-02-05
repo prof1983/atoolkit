@@ -1,8 +1,7 @@
-﻿{**
-@Abstract Контрол работы с кодом
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 09.11.2006
-@LastMod 23.11.2012
+@LastMod 05.02.2013
 }
 unit ACodeControl;
 
@@ -12,7 +11,7 @@ uses
   Classes, Controls, StdCtrls,
   ABase, AControlImpl;
 
-type //** Контрол работы с кодом
+type
   TArCodeControl = class(TAControl)
   private
     FMemo: TMemo;

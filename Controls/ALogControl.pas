@@ -1,8 +1,7 @@
-﻿{**
-@Abstract Контрол для вывода сообщений программы в TreeView
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.10.2006
-@LastMod 19.12.2012
+@LastMod 05.02.2013
 }
 unit ALogControl;
 
@@ -16,7 +15,7 @@ uses
   ALogUtils,
   ATypes;
 
-type //** Контрол для вывода сообщений программы в TreeView
+type
   TProfLogControl = class(TLogDocument)
   private
     FControl: TWinControl;
@@ -27,10 +26,8 @@ type //** Контрол для вывода сообщений программ
     FTreeView: TTreeView;
   public
     function AddNode(AType: TLogTypeMessage; AID, AParentID: Integer; const AStr: WideString): TTreeNode;
-      //** Добавить лог-сообщение
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; override;
     constructor Create(AControl: TWinControl);
-      //** Инициализировать
     function Initialize(): AError; override;
   end;
 
@@ -62,13 +59,11 @@ function TProfLogControl.AddNode(AType: TLogTypeMessage; AID, AParentID: Integer
 var
   I: Integer;
 begin
-  // Очистка
   if Length(FNodes) > 10000 then
   begin
     SetLength(FNodes, 0);
     FTreeView.Items.Clear();
   end;
-  // Добавление новой записи
   I := Length(FNodes);
   SetLength(FNodes, I + 1);
   FNodes[I].Id := AId;
@@ -100,8 +95,6 @@ begin
   if not(Assigned(FTreeView)) then FTreeView := TTreeView.Create(FControl);
   FTreeView.Parent := FControl;
   FTreeView.Align := alClient;
-  //FTreeView.Images := RunImages;
-  //FTreeView.PopupMenu := PopupMenu;
 end;
 
 end.

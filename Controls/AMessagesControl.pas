@@ -1,5 +1,4 @@
-﻿{**
-@Abstract Контрол для ввода и вывода сообщений
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.10.2006
 @LastMod 17.12.2012
@@ -14,7 +13,7 @@ uses
 type
   TMessageAddEvent = function(const AMessage: WideString; AID: Integer): Integer of object;
 
-type //** @abstract(Контрол для ввода и вывода сообщений)
+type
   TMessagesControl = class(TAControl)
   private
     FOnMessageAdd: TMessageAddEvent;

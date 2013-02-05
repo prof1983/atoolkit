@@ -12,12 +12,10 @@ uses
   Classes, Controls, ExtCtrls;
 
 type
-  //** @abstract(Полоска изменения размера элемента)
   TSplitterControl = class(TSplitter)
   private
     FControl: TControl;
   protected
-    //** Срабатывает при двойном щелчке
     procedure DoDblClick(ASender: TObject); virtual;
   public
     constructor Create(AOwner: TComponent); override;

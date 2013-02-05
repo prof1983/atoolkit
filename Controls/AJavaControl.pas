@@ -1,5 +1,4 @@
-﻿{**
-@Abstract Контрол для вывода сообщений Java программ
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 07.04.2007
 @LastMod 23.11.2012
@@ -13,7 +12,7 @@ uses
   ALogGlobals, AMemoControl, ATypes,
   Jni;
 
-type //** Контрол для вывода сообщений Java программ
+type
   TJavaControl = class(TAMemoControl)
   public
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage; const AStrMsg: WideString): Integer; override;

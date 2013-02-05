@@ -1,5 +1,4 @@
-﻿{**
-@Abstract Контрол сообщений с выводом в Memo
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.01.2007
 @LastMod 17.12.2012
@@ -31,11 +30,8 @@ function THelpControl.Initialize(): AError;
 begin
   FmemMain := TMemo.Create(FControl);
   FmemMain.Parent := FControl;
-  //FmemMain.Height := 20;
   FmemMain.Align := alClient;
   FmemMain.ScrollBars := ssBoth;
-  //FmemMain.OnKeyDown := memInputKeyDown;
-  //FmemMain.OnKeyUp := memInputKeyUp;
 
   Result := 0;
 end;

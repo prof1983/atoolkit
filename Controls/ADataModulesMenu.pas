@@ -1,9 +1,8 @@
 ﻿{**
-@Abstract(Встраиваемое меню для модулей данных)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(25.05.2006)
-@LastMod(03.05.2012)
-@Version(0.5)
+@Abstract Встраиваемое меню для модулей данных
+@Author Prof1983 <prof1983@ya.ru>
+@Created 25.05.2006
+@LastMod 05.02.2013
 }
 unit ADataModulesMenu;
 
@@ -22,7 +21,6 @@ type //** Встраиваемое меню для модулей данных
     FImageIndexImport: Integer;
     FImageIndexSetting: Integer;
     FImageIndexSynchronize: Integer;
-    FIsDebug: WordBool;
     FKeyName: WideString;
     FOnSave: TNotifyEvent;
     FParentWindowHandle: Integer;
@@ -34,8 +32,6 @@ type //** Встраиваемое меню для модулей данных
     procedure miSettingClick(Sender: TObject);
     procedure miSynchronizeAllClick(Sender: TObject);
     procedure miImportReplicaClick(Sender: TObject);
-    procedure miReplicaReplicateClick(Sender: TObject);
-    //procedure miReplicaConfigClick(Sender: TObject);
   public
     property ConfigSettingForm: TConfigNode1 read FConfigSettingForm write FConfigSettingForm;
     property DataModules: TDataModules read FDataModules write SetDataModules;
@@ -48,8 +44,6 @@ type //** Встраиваемое меню для модулей данных
     property ParentWindowHandle: Integer read FParentWindowHandle write FParentWindowHandle;
     procedure Refresh();
   published
-    // Режим отладки - дополнительные пункты меню
-    property IsDebug: WordBool read FIsDebug write FIsDebug;
     // Ключ сохранения настроек в хранилище
     property KeyName: WideString read FKeyName write FKeyName;
     // Путь к файлу хранилища settings.stg
@@ -70,7 +64,6 @@ begin
   try
     if (Sender as TMenuItem).Tag >= 0 then
     begin
-      //AddToLog(lgUser, ltInformation, 'Экспорт "%d"', [(Sender as TMenuItem).Tag]);
       Name := FDataModules.dmExport[(Sender as TMenuItem).Tag].Name;
       Res := FDataModules.dmExport[(Sender as TMenuItem).Tag].ExportData();
     end
@@ -128,7 +121,6 @@ const
   stImport = 'Даные из "%s" импортированы успешно';
   errImport = 'Данные из "%s" не импортированы';
 begin
-  //AddToLog(lgUser, ltInformation, 'Импорт "%d" <%s.%s>', [(Sender as TMenuItem).Tag, ClassName, 'miImportAllClick']);
   Res := False;
   if not(Sender is TMenuItem) then Exit;
   try
@@ -186,36 +178,6 @@ begin
   end;
 end;
 
-{procedure TmiDataModules.miReplicaConfigClick(Sender: TObject);
-var
-  fm: TfrmConfigReplica;
-begin
-  fm := TfrmConfigReplica.Create(Self);
-  try
-    fm.ShowModal();
-  finally
-    fm.Free();
-  end;
-end;}
-
-{var
-  fm: TfmReplicaConfig;
-begin
-  if Assigned(FDataModules) and Assigned(FDataModules.Replica)
-  and (FDataModules.Replica.IsConnected) and (FParentWindowHandle > 0) then
-  try
-    fm := TfmReplicaConfig.Create(FDataModules.Replica.Config);
-    if fm.ShowModal() = mrOk then
-      FDataModules.Replica.Commit();
-  finally
-    fm.Free();
-  end;
-end;}
-
-procedure TmiDataModules.miReplicaReplicateClick(Sender: TObject);
-begin
-end;
-
 procedure TmiDataModules.miSettingClick(Sender: TObject);
 var
   fmSetExport: TfmSetExport;
@@ -229,7 +191,6 @@ begin
       fmSetExport.DataModules := FDataModules;
       if fmSetExport.ShowModal() = mrOk then
       begin
-        //FDataModules.SaveParams(ExtractFilePath(ParamStr(0)) + STATICA_STORAGE_DIR, SETUP_DM);
         if (FStorageDir <> '') and (FKeyName <> '') then
           FDataModules.SaveParams(FStorageDir, FKeyName);
         // Сохранение положения и размеров окна
@@ -256,7 +217,6 @@ begin
   try
     if (Sender as TMenuItem).Tag >= 0 then
     begin
-      //AddToLog(lgUser, ltInformation, 'Синхронизация "%d" <%s.%s>', [(Sender as TMenuItem).Tag, ClassName, 'miSynchronizeAllClick']);
       Name := FDataModules.dmSynchronize[(Sender as TMenuItem).Tag].Name;
       Res := FDataModules.dmSynchronize[(Sender as TMenuItem).Tag].SynchronizeData();
     end
@@ -548,16 +508,6 @@ begin
   miItem.ImageIndex := FImageIndexSetting;
   miItem.OnClick := miSettingClick;
   Self.Add(miItem);
-
-  if IsDebug then
-  begin
-    // Выполнить действие AR_Replica
-    miItem := TMenuItem.Create(Self);
-    miItem.Caption := 'Выполнить действие AR_Replica';
-    miItem.ImageIndex := FImageIndexSynchronize;
-    miItem.OnClick := miReplicaReplicateClick;
-    Self.Add(miItem);
-  end;
 end;
 
 procedure TmiDataModules.SetDataModules(Value: TDataModules);

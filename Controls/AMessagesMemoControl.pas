@@ -1,8 +1,7 @@
-﻿{**
-@Abstract Контрол сообщений с выводом в Memo
+{**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.10.2006
-@LastMod 17.12.2012
+@LastMod 05.02.2013
 }
 unit AMessagesMemoControl;
 
@@ -13,7 +12,7 @@ uses
   ABase,
   AMessagesControl, ATypes;
 
-type //** @abstract(Контрол сообщений с выводом в Memo)
+type
   TMessagesMemoControl = class(TMessagesControl)
   private
     procedure memInputKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -35,7 +34,6 @@ function TMessagesMemoControl.DoMessageAdd(const AMessage: WideString; AID: Inte
 begin
   Result := inherited DoMessageAdd(AMessage, AID);
   memMessages.Lines.Insert(0, AMessage);
-  //Result := memMessages.Lines.Count;
 end;
 
 function TMessagesMemoControl.Initialize(): AError;

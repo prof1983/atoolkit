@@ -1,9 +1,7 @@
-﻿{**
-@Abstract(Класс управления для ComboBox ввода команд)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(10.06.2007)
-@LastMod(02.05.2012)
-@Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 10.06.2007
+@LastMod 05.02.2013
 }
 unit ACommandComboBoxControl;
 
@@ -12,23 +10,16 @@ interface
 uses
   Classes, StdCtrls;
 
-type //** @abstract(Класс управления для ComboBox ввода команд)
+type
   TCommandComboBoxControl = class
   private
-    //** Элемент управления
     FControl: TComboBox;
-    //** Событие, возникающее при вводе команды
     FOnCommand: TNotifyEvent;
-    //** Обработчик события OnKeyDown
     procedure KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    //** Обработчик события OnKeyUp
     procedure KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-    //** Задает элемент управления
     procedure SetControl(Value: TComboBox);
   public
-    //** Элемент управления
     property Control: TComboBox read FControl write SetControl;
-    //** Событие, возникающее при вводе команды
     property OnCommand: TNotifyEvent read FOnCommand write FOnCommand;
   end;
 

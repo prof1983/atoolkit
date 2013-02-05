@@ -1,9 +1,7 @@
-﻿{**
-@Abstract(Контрол вывода лог-сообщений в RichEdit)
-@Author(Prof1983 prof1983@ya.ru)
-@Created(07.03.2007)
-@LastMod(05.07.2012)
-@Version(0.5)
+{**
+@Author Prof1983 <prof1983@ya.ru>
+@Created 07.03.2007
+@LastMod 05.02.2012
 }
 unit ALogRichEditControl;
 
@@ -13,7 +11,7 @@ uses
   ComCtrls, Graphics,
   ALogGlobals, ALogNodeImpl, ALogUiUtils, ATypes;
 
-type //** Контрол вывода лог-сообщений в RichEdit
+type
   TALogRichEditControl = class(TALogNode)
   private
     FController: TRichEdit;
@@ -22,28 +20,20 @@ type //** Контрол вывода лог-сообщений в RichEdit
   public
     procedure AfterConstruction(); override;
   public
-    {** Добавить сообщение
-      @returns(Возвращает номер добавленого сообщения или 0)
-    }
+    {** Add string
+        @return String num or 0 }
     function AddMsg(const AMsg: WideString): Integer;
     function AddMsgA(const AMsg: WideString; const APrefix: WideString = ''): Integer; safecall;
-    {** Добавить строку
-      @returns(Возвращает номер добавленой строки или 0)
-    }
+    {** Add string
+        @return String num or 0 }
     function AddStr(const AStr: WideString): Integer;
-    {** Добавить лог-сообщение
-      @returns(Возвращает номер добавленого лог-сообщения или 0)
-    }
+    {** Add mesage to log
+        @return Log message num or 0 }
     function AddToLog(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
         const AStrMsg: WideString): Integer; override;
-    //** Не используется
-    procedure Hide();
-    //** Не используется
-    procedure Show();
   public
     constructor Create();
   public
-    //** RichEdit для вывода лог-сообщений
     property Controller: TRichEdit read FController write FController;
     property Delimer1: WideString read FDelimer1 write FDelimer1;
     property Delimer2: WideString read FDelimer2 write FDelimer2;
@@ -102,14 +92,6 @@ end;
 constructor TALogRichEditControl.Create();
 begin
   inherited Create(nil, '', 0);
-end;
-
-procedure TALogRichEditControl.Hide();
-begin
-end;
-
-procedure TALogRichEditControl.Show();
-begin
 end;
 
 end.

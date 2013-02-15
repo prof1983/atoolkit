@@ -2,149 +2,253 @@
 Abstract AToolkit define
 Author Prof1983 <prof1983@ya.ru>
 Created 18.06.2011
-LastMod 05.06.2012
+LastMod 15.02.2013
 }
 
+  // RadStudio XE3
+  {$ifdef VER240}
+    {$define Compiler_17}
+    {$define Compiler_17_Up}
+    {$define Delphi}
+    {$define Delphi17}
+    {$define Delphi17Up}
+    {$define DelphiXE3}
+    {$define DelphiXE3Up}
+    {$define Delphi_17}
+    {$define Delphi_17_Up}
+    {$define Delphi_XE3}
+    {$define Delphi_XE3_Up}
+  {$endif}
+
   // RadStudio XE2
-  {$IFDEF VER230}
-    {$DEFINE COMPILER_15}
-    {$DEFINE DELPHI}
-    {$DEFINE DELPHI_15}
-    {$DEFINE DELPHI_XE2}
-  {$ENDIF}
+  {$ifdef VER230}
+    {$define Compiler_16}
+    {$define Compiler_16_Up}
+    {$define Delphi}
+    {$define Delphi16}
+    {$define Delphi16Up}
+    {$define DelphiXE2}
+    {$define DelphiXE2Up}
+    {$define Delphi_16}
+    {$define Delphi_16_Up}
+    {$define Delphi_XE2}
+    {$define Delphi_XE2_Up}
+  {$endif}
 
   // Rad Studio XE
-  {$IFDEF VER220}
-    {$DEFINE COMPILER_15}
-    {$DEFINE DELPHI}
-    {$DEFINE DELPHI_15}
-    {$DEFINE DELPHI_2011}
-    {$DEFINE DELPHI_XE}
-  {$ENDIF}
+  {$ifdef VER220}
+    {$define Compiler_15}
+    {$define Compiler_15_Up}
+    {$define Delphi}
+    {$define Delphi15}
+    {$define Delphi15Up}
+    {$define DelphiXE}
+    {$define DelphiXEUp}
+    {$define Delphi_15}
+    {$define Delphi_15_Up}
+    {$define Delphi_2011}
+    {$define Delphi_2011_Up}
+    {$define Delphi_XE}
+    {$define Delphi_XE_Up}
+  {$endif}
 
   // Delphi 2010
-  {$IFDEF VER210}
-    {$DEFINE COMPILER_13}
-    {$DEFINE DELPHI}
-    {$DEFINE DELPHI_13}
-    {$DEFINE DELPHI_2010}
-  {$ENDIF}
+  {$ifdef VER210}
+    {$define Compiler_13}
+    {$define Compiler_13_Up}
+    {$define Delphi}
+    {$define Delphi13}
+    {$define Delphi13Up}
+    {$define Delphi2010}
+    {$define Delphi2010Up}
+    {$define Delphi_13}
+    {$define Delphi_13_Up}
+    {$define Delphi_2010}
+    {$define Delphi_2010_Up}
+  {$endif}
 
   // Delphi 2009
-  {$IFDEF VER200}
-    {$DEFINE COMPILER_12}
-    {$DEFINE DELPHI}
-    {$DEFINE DELPHI_12}
-    {$DEFINE DELPHI_2009}
-  {$ENDIF}
+  {$ifdef VER200}
+    {$define Compiler_12}
+    {$define Compiler_12_Up}
+    {$define Delphi}
+    {$define Delphi12}
+    {$define Delphi12Up}
+    {$define Delphi2009}
+    {$define Delphi2009Up}
+    {$define Delphi_12}
+    {$define Delphi_12_Up}
+    {$define Delphi_2009}
+    {$define Delphi_2009_Up}
+  {$endif}
 
   // Delphi 2007
-  {$IFDEF VER190}
-    {$DEFINE COMPILER_11}
-    {$DEFINE DELPHI}
-    {$DEFINE DELPHI_11}
-    {$DEFINE DELPHI_2007}
+  {$ifdef VER190}
+    {$define Compiler_11}
+    {$define Compiler_11_Up}
+    {$define Delphi}
+    {$define Delphi11}
+    {$define Delphi11Up}
+    {$define Delphi2007}
+    {$define Delphi2007Up}
+    {$define Delphi_11}
+    {$define Delphi_11_Up}
+    {$define Delphi_2007}
+    {$define Delphi_2007_Up}
   {$ENDIF}
 
   // Delphi 2006
-  {$IFDEF VER180}
-    {$define COMPILER_10}
-    {$define DELPHI}
-    {$define DELPHI_10}
-  {$ENDIF}
+  {$ifdef VER180}
+    {$define Compiler_10}
+    {$define Compiler_10_Up}
+    {$define Delphi}
+    {$define Delphi10}
+    {$define Delphi10Up}
+    {$define Delphi2006}
+    {$define Delphi2006Up}
+    {$define Delphi_10}
+    {$define Delphi_10_Up}
+    {$define Delphi_2006}
+    {$define Delphi_2006_Up}
+  {$endif}
 
   // Delphi 2005
-  {$IFDEF VER170}
-    {$define COMPILER_9}
-    {$define DELPHI}
-    {$define DELPHI_9}
-  {$ENDIF}
+  {$ifdef VER170}
+    {$define Compiler_9}
+    {$define Compiler_9_Up}
+    {$define Delphi}
+    {$define Delphi9}
+    {$define Delphi9Up}
+    {$define Delphi2005}
+    {$define Delphi2005Up}
+    {$define Delphi_9}
+    {$define Delphi_9_Up}
+    {$define Delphi_2005}
+    {$define Delphi_2005_Up}
+  {$endif}
+
+  {$ifdef VER160}
+    {$define Delphi8}
+    {$define Delphi8Up}
+  {$endif}
 
   // Delphi 7
-  {$IFDEF VER150}
-    {$define COMPILER_7}
-    {$define DELPHI}
-    {$define DELPHI_7}
-  {$ENDIF}
+  {$ifdef VER150}
+    {$define Compiler_7}
+    {$define Compiler_7_Up}
+    {$define Delphi}
+    {$define Delphi7}
+    {$define Delphi7Up}
+    {$define Delphi_7}
+    {$define Delphi_7_Up}
+  {$endif}
 
   // Delphi 6
   {$IFDEF VER140}
-    {$define COMPILER_6}
+    {$define Compiler_6}
+    {$define Compiler_6_Up}
     {$ifdef BCB}
       {$define CPPB}
       {$define CPPB_6}
     {$else}
-      {$define DELPHI}
-      {$define DELPHI_6}
+      {$define Delphi}
+      {$define Delphi6}
+      {$define Delphi_6}
+      {$define Delphi_6_Up}
     {$endif}
   {$ENDIF}
 
-  {$IFDEF VER130}
-    {$define COMPILER_5}
+  {$ifdef VER130}
+    {$define Compiler_5}
+    {$define Compiler_5_Up}
     {$ifdef BCB}
       {$define CPPB}
       {$define CPPB_5}
     {$else}
-      {$define DELPHI}
-      {$define DELPHI_5}
+      {$define Delphi}
+      {$define Delphi5}
+      {$define Delphi_5}
+      {$define Delphi_5_Up}
     {$endif}
-  {$ENDIF}
+  {$endif}
 
-  {$IFDEF VER125}
-    {$define COMPILER_4}
+  {$ifdef VER125}
+    {$define Compiler_4}
+    {$define Compiler_4_Up}
     {$define CPPB}
     {$define CPPB_4}
-  {$ENDIF}
+    {$define Delphi4}
+  {$endif}
 
-  {$IFDEF VER120}
-    {$define COMPILER_4}
-    {$define DELPHI}
-    {$define DELPHI_4}
-  {$ENDIF}
+  {$ifdef VER120}
+    {$define Compiler_4}
+    {$define Delphi}
+    {$define Delphi4}
+    {$define Delphi4Up}
+    {$define Delphi_4}
+    {$define Delphi_4_Up}
+  {$endif}
 
-  {$IFDEF VER110}
+  {$ifdef VER110}
     {$define COMPILER_3}
     {$define CPPB}
     {$define CPPB_3}
-  {$ENDIF}
+    {$define Delphi3}
+  {$endif}
 
-  {$IFDEF VER100}
-    {$define COMPILER_3}
-    {$define DELPHI}
-    {$define DELPHI_3}
-  {$ENDIF}
+  {$ifdef VER100}
+    {$define Compiler_3}
+    {$define Compiler_3_Up}
+    {$define Delphi}
+    {$define Delphi3}
+    {$define Delphi3Up}
+    {$define Delphi_3}
+    {$define Delphi_3_Up}
+  {$endif}
 
-  {$IFDEF VER93}
-    {$define COMPILER_2} // C++ Builder v1 compiler is really v2
+  {$ifdef VER93}
+    {$define Compiler_2} // C++ Builder v1 compiler is really v2
+    {$define Compiler_2_Up}
     {$define CPPB}
     {$define CPPB_1}
-  {$ENDIF}
+  {$endif}
 
-  {$IFDEF VER90}
-    {$define COMPILER_2}
-    {$define DELPHI}
-    {$define DELPHI_2}
-  {$ENDIF}
+  {$ifdef VER90}
+    {$define Compiler_2}
+    {$define Compiler_2_Up}
+    {$define Delphi}
+    {$define Delphi2}
+    {$define Delphi2Up}
+    {$define Delphi_2}
+    {$define Delphi_2_Up}
+  {$endif}
 
-  {$IFDEF VER80}
-    {$define COMPILER_1}
-    {$define DELPHI}
-    {$define DELPHI_1}
-  {$ENDIF}
+  {$ifdef VER80}
+    {$define Compiler_1}
+    {$define Compiler_1_Up}
+    {$define Delphi}
+    {$define Delphi1}
+    {$define Delphi_1}
+  {$endif}
 
-  {$IFDEF DELPHI_2} {$DEFINE DELPHI_2_UP} {$ENDIF}
-  {$IFDEF DELPHI_3} {$DEFINE DELPHI_3_UP} {$ENDIF}
-  {$IFDEF DELPHI_4} {$DEFINE DELPHI_4_UP} {$ENDIF}
-  {$IFDEF DELPHI_5} {$DEFINE DELPHI_5_UP} {$ENDIF}
-  {$IFDEF DELPHI_6} {$DEFINE DELPHI_6_UP} {$ENDIF}
-  {$IFDEF DELPHI_7} {$DEFINE DELPHI_7_UP} {$ENDIF}
-  {$IFDEF DELPHI_9} {$DEFINE DELPHI_9_UP} {$ENDIF}
-  {$IFDEF DELPHI_10} {$DEFINE DELPHI_10_UP} {$ENDIF}
-  {$IFDEF DELPHI_11} {$DEFINE DELPHI_11_UP} {$ENDIF}
-  {$IFDEF DELPHI_12} {$DEFINE DELPHI_12_UP} {$ENDIF}
-  {$IFDEF DELPHI_13} {$DEFINE DELPHI_13_UP} {$ENDIF}
-  {$IFDEF DELPHI_15} {$DEFINE DELPHI_15_UP} {$ENDIF}
+  {$ifdef Delphi17Up} {$define Delphi16Up} {$endif}
+  {$ifdef Delphi16Up} {$define Delphi15Up} {$endif}
+  {$ifdef Delphi15Up} {$define Delphi13Up} {$endif}
+  {$ifdef Delphi13Up} {$define Delphi12Up} {$endif}
+  {$ifdef Delphi12Up} {$define Delphi11Up} {$endif}
+  {$ifdef Delphi11Up} {$define Delphi10Up} {$endif}
+  {$ifdef Delphi10Up} {$define Delphi9Up} {$endif}
+  {$ifdef Delphi9Up} {$define Delphi8Up} {$endif}
+  {$ifdef Delphi8Up} {$define Delphi7Up} {$endif}
+  {$ifdef Delphi7Up} {$define Delphi6Up} {$endif}
+  {$ifdef Delphi6Up} {$define Delphi5Up} {$endif}
+  {$ifdef Delphi5Up} {$define Delphi4Up} {$endif}
+  {$ifdef Delphi4Up} {$define Delphi3Up} {$endif}
+  {$ifdef Delphi3Up} {$define Delphi2Up} {$endif}
+  {$ifdef Delphi2Up} {$define Delphi1Up} {$endif}
 
+  {$IFDEF DELPHI_17_UP} {$DEFINE DELPHI_16_UP} {$ENDIF}
+  {$IFDEF DELPHI_16_UP} {$DEFINE DELPHI_15_UP} {$ENDIF}
   {$IFDEF DELPHI_15_UP} {$DEFINE DELPHI_13_UP} {$ENDIF}
   {$IFDEF DELPHI_13_UP} {$DEFINE DELPHI_12_UP} {$ENDIF}
   {$IFDEF DELPHI_12_UP} {$DEFINE DELPHI_11_UP} {$ENDIF}
@@ -159,14 +263,14 @@ LastMod 05.06.2012
   {$IFDEF DELPHI_3_UP} {$DEFINE DELPHI_2_UP} {$ENDIF}
   {$IFDEF DELPHI_2_UP} {$DEFINE DELPHI_1_UP} {$ENDIF}
 
-  {$IFDEF DELPHI_2005} {$DEFINE DELPHI_2005_UP} {$ENDIF}
-  {$IFDEF DELPHI_2006} {$DEFINE DELPHI_2006_UP} {$ENDIF}
-  {$IFDEF DELPHI_2007} {$DEFINE DELPHI_2007_UP} {$ENDIF}
-  {$IFDEF DELPHI_2010} {$DEFINE DELPHI_2010_UP} {$ENDIF}
-  {$IFDEF DELPHI_2011} {$DEFINE DELPHI_2011_UP} {$ENDIF}
-  {$IFDEF DELPHI_XE} {$DEFINE DELPHI_XE_UP} {$ENDIF}
-  {$IFDEF DELPHI_XE2} {$DEFINE DELPHI_XE2_UP} {$ENDIF}
+  {$ifdef DelphiXE3Up} {$define DelphiXE2Up} {$endif}
+  {$ifdef DelphiXE2Up} {$define DelphiXEUp} {$endif}
+  {$ifdef DelphiXEUp} {$define Delphi2010Up} {$endif}
+  {$ifdef Delphi2010Up} {$define Delphi2007Up} {$endif}
+  {$ifdef Delphi2007Up} {$define Delphi2006Up} {$endif}
+  {$ifdef Delphi2006Up} {$define Delphi2005Up} {$endif}
 
+  {$IFDEF DELPHI_XE3_UP} {$DEFINE DELPHI_XE2_UP} {$ENDIF}
   {$IFDEF DELPHI_XE2_UP} {$DEFINE DELPHI_XE_UP} {$ENDIF}
   {$IFDEF DELPHI_XE_UP} {$DEFINE DELPHI_2011_UP} {$ENDIF}
   {$IFDEF DELPHI_2011_UP} {$DEFINE DELPHI_2010_UP} {$ENDIF}
@@ -204,20 +308,8 @@ LastMod 05.06.2012
 // -------------------------------------------------------------------------------------------------
 
 // Compiler defines common to all platforms.
-{$IFDEF COMPILER_1} {$DEFINE COMPILER_1_UP} {$ENDIF}
-{$IFDEF COMPILER_2} {$DEFINE COMPILER_2_UP} {$ENDIF}
-{$IFDEF COMPILER_3} {$DEFINE COMPILER_3_UP} {$ENDIF}
-{$IFDEF COMPILER_4} {$DEFINE COMPILER_4_UP} {$ENDIF}
-{$IFDEF COMPILER_5} {$DEFINE COMPILER_5_UP} {$ENDIF}
-{$IFDEF COMPILER_6} {$DEFINE COMPILER_6_UP} {$ENDIF}
-{$IFDEF COMPILER_7} {$DEFINE COMPILER_7_UP} {$ENDIF}
-{$IFDEF COMPILER_9} {$DEFINE COMPILER_9_UP} {$ENDIF}
-{$IFDEF COMPILER_10} {$DEFINE COMPILER_10_UP} {$ENDIF}
-{$IFDEF COMPILER_11} {$DEFINE COMPILER_11_UP} {$ENDIF}
-{$IFDEF COMPILER_12} {$DEFINE COMPILER_12_UP} {$ENDIF}
-{$IFDEF COMPILER_13} {$DEFINE COMPILER_13_UP} {$ENDIF}
-{$IFDEF COMPILER_15} {$DEFINE COMPILER_15_UP} {$ENDIF}
-
+{$IFDEF COMPILER_17_UP} {$DEFINE COMPILER_16_UP} {$ENDIF}
+{$IFDEF COMPILER_16_UP} {$DEFINE COMPILER_15_UP} {$ENDIF}
 {$IFDEF COMPILER_15_UP} {$DEFINE COMPILER_13_UP} {$ENDIF}
 {$IFDEF COMPILER_13_UP} {$DEFINE COMPILER_12_UP} {$ENDIF}
 {$IFDEF COMPILER_12_UP} {$DEFINE COMPILER_11_UP} {$ENDIF}
@@ -233,59 +325,7 @@ LastMod 05.06.2012
 
 // -------------------------------------------------------------------------------------------------
 
-{$IFDEF ver100} {$DEFINE Delphi3} {$ENDIF}
-{$IFDEF ver110} {$DEFINE Delphi3} {$ENDIF}
-{$IFDEF ver120} {$DEFINE Delphi4} {$ENDIF}
-{$IFDEF VER125} {$DEFINE Delphi4} {$ENDIF}
-{$IFDEF VER130} {$DEFINE Delphi5} {$ENDIF}
-{$IFDEF VER140} {$DEFINE Delphi6} {$ENDIF}
-{$IFDEF VER150} {$DEFINE Delphi7} {$ENDIF}
-{$IFDEF VER160} {$DEFINE Delphi8} {$ENDIF}
-{$IFDEF VER170} {$DEFINE Delphi9} {$ENDIF}
-{$IFDEF CLR} {$DEFINE DOTNET} {$ENDIF}     
-// -----------------------------------------------------------------------------
-{$IFDEF Delphi3}
-  {$DEFINE Delphi3Up}
-{$ENDIF}
-{$IFDEF Delphi4}
-  {$DEFINE Delphi3Up}
-  {$DEFINE Delphi4Up}
-{$ENDIF}
-{$IFDEF Delphi5}
-  {$DEFINE Delphi3Up}
-  {$DEFINE Delphi4Up}
-  {$DEFINE Delphi5Up}
-{$ENDIF}
-{$IFDEF Delphi6}
-  {$DEFINE Delphi3Up}
-  {$DEFINE Delphi4Up}
-  {$DEFINE Delphi5Up}
-  {$DEFINE Delphi6Up}
-{$ENDIF}
-{$IFDEF Delphi7}
-  {$DEFINE Delphi3Up}
-  {$DEFINE Delphi4Up}
-  {$DEFINE Delphi5Up}
-  {$DEFINE Delphi6Up}
-  {$DEFINE Delphi7Up}
-{$ENDIF}
-{$IFDEF Delphi8}
-  {$DEFINE Delphi3Up}
-  {$DEFINE Delphi4Up}
-  {$DEFINE Delphi5Up}
-  {$DEFINE Delphi6Up}
-  {$DEFINE Delphi7Up}
-  {$DEFINE Delphi8Up}
-{$ENDIF}
-{$IFDEF Delphi9}
-  {$DEFINE Delphi3Up}
-  {$DEFINE Delphi4Up}
-  {$DEFINE Delphi5Up}
-  {$DEFINE Delphi6Up}
-  {$DEFINE Delphi7Up}
-  {$DEFINE Delphi8Up}
-  {$DEFINE Delphi9Up}
-{$ENDIF}
+{$IFDEF CLR} {$DEFINE DOTNET} {$ENDIF}
 
 // -------------------------------------------------------------------------------------------------
 

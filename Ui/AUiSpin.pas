@@ -1,13 +1,13 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.12.2009
-@LastMod 12.12.2012
+@LastMod 15.02.2013
 }
 unit AUiSpin;
 
-{$I A.inc}
+{define AStdCall}
 
-{$define AStdCall}
+{$I A.inc}
 
 interface
 
@@ -22,14 +22,6 @@ uses
 // --- AUiSpinButton ---
 
 function AUiSpinButton_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
-
-// --- AUi_SpinButton ---
-
-function AUi_SpinButton_New(Parent: AControl): AControl; stdcall;
-
-// --- UI_SpinButton ---
-
-function UI_SpinButton_New(Parent: AControl): AControl; stdcall;
 
 {$IFDEF FPC}
 
@@ -239,20 +231,6 @@ begin
     Result := 0;
   end;
   {$ENDIF}
-end;
-
-// --- AUi_SpinButton ---
-
-function AUi_SpinButton_New(Parent: AControl): AControl; 
-begin
-  Result := AUiSpinButton_New(Parent);
-end;
-
-// --- UI_SpinButton ---
-
-function UI_SpinButton_New(Parent: AControl): AControl;
-begin
-  Result := AUiSpinButton_New(Parent);
 end;
 
 { TSpinButton }
@@ -514,13 +492,13 @@ end;
 
 function TSpinEdit.IsValidChar(Key: Char): Boolean;
 begin
-  {$IFDEF DELPHI_2011}
+  {$ifdef DelphiXEUp}
   Result := SysUtils.CharInSet(Key, [FormatSettings.DecimalSeparator, '+', '-', '0'..'9']) or
     ((Key < #32) and (Key <> Chr(VK_RETURN)));
-  {$ELSE}
+  {$else}
   Result := (Key in [DecimalSeparator, '+', '-', '0'..'9']) or
     ((Key < #32) and (Key <> Chr(VK_RETURN)));
-  {$ENDIF}
+  {$endif}
   if not FEditorEnabled and Result and ((Key >= #32) or
       (Key = Char(VK_BACK)) or (Key = Char(VK_DELETE))) then
     Result := False;

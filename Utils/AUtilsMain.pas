@@ -2,11 +2,13 @@
 @Abstract AUtils - Main
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.09.2011
-@LastMod 29.01.2013
+@LastMod 15.02.2013
 }
 unit AUtilsMain;
 
 {define AStdCall}
+
+{$I A.inc}
 
 interface
 
@@ -186,11 +188,11 @@ var
 begin
   if (DecimalSeparator = #0) then
   begin
-    {$IFDEF VER220}
+    {$ifdef DelphiXEUp}
     DecimalSeparator := AChar(FormatSettings.DecimalSeparator);
-    {$ELSE}
+    {$else}
     DecimalSeparator := AChar(SysUtils.DecimalSeparator);
-    {$ENDIF}
+    {$endif}
   end;
   if (DecimalSeparator <> '.') and (DecimalSeparator <> ',') then
     raise Exception.Create('Ошибка в ReplaceComma(). Значение DecimalSeparator должно быть точка или запятая.');

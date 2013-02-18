@@ -2,7 +2,7 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.01.2012
-@LastMod 31.01.2013
+@LastMod 18.02.2013
 }
 unit APluginsMain;
 
@@ -14,14 +14,12 @@ uses
   SysUtils,
   ABase,
   ALibraries,
+  APluginsBase,
   ARuntimeBase,
   ARuntimeMain,
   ASettingsMain,
   ASystemEvents,
   ASystemMain;
-
-type
-  TCheckPluginProc = function(Lib: ALibrary): ABoolean; stdcall;
 
 // --- APlugins ---
 
@@ -36,6 +34,8 @@ function APlugins_Delete(Index: AInteger): AError; {$ifdef AStdCall}stdcall;{$en
 function APlugins_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function APlugins_FinAll(): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function APlugins_Find2A(Path, Exclusion: AStr): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function APlugins_Find2P(const Path, Exclusion: APascalString): AError;
 
@@ -308,6 +308,11 @@ begin
   except
   end;
   Result := 0;
+end;
+
+function APlugins_Find2A(Path, Exclusion: AStr): AError;
+begin
+  Result := APlugins_Find2P(Path, Exclusion);
 end;
 
 function APlugins_Find2P(const Path, Exclusion: APascalString): AError;

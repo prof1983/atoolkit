@@ -2,17 +2,24 @@
 @Abstract ASettingsReg
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.11.2012
-@LastMod 31.01.2013
+@LastMod 18.02.2013
 }
 unit ASettingsReg;
+
+{define AStdCall}
 
 interface
 
 uses
   {$IFDEF MSWINDOWS}Windows, ARegistrySettings,{$ENDIF}
-  ABase;
+  ABase,
+  AStringMain;
 
 // --- ASettings_RegConfig ---
+
+function ASettings_NewRegConfig(const Prefix: AString_Type; Key: AInt): AConfig; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASettings_NewRegConfigA(Prefix: AStr; Key: AInt): AConfig; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASettings_NewRegConfigP(const Prefix: APascalString; Key: AInt): AConfig;
 
@@ -21,6 +28,16 @@ function ASettings_RegConfig_NewP(const Prefix: APascalString): AConfig; depreca
 implementation
 
 // --- ASettings_RegConfig ---
+
+function ASettings_NewRegConfig(const Prefix: AString_Type; Key: AInt): AConfig;
+begin
+  Result := ASettings_NewRegConfigP(AString_ToPascalString(Prefix), Key);
+end;
+
+function ASettings_NewRegConfigA(Prefix: AStr; Key: AInt): AConfig;
+begin
+  Result := ASettings_NewRegConfigP(Prefix, Key);
+end;
 
 function ASettings_NewRegConfigP(const Prefix: APascalString; Key: AInt): AConfig;
 {$IFDEF MSWINDOWS}

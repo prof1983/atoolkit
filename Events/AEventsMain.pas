@@ -2,7 +2,7 @@
 @Abstract AEvents
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.11.2011
-@LastMod 04.02.2013
+@LastMod 18.02.2013
 }
 unit AEventsMain;
 
@@ -34,6 +34,8 @@ type
   end;
 
 // --- AEvents ---
+
+function AEvents_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AEvents_Init(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -175,6 +177,11 @@ begin
 end;
 
 // --- AEvents ---
+
+function AEvents_Fin(): AError;
+begin
+  Result := 0;
+end;
 
 function AEvents_Init(): AError;
 begin

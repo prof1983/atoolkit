@@ -2,7 +2,7 @@
 @Abstract AUtils - Main
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.09.2011
-@LastMod 15.02.2013
+@LastMod 18.02.2013
 }
 unit AUtilsMain;
 
@@ -34,15 +34,15 @@ function AUtils_DeleteFile(const FileName: AString_Type): AError; {$ifdef AStdCa
 
 function AUtils_DeleteFileP(const FileName: APascalString): AError;
 
-function AUtils_DirectoryExists(const Directory: AString_Type): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+function AUtils_DirectoryExists(const Directory: AString_Type): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUtils_DirectoryExistsP(const Directory: APascalString): ABoolean;
+function AUtils_DirectoryExistsP(const Directory: APascalString): ABool;
 
 function AUtils_ExpandFileName(const FileName: AString_Type; out Res: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_ExpandFileNameP(const FileName: APascalString): APascalString;
 
-function AUtils_ExtractFileExt(const FileName: AString_Type; out Res: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUtils_ExtractFileExt(const FileName: AString_Type; out Res: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_ExtractFileExtP(const FileName: APascalString): APascalString;
 
@@ -50,29 +50,29 @@ function AUtils_ExtractFileName(const FileName: AString_Type; out Res: AString_T
 
 function AUtils_ExtractFileNameP(const FileName: APascalString): APascalString;
 
-function AUtils_ExtractFilePath(const FileName: AString_Type; out Res: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUtils_ExtractFilePath(const FileName: AString_Type; out Res: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_ExtractFilePathP(const FileName: APascalString): APascalString;
 
-function AUtils_FileExists(const FileName: AString_Type): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+function AUtils_FileExists(const FileName: AString_Type): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUtils_FileExistsP(const FileName: APascalString): ABoolean;
+function AUtils_FileExistsP(const FileName: APascalString): ABool;
 
 function AUtils_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUtils_FloatToStr(Value: AFloat; out Res: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUtils_FloatToStr(Value: AFloat; out Res: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUtils_FloatToStr2(Value: AFloat; DigitsAfterComma: AInteger;
-    ReplaceComma, Delimer: ABoolean; out Res: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUtils_FloatToStr2(Value: AFloat; DigitsAfterComma: AInt;
+    ReplaceComma, Delimer: ABool; out Res: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUtils_FloatToStr2P(Value: AFloat; DigitsAfterComma: AInteger;
-    ReplaceComma, Delimer: ABoolean): APascalString;
+function AUtils_FloatToStr2P(Value: AFloat; DigitsAfterComma: AInt;
+    ReplaceComma, Delimer: ABool): APascalString;
 
-function AUtils_FloatToStrAP(Value: AFloat; DigitsAfterComma: AInteger = 2): APascalString;
+function AUtils_FloatToStrAP(Value: AFloat; DigitsAfterComma: AInt = 2): APascalString;
 
-function AUtils_FloatToStrBP(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString;
+function AUtils_FloatToStrBP(Value: AFloat; DigitsAfterComma: AInt = 2): APascalString;
 
-function AUtils_FloatToStrCP(Value: AFloat; DigitsAfterComma: Integer = 2): APascalString;
+function AUtils_FloatToStrCP(Value: AFloat; DigitsAfterComma: AInt = 2): APascalString;
 
 function AUtils_FloatToStrDP(Value: AFloat): APascalString;
 
@@ -80,20 +80,20 @@ function AUtils_FloatToStrP(Value: AFloat): APascalString;
 
 function AUtils_ForceDirectoriesP(const Dir: APascalString): AError;
 
-function AUtils_FormatFloat(Value: AFloat; Count, Digits: AInteger;
-    out Res: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUtils_FormatFloat(Value: AFloat; Count, Digits: AInt;
+    out Res: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUtils_FormatFloatP(Value: AFloat; DigitsBeforeComma, DigitsAfterComma: AInteger): APascalString;
+function AUtils_FormatFloatP(Value: AFloat; DigitsBeforeComma, DigitsAfterComma: AInt): APascalString;
 
-function AUtils_FormatInt(Value, Count: AInteger; out Res: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUtils_FormatInt(Value, Count: AInt; out Res: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUtils_FormatIntP(Value, Count: AInteger): APascalString;
+function AUtils_FormatIntP(Value, Count: AInt): APascalString;
 
-function AUtils_FormatStr(const Value: AString_Type; Len: AInteger; out Res: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUtils_FormatStr(const Value: AString_Type; Len: AInt; out Res: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUtils_FormatStrAnsi(const Value: AnsiString; Len: AInteger): AnsiString; {$ifdef AStdCall}stdcall;{$endif}
+function AUtils_FormatStrAnsi(const Value: AnsiString; Len: AInt): AnsiString; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUtils_FormatStrP(const Value: APascalString; Len: AInteger): APascalString;
+function AUtils_FormatStrP(const Value: APascalString; Len: AInt): APascalString;
 
 function AUtils_FormatStrStrP(const FormatStr, S: APascalString): APascalString;
 
@@ -101,29 +101,29 @@ function AUtils_GetNowDateTime(): TDateTime; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_Init(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUtils_IntToStr(Value: AInteger; out Res: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUtils_IntToStr(Value: AInt; out Res: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUtils_IntToStrP(Value: AInteger): APascalString;
+function AUtils_IntToStrP(Value: AInt): APascalString;
 
 function AUtils_NormalizeFloat(Value: AFloat): AFloat; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUtils_NormalizeStr(const Value: AString_Type; out Res: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUtils_NormalizeStr(const Value: AString_Type; out Res: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_NormalizeStrP(const Value: APascalString): APascalString;
 
-function AUtils_NormalizeStrSpace(const Value: AString_Type; out Res: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUtils_NormalizeStrSpace(const Value: AString_Type; out Res: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_NormalizeStrSpaceP(const Value: APascalString): APascalString;
 
 function AUtils_Power(Base, Exponent: AFloat): AFloat; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_ReplaceComma(const S: AString_Type; DecimalSeparator: AChar;
-    ClearSpace: ABoolean; out Res: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+    ClearSpace: ABool; out Res: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_ReplaceCommaP(const S: APascalString; DecimalSeparator: AChar = #0;
-    ClearSpace: ABoolean = True): APascalString;
+    ClearSpace: ABool = True): APascalString;
 
-function AUtils_Round2(Value: Real; Digits1, DigitsAfterComma: Integer): Real; {$ifdef AStdCall}stdcall;{$endif}
+function AUtils_Round2(Value: AFloat; Digits1, DigitsAfterComma: AInt): AFloat; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_Sleep(Milliseconds: AUInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -135,27 +135,29 @@ function AUtils_StrToFloatDefP(const S: APascalString; DefValue: AFloat): AFloat
 
 function AUtils_StrToFloatP(const Value: APascalString): AFloat;
 
-function AUtils_StrToIntDefP(const S: APascalString; DefValue: AInteger): AInteger;
+function AUtils_StrToIntDefP(const S: APascalString; DefValue: AInt): AInt;
 
-function AUtils_StrToIntP(const Value: APascalString): AInteger;
+function AUtils_StrToIntP(const Value: APascalString): AInt;
+
+function AUtils_Trim(var S: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_TrimP(const S: APascalString): APascalString;
 
-function AUtils_TryStrToDateP(const S: APascalString; var Value: TDateTime): ABoolean;
+function AUtils_TryStrToDateP(const S: APascalString; var Value: TDateTime): ABool;
 
 {** ѕреобразует строку в Float. –азделителем может быть как точка, так и зап€та€.
     ¬ исходной строке могут присутствовать начальные и конечные пробелы. }
-function AUtils_TryStrToFloatP(const S: APascalString; var Value: AFloat): ABoolean;
+function AUtils_TryStrToFloatP(const S: APascalString; var Value: AFloat): ABool;
 
 {** ѕреобразует строку в Float32. –азделителем может быть как точка, так и зап€та€.
     ¬ исходной строке могут присутствовать начальные и конечные пробелы. }
-function AUtils_TryStrToFloat32P(const S: APascalString; var Value: AFloat32): ABoolean;
+function AUtils_TryStrToFloat32P(const S: APascalString; var Value: AFloat32): ABool;
 
 {** ѕреобразует строку в Float64. –азделителем может быть как точка, так и зап€та€.
     ¬ исходной строке могут присутствовать начальные и конечные пробелы. }
-function AUtils_TryStrToFloat64P(const S: APascalString; var Value: AFloat64): ABoolean;
+function AUtils_TryStrToFloat64P(const S: APascalString; var Value: AFloat64): ABool;
 
-function AUtils_TryStrToIntP(const S: APascalString; var Value: AInteger): ABoolean;
+function AUtils_TryStrToIntP(const S: APascalString; var Value: AInt): ABool;
 
 implementation
 
@@ -180,8 +182,7 @@ end;
 
 {** «амен€ет все точки на зап€тые или все зап€тые на точки в зависимости от региональных настроек.
     ≈сли параметр DecimalSeparator указан, то региональные настройки игнорируютс€. }
-function _ReplaceComma(const S: APascalString; DecimalSeparator: AChar; ClearSpace: ABoolean): APascalString;
-//function Utils_ReplaceComma(const S: APascalString; DecimalSeparator: AChar = #0; ClearSpace: ABoolean = True): APascalString;
+function _ReplaceComma(const S: APascalString; DecimalSeparator: AChar; ClearSpace: ABool): APascalString;
 var
   ic: Integer;
   SS: APascalString;
@@ -358,12 +359,12 @@ begin
   end;
 end;
 
-function AUtils_DirectoryExists(const Directory: AString_Type): ABoolean;
+function AUtils_DirectoryExists(const Directory: AString_Type): ABool;
 begin
   Result := AUtils_DirectoryExistsP(AString_ToPascalString(Directory));
 end;
 
-function AUtils_DirectoryExistsP(const Directory: APascalString): ABoolean;
+function AUtils_DirectoryExistsP(const Directory: APascalString): ABool;
 begin
   try
     Result := SysUtils.DirectoryExists(Directory);
@@ -389,7 +390,7 @@ begin
   end;
 end;
 
-function AUtils_ExtractFileExt(const FileName: AString_Type; out Res: AString_Type): AInteger;
+function AUtils_ExtractFileExt(const FileName: AString_Type; out Res: AString_Type): AInt;
 begin
   try
     Result := AString_AssignP(Res,
@@ -426,7 +427,7 @@ begin
   end;
 end;
 
-function AUtils_ExtractFilePath(const FileName: AString_Type; out Res: AString_Type): AInteger;
+function AUtils_ExtractFilePath(const FileName: AString_Type; out Res: AString_Type): AInt;
 begin
   try
     Result := AString_AssignP(Res,
@@ -446,7 +447,7 @@ begin
   end;
 end;
 
-function AUtils_FileExists(const FileName: AString_Type): ABoolean;
+function AUtils_FileExists(const FileName: AString_Type): ABool;
 begin
   try
     Result := AUtils_FileExistsP(AString_ToPascalString(FileName));
@@ -455,7 +456,7 @@ begin
   end;
 end;
 
-function AUtils_FileExistsP(const FileName: APascalString): ABoolean;
+function AUtils_FileExistsP(const FileName: APascalString): ABool;
 begin
   try
     Result := SysUtils.FileExists(FileName);
@@ -469,7 +470,7 @@ begin
   Result := 0;
 end;
 
-function AUtils_FloatToStr(Value: AFloat; out Res: AString_Type): AInteger;
+function AUtils_FloatToStr(Value: AFloat; out Res: AString_Type): AInt;
 begin
   try
     Result := AString_AssignP(Res, AUtils_FloatToStrP(Value));
@@ -478,8 +479,8 @@ begin
   end;
 end;
 
-function AUtils_FloatToStr2(Value: AFloat; DigitsAfterComma: AInteger;
-    ReplaceComma, Delimer: ABoolean; out Res: AString_Type): AError;
+function AUtils_FloatToStr2(Value: AFloat; DigitsAfterComma: AInt;
+    ReplaceComma, Delimer: ABool; out Res: AString_Type): AError;
 var
   S: APascalString;
 begin
@@ -487,8 +488,8 @@ begin
   Result := AString_AssignP(Res, S);
 end;
 
-function AUtils_FloatToStr2P(Value: AFloat; DigitsAfterComma: AInteger;
-    ReplaceComma, Delimer: ABoolean): APascalString;
+function AUtils_FloatToStr2P(Value: AFloat; DigitsAfterComma: AInt;
+    ReplaceComma, Delimer: ABool): APascalString;
 begin
   if Delimer then
     Result := AUtils_FloatToStrCP(Value, DigitsAfterComma)
@@ -498,7 +499,7 @@ begin
     Result := AUtils_ReplaceCommaP(Result);
 end;
 
-function AUtils_FloatToStrAP(Value: AFloat; DigitsAfterComma: AInteger): APascalString;
+function AUtils_FloatToStrAP(Value: AFloat; DigitsAfterComma: AInt): APascalString;
 begin
   try
     Result := SysUtils.FloatToStrF(Value, ffFixed, 10, DigitsAfterComma);
@@ -507,7 +508,7 @@ begin
   end;
 end;
 
-function AUtils_FloatToStrBP(Value: AFloat; DigitsAfterComma: AInteger): APascalString;
+function AUtils_FloatToStrBP(Value: AFloat; DigitsAfterComma: AInt): APascalString;
 begin
   try
     Result := _ReplaceComma(AUtils_FloatToStrAP(Value, DigitsAfterComma), '.', True);
@@ -516,7 +517,7 @@ begin
   end;
 end;
 
-function AUtils_FloatToStrCP(Value: AFloat; DigitsAfterComma: AInteger): APascalString;
+function AUtils_FloatToStrCP(Value: AFloat; DigitsAfterComma: AInt): APascalString;
 begin
   try
     case DigitsAfterComma of
@@ -564,8 +565,8 @@ begin
   end;
 end;
 
-function AUtils_FormatFloat(Value: AFloat; Count, Digits: AInteger;
-    out Res: AString_Type): AInteger;
+function AUtils_FormatFloat(Value: AFloat; Count, Digits: AInt;
+    out Res: AString_Type): AInt;
 begin
   try
     Result := AString_AssignP(Res, AUtils_FormatFloatP(Value, Count, Digits));
@@ -574,7 +575,7 @@ begin
   end;
 end;
 
-function AUtils_FormatFloatP(Value: AFloat; DigitsBeforeComma, DigitsAfterComma: AInteger): APascalString;
+function AUtils_FormatFloatP(Value: AFloat; DigitsBeforeComma, DigitsAfterComma: AInt): APascalString;
 var
   FormatS: string;
 begin
@@ -591,7 +592,7 @@ begin
   end;
 end;
 
-function AUtils_FormatInt(Value, Count: AInteger; out Res: AString_Type): AInteger;
+function AUtils_FormatInt(Value, Count: AInt; out Res: AString_Type): AInt;
 begin
   try
     Result := AString_AssignP(Res, AUtils_FormatIntP(Value, Count));
@@ -600,7 +601,7 @@ begin
   end;
 end;
 
-function AUtils_FormatIntP(Value, Count: AInteger): APascalString;
+function AUtils_FormatIntP(Value, Count: AInt): APascalString;
 begin
   try
     if (Count > 0) and (Count <= 9) then
@@ -612,7 +613,7 @@ begin
   end;
 end;
 
-function AUtils_FormatStr(const Value: AString_Type; Len: AInteger; out Res: AString_Type): AInteger;
+function AUtils_FormatStr(const Value: AString_Type; Len: AInt; out Res: AString_Type): AInt;
 begin
   try
     Result := AString_AssignP(Res,
@@ -623,7 +624,7 @@ begin
   end;
 end;
 
-function AUtils_FormatStrAnsi(const Value: AnsiString; Len: AInteger): AnsiString;
+function AUtils_FormatStrAnsi(const Value: AnsiString; Len: AInt): AnsiString;
 begin
   if (Len = 0) then
   begin
@@ -653,7 +654,7 @@ begin
   end;
 end;
 
-function AUtils_FormatStrP(const Value: APascalString; Len: AInteger): APascalString;
+function AUtils_FormatStrP(const Value: APascalString; Len: AInt): APascalString;
 begin
   try
     Result := APascalString(AUtils_FormatStrAnsi(AnsiString(Value), Len));
@@ -691,7 +692,7 @@ begin
   Result := 0;
 end;
 
-function AUtils_IntToStr(Value: AInteger; out Res: AString_Type): AInteger;
+function AUtils_IntToStr(Value: AInt; out Res: AString_Type): AInt;
 begin
   try
     Result := AString_AssignP(Res, AUtils_IntToStrP(Value));
@@ -700,7 +701,7 @@ begin
   end;
 end;
 
-function AUtils_IntToStrP(Value: AInteger): APascalString;
+function AUtils_IntToStrP(Value: AInt): APascalString;
 begin
   try
     Result := SysUtils.IntToStr(Value);
@@ -718,7 +719,7 @@ begin
   end;
 end;
 
-function AUtils_NormalizeStr(const Value: AString_Type; out Res: AString_Type): AInteger;
+function AUtils_NormalizeStr(const Value: AString_Type; out Res: AString_Type): AInt;
 begin
   try
     Result := AString_AssignP(Res,
@@ -747,7 +748,7 @@ begin
   end;
 end;
 
-function AUtils_NormalizeStrSpace(const Value: AString_Type; out Res: AString_Type): AInteger;
+function AUtils_NormalizeStrSpace(const Value: AString_Type; out Res: AString_Type): AInt;
 begin
   try
     Result := AString_AssignP(Res,
@@ -797,7 +798,7 @@ begin
 end;
 
 function AUtils_ReplaceComma(const S: AString_Type; DecimalSeparator: AChar;
-    ClearSpace: ABoolean; out Res: AString_Type): AInteger;
+    ClearSpace: ABool; out Res: AString_Type): AInt;
 begin
   try
     Result := AString_AssignP(Res,
@@ -809,7 +810,7 @@ begin
 end;
 
 function AUtils_ReplaceCommaP(const S: APascalString; DecimalSeparator: AChar;
-    ClearSpace: ABoolean): APascalString;
+    ClearSpace: ABool): APascalString;
 begin
   try
     Result := _ReplaceComma(S, DecimalSeparator, ClearSpace);
@@ -818,7 +819,7 @@ begin
   end;
 end;
 
-function AUtils_Round2(Value: Real; Digits1, DigitsAfterComma: Integer): Real;
+function AUtils_Round2(Value: AFloat; Digits1, DigitsAfterComma: AInt): AFloat;
 begin
   try
     Result := _Round2(Value, Digits1, DigitsAfterComma);
@@ -863,7 +864,7 @@ begin
     Result := 0;
 end;
 
-function AUtils_StrToIntDefP(const S: APascalString; DefValue: AInteger): AInteger;
+function AUtils_StrToIntDefP(const S: APascalString; DefValue: AInt): AInt;
 begin
   try
     if not(AUtils_TryStrToIntP(S, Result)) then
@@ -873,10 +874,19 @@ begin
   end;
 end;
 
-function AUtils_StrToIntP(const Value: APascalString): AInteger;
+function AUtils_StrToIntP(const Value: APascalString): AInt;
 begin
   if not(AUtils_TryStrToIntP(Value, Result)) then
     Result := 0;
+end;
+
+function AUtils_Trim(var S: AString_Type): AError;
+begin
+  try
+    Result := AString_AssignP(S, SysUtils.Trim(AString_ToPascalString(S)));
+  except
+    Result := -1;
+  end;
 end;
 
 function AUtils_TrimP(const S: APascalString): APascalString;
@@ -888,7 +898,7 @@ begin
   end;
 end;
 
-function AUtils_TryStrToDateP(const S: APascalString; var Value: TDateTime): ABoolean;
+function AUtils_TryStrToDateP(const S: APascalString; var Value: TDateTime): ABool;
 begin
   try
     Result := SysUtils.TryStrToDate(S, Value);
@@ -897,7 +907,7 @@ begin
   end;
 end;
 
-function AUtils_TryStrToFloatP(const S: APascalString; var Value: AFloat): ABoolean;
+function AUtils_TryStrToFloatP(const S: APascalString; var Value: AFloat): ABool;
 begin
   {$IFDEF AFloat32}
   Result := AUtils_TryStrToFloat32P(S, Value);
@@ -906,7 +916,7 @@ begin
   {$ENDIF}
 end;
 
-function AUtils_TryStrToFloat32P(const S: APascalString; var Value: AFloat32): ABoolean;
+function AUtils_TryStrToFloat32P(const S: APascalString; var Value: AFloat32): ABool;
 var
   Value1: Extended;
   S1: string;
@@ -926,7 +936,7 @@ begin
   end;
 end;
 
-function AUtils_TryStrToFloat64P(const S: APascalString; var Value: AFloat64): ABoolean;
+function AUtils_TryStrToFloat64P(const S: APascalString; var Value: AFloat64): ABool;
 var
   Value1: Extended;
   S1: string;
@@ -946,7 +956,7 @@ begin
   end;
 end;
 
-function AUtils_TryStrToIntP(const S: APascalString; var Value: AInteger): ABoolean;
+function AUtils_TryStrToIntP(const S: APascalString; var Value: AInt): ABool;
 begin
   try
     Result := SysUtils.TryStrToInt(SysUtils.Trim(S), Value);

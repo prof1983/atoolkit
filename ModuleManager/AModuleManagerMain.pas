@@ -2,7 +2,7 @@
 @Abstract AModuleManager main functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.11.2012
-@LastMod 05.02.2013
+@LastMod 19.02.2013
 }
 unit AModuleManagerMain;
 
@@ -13,6 +13,7 @@ interface
 uses
   ABase,
   ARuntimeMain,
+  ASettingsMain,
   ASystemResourceString,
   AUiBase,
   AUiControls,
@@ -47,7 +48,7 @@ begin
   c := ARuntime_GetModulesCount();
   for i := 0 to c - 1 do
   begin
-    AUiListBox_AddP(lbModules, ARuntime_GetModuleNameByIndexWS(i));
+    AUiListBox_AddP(lbModules, ARuntime_GetModuleNameByIndexP(i));
   end;
 
   Result := lbModules;

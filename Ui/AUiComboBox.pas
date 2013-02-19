@@ -2,7 +2,7 @@
 @Abstract AUiComboBox
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.09.2012
-@LastMod 30.01.2013
+@LastMod 19.02.2013
 }
 unit AUiComboBox;
 
@@ -17,25 +17,27 @@ uses
   AUiBase,
   AUiData;
 
-function AUiComboBox_Add(ComboBox: AControl; const Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+// --- AUiComboBox ---
 
-function AUiComboBox_AddA(ComboBox: AControl; Value: AStr): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUiComboBox_Add(ComboBox: AControl; const Value: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiComboBox_AddP(ComboBox: AControl; const Value: APascalString): AInteger; 
+function AUiComboBox_AddA(ComboBox: AControl; Value: AStr): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiComboBox_GetItemIndex(ComboBox: AControl): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUiComboBox_AddP(ComboBox: AControl; const Value: APascalString): AInt; 
+
+function AUiComboBox_GetItemIndex(ComboBox: AControl): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiComboBox_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiComboBox_New2(Parent: AControl; Left, Top, Width: AInteger): AControl; {$ifdef AStdCall}stdcall;{$endif}
+function AUiComboBox_New2(Parent: AControl; Left, Top, Width: AInt): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiComboBox_SetItemIndex(ComboBox: AControl; Value: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiComboBox_SetItemIndex(ComboBox: AControl; Value: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
 // --- AUiComboBox ---
 
-function AUiComboBox_Add(ComboBox: AControl; const Value: AString_Type): AInteger;
+function AUiComboBox_Add(ComboBox: AControl; const Value: AString_Type): AInt;
 begin
   try
     Result := AUiComboBox_AddP(ComboBox, AString_ToPascalString(Value));
@@ -44,12 +46,12 @@ begin
   end;
 end;
 
-function AUiComboBox_AddA(ComboBox: AControl; Value: AStr): AInteger;
+function AUiComboBox_AddA(ComboBox: AControl; Value: AStr): AInt;
 begin
   Result := AUiComboBox_AddP(ComboBox, AnsiString(Value));
 end;
 
-function AUiComboBox_AddP(ComboBox: AControl; const Value: APascalString): AInteger;
+function AUiComboBox_AddP(ComboBox: AControl; const Value: APascalString): AInt;
 begin
   try
     Result := TComboBox(ComboBox).Items.Add(Value);
@@ -58,7 +60,7 @@ begin
   end;
 end;
 
-function AUiComboBox_GetItemIndex(ComboBox: AControl): AInteger;
+function AUiComboBox_GetItemIndex(ComboBox: AControl): AInt;
 begin
   try
     Result := TComboBox(ComboBox).ItemIndex;
@@ -80,7 +82,7 @@ begin
   end;
 end;
 
-function AUiComboBox_New2(Parent: AControl; Left, Top, Width: AInteger): AControl;
+function AUiComboBox_New2(Parent: AControl; Left, Top, Width: AInt): AControl;
 var
   ComboBox: TComboBox;
 begin
@@ -96,7 +98,7 @@ begin
   end;
 end;
 
-function AUiComboBox_SetItemIndex(ComboBox: AControl; Value: AInteger): AError;
+function AUiComboBox_SetItemIndex(ComboBox: AControl; Value: AInt): AError;
 begin
   try
     TComboBox(ComboBox).ItemIndex := Value;

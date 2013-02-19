@@ -1,11 +1,11 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.11.2012
-@LastMod 11.01.2013
+@LastMod 19.02.2013
 }
 unit AUiProgressBar;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
@@ -15,7 +15,7 @@ uses
 
 // --- AUiProgressBar ---
 
-function AUiProgressBar_New(Parent: AControl; Max: AInteger): AControl; {$ifdef AStdCall}stdcall;{$endif}
+function AUiProgressBar_New(Parent: AControl; Max: AInt): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiProgressBar_SetMaxPosition(ProgressBar: AControl; MaxPosition: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -23,19 +23,13 @@ function AUiProgressBar_SetPosition(ProgressBar: AControl; Position: AInt): AErr
 
 function AUiProgressBar_StepBy(ProgressBar: AControl; Step: AInt): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiProgressBar_StepIt(ProgressBar: AControl): AInteger; {$ifdef AStdCall}stdcall;{$endif}
-
-// --- UI_ProgressBar ---
-
-function UI_ProgressBar_New(Parent: AControl; Max: AInteger): AControl; deprecated; // Use AUiProgressBar_New()
-
-function UI_ProgressBar_StepIt(ProgressBar: AControl): AInteger; deprecated; // Use AUiProgressBar_StepIt()
+function AUiProgressBar_StepIt(ProgressBar: AControl): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
 // --- AUiProgressBar ---
 
-function AUiProgressBar_New(Parent: AControl; Max: AInteger): AControl;
+function AUiProgressBar_New(Parent: AControl; Max: AInt): AControl;
 var
   ProgressBar: TProgressBar;
 begin
@@ -94,21 +88,9 @@ begin
   end;
 end;
 
-function AUiProgressBar_StepIt(ProgressBar: AControl): AInteger;
+function AUiProgressBar_StepIt(ProgressBar: AControl): AInt;
 begin
   Result := AUiProgressBar_StepBy(ProgressBar, 1);
-end;
-
-{ ProgressBar }
-
-function UI_ProgressBar_New(Parent: AControl; Max: AInteger): AControl;
-begin
-  Result := AUiProgressBar_New(Parent, Max);
-end;
-
-function UI_ProgressBar_StepIt(ProgressBar: AControl): AInteger;
-begin
-  Result := AUiProgressBar_StepIt(ProgressBar);
 end;
 
 end.

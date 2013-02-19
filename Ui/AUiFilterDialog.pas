@@ -2,7 +2,7 @@
 @Abstract AUi filter dialog win
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.01.2013
-@LastMod 01.02.2013
+@LastMod 19.02.2013
 }
 unit AUiFilterDialog;
 
@@ -24,7 +24,7 @@ uses
   AUiWindows;
 
 function AUi_ExecuteDateFilterDialog(var Group: AInt; var DateBegin,
-    DateEnd: TDateTime): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+    DateEnd: TDateTime): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
@@ -116,7 +116,7 @@ end;
 
 // --- AUi ---
 
-function AUi_ExecuteDateFilterDialog(var Group: AInt; var DateBegin, DateEnd: TDateTime): ABoolean;
+function AUi_ExecuteDateFilterDialog(var Group: AInt; var DateBegin, DateEnd: TDateTime): ABool;
 {$IFNDEF FPC}
 var
   FilterForm: TFilterForm;

@@ -2,7 +2,7 @@
 @Abstract AUiDialogs
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 30.01.2013
+@LastMod 19.02.2013
 }
 unit AUiDialogs2;
 
@@ -38,16 +38,16 @@ uses
 
 // --- AUi ---
 
-function AUi_ExecuteColorDialog(var Color: AColor): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+function AUi_ExecuteColorDialog(var Color: AColor): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteFontDialog(var FontName: AString_Type; var FontSize: AInt;
-    var FontColor: AColor): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+    var FontColor: AColor): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteFontDialogA(FontName: AStr; MaxLen: AInt; var FontSize: AInt;
-    var FontColor: AColor): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+    var FontColor: AColor): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteFontDialogP(var FontName: APascalString; var FontSize: AInt;
-    var FontColor: AColor): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+    var FontColor: AColor): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteInputBox1(const Text: AString_Type;
     var Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -56,7 +56,7 @@ function AUi_ExecuteInputBox1A(Text: AStr; Value: AStr;
     ValueMaxLen: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteInputBox1P(const Text: APascalString;
-    var Value: APascalString): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+    var Value: APascalString): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteInputBox2(const Caption, Text1, Text2: AString_Type;
     var Value1, Value2: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -65,66 +65,57 @@ function AUi_ExecuteInputBox2A(Caption, Text1, Text2: AStr;
     Value1: AStr; MaxLenValue1: AInt; Value2: AStr; MaxLenValue2: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteInputBox2P(const Caption, Text1, Text2: APascalString;
-    var Value1, Value2: APascalString): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+    var Value1, Value2: APascalString): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteInputBox3P(const Caption, Text: APascalString;
-    var Value: APascalString): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+    var Value: APascalString): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteInputBox4P(const Caption, Prompt: APascalString;
-    var Value: APascalString): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+    var Value: APascalString): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteInputQueryP(const Caption, Prompt: APascalString;
-    var Value: APascalString): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+    var Value: APascalString): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteLoginDialog(var UserName, Password: AString_Type;
-    IsSave: ABoolean): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+    IsSave: ABool): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteLoginDialogP(var UserName, Password: APascalString;
-    IsSave: ABoolean): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+    IsSave: ABool): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteMessageDialog2P(const Msg: APascalString; MsgDlgTypeFlag: AMessageBoxFlags;
-    Flags: AMessageBoxFlags): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+    Flags: AMessageBoxFlags): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteOpenDialogP(const InitialDir, Filter, DefaultExt, Title: APascalString;
-    var FileName: APascalString; var FilterIndex: AInteger): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+    var FileName: APascalString; var FilterIndex: AInt): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteOpenFileDialog(const InitialDir, Filter, Title: AString_Type;
-    var FileName: AString_Type): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+    var FileName: AString_Type): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteOpenFileDialogP(const InitialDir, Filter, Title: APascalString;
-    var FileName: APascalString): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+    var FileName: APascalString): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecutePrinterSetupDialog(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteSaveFileDialog1(const InitialDir, DefExt, DefFileName: AString_Type;
-      out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+      out Value: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteSaveFileDialog1P(const InitialDir, DefExt, DefFileName: APascalString): APascalString; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteSaveFileDialog2P(const InitialDir, DefExt, DefFileName, Filter: APascalString;
-    var FilterIndex: AInteger): APascalString; {$ifdef AStdCall}stdcall;{$endif}
+    var FilterIndex: AInt): APascalString; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Select one item by SelectList
     @SelectList - Example: "Item 1;Item 2;Item 3" }
 function AUi_ExecuteSelectDialogP(DialogType: AInt; const SelectList: APascalString;
-    out Res: AInt): ABoolean;
+    out Res: AInt): ABool;
 
-function AUi_ExecuteSelectDirectoryDialogP(var Directory: APascalString): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
-
-function AUi_NewDialog(Buttons: AUiWindowButtons): ADialog; {$ifdef AStdCall}stdcall;{$endif}
-
-// --- UI_Dialogs ---
-
-function UI_Dialogs_InputBox(const Caption, Prompt, Default: APascalString): APascalString; deprecated {$ifdef ADeprText}'Use AUi_ExecuteInputBox3P()'{$endif};
-
-function UI_Dialogs_InputQuery(const Caption, Prompt: APascalString;
-    var Value: APascalString): ABoolean; deprecated {$ifdef ADeprText}'Use AUi_ExecuteInputQueryP()'{$endif};
+function AUi_ExecuteSelectDirectoryDialogP(var Directory: APascalString): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
 // --- AUi ---
 
-function AUi_ExecuteColorDialog(var Color: AColor): ABoolean;
+function AUi_ExecuteColorDialog(var Color: AColor): ABool;
 var
   ColorDialog: TColorDialog;
 begin
@@ -144,7 +135,7 @@ begin
 end;
 
 function AUi_ExecuteFontDialog(var FontName: AString_Type; var FontSize: AInt;
-    var FontColor: AColor): ABoolean;
+    var FontColor: AColor): ABool;
 var
   FontNameStr: APascalString;
 begin
@@ -154,7 +145,7 @@ begin
 end;
 
 function AUi_ExecuteFontDialogA(FontName: AStr; MaxLen: AInt; var FontSize: AInt;
-    var FontColor: AColor): ABoolean;
+    var FontColor: AColor): ABool;
 var
   FontNameStr: APascalString;
 begin
@@ -164,7 +155,7 @@ begin
 end;
 
 function AUi_ExecuteFontDialogP(var FontName: APascalString; var FontSize: AInt;
-    var FontColor: AColor): ABoolean;
+    var FontColor: AColor): ABool;
 var
   FontDialog: TFontDialog;
 begin
@@ -217,7 +208,7 @@ begin
   Result := 1;
 end;
 
-function AUi_ExecuteInputBox1P(const Text: APascalString; var Value: APascalString): ABoolean;
+function AUi_ExecuteInputBox1P(const Text: APascalString; var Value: APascalString): ABool;
 begin
   Result := AUi_ExecuteInputBox3P(ASystem_GetTitleP(), Text, Value);
 end;
@@ -267,7 +258,7 @@ begin
 end;
 
 function AUi_ExecuteInputBox2P(const Caption, Text1, Text2: APascalString;
-    var Value1, Value2: APascalString): ABoolean;
+    var Value1, Value2: APascalString): ABool;
 begin
   {$IFDEF FPC}
   Result := False;
@@ -280,7 +271,7 @@ begin
   {$ENDIF}
 end;
 
-function AUi_ExecuteInputBox3P(const Caption, Text: APascalString; var Value: APascalString): ABoolean;
+function AUi_ExecuteInputBox3P(const Caption, Text: APascalString; var Value: APascalString): ABool;
 begin
   {$IFDEF FPC}
   Result := False;
@@ -293,7 +284,7 @@ begin
   {$ENDIF}
 end;
 
-function AUi_ExecuteInputBox4P(const Caption, Prompt: APascalString; var Value: APascalString): ABoolean;
+function AUi_ExecuteInputBox4P(const Caption, Prompt: APascalString; var Value: APascalString): ABool;
 begin
   try
     Value := Dialogs.InputBox(Caption, Prompt, Value);
@@ -304,7 +295,7 @@ begin
 end;
 
 function AUi_ExecuteInputQueryP(const Caption, Prompt: APascalString;
-    var Value: APascalString): ABoolean;
+    var Value: APascalString): ABool;
 var
   TmpValue: string;
 begin
@@ -323,7 +314,7 @@ begin
 end;
 
 function AUi_ExecuteLoginDialog(var UserName, Password: AString_Type;
-    IsSave: ABoolean): ABoolean;
+    IsSave: ABool): ABool;
 var
   UserNameStr: APascalString;
   PasswordStr: APascalString;
@@ -335,7 +326,7 @@ begin
   AString_AssignP(Password, PasswordStr);
 end;
 
-function AUi_ExecuteLoginDialogP(var UserName, Password: APascalString; IsSave: ABoolean): ABoolean;
+function AUi_ExecuteLoginDialogP(var UserName, Password: APascalString; IsSave: ABool): ABool;
 {$IFNDEF FPC}
 var
   fmLogin: TLoginForm;
@@ -364,7 +355,7 @@ begin
 end;
 
 function AUi_ExecuteMessageDialog2P(const Msg: APascalString; MsgDlgTypeFlag: AMessageBoxFlags;
-    Flags: AMessageBoxFlags): AInteger;
+    Flags: AMessageBoxFlags): AInt;
 var
   MsgDlgType: TMsgDlgType;
   MsgDlgButtons: TMsgDlgButtons;
@@ -391,7 +382,7 @@ begin
 end;
 
 function AUi_ExecuteOpenDialogP(const InitialDir, Filter, DefaultExt, Title: APascalString;
-    var FileName: APascalString; var FilterIndex: AInteger): ABoolean;
+    var FileName: APascalString; var FilterIndex: AInt): ABool;
 var
   Open: TOpenDialog;
 begin
@@ -422,7 +413,7 @@ begin
 end;
 
 function AUi_ExecuteOpenFileDialog(const InitialDir, Filter, Title: AString_Type;
-    var FileName: AString_Type): ABoolean;
+    var FileName: AString_Type): ABool;
 var
   FileNameStr: APascalString;
 begin
@@ -436,7 +427,7 @@ begin
 end;
 
 function AUi_ExecuteOpenFileDialogP(const InitialDir, Filter, Title: APascalString;
-    var FileName: APascalString): ABoolean;
+    var FileName: APascalString): ABool;
 var
   FilterIndex: AInteger;
 begin
@@ -462,7 +453,7 @@ begin
 end;
 
 function AUi_ExecuteSaveFileDialog1(const InitialDir, DefExt, DefFileName: AString_Type;
-      out Value: AString_Type): AInteger;
+      out Value: AString_Type): AInt;
 var
   S: APascalString;
 begin
@@ -482,7 +473,7 @@ begin
 end;
 
 function AUi_ExecuteSaveFileDialog2P(const InitialDir, DefExt, DefFileName, Filter: APascalString;
-    var FilterIndex: AInteger): APascalString;
+    var FilterIndex: AInt): APascalString;
 var
   Dialog: TSaveDialog;
 begin
@@ -512,7 +503,7 @@ begin
 end;
 
 function AUi_ExecuteSelectDialogP(DialogType: AInt; const SelectList: APascalString;
-    out Res: AInt): ABoolean;
+    out Res: AInt): ABool;
 var
   Dialog: ADialog;
   Window: AWindow;
@@ -565,7 +556,7 @@ begin
   AUiDialog_Free(Dialog);
 end;
 
-function AUi_ExecuteSelectDirectoryDialogP(var Directory: APascalString): ABoolean;
+function AUi_ExecuteSelectDirectoryDialogP(var Directory: APascalString): ABool;
 {$IFDEF USE_JEDI}
 var
   Dialog: TJvSelectDirectory;
@@ -592,25 +583,6 @@ begin
   {$ELSE}
   Result := False;
   {$ENDIF USE_JEDI}
-end;
-
-function AUi_NewDialog(Buttons: AUiWindowButtons): ADialog;
-begin
-  Result := AUiDialog_New(Buttons);
-end;
-
-// --- UI_Dialogs ---
-
-function UI_Dialogs_InputBox(const Caption, Prompt, Default: APascalString): APascalString;
-begin
-  Result := Default;
-  AUi_ExecuteInputBox3P(Caption, Prompt, Result);
-end;
-
-function UI_Dialogs_InputQuery(const Caption, Prompt: APascalString;
-    var Value: APascalString): ABoolean;
-begin
-  Result := AUi_ExecuteInputQueryP(Caption, Prompt, Value);
 end;
 
 end.

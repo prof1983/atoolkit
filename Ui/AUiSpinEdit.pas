@@ -2,11 +2,11 @@
 @Abstract AUiSpinEdit
 @Author Prof1983 <prof1983@ya.ru>
 @Created 05.09.2012
-@LastMod 14.01.2013
+@LastMod 19.02.2013
 }
 unit AUiSpinEdit;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
@@ -23,21 +23,9 @@ function AUiSpinEdit_GetValue(SpinEdit: AControl): AInt; {$ifdef AStdCall}stdcal
 
 function AUiSpinEdit_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiSpinEdit_NewEx(Parent: AControl; Value, MinValue, MaxValue: AInteger): AControl; {$ifdef AStdCall}stdcall;{$endif}
+function AUiSpinEdit_NewEx(Parent: AControl; Value, MinValue, MaxValue: AInt): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiSpinEdit_SetValue(SpinEdit: AControl; Value: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
-
-// --- AUi_SpinEdit ---
-
-function AUi_SpinEdit_New(Parent: AControl): AControl; stdcall; deprecated; // Use AUiSpinEdit_New()
-
-function AUi_SpinEdit_NewA(Parent: AControl; Value, MinValue, MaxValue: AInteger): AControl; stdcall; // Use AUiSpinEdit_NewEx()
-
-// --- Ui_SpinEdit ---
-
-function UI_SpinEdit_New(Parent: AControl): AControl; stdcall; deprecated; // Use AUiSpinEdit_New()
-
-function UI_SpinEdit_NewA(Parent: AControl; Value, MinValue, MaxValue: AInteger): AControl; stdcall; // Use AUiSpinEdit_NewEx()
 
 implementation
 
@@ -78,7 +66,7 @@ begin
   end;
 end;
 
-function AUiSpinEdit_NewEx(Parent: AControl; Value, MinValue, MaxValue: AInteger): AControl;
+function AUiSpinEdit_NewEx(Parent: AControl; Value, MinValue, MaxValue: AInt): AControl;
 var
   SpinEdit: TSpinEdit;
 begin
@@ -115,30 +103,6 @@ begin
   except
     Result := -1;
   end;
-end;
-
-// --- AUi_SpinEdit ---
-
-function AUi_SpinEdit_New(Parent: AControl): AControl;
-begin
-  Result := AUiSpinEdit_New(Parent);
-end;
-
-function AUi_SpinEdit_NewA(Parent: AControl; Value, MinValue, MaxValue: AInteger): AControl;
-begin
-  Result := AUiSpinEdit_NewEx(Parent, Value, MinValue, MaxValue);
-end;
-
-// --- UI_SpinEdit ---
-
-function UI_SpinEdit_New(Parent: AControl): AControl; stdcall;
-begin
-  Result := AUiSpinEdit_New(Parent);
-end;
-
-function UI_SpinEdit_NewA(Parent: AControl; Value, MinValue, MaxValue: AInteger): AControl; stdcall;
-begin
-  Result := AUiSpinEdit_NewEx(Parent, Value, MinValue, MaxValue);
 end;
 
 end.

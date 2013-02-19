@@ -2,7 +2,7 @@
 @Abstract The icon in the system tray
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.12.2007
-@Lastmod 30.01.2013
+@Lastmod 19.02.2013
 }
 unit AUiTrayIcon;
 
@@ -19,9 +19,6 @@ uses
   {$ENDIF}
   ABase, AUiBase;
 
-type
-  AIcon = type AInt; // Graphics.TIcon
-
 // --- AUiTrayIcon ---
 
 function AUiTrayIcon_Free(TrayIcon: ATrayIcon): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -32,7 +29,7 @@ function AUiTrayIcon_GetHintP(TrayIcon: ATrayIcon): APascalString;
 
 function AUiTrayIcon_GetMenuItems(TrayIcon: ATrayIcon): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiTrayIcon_GetPopupMenu(TrayIcon: ATrayIcon): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUiTrayIcon_GetPopupMenu(TrayIcon: ATrayIcon): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiTrayIcon_New(): ATrayIcon; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -48,7 +45,7 @@ function AUiTrayIcon_SetOnLeftClick(TrayIcon: ATrayIcon; Value: AProc): AError; 
 
 function AUiTrayIcon_SetOnRightClick(TrayIcon: ATrayIcon; Value: AProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiTrayIcon_SetPopupMenu(TrayIcon: ATrayIcon; Value: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiTrayIcon_SetPopupMenu(TrayIcon: ATrayIcon; Value: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 // ----
 
@@ -413,7 +410,7 @@ begin
   end;
 end;
 
-function AUiTrayIcon_GetPopupMenu(TrayIcon: ATrayIcon): AInteger;
+function AUiTrayIcon_GetPopupMenu(TrayIcon: ATrayIcon): AInt;
 var
   I: AInteger;
 begin
@@ -546,7 +543,7 @@ begin
   end;
 end;
 
-function AUiTrayIcon_SetPopupMenu(TrayIcon: ATrayIcon; Value: AInteger): AError;
+function AUiTrayIcon_SetPopupMenu(TrayIcon: ATrayIcon; Value: AInt): AError;
 var
   I: AInteger;
 begin

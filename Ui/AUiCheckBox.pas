@@ -1,11 +1,11 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 09.01.2013
-@LastMod 14.01.2013
+@LastMod 19.02.2013
 }
 unit AUiCheckBox;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
@@ -17,6 +17,8 @@ uses
   AUiBase,
   AUiControls,
   AUiData;
+
+// --- AUiCheckBox ---
 
 function AUiCheckBox_Free(CheckBox: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
 

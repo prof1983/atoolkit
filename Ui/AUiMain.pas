@@ -2,7 +2,7 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 30.01.2013
+@LastMod 19.02.2013
 }
 unit AUiMain;
 
@@ -66,7 +66,7 @@ function AUi_CreateMainForm(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUi_GetIsShowApp(): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+function AUi_GetIsShowApp(): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_GetMainMenuItem(): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -81,13 +81,13 @@ function AUi_Init(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ProcessMessages(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUi_Run(): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUi_Run(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUi_SetAboutMemoDefaultSize(Width, Height: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUi_SetAboutMemoDefaultSize(Width, Height: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUi_SetHideOnClose(Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUi_SetHideOnClose(Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUi_SetIsShowApp(Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUi_SetIsShowApp(Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_SetMainToolBar(ToolBar: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -95,13 +95,13 @@ function AUi_SetOnAboutClick(Value: AProc): AError; {$ifdef AStdCall}stdcall;{$e
 
 function AUi_SetOnMainFormCreate(Value: AProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUi_SetProgramState(State: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUi_SetProgramState(State: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUi_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUi_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ShellExecuteA(Operation, FileName, Parameters, Directory: AStr): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUi_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger;
+function AUi_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInt;
 
 {** Отображает справочную информацию }
 function AUi_ShowHelp(): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -228,7 +228,7 @@ begin
   Result := 0;
 end;
 
-function AUi_GetIsShowApp(): ABoolean;
+function AUi_GetIsShowApp(): ABool;
 begin
   Result := FIsShowApp;
 end;
@@ -344,7 +344,7 @@ begin
   end;
 end;
 
-function AUi_Run(): AInteger;
+function AUi_Run(): AError;
 begin
   try
     {$ifdef UseMainWindow}
@@ -358,20 +358,20 @@ begin
   end;
 end;
 
-function AUi_SetAboutMemoDefaultSize(Width, Height: AInteger): AError;
+function AUi_SetAboutMemoDefaultSize(Width, Height: AInt): AError;
 begin
   UiAboutWinMemoWidthDefault := Width;
   UiAboutWinMemoHeightDefault := Height;
   Result := 0;
 end;
 
-function AUi_SetHideOnClose(Value: ABoolean): AError;
+function AUi_SetHideOnClose(Value: ABool): AError;
 begin
   FHideOnClose := Value;
   Result := 0;
 end;
 
-function AUi_SetIsShowApp(Value: ABoolean): AError;
+function AUi_SetIsShowApp(Value: ABool): AError;
 begin
   try
     if (Value <> FIsShowApp) then
@@ -430,7 +430,7 @@ begin
   Result := 0;
 end;
 
-function AUi_SetProgramState(State: AInteger): AError;
+function AUi_SetProgramState(State: AInt): AError;
 begin
   try
     if (State = AUiProgramState_None) then
@@ -445,7 +445,7 @@ begin
   end;
 end;
 
-function AUi_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger;
+function AUi_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInt;
 begin
   try
     Result := AUi_ShellExecuteP(
@@ -467,7 +467,7 @@ begin
       APascalString(AnsiString(Directory)));
 end;
 
-function AUi_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger;
+function AUi_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInt;
 begin
   {$IFNDEF UNIX}
   Result := ShellApi.ShellExecute(0{Handle}, PChar(string(Operation)), PChar(string(FileName)),

@@ -2,11 +2,11 @@
 @Abstract AUiLabel extended functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.11.2012
-@LastMod 13.12.2012
+@LastMod 19.02.2013
 }
 unit AUiLabelsEx;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
@@ -14,11 +14,15 @@ uses
   ABase,
   AUiBase, AUiLabels, AUiTextView;
 
+// --- AUiLabel ---
+
 {** Создает новый элемент текстового вывода
     @param Typ - 0-Label; 1-Memo }
 function AUiLabel_New2(Parent: AControl; Typ: AInt): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
+
+// --- AUiLabel ---
 
 function AUiLabel_New2(Parent: AControl; Typ: AInt): AControl;
 begin

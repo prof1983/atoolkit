@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.12.2012
-@LastMod 30.01.2013
+@LastMod 19.02.2013
 }
 unit AUiWaitWin;
 
@@ -23,19 +23,19 @@ uses
 
 // --- AUiWaitWin ---
 
-function AUiWaitWin_New(const Caption, Text: AString_Type; MaxPosition: AInteger): AWindow; {$ifdef AStdCall}stdcall;{$endif}
+function AUiWaitWin_New(const Caption, Text: AString_Type; MaxPosition: AInt): AWindow; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiWaitWin_NewP(const Caption, Text: APascalString; MaxPosition: AInteger): AWindow;
+function AUiWaitWin_NewP(const Caption, Text: APascalString; MaxPosition: AInt): AWindow;
 
-function AUiWaitWin_SetMaxPosition(WaitWin: AWindow; MaxPosition: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiWaitWin_SetMaxPosition(WaitWin: AWindow; MaxPosition: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiWaitWin_SetPosition(WaitWin: AWindow; Position: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiWaitWin_SetPosition(WaitWin: AWindow; Position: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiWaitWin_SetText(Window: AWindow; const Text: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiWaitWin_SetTextP(Window: AWindow; const Text: APascalString): AError;
 
-function AUiWaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUiWaitWin_StepBy(Window: AWindow; Step: AInt): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
@@ -117,7 +117,7 @@ end;
 
 // --- AUiWaitWin ---
 
-function AUiWaitWin_New(const Caption, Text: AString_Type; MaxPosition: AInteger): AWindow;
+function AUiWaitWin_New(const Caption, Text: AString_Type; MaxPosition: AInt): AWindow;
 begin
   Result := AUiWaitWin_NewP(
       AString_ToPascalString(Caption),
@@ -125,7 +125,7 @@ begin
       MaxPosition);
 end;
 
-function AUiWaitWin_NewP(const Caption, Text: APascalString; MaxPosition: AInteger): AWindow;
+function AUiWaitWin_NewP(const Caption, Text: APascalString; MaxPosition: AInt): AWindow;
 var
   {$ifdef UseWaitForm}
   WaitForm: TWaitForm;
@@ -158,7 +158,7 @@ begin
   {$endif}
 end;
 
-function AUiWaitWin_SetMaxPosition(WaitWin: AWindow; MaxPosition: AInteger): AError;
+function AUiWaitWin_SetMaxPosition(WaitWin: AWindow; MaxPosition: AInt): AError;
 var
   I: Integer;
 begin
@@ -188,7 +188,7 @@ begin
   {$endif}
 end;
 
-function AUiWaitWin_SetPosition(WaitWin: AWindow; Position: AInteger): AError;
+function AUiWaitWin_SetPosition(WaitWin: AWindow; Position: AInt): AError;
 var
   I: Integer;
 begin
@@ -253,7 +253,7 @@ begin
   {$endif}
 end;
 
-function AUiWaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger;
+function AUiWaitWin_StepBy(Window: AWindow; Step: AInt): AInt;
 var
   I: Integer;
 begin

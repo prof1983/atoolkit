@@ -2,7 +2,7 @@
 @Abstract AUi ToolBar
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.08.2011
-@LastMod 29.01.2013
+@LastMod 19.02.2013
 }
 unit AUiToolBar;
 
@@ -24,16 +24,16 @@ uses
 // --- AUiToolBar ---
 
 function AUiToolBar_AddButton(ToolBar: AControl; const Name, Text, Hint: AString_Type;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AButton; {$ifdef AStdCall}stdcall;{$endif}
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AButton; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiToolBar_AddButtonP(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AButton;
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AButton;
 
 function AUiToolBar_AddButton1(ToolBar: AControl; const Name, Text, Hint: AString_Type;
-    ImageId, Weight: AInteger): AButton; {$ifdef AStdCall}stdcall;{$endif}
+    ImageId, Weight: AInt): AButton; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiToolBar_AddButton1P(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    ImageId, Weight: AInteger): AButton;
+    ImageId, Weight: AInt): AButton;
 
 function AUiToolBar_AddButton2P(ToolBar: AControl; const Name, Text, Hint: APascalString;
     ButtonType, ImageId, Weight: AInt): AButton;
@@ -100,7 +100,7 @@ end;
 // --- AUiToolBar ---
 
 function AUiToolBar_AddButton(ToolBar: AControl; const Name, Text, Hint: AString_Type;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AButton;
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AButton;
 begin
   Result := AUiToolBar_AddButtonP(
       ToolBar,
@@ -113,7 +113,7 @@ begin
 end;
 
 function AUiToolBar_AddButtonP(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AButton;
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AButton;
 var
   Button: AButton;
 begin
@@ -123,7 +123,7 @@ begin
 end;
 
 function AUiToolBar_AddButton1(ToolBar: AControl; const Name, Text, Hint: AString_Type;
-    ImageId, Weight: AInteger): AButton;
+    ImageId, Weight: AInt): AButton;
 begin
   Result := AUiToolBar_AddButton1P(
       ToolBar,
@@ -135,7 +135,7 @@ begin
 end;
 
 function AUiToolBar_AddButton1P(ToolBar: AControl; const Name, Text, Hint: APascalString;
-    ImageId, Weight: AInteger): AButton;
+    ImageId, Weight: AInt): AButton;
 begin
   Result := AUiToolBar_AddButton2P(ToolBar, Name, Text, Hint, 0, ImageId, Weight);
 end;

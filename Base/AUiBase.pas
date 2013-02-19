@@ -2,7 +2,7 @@
 @Abstract User Interface base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 29.01.2013
+@LastMod 19.02.2013
 }
 unit AUiBase;
 
@@ -22,6 +22,7 @@ type
   AButton = type AControl;
   ABox = type AControl;
   AFont = type AInteger; // TFont
+  AIcon = type AInt; // Graphics.TIcon
   AMenu = type AInteger;
   AMenuItem = type AControl;
   AToolMenu = type AInteger;
@@ -34,11 +35,12 @@ type
   PADataSource = type AInteger;
 
 type
-  AUIBoxType = type AInteger;
+  ABoxType = AInt;
 const
-  AUIBoxTypeNone = 0;
-  AUIBoxTypeH = 1;
-  AUIBoxTypeV = 2;
+  ABoxType_Simple = 0;
+  ABoxType_HBox = 1;
+  ABoxType_VBox = 2;
+  ABoxType_GroupBox = 3;
 
 type
   AUIWindowFlags = type AInteger;

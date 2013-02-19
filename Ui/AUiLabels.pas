@@ -2,7 +2,7 @@
 @Abstract AUiLabel
 @Author Prof1983 <prof1983@ya.ru>
 @Created 05.09.2012
-@LastMod 28.01.2013
+@LastMod 19.02.2013
 }
 unit AUiLabels;
 
@@ -22,11 +22,11 @@ function AUiLabel_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$en
 
 function AUiLabel_SetAlignment(Control: AControl; Value: AUiAlignment): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiLabel_SetAutoSize(Control: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiLabel_SetAutoSize(Control: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiLabel_SetFontP(TextLabel: AControl; const FontName: APascalString; FontSize: AInt): AError;
 
-function AUiLabel_SetWordWrap(Control: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiLabel_SetWordWrap(Control: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
@@ -95,7 +95,7 @@ begin
   end;
 end;
 
-function AUiLabel_SetAutoSize(Control: AControl; Value: ABoolean): AError;
+function AUiLabel_SetAutoSize(Control: AControl; Value: ABool): AError;
 var
   Obj: TObject;
 begin
@@ -127,7 +127,7 @@ begin
   end;
 end;
 
-function AUiLabel_SetWordWrap(Control: AControl; Value: ABoolean): AError;
+function AUiLabel_SetWordWrap(Control: AControl; Value: ABool): AError;
 var
   Obj: TObject;
   H: Integer;

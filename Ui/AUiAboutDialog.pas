@@ -2,7 +2,7 @@
 @Abstract AUi common about dialog win
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.11.2012
-@LastMod 04.02.2013
+@LastMod 19.02.2013
 }
 unit AUiAboutDialog;
 
@@ -31,7 +31,7 @@ uses
 
 // --- AUiAboutDialog ---
 
-function AUiAboutDialog_Init2(AboutDialog: ADialog): AError;
+function AUiAboutDialog_Init2(AboutDialog: ADialog): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiAboutDialog_New(): ADialog; {$ifdef AStdCall}stdcall;{$endif}
 

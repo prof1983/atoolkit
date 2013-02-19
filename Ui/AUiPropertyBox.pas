@@ -2,7 +2,7 @@
 @abstract AUi PropertyBox
 @author Prof1983 <prof1983@ya.ru>
 @created 24.08.2009
-@lastmod 01.02.2013
+@lastmod 19.02.2013
 }
 unit AUiPropertyBox;
 
@@ -23,7 +23,7 @@ uses
   AUiBase;
 
 type
-  TPropertyBoxChangeProc = function(Sender: AControl; ItemIndex: Integer; const Value: string): Boolean;
+  TPropertyBoxChangeProc = function(Sender: AControl; ItemIndex: AInt; const Value: string): ABool;
 
 // --- AUiPropertyBox ---
 
@@ -31,7 +31,7 @@ function AUiPropertyBox_Add(PropertyBox: AControl;
     const Caption: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiPropertyBox_Add2(PropertyBox: AControl; const Caption, Text, Hint: AString_Type;
-    EditWidth: AInteger): AInt; {$ifdef AStdCall}stdcall;{$endif}
+    EditWidth: AInt): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiPropertyBox_Add2P(PropertyBox: AControl; const Caption, Text, Hint: APascalString;
     EditWidth: AInt): AInt;

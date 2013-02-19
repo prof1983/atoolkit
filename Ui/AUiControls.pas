@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 29.01.2013
+@LastMod 19.02.2013
 }
 unit AUiControls;
 
@@ -28,7 +28,7 @@ function AUiControl_GetClientWidth(Control: AControl): AInt; {$ifdef AStdCall}st
 
 function AUiControl_GetColor(Control: AControl): AColor; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_GetEnabled(Control: AControl): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+function AUiControl_GetEnabled(Control: AControl): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_GetHeight(Control: AControl): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -46,7 +46,7 @@ function AUiControl_GetNameA(Control: AControl; Value: AStr; MaxLen: AInt): AErr
 
 function AUiControl_GetNameP(Control: AControl): APascalString;
 
-function AUiControl_GetPosition(Control: AControl; out Left, Top: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiControl_GetPosition(Control: AControl; out Left, Top: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_GetText(Control: AControl; out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -54,7 +54,7 @@ function AUiControl_GetTextP(Control: AControl): APascalString;
 
 function AUiControl_GetTop(Control: AControl): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_GetVisible(Control: AControl): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+function AUiControl_GetVisible(Control: AControl): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_GetWidth(Control: AControl): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -70,19 +70,22 @@ function AUiControl_SetColor(Control: AControl; Color: AColor): AError; {$ifdef 
 
 function AUiControl_SetCursor(Control: AControl; Value: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetEnabled(Control: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiControl_SetEnabled(Control: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetFocus(Control: AControl): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+function AUiControl_SetFocus(Control: AControl): ABool; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_SetFont1(Control: AControl; const FontName: AString_Type;
+    FontSize: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 { @param FontName - (const) }
 function AUiControl_SetFont1A(Control: AControl; FontName: AStr;
     FontSize: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetFont1P(Control: AControl; const FontName: APascalString;
-    FontSize: AInteger): AError;
+    FontSize: AInt): AError;
 
 function AUiControl_SetFont2P(Control: AControl; const FontName: APascalString;
-    FontSize: AInteger; FontColor: AColor): AError;
+    FontSize: AInt; FontColor: AColor): AError;
 
 function AUiControl_SetFontColor(Control: AControl; Color: AColor): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -106,11 +109,11 @@ function AUiControl_SetNameP(Control: AControl; const Value: APascalString): AEr
 
 function AUiControl_SetOnClick(Control: AControl; Value: ACallbackProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetPosition(Control: AControl; Left, Top: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiControl_SetPosition(Control: AControl; Left, Top: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetSize(Control: AControl; Width, Height: Integer): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiControl_SetSize(Control: AControl; Width, Height: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetTabStop(Control: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiControl_SetTabStop(Control: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetText(Control: AControl; const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -120,7 +123,7 @@ function AUiControl_SetTextP(Control: AControl; const Value: APascalString): AEr
 
 function AUiControl_SetTop(Control: AControl; Value: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetVisible(Control: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiControl_SetVisible(Control: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetWidth(Control: AControl; Value: AInt): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -184,7 +187,7 @@ begin
   end;
 end;
 
-function AUiControl_GetEnabled(Control: AControl): ABoolean;
+function AUiControl_GetEnabled(Control: AControl): ABool;
 begin
   try
     if (TObject(Control) is TControl) then
@@ -309,7 +312,7 @@ begin
   end;
 end;
 
-function AUiControl_GetPosition(Control: AControl; out Left, Top: AInteger): AError;
+function AUiControl_GetPosition(Control: AControl; out Left, Top: AInt): AError;
 var
   //O: TObject;
   C: TControl;
@@ -368,7 +371,7 @@ begin
   end;
 end;
 
-function AUiControl_GetVisible(Control: AControl): ABoolean;
+function AUiControl_GetVisible(Control: AControl): ABool;
 begin
   try
     if (TObject(Control) is TControl) then
@@ -506,7 +509,7 @@ begin
   end;
 end;
 
-function AUiControl_SetEnabled(Control: AControl; Value: ABoolean): AError;
+function AUiControl_SetEnabled(Control: AControl; Value: ABool): AError;
 begin
   try
     if (TObject(Control) is TControl) then
@@ -519,7 +522,7 @@ begin
   end;
 end;
 
-function AUiControl_SetFocus(Control: AControl): ABoolean;
+function AUiControl_SetFocus(Control: AControl): ABool;
 begin
   try
     if not(TObject(Control) is TWinControl) then
@@ -534,6 +537,16 @@ begin
   end;
 end;
 
+function AUiControl_SetFont1(Control: AControl; const FontName: AString_Type;
+    FontSize: AInt): AError;
+begin
+  try
+    Result := AUiControl_SetFont1P(Control, AString_ToPascalString(FontName), FontSize);
+  except
+    Result := -1;
+  end;
+end;
+
 function AUiControl_SetFont1A(Control: AControl; FontName: AStr; FontSize: AInt): AError;
 begin
   try
@@ -544,7 +557,7 @@ begin
 end;
 
 function AUiControl_SetFont1P(Control: AControl; const FontName: APascalString;
-    FontSize: AInteger): AError;
+    FontSize: AInt): AError;
 begin
   try
     if (TObject(Control) is TLabel) then
@@ -563,7 +576,7 @@ begin
 end;
 
 function AUiControl_SetFont2P(Control: AControl; const FontName: APascalString;
-    FontSize: AInteger; FontColor: AColor): AError;
+    FontSize: AInt; FontColor: AColor): AError;
 begin
   try
     if (TObject(Control) is TLabel) then
@@ -711,7 +724,7 @@ begin
   end;
 end;
 
-function AUiControl_SetPosition(Control: AControl; Left, Top: AInteger): AError;
+function AUiControl_SetPosition(Control: AControl; Left, Top: AInt): AError;
 var
   O: TObject;
   C: TControl;
@@ -730,7 +743,7 @@ begin
   end;
 end;
 
-function AUiControl_SetSize(Control: AControl; Width, Height: Integer): AError;
+function AUiControl_SetSize(Control: AControl; Width, Height: AInt): AError;
 var
   O: TObject;
   C: TControl;
@@ -749,7 +762,7 @@ begin
   end;
 end;
 
-function AUiControl_SetTabStop(Control: AControl; Value: ABoolean): AError;
+function AUiControl_SetTabStop(Control: AControl; Value: ABool): AError;
 var
   Obj: TObject;
 begin
@@ -837,7 +850,7 @@ begin
   end;
 end;
 
-function AUiControl_SetVisible(Control: AControl; Value: ABoolean): AError;
+function AUiControl_SetVisible(Control: AControl; Value: ABool): AError;
 var
   O: TObject;
 begin

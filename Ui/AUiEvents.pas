@@ -2,11 +2,11 @@
 @Abstract AUi events functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2012
-@LastMod 27.12.2012
+@LastMod 19.02.2013
 }
 unit AUiEvents;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
@@ -22,14 +22,6 @@ function AUi_OnDone_Connect(Proc: ACallbackProc): AInt; {$ifdef AStdCall}stdcall
 
 {** Disconnect from OnDone event }
 function AUi_OnDone_Disconnect(Proc: ACallbackProc): AInt; {$ifdef AStdCall}stdcall;{$endif}
-
-// --- UI ---
-
-{** Connect to OnDone event }
-function Ui_OnDone_Connect(Proc: ACallbackProc): AInteger;
-
-{** Disconnect from OnDone event }
-function Ui_OnDone_Disconnect(Proc: ACallbackProc): AInteger;
 
 implementation
 
@@ -51,18 +43,6 @@ begin
   except
     Result := 0;
   end;
-end;
-
-// --- Ui ---
-
-function Ui_OnDone_Connect(Proc: ACallbackProc): AInteger;
-begin
-  Result := AUi_OnDone_Connect(Proc);
-end;
-
-function Ui_OnDone_Disconnect(Proc: ACallbackProc): AInteger;
-begin
-  Result := AUi_OnDone_Disconnect(Proc);
 end;
 
 end.

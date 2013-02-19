@@ -2,7 +2,7 @@
 @Abstract AUi Menus
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2011
-@LastMod 30.01.2013
+@LastMod 19.02.2013
 }
 unit AUiMenus;
 
@@ -20,28 +20,28 @@ uses
 // --- AUiMenu ---
 
 function AUiMenu_AddItem0(Parent: AMenuItem; MenuItem: AMenuItem;
-    Weight: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
+    Weight: AInt): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem1(Menu: AMenu; const Name, Text: AString_Type;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem1P(Menu: AMenu; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem;
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AMenuItem;
 
 function AUiMenu_AddItem2(Parent: AMenuItem; const Name, Text: AString_Type;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem2P(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight: Integer): AMenuItem;
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AMenuItem;
 
 function AUiMenu_AddItem3(Parent: AMenuItem; MenuItem: AMenuItem;
-    Weight: AInteger): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
+    Weight: AInt): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_AddItem4P(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight, Tag: AInteger): AMenuItem;
+    OnClick: ACallbackProc; ImageId, Weight, Tag: AInt): AMenuItem;
 
 function AUiMenu_AddItemExP(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
-    ImageId, Weight, Tag: AInteger; out ResIndex: AInteger): AError;
+    ImageId, Weight, Tag: AInt; out ResIndex: AInt): AError;
 
 {** Добавляет элемент меню
     @param Name - имя компонента
@@ -53,16 +53,16 @@ function AUiMenu_AddItemEx2P(Parent: AMenuItem; const Name, TextMin, Text: APasc
 
 function AUiMenu_Clear(MenuItem: AMenuItem): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiMenu_FindItemByName(MenuItem: AMenuItem; const Name: AString_Type): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiMenu_FindItemByNameP(MenuItem: AMenuItem; const Name: APascalString): AMenuItem;
+
 function AUiMenu_GetItems(Menu: AMenu): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMenu_GetSubMenuP(Parent: AMenuItem; const Name, Text: APascalString;
     ImageId, Weight: AInt): AMenuItem;
 
-function AUiMenu_FindItemByName(MenuItem: AMenuItem; const Name: AString_Type): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
-
-function AUiMenu_FindItemByNameP(MenuItem: AMenuItem; const Name: APascalString): AMenuItem;
-
-function AUiMenu_New(MenuType: AInteger): AMenu; {$ifdef AStdCall}stdcall;{$endif}
+function AUiMenu_New(MenuType: AInt): AMenu; {$ifdef AStdCall}stdcall;{$endif}
 
 { MenuType: 0 - MainMenu, 1 - PopupMenu, 2 - ToolMenu }
 function AUiMenu_New2(Parent: AControl; MenuType: AInt): AMenu; {$ifdef AStdCall}stdcall;{$endif}
@@ -123,13 +123,13 @@ end;
 // --- AUiMenu ---
 
 function AUiMenu_AddItem0(Parent: AMenuItem; MenuItem: AMenuItem;
-    Weight: AInteger): AMenuItem;
+    Weight: AInt): AMenuItem;
 begin
   Result := AUiMenu_AddItem3(Parent, MenuItem, Weight);
 end;
 
 function AUiMenu_AddItem1(Menu: AMenu; const Name, Text: AString_Type;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem;
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AMenuItem;
 begin
   Result := AUiMenu_AddItemEx2P(Menu,
       AString_ToPascalString(Name), '', AString_ToPascalString(Text),
@@ -137,13 +137,13 @@ begin
 end;
 
 function AUiMenu_AddItem1P(Menu: AMenu; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem;
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AMenuItem;
 begin
   Result := AUiMenu_AddItemEx2P(Menu, Name, '', Text, OnClick, 0, ImageId, Weight, 0);
 end;
 
 function AUiMenu_AddItem2(Parent: AMenuItem; const Name, Text: AString_Type;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AMenuItem;
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AMenuItem;
 begin
   Result := AUiMenu_AddItemEx2P(Parent,
       AString_ToPascalString(Name), '', AString_ToPascalString(Text),
@@ -151,19 +151,13 @@ begin
 end;
 
 function AUiMenu_AddItem2P(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight: Integer): AMenuItem;
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AMenuItem;
 begin
   Result := AUiMenu_AddItemEx2P(ParentMenuItem, Name, '', Text, OnClick, 0, ImageId, Weight, 0);
 end;
 
-function AUiMenu_AddItem2WS(Parent: AMenuItem; const Name, Text: AWideString;
-    OnClick: ACallbackProc; ImageId, Weight: Integer): AMenuItem;
-begin
-  Result := AUiMenu_AddItemEx2P(Parent, Name, '', Text, OnClick, 0, ImageId, Weight, 0);
-end;
-
 function AUiMenu_AddItem3(Parent: AMenuItem; MenuItem: AMenuItem;
-    Weight: AInteger): AMenuItem;
+    Weight: AInt): AMenuItem;
 var
   I: Integer;
   Res: AMenuItem;
@@ -188,7 +182,7 @@ begin
 end;
 
 function AUiMenu_AddItem4P(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight, Tag: AInteger): AMenuItem;
+    OnClick: ACallbackProc; ImageId, Weight, Tag: AInt): AMenuItem;
 begin
   try
     Result := AUiMenu_AddItemEx2P(ParentMenuItem, Name, '', Text, OnClick, 0, ImageId, Weight, Tag);
@@ -198,7 +192,7 @@ begin
 end;
 
 function AUiMenu_AddItemExP(ParentMenuItem: AMenuItem; const Name, Text: APascalString;
-    ImageId, Weight, Tag: AInteger; out ResIndex: AInteger): AError;
+    ImageId, Weight, Tag: AInt; out ResIndex: AInt): AError;
 begin
   Result := AUiMenu_AddItemEx2P(ParentMenuItem, Name, '', Text, nil, 0, ImageId, Weight, Tag);
   ResIndex := _Find(ParentMenuItem, Result);
@@ -320,6 +314,32 @@ begin
   end;
 end;
 
+function AUiMenu_FindItemByName(MenuItem: AMenuItem; const Name: AString_Type): AMenuItem;
+begin
+  Result := AUiMenu_FindItemByNameP(MenuItem, AString_ToPascalString(Name));
+end;
+
+function AUiMenu_FindItemByNameP(MenuItem: AMenuItem; const Name: APascalString): AMenuItem;
+var
+  I: Integer;
+begin
+  try
+    if not(TObject(MenuItem) is TMenuItem) then
+    begin
+      Result := 0;
+      Exit;
+    end;
+
+    I := _FindByName(MenuItem, Name);
+    if (I >= 0) then
+      Result := AMenuItem(TMenuItem(MenuItem).Items[I])
+    else
+      Result := 0;
+  except
+    Result := 0;
+  end;
+end;
+
 function AUiMenu_GetItems(Menu: AMenu): AMenuItem;
 var
   O: TObject;
@@ -365,33 +385,7 @@ begin
   end;
 end;
 
-function AUiMenu_FindItemByName(MenuItem: AMenuItem; const Name: AString_Type): AMenuItem;
-begin
-  Result := AUiMenu_FindItemByNameP(MenuItem, AString_ToPascalString(Name));
-end;
-
-function AUiMenu_FindItemByNameP(MenuItem: AMenuItem; const Name: APascalString): AMenuItem;
-var
-  I: Integer;
-begin
-  try
-    if not(TObject(MenuItem) is TMenuItem) then
-    begin
-      Result := 0;
-      Exit;
-    end;
-
-    I := _FindByName(MenuItem, Name);
-    if (I >= 0) then
-      Result := AMenuItem(TMenuItem(MenuItem).Items[I])
-    else
-      Result := 0;
-  except
-    Result := 0;
-  end;
-end;
-
-function AUiMenu_New(MenuType: AInteger): AMenu;
+function AUiMenu_New(MenuType: AInt): AMenu;
 begin
   Result := AUiMenu_New2(0, MenuType);
 end;

@@ -2,10 +2,10 @@
 @Abstract AUi text view
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.11.2012
-@LastMod 28.01.2013
+@LastMod 19.02.2013
 }
 unit AUiTextView;
-
+                         
 {define AStdCall}
 
 interface
@@ -23,38 +23,38 @@ uses
 // --- AUi_TextView ---
 
 {** Добавляет строку в элемент TextView }
-function AUiTextView_AddLine(TextView: AControl; const Text: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUiTextView_AddLine(TextView: AControl; const Text: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Создает новый элемент редактирования текста
     @param ViewType: 0 - TMemo; 1 - RichEdit }
-function AUiTextView_AddLineP(TextView: AControl; const Text: APascalString): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUiTextView_AddLineP(TextView: AControl; const Text: APascalString): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Создает новый элемент редактирования текста
     @param ViewType: 0 - TMemo; 1 - RichEdit }
-function AUiTextView_New(Parent: AControl; ViewType: AInteger): AControl; {$ifdef AStdCall}stdcall;{$endif}
+function AUiTextView_New(Parent: AControl; ViewType: AInt): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiTextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiTextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiTextView_SetFontP(TextView: AControl; const FontName: APascalString; FontSize: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiTextView_SetFontP(TextView: AControl; const FontName: APascalString; FontSize: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiTextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiTextView_SetReadOnly(TextView: AControl; ReadOnly: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Set scroll bars
     @param ScrollBars: 0 - ssNone; 1 - ssHorizontal; 2 - ssVertical; 3 - ssBoth }
 function AUiTextView_SetScrollBars(TextView: AControl; ScrollBars: AUiScrollStyle): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiTextView_SetWordWrap(TextView: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiTextView_SetWordWrap(TextView: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
 // --- AUiTextView ---
 
-function AUiTextView_AddLine(TextView: AControl; const Text: AString_Type): AInteger;
+function AUiTextView_AddLine(TextView: AControl; const Text: AString_Type): AInt;
 begin
   Result := AUiTextView_AddLineP(TextView, AString_ToPascalString(Text));
 end;
 
-function AUiTextView_AddLineP(TextView: AControl; const Text: APascalString): AInteger;
+function AUiTextView_AddLineP(TextView: AControl; const Text: APascalString): AInt;
 begin
   try
     if (TObject(TextView) is TMemo) then
@@ -70,7 +70,7 @@ begin
   end;
 end;
 
-function AUiTextView_New(Parent: AControl; ViewType: AInteger): AControl;
+function AUiTextView_New(Parent: AControl; ViewType: AInt): AControl;
 var
   Memo: TMemo;
   {$IFNDEF FPC}
@@ -97,12 +97,12 @@ begin
   end;
 end;
 
-function AUiTextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger): AError;
+function AUiTextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInt): AError;
 begin
   Result := AUiTextView_SetFontP(TextView, AString_ToPascalString(FontName), FontSize);
 end;
 
-function AUiTextView_SetFontP(TextView: AControl; const FontName: APascalString; FontSize: AInteger): AError;
+function AUiTextView_SetFontP(TextView: AControl; const FontName: APascalString; FontSize: AInt): AError;
 
   procedure SetFont(Font: TFont);
   begin
@@ -124,7 +124,7 @@ begin
   end;
 end;
 
-function AUiTextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean): AError;
+function AUiTextView_SetReadOnly(TextView: AControl; ReadOnly: ABool): AError;
 begin
   try
     if (TObject(TextView) is TMemo) then
@@ -154,7 +154,7 @@ begin
   end;
 end;
 
-function AUiTextView_SetWordWrap(TextView: AControl; Value: ABoolean): AError;
+function AUiTextView_SetWordWrap(TextView: AControl; Value: ABool): AError;
 begin
   try
     if (TObject(TextView) is TMemo) then

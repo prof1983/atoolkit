@@ -2,7 +2,7 @@
 @Abstract AUiListBox
 @Author Prof1983 <prof1983@ya.ru>
 @Created 05.09.2012
-@LastMod 28.01.2013
+@LastMod 19.02.2013
 }
 unit AUiListBox;
 
@@ -23,41 +23,41 @@ uses
 
 // --- AUiListBox ---
 
-function AUiListBox_Add(ListBox: AControl; const Text: AString_Type): Integer; {$ifdef AStdCall}stdcall;{$endif}
+function AUiListBox_Add(ListBox: AControl; const Text: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Добавляет строку в список }
-function AUiListBox_AddP(ListBox: AControl; const Text: APascalString): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUiListBox_AddP(ListBox: AControl; const Text: APascalString): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiListBox_Clear(ListBox: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiListBox_DeleteItem(ListBox: AControl; Index: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiListBox_DeleteItem(ListBox: AControl; Index: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiListBox_GetChecked(ListBox: AControl; Index: AInt): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+function AUiListBox_GetChecked(ListBox: AControl; Index: AInt): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiListBox_GetCount(ListBox: AControl): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUiListBox_GetCount(ListBox: AControl): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiListBox_GetItem(ListBox: AControl; Index: AInteger; out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUiListBox_GetItem(ListBox: AControl; Index: AInt; out Value: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiListBox_GetItemP(ListBox: AControl; Index: AInteger): APascalString; {$ifdef AStdCall}stdcall;{$endif}
+function AUiListBox_GetItemP(ListBox: AControl; Index: AInt): APascalString; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiListBox_GetItemIndex(ListBox: AControl): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function AUiListBox_GetItemIndex(ListBox: AControl): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Создает новый элемент ListBox }
 function AUiListBox_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Create net list box
     @param Typ  0 - ListBox; 1 - RadioGroup; 2 - CheckListBox }
-function AUiListBox_New2(Parent: AControl; Typ: AInteger): AControl; {$ifdef AStdCall}stdcall;{$endif}
+function AUiListBox_New2(Parent: AControl; Typ: AInt): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiListBox_SetChecked(ListBox: AControl; Index: AInt; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiListBox_SetChecked(ListBox: AControl; Index: AInt; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiListBox_SetItem(ListBox: AControl; Index: AInt; const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiListBox_SetItemHeight(ListBox: AControl; Value: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiListBox_SetItemP(ListBox: AControl; Index: AInteger; const Value: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiListBox_SetItemP(ListBox: AControl; Index: AInt; const Value: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiListBox_SetItemIndex(ListBox: AControl; Index: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiListBox_SetItemIndex(ListBox: AControl; Index: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiListBox_SetOnDblClick(ListBox: AControl; Value: ACallbackProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -65,7 +65,7 @@ implementation
 
 // --- AUiListBox ---
 
-function AUiListBox_Add(ListBox: AControl; const Text: AString_Type): Integer;
+function AUiListBox_Add(ListBox: AControl; const Text: AString_Type): AInt;
 begin
   try
     Result := AUiListBox_AddP(ListBox, AString_ToPascalString(Text));
@@ -74,7 +74,7 @@ begin
   end;
 end;
 
-function AUiListBox_AddP(ListBox: AControl; const Text: APascalString): AInteger;
+function AUiListBox_AddP(ListBox: AControl; const Text: APascalString): AInt;
 var
   O: TObject;
 begin
@@ -121,7 +121,7 @@ begin
   end;
 end;
 
-function AUiListBox_DeleteItem(ListBox: AControl; Index: AInteger): AError;
+function AUiListBox_DeleteItem(ListBox: AControl; Index: AInt): AError;
 var
   Obj: TObject;
 begin
@@ -148,7 +148,7 @@ begin
   end;
 end;
 
-function AUiListBox_GetChecked(ListBox: AControl; Index: AInt): ABoolean;
+function AUiListBox_GetChecked(ListBox: AControl; Index: AInt): ABool;
 var
   Obj: TObject;
 begin
@@ -170,7 +170,7 @@ begin
   end;
 end;
 
-function AUiListBox_GetCount(ListBox: AControl): AInteger;
+function AUiListBox_GetCount(ListBox: AControl): AInt;
 var
   Obj: TObject;
 begin
@@ -194,7 +194,7 @@ begin
   end;
 end;
 
-function AUiListBox_GetItem(ListBox: AControl; Index: AInteger; out Value: AString_Type): AInteger;
+function AUiListBox_GetItem(ListBox: AControl; Index: AInt; out Value: AString_Type): AInt;
 begin
   try
     Result := AString_AssignP(Value, AUiListBox_GetItemP(ListBox, Index));
@@ -203,7 +203,7 @@ begin
   end;
 end;
 
-function AUiListBox_GetItemP(ListBox: AControl; Index: AInteger): APascalString;
+function AUiListBox_GetItemP(ListBox: AControl; Index: AInt): APascalString;
 var
   O: TObject;
 begin
@@ -223,7 +223,7 @@ begin
     Result := '';
 end;
 
-function AUiListBox_GetItemIndex(ListBox: AControl): AInteger;
+function AUiListBox_GetItemIndex(ListBox: AControl): AInt;
 var
   O: TObject;
 begin
@@ -256,7 +256,7 @@ begin
   end;
 end;
 
-function AUiListBox_New2(Parent: AControl; Typ: AInteger): AControl;
+function AUiListBox_New2(Parent: AControl; Typ: AInt): AControl;
 var
   O: TObject;
   CheckListBox: TCheckListBox;
@@ -306,7 +306,7 @@ begin
   end;
 end;
 
-function AUiListBox_SetChecked(ListBox: AControl; Index: AInt; Value: ABoolean): AError;
+function AUiListBox_SetChecked(ListBox: AControl; Index: AInt; Value: ABool): AError;
 var
   Obj: TObject;
 begin
@@ -329,7 +329,7 @@ begin
   end;
 end;
 
-function AUiListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: AString_Type): AError;
+function AUiListBox_SetItem(ListBox: AControl; Index: AInt; const Value: AString_Type): AError;
 begin
   Result := AUiListBox_SetItemP(ListBox, Index, AString_ToPascalString(Value));
 end;
@@ -357,7 +357,7 @@ begin
   end;
 end;
 
-function AUiListBox_SetItemP(ListBox: AControl; Index: AInteger; const Value: APascalString): AError;
+function AUiListBox_SetItemP(ListBox: AControl; Index: AInt; const Value: APascalString): AError;
 var
   Obj: TObject;
 begin
@@ -378,7 +378,7 @@ begin
   end;
 end;
 
-function AUiListBox_SetItemIndex(ListBox: AControl; Index: AInteger): AError;
+function AUiListBox_SetItemIndex(ListBox: AControl; Index: AInt): AError;
 var
   Obj: TObject;
 begin

@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 29.01.2013
-@LastMod 01.02.2013
+@LastMod 19.02.2013
 }
 unit AUiCalendarDialog;
 
@@ -20,7 +20,7 @@ uses
   AUiDialogs,
   AUiWindows;
 
-function AUi_ExecuteCalendarDialog(var Date: TDateTime; CenterX, CenterY: AInt): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+function AUi_ExecuteCalendarDialog(var Date: TDateTime; CenterX, CenterY: AInt): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
@@ -127,7 +127,7 @@ end;
 
 // --- AUi ---
 
-function AUi_ExecuteCalendarDialog(var Date: TDateTime; CenterX, CenterY: AInt): ABoolean;
+function AUi_ExecuteCalendarDialog(var Date: TDateTime; CenterX, CenterY: AInt): ABool;
 begin
   try
     {$IFDEF FPC}

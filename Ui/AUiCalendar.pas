@@ -2,11 +2,11 @@
 @Abstract AUi calendar
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.09.2012
-@LastMod 13.11.2012
+@LastMod 19.02.2013
 }
 unit AUiCalendar;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
@@ -20,15 +20,7 @@ function AUiCalendar_GetDate(Calendar: AControl): TDateTime; {$ifdef AStdCall}st
 
 function AUiCalendar_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiCalendar_SetMonth(Calendar: AControl; Value: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
-
-// --- UI_Calendar ---
-
-function UI_Calendar_GetDate(Calendar: AControl): TDateTime; stdcall; deprecated; // Use AUiCalendar_GetDate()
-
-function UI_Calendar_New(Parent: AControl): AControl; stdcall; deprecated; // Use AUiCalendar_New();
-
-procedure UI_Calendar_SetMonth(Calendar: AControl; Value: AInteger); stdcall; deprecated; // Use AUiCalendar_SetMonth()
+function AUiCalendar_SetMonth(Calendar: AControl; Value: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
@@ -63,7 +55,7 @@ begin
   end;
 end;
 
-function AUiCalendar_SetMonth(Calendar: AControl; Value: AInteger): AError;
+function AUiCalendar_SetMonth(Calendar: AControl; Value: AInt): AError;
 begin
   try
     {$IFNDEF FPC}
@@ -73,23 +65,6 @@ begin
   except
     Result := -1;
   end;
-end;
-
-// --- UI_Calendar ---
-
-function UI_Calendar_GetDate(Calendar: AControl): TDateTime;
-begin
-  Result := AUiCalendar_GetDate(Calendar);
-end;
-
-function UI_Calendar_New(Parent: AControl): AControl;
-begin
-  Result := AUiCalendar_New(Parent);
-end;
-
-procedure UI_Calendar_SetMonth(Calendar: AControl; Value: AInteger);
-begin
-  AUiCalendar_SetMonth(Calendar, Value);
 end;
 
 end.

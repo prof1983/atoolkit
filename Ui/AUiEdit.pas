@@ -2,7 +2,7 @@
 @Abstract AUiEdit
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.01.2010
-@LastMod 30.01.2013
+@LastMod 19.02.2013
 }
 unit AUiEdit;
 
@@ -27,7 +27,7 @@ function AUiEdit_CheckFloat32(Edit: AControl; out Value: AFloat32): AError; {$if
 function AUiEdit_CheckFloat64(Edit: AControl; out Value: AFloat64): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Переводит текст в Int. Если ошибка, то переходит на этот компонент и возвращает False. }
-function AUiEdit_CheckInt(Edit: AControl; out Value: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiEdit_CheckInt(Edit: AControl; out Value: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Создает новый элемент TEdit }
 function AUiEdit_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
@@ -38,16 +38,16 @@ function AUiEdit_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$end
       1 - TEdit + Button
       3 - TSpinEdit
 }
-function AUiEdit_NewEx(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc;
-    Left, Top, Width: AInteger): AControl; {$ifdef AStdCall}stdcall;{$endif}
+function AUiEdit_NewEx(Parent: AControl; EditType: AInt; OnClick: ACallbackProc;
+    Left, Top, Width: AInt): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 // ---
 
-function Edit_CheckDate(Edit: TCustomEdit{TMaskEdit}; out Value: TDateTime): ABoolean;
-function Edit_CheckFloat(Edit: TCustomEdit; out Value: Double): ABoolean;
-function Edit_CheckFloat32(Edit: TCustomEdit; out Value: AFloat32): ABoolean;
-function Edit_CheckFloat64(Edit: TCustomEdit; out Value: AFloat64): ABoolean;
-function Edit_CheckInt(Edit: TCustomEdit; out Value: AInteger): ABoolean;
+function Edit_CheckDate(Edit: TCustomEdit{TMaskEdit}; out Value: TDateTime): ABool;
+function Edit_CheckFloat(Edit: TCustomEdit; out Value: Double): ABool;
+function Edit_CheckFloat32(Edit: TCustomEdit; out Value: AFloat32): ABool;
+function Edit_CheckFloat64(Edit: TCustomEdit; out Value: AFloat64): ABool;
+function Edit_CheckInt(Edit: TCustomEdit; out Value: AInt): ABool;
 
 implementation
 
@@ -104,7 +104,7 @@ begin
   end;
 end;
 
-function AUiEdit_CheckInt(Edit: AControl; out Value: AInteger): AError;
+function AUiEdit_CheckInt(Edit: AControl; out Value: AInt): AError;
 begin
   try
     if Edit_CheckInt(TCustomEdit(Edit), Value) then
@@ -125,8 +125,8 @@ begin
   end;
 end;
 
-function AUiEdit_NewEx(Parent: AControl; EditType: AInteger; OnClick: ACallbackProc;
-    Left, Top, Width: AInteger): AControl;
+function AUiEdit_NewEx(Parent: AControl; EditType: AInt; OnClick: ACallbackProc;
+    Left, Top, Width: AInt): AControl;
 var
   Edit: TEdit;
   Button: AControl;
@@ -174,7 +174,7 @@ end;
 
 { Edit }
 
-function Edit_CheckDate(Edit: TCustomEdit; out Value: TDateTime): ABoolean;
+function Edit_CheckDate(Edit: TCustomEdit; out Value: TDateTime): ABool;
 begin
   Value := 0;
   if (Edit.Text <> '') and (Edit.Text <> '  .  .  ') then
@@ -189,7 +189,7 @@ begin
   Result := True;
 end;
 
-function Edit_CheckFloat(Edit: TCustomEdit; out Value: Double): ABoolean;
+function Edit_CheckFloat(Edit: TCustomEdit; out Value: Double): ABool;
 begin
   if (Edit.Text <> '') then
   begin
@@ -206,7 +206,7 @@ begin
   Result := True;
 end;
 
-function Edit_CheckFloat32(Edit: TCustomEdit; out Value: AFloat32): ABoolean;
+function Edit_CheckFloat32(Edit: TCustomEdit; out Value: AFloat32): ABool;
 var
   V: Double;
 begin
@@ -215,12 +215,12 @@ begin
     Value := V;
 end;
 
-function Edit_CheckFloat64(Edit: TCustomEdit; out Value: AFloat64): ABoolean;
+function Edit_CheckFloat64(Edit: TCustomEdit; out Value: AFloat64): ABool;
 begin
   Result := Edit_CheckFloat(Edit, Value);
 end;
 
-function Edit_CheckInt(Edit: TCustomEdit; out Value: AInteger): ABoolean;
+function Edit_CheckInt(Edit: TCustomEdit; out Value: AInt): ABool;
 begin
   if (Edit.Text <> '') then
   begin

@@ -2,7 +2,7 @@
 @abstract AUi ToolMenu
 @author Prof1983 <prof1983@ya.ru>
 @created 28.02.2012
-@lastmod 30.01.2013
+@lastmod 19.02.2013
 }
 unit AUiToolMenu;
 
@@ -27,22 +27,22 @@ function AUiToolMenu_AddButtonP(ToolMenu: AToolMenu; const Name, Text, Hint: APa
     OnClick: ACallbackProc; ImageId, Weight: AInt): AButton;
 
 function AUiToolMenu_AddNewItem(Parent: AToolMenu; const Name, Text: AString_Type;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu; {$ifdef AStdCall}stdcall;{$endif}
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AToolMenu; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiToolMenu_AddNewItemP(Parent: AToolMenu; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu;
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AToolMenu;
 
 function AUiToolMenu_AddNewSubMenu(Parent: AToolMenu; const Name, Text: AString_Type;
-    ImageId, Weight: AInteger): AToolMenu; {$ifdef AStdCall}stdcall;{$endif}
+    ImageId, Weight: AInt): AToolMenu; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiToolMenu_AddNewSubMenuP(Parent: AToolMenu; const Name, Text: APascalString;
-    ImageId, Weight: AInteger): AToolMenu;
+    ImageId, Weight: AInt): AToolMenu;
 
 function AUiToolMenu_GetSubMenu(Parent: AToolMenu; const Name, Text: AString_Type;
-    ImageId, Weight: AInteger): AToolMenu; {$ifdef AStdCall}stdcall;{$endif}
+    ImageId, Weight: AInt): AToolMenu; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiToolMenu_GetSubMenuP(Parent: AToolMenu; const Name, Text: APascalString;
-    ImageId, Weight: AInteger): AToolMenu;
+    ImageId, Weight: AInt): AToolMenu;
 
 function AUiToolMenu_New(Parent: AControl): AToolMenu; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -50,9 +50,9 @@ implementation
 
 // --- Private ---
 
-function _FindToolMenuByName(Parent: AToolMenu; const Name: APascalString): AInteger;
+function _FindToolMenuByName(Parent: AToolMenu; const Name: APascalString): AInt;
 var
-  I: Integer;
+  I: AInt;
   ParentName: APascalString;
 begin
   for I := 0 to High(FToolMenus) do
@@ -79,7 +79,7 @@ begin
 end;
 
 function AUiToolMenu_AddNewItem(Parent: AToolMenu; const Name, Text: AString_Type;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu;
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AToolMenu;
 begin
   Result := AUiToolMenu_AddNewItemP(
       Parent,
@@ -91,7 +91,7 @@ begin
 end;
 
 function AUiToolMenu_AddNewItemP(Parent: AToolMenu; const Name, Text: APascalString;
-    OnClick: ACallbackProc; ImageId, Weight: AInteger): AToolMenu;
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AToolMenu;
 var
   Index: AInteger;
   I: Integer;
@@ -157,7 +157,7 @@ begin
 end;
 
 function AUiToolMenu_AddNewSubMenu(Parent: AToolMenu; const Name, Text: AString_Type;
-    ImageId, Weight: AInteger): AToolMenu;
+    ImageId, Weight: AInt): AToolMenu;
 begin
   Result := AUiToolMenu_AddNewSubMenuP(
       Parent,
@@ -168,13 +168,13 @@ begin
 end;
 
 function AUiToolMenu_AddNewSubMenuP(Parent: AToolMenu; const Name, Text: APascalString;
-    ImageId, Weight: AInteger): AToolMenu;
+    ImageId, Weight: AInt): AToolMenu;
 begin
   Result := AUiToolMenu_AddNewItemP(Parent, Name, Text, nil, ImageId, Weight);
 end;
 
 function AUiToolMenu_GetSubMenu(Parent: AToolMenu; const Name, Text: AString_Type;
-    ImageId, Weight: AInteger): AToolMenu;
+    ImageId, Weight: AInt): AToolMenu;
 begin
   Result := AUiToolMenu_GetSubMenuP(
       Parent,
@@ -185,7 +185,7 @@ begin
 end;
 
 function AUiToolMenu_GetSubMenuP(Parent: AToolMenu; const Name, Text: APascalString;
-    ImageId, Weight: AInteger): AToolMenu;
+    ImageId, Weight: AInt): AToolMenu;
 var
   Index: Integer;
 begin

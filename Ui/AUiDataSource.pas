@@ -1,9 +1,11 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.12.2012
-@LastMod 30.01.2013
+@LastMod 19.02.2013
 }
 unit AUiDataSource;
+
+{define AStdCall}
 
 interface
 
@@ -13,11 +15,11 @@ uses
 
 // --- UI_DataSource ---
 
-function AUiDataSource_New(): PADataSource; stdcall;
+function AUiDataSource_New(): PADataSource; {$ifdef AStdCall}stdcall;{$endif}
 
 //function AUiDataSource_SetDataSet(DataSource: PADataSource; Value: PADataSet): AError; stdcall;
 
-function AUiDataSource_SetOnDataChange(DataSource: PADataSource; OnDataChange: ACallbackProc): AError; stdcall;
+function AUiDataSource_SetOnDataChange(DataSource: PADataSource; OnDataChange: ACallbackProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 

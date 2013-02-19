@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2008
-@LastMod 05.02.2013
+@LastMod 19.02.2013
 
 Analog System.Data.*
 }
@@ -76,7 +76,7 @@ end;
 
 function Database_ChangeDataSet(Database: ADataConnection; DataSet: ADataSet; const SelectSql: AWideString): AError;
 begin
-  Result := ADataConnection_ChangeDataSetWS(Database, DataSet, SelectSql);
+  Result := ADataConnection_ChangeDataSetP(Database, DataSet, SelectSql);
 end;
 
 function Database_CheckDatabaseStructure(Database: ADataConnection; Struct: ADataStructure; Logger: TAddToLogWSProc): ABool;
@@ -111,7 +111,7 @@ end;
 
 function Database_ExecuteSql(Database: ADataConnection; const Sql: AWideString): ABool;
 begin
-  Result := ADataConnection_ExecuteSqlWS(Database, Sql);
+  Result := ADataConnection_ExecuteSqlP(Database, Sql);
 end;
 
 function Database_GetConnected(Database: ADataConnection): ABool;
@@ -121,22 +121,22 @@ end;
 
 function Database_GetConnectionString(Database: ADataConnection): AWideString;
 begin
-  Result := ADataConnection_GetConnectionStringWS(Database);
+  Result := ADataConnection_GetConnectionStringP(Database);
 end;
 
 function Database_NewDataSet(Database: ADataConnection; const SelectSqlText: AWideString; ReadOnly: ABool): ADataSet;
 begin
-  Result := ADataConnection_NewDataSetWS(Database, SelectSqlText, ReadOnly);
+  Result := ADataConnection_NewDataSetP(Database, SelectSqlText, ReadOnly);
 end;
 
 function Database_NewDataSetA(Database: ADataConnection; const SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText, RefreshSqlText: AWideString): ADataSet;
 begin
-  Result := ADataConnection_NewDataSet2WS(Database, SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText, RefreshSqlText);
+  Result := ADataConnection_NewDataSet2P(Database, SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText, RefreshSqlText);
 end;
 
 procedure Database_SetConnectionString(Database: ADataConnection; const Value: AWideString);
 begin
-  ADataConnection_SetConnectionStringWS(Database, Value);
+  ADataConnection_SetConnectionStringP(Database, Value);
 end;
 
 { DataSet }

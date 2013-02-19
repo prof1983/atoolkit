@@ -2,8 +2,14 @@
 Abstract AToolkit define
 Author Prof1983 <prof1983@ya.ru>
 Created 18.06.2011
-LastMod 15.02.2013
+LastMod 19.02.2013
 }
+
+{define AFloat32}
+
+{$ifndef AFloat32}
+  {$define AFloat64}
+{$endif}
 
   // RadStudio XE3
   {$ifdef VER240}

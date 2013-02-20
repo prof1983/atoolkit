@@ -2,7 +2,7 @@
 @Abstract AUtils - Main
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.09.2011
-@LastMod 19.02.2013
+@LastMod 20.02.2013
 }
 unit AUtilsMain;
 
@@ -15,6 +15,7 @@ interface
 uses
   SysUtils,
   ABase,
+  AStringBaseUtils,
   AStringMain,
   AStringUtils,
   ASystemMain;
@@ -68,15 +69,19 @@ function AUtils_FloatToStr2(Value: AFloat; DigitsAfterComma: AInt;
 function AUtils_FloatToStr2P(Value: AFloat; DigitsAfterComma: AInt;
     ReplaceComma, Delimer: ABool): APascalString;
 
-function AUtils_FloatToStrAP(Value: AFloat; DigitsAfterComma: AInt = 2): APascalString;
+function AUtils_FloatToStrAP(Value: AFloat; DigitsAfterComma: AInt = 2): APascalString; deprecated {$ifdef ADeprText}'Use AUtils_FloatToStr2P()'{$endif};
 
-function AUtils_FloatToStrBP(Value: AFloat; DigitsAfterComma: AInt = 2): APascalString;
+function AUtils_FloatToStrBP(Value: AFloat; DigitsAfterComma: AInt = 2): APascalString; deprecated {$ifdef ADeprText}'Use AUtils_FloatToStr2P()'{$endif};
 
-function AUtils_FloatToStrCP(Value: AFloat; DigitsAfterComma: AInt = 2): APascalString;
+function AUtils_FloatToStrCP(Value: AFloat; DigitsAfterComma: AInt = 2): APascalString; deprecated {$ifdef ADeprText}'Use AUtils_FloatToStr2P()'{$endif};
 
 function AUtils_FloatToStrDP(Value: AFloat): APascalString;
 
 function AUtils_FloatToStrP(Value: AFloat): APascalString;
+
+function AUtils_ForceDirectories(const Dir: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUtils_ForceDirectoriesA(Dir: AStr): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_ForceDirectoriesP(const Dir: APascalString): AError;
 
@@ -94,6 +99,10 @@ function AUtils_FormatStr(const Value: AString_Type; Len: AInt; out Res: AString
 function AUtils_FormatStrAnsi(const Value: AnsiString; Len: AInt): AnsiString; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_FormatStrP(const Value: APascalString; Len: AInt): APascalString;
+
+function AUtils_FormatStrStr(const FormatStr, S: AString_Type; out Res: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUtils_FormatStrStrA(FormatStr, S: AStr; Res: AStr; MaxLen: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_FormatStrStrP(const FormatStr, S: APascalString): APascalString;
 
@@ -508,49 +517,47 @@ end;
 
 function AUtils_FloatToStr2P(Value: AFloat; DigitsAfterComma: AInt;
     ReplaceComma, Delimer: ABool): APascalString;
+var
+  S: APascalString;
 begin
-  if Delimer then
-    Result := AUtils_FloatToStrCP(Value, DigitsAfterComma)
-  else
-    Result := AUtils_FloatToStrAP(Value, DigitsAfterComma);
-  if ReplaceComma then
-    Result := AUtils_ReplaceCommaP(Result);
+  try
+    if Delimer then
+    begin
+      case DigitsAfterComma of
+        0: S := SysUtils.FormatFloat('### ### ### ##0', Value);
+        1: S := SysUtils.FormatFloat('### ### ### ##0.0', Value);
+        2: S := SysUtils.FormatFloat('### ### ### ##0.00', Value);
+        3: S := SysUtils.FormatFloat('### ### ### ##0.000', Value);
+        4: S := SysUtils.FormatFloat('### ### ### ##0.0000', Value);
+        5: S := SysUtils.FormatFloat('### ### ### ##0.00000', Value);
+      else
+        S := SysUtils.FormatFloat('### ### ### ##0.00', Value);
+      end;
+    end
+    else
+      S := SysUtils.FloatToStrF(Value, ffFixed, 10, DigitsAfterComma);
+    if ReplaceComma then
+      Result := _ReplaceComma(S, '.', True)
+    else
+      Result := S;
+  except
+    Result := '';
+  end;
 end;
 
 function AUtils_FloatToStrAP(Value: AFloat; DigitsAfterComma: AInt): APascalString;
 begin
-  try
-    Result := SysUtils.FloatToStrF(Value, ffFixed, 10, DigitsAfterComma);
-  except
-    Result := '';
-  end;
+  Result := AUtils_FloatToStr2P(Value, DigitsAfterComma, False, False);
 end;
 
 function AUtils_FloatToStrBP(Value: AFloat; DigitsAfterComma: AInt): APascalString;
 begin
-  try
-    Result := _ReplaceComma(AUtils_FloatToStrAP(Value, DigitsAfterComma), '.', True);
-  except
-    Result := '';
-  end;
+  Result := AUtils_FloatToStr2P(Value, DigitsAfterComma, True, False);
 end;
 
 function AUtils_FloatToStrCP(Value: AFloat; DigitsAfterComma: AInt): APascalString;
 begin
-  try
-    case DigitsAfterComma of
-      0: Result := SysUtils.FormatFloat('### ### ### ##0', Value);
-      1: Result := SysUtils.FormatFloat('### ### ### ##0.0', Value);
-      2: Result := SysUtils.FormatFloat('### ### ### ##0.00', Value);
-      3: Result := SysUtils.FormatFloat('### ### ### ##0.000', Value);
-      4: Result := SysUtils.FormatFloat('### ### ### ##0.0000', Value);
-      5: Result := SysUtils.FormatFloat('### ### ### ##0.00000', Value);
-    else
-      Result := SysUtils.FormatFloat('### ### ### ##0.00', Value);
-    end;
-  except
-    Result := '';
-  end;
+  Result := AUtils_FloatToStr2P(Value, DigitsAfterComma, False, True);
 end;
 
 function AUtils_FloatToStrDP(Value: AFloat): APascalString;
@@ -569,6 +576,16 @@ begin
   except
     Result := '';
   end;
+end;
+
+function AUtils_ForceDirectories(const Dir: AString_Type): AError;
+begin
+  Result := AUtils_ForceDirectoriesP(AString_ToPascalString(Dir));
+end;
+
+function AUtils_ForceDirectoriesA(Dir: AStr): AError;
+begin
+  Result := AUtils_ForceDirectoriesP(Dir);
 end;
 
 function AUtils_ForceDirectoriesP(const Dir: APascalString): AError;
@@ -604,7 +621,7 @@ begin
       Result := Format(FormatS,[Value]);
     end
     else
-      Result := AUtils_FloatToStrBP(Value, DigitsAfterComma);
+      Result := AUtils_FloatToStr2P(Value, DigitsAfterComma, True, False);
   except
     Result := '';
   end;
@@ -681,6 +698,19 @@ begin
   end;
 end;
 
+function AUtils_FormatStrStr(const FormatStr, S: AString_Type; out Res: AString_Type): AError;
+begin
+  Result := AString_AssignP(Res, AUtils_FormatStrStrP(AString_ToPascalString(FormatStr), AString_ToPascalString(S)));
+end;
+
+function AUtils_FormatStrStrA(FormatStr, S: AStr; Res: AStr; MaxLen: AInt): AError;
+var
+  SRes: APascalString;
+begin
+  SRes := AUtils_FormatStrStrP(AStr_ToPascalString(FormatStr), AStr_ToPascalString(S));
+  Result := AStr_AssignP(Res, SRes, MaxLen);
+end;
+
 function AUtils_FormatStrStrP(const FormatStr, S: APascalString): APascalString;
 begin
   try
@@ -731,7 +761,7 @@ end;
 function AUtils_NormalizeFloat(Value: AFloat): AFloat;
 begin
   try
-    Result := AUtils_StrToFloatP(AUtils_FloatToStrAP(Value));
+    Result := AUtils_StrToFloatP(AUtils_FloatToStr2P(Value, 2, False, False));
   except
     Result := 0;
   end;

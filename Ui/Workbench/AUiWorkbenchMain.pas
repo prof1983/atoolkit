@@ -2,9 +2,11 @@
 @Abstract AUi Workbench
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.08.2009
-@LastMod 20.11.2012
+@LastMod 20.02.2013
 }
 unit AUiWorkbenchMain;
+
+{define AStdCall}
 
 interface
 
@@ -13,24 +15,20 @@ uses
 
 {** Creates a new tab in the main window of the program
     @return 0 - error, else identifier new page }
-function AUiWorkbench_AddPage(const Name, Text: AString_Type): AControl; stdcall;
+function AUiWorkbench_AddPage(const Name, Text: AString_Type): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Creates a new tab in the main window of the program
     @return 0 - error, else identifier new page }
-function AUiWorkbench_AddPageP(const Name, Text: APascalString): AControl; stdcall;
-
-{** Creates a new tab in the main window of the program
-    @return 0 - error, else identifier new page }
-function AUiWorkbench_AddPageWS(const Name, Text: AWideString): AControl; stdcall;
+function AUiWorkbench_AddPageP(const Name, Text: APascalString): AControl;
 
 {** Finalize workbench }
-function AUiWorkbench_Fin(): AError; stdcall;
+function AUiWorkbench_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Initialize workbench }
-function AUiWorkbench_Init(): AError; stdcall;
+function AUiWorkbench_Init(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 {** Set OnChange event listener }
-function AUiWorkbench_SetOnChange(OnChange: ACallbackProc): AError; stdcall;
+function AUiWorkbench_SetOnChange(OnChange: ACallbackProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
@@ -48,15 +46,6 @@ end;
 function AUiWorkbench_AddPageP(const Name, Text: APascalString): AControl;
 begin
   Result := AUiPageControl_AddPageP(FPageControl, Name, Text);
-end;
-
-function AUiWorkbench_AddPageWS(const Name, Text: AWideString): AControl;
-begin
-  try
-    Result := AUiWorkbench_AddPageP(Name, Text);
-  except
-    Result := 0;
-  end;
 end;
 
 function AUiWorkbench_Fin(): AError;

@@ -2,7 +2,7 @@
 @Abstract AUi Workbench
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.08.2009
-@LastMod 20.11.2012
+@LastMod 20.02.2013
 }
 unit AUiWorkbench;
 
@@ -13,56 +13,50 @@ uses
 
 // ----
 
-function Init(): AError; stdcall; deprecated; // Use AUiWorkbench_Init()
-
-function Done(): AError; stdcall; deprecated; // Use AUiWorkbench_Fin()
+{** Creates a new tab in the main window of the program
+    @return 0 - error, else identifier new page }
+function AddPage(const Name, Text: AString_Type): AControl; stdcall;
 
 {** Creates a new tab in the main window of the program
     @return 0 - error, else identifier new page }
-function AddPageP(const Name, Text: APascalString): AControl; stdcall; deprecated; // Use AUiWorkbench_AddPageP()
+function AddPageP(const Name, Text: APascalString): AControl;
 
-{** Creates a new tab in the main window of the program
-    @return 0 - error, else identifier new page }
-function AddPageWS(const Name, Text: AWideString): AControl; stdcall; deprecated; // Use AUiWorkbench_AddPageWS()
+{** Finalize workbench }
+function Fin(): AError; stdcall;
+
+{** Initialize workbench }
+function Init(): AError; stdcall;
+
+{** Set OnChange event listener }
+function SetOnChange(OnChange: ACallbackProc): AError; stdcall;
 
 implementation
 
-{ Public }
+// --- Public ---
 
-function AddPageP(const Name, Text: APascalString): AControl; stdcall;
+function AddPage(const Name, Text: AString_Type): AControl;
 begin
-  try
-    Result := AUiWorkbench_AddPageP(Name, Text);
-  except
-    Result := 0;
-  end;
+  Result := AUiWorkbench_AddPage(Name, Text);
 end;
 
-function AddPageWS(const Name, Text: AWideString): AControl; stdcall;
+function AddPageP(const Name, Text: APascalString): AControl;
 begin
-  try
-    Result := AUiWorkbench_AddPageWS(Name, Text);
-  except
-    Result := 0;
-  end;
+  Result := AUiWorkbench_AddPageP(Name, Text);
 end;
 
-function Done(): AError; stdcall;
+function Fin(): AError;
 begin
-  try
-    Result := AUiWorkbench_Fin();
-  except
-    Result := -1;
-  end;
+  Result := AUiWorkbench_Fin();
 end;
 
-function Init(): AError; stdcall;
+function Init(): AError;
 begin
-  try
-    Result := AUiWorkbench_Init();
-  except
-    Result := -1;
-  end;
+  Result := AUiWorkbench_Init();
+end;
+
+function SetOnChange(OnChange: ACallbackProc): AError;
+begin
+  Result := AUiWorkbench_SetOnChange(OnChange);
 end;
 
 end.

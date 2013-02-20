@@ -2,7 +2,7 @@
 @Abstract AModuleManager main functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.11.2012
-@LastMod 19.02.2013
+@LastMod 20.02.2013
 }
 unit AModuleManagerMain;
 
@@ -14,6 +14,7 @@ uses
   ABase,
   ARuntimeMain,
   ASettingsMain,
+  ASystemMain,
   ASystemResourceString,
   AUiBase,
   AUiControls,

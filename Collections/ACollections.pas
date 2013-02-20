@@ -2,7 +2,7 @@
 @Abstract ACollections
 @Author Prof1983 <prof1983@ya.ru>
 @Created 29.06.2011
-@LastMod 18.02.2013
+@LastMod 20.02.2013
 }
 unit ACollections;
 
@@ -24,14 +24,16 @@ function StringList_Add(StringList: AStringList; const Value: AString_Type): AIn
 function StringList_AddA(StringList: AStringList; Value: PAnsiChar): AInt; stdcall;
 
 //** Добавляет строку в список. Возвращает индекс, по которому эта строка сохранена.
-function StringList_AddP(StringList: AStringList; const Value: APascalString): AInt; stdcall;
+function StringList_AddP(StringList: AStringList; const Value: APascalString): AInt;
 
 //** Удаляет все элементы.
 function StringList_Clear(StringList: AStringList): AError; stdcall;
 
-function StringList_Count(StringList: AStringList): AInt; stdcall;
+function StringList_Count(StringList: AStringList): AInt; stdcall; deprecated {$ifdef ADeprText}'Use StringList_GetCount()'{$endif};
 
 function StringList_Delete(StringList: AStringList; Index: AInt): AError; stdcall;
+
+function StringList_GetCount(StringList: AStringList): AInt; stdcall;
 
 {**
   Вставляет в список строку по указанному индексу.
@@ -46,7 +48,7 @@ function StringList_Insert(StringList: AStringList; Index: AInt; Value: AString_
   место для вставляемого объекта.
 }
 function StringList_InsertP(StringList: AStringList; Index: AInt;
-    const Value: APascalString): AError; stdcall;
+    const Value: APascalString): AError;
 
 //** Создает коллекцию-список строк.
 function StringList_New(): AStringList; stdcall;
@@ -99,13 +101,18 @@ begin
   Result := AStringList_Delete(StringList, Index);
 end;
 
+function StringList_GetCount(StringList: AStringList): AInt;
+begin
+  Result := AStringList_GetCount(StringList);
+end;
+
 function StringList_Insert(StringList: AStringList; Index: AInt; Value: AString_Type): AInt;
 begin
   Result := AStringList_Insert(StringList, Index, Value);
 end;
 
 function StringList_InsertP(StringList: AStringList; Index: AInt;
-    const Value: APascalString): AError; stdcall;
+    const Value: APascalString): AError; 
 begin
   Result := AStringList_InsertP(StringList, Index, Value);
 end;

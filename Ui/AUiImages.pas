@@ -2,7 +2,7 @@
 @Abstract AUiImage
 @Author Prof1983 <prof1983@ya.ru>
 @Created 05.09.2012
-@LastMod 29.01.2013
+@LastMod 20.02.2013
 }
 unit AUiImages;
 
@@ -32,7 +32,7 @@ function AUiImage_LoadFromFileP(Image: AControl; const FileName: APascalString):
 {** Создает новый элемент-изображение }
 function AUiImage_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiImage_SetCenter(Image: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiImage_SetCenter(Image: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiImage_SetTransparent(Image: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 

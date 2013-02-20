@@ -2,7 +2,7 @@
 @Abstract AUiDialogs
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 04.02.2013
+@LastMod 20.02.2013
 }
 unit AUiDialogs;
 
@@ -35,7 +35,7 @@ function AUi_ExecuteMessageDialog1A(Text, Caption: AStr;
     Flags: AMessageBoxFlags): ADialogBoxCommands; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ExecuteMessageDialog1P(const Text, Caption: APascalString;
-    Flags: AMessageBoxFlags): ADialogBoxCommands; {$ifdef AStdCall}stdcall;{$endif}
+    Flags: AMessageBoxFlags): ADialogBoxCommands;
 
 // --- AUiDialog ---
 

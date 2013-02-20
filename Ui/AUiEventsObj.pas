@@ -2,14 +2,13 @@
 @Abstract AUi events object
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.06.2011
-@LastMod 29.01.2013
+@LastMod 20.02.2013
 }
 unit AUiEventsObj;
 
 interface
 
 uses
-  //Db,
   ABase,
   AUiBase, AUiData;
 
@@ -20,7 +19,6 @@ type
   public
     procedure ButtonClick(Sender: TObject);
     procedure CalendarChange(Sender: TObject);
-    //procedure DataSourceDataChange(Sender: TObject; Field: TField);
     procedure ListBoxClick(Sender: TObject);
     procedure MenuItemClick(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
@@ -56,20 +54,6 @@ begin
       FCalendars[I].OnChange(FCalendars[I].OnChangeObj, Integer(Sender));
   end;
 end;
-
-{
-procedure TUI_.DataSourceDataChange(Sender: TObject; Field: TField);
-var
-  I: Integer;
-begin
-  I := FindDataSource(PADataSource(Sender));
-  if (I >= 0) then
-  begin
-    if Assigned(FDataSources[I].OnDataChange) then
-      FDataSources[I].OnDataChange(Integer(Sender), Integer(Field));
-  end;
-end;
-}
 
 procedure TUI_.ListBoxClick(Sender: TObject);
 var

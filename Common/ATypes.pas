@@ -2,7 +2,7 @@
 @Abstract Globals types
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.02.2007
-@LastMod 17.12.2012
+@LastMod 21.02.2013
 }
 unit ATypes;
 
@@ -15,35 +15,7 @@ uses
 
 // TODO: Use base types from ABase.pas
 type
-  {
-  Char08 = Char;
-  Char16 = WideChar;
-  SByte = ShortInt;
-  Float32 = AFloat32;
-  Float64 = AFloat64;
-  Int08 = ShortInt;
-  Int16 = SmallInt;
-  Int32 = AInt32;
-  //Int64 = Int64;
-  UInt08 = AUInt08;
-  UInt16 = AUInt16;
-  UInt32 = AUInt32;
-  IntPtr = Int32;
-  }
   UIntPtr = AUInt32;
-
-{
-type
-  TProfError = ABase.AError;
-  TError = ABase.AError;
-const
-  PROF_RESULT_OK          = 0;
-const
-  PROF_RESULT_FATAL_ERROR = $C0000000;
-  PROF_RESULT_ERROR       = $80000000;
-  PROF_RESULT_WARNING     = $40000000;
-  PROF_RESULT_INFORMATION = $00000000;
-}
 
 type // from ABase2.pas
   TDateTime32 = AFloat32;
@@ -247,21 +219,10 @@ type
 // --- Function type ---
 
 type
-  // TODO: Delete TAddToLog
-  TAddToLog = function (
-                         AGroup: TLogGroupMessage;
-                         AType: TLogTypeMessage;
-                         const AStrMsg: string;
-                         AParams: array of const
-                       ): Boolean of object; {deprecated;}
-
-  TProfAddToLog = function(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-      const AStrMsg: WideString; AParams: array of const): Integer of object;
-
-  TAddToLogProc = function(AGroup: TLogGroupMessage; AType: TLogTypeMessage;
-      const AStrMsg: WideString): Integer of object;
-
-  TAddToLogProcA = function(AGroup: TLogGroupMessage; AType: TLogTypeMessage; AStrMsg: AStr): AInt;
+  TAddToLogProc = function(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+      const StrMsg: AWideString): AInt of object;
+  TAddToLogProcA = function(LogGroup: TLogGroupMessage; LogType: TLogTypeMessage;
+      StrMsg: AStr): AInt;
 
 type
   TProcMessageX = function(Msg: AMessage): Integer of object;
@@ -290,8 +251,7 @@ type
     MsgName: WideString;
     MsgType: TMessageType;
     OwnerId: UInt64;
-    Params: WideString{IProfXmlNode};
-    //ParamsOld: TProfXmlNode1;
+    Params: WideString;
   end;
 
 type

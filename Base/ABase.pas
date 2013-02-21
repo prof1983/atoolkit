@@ -2,7 +2,7 @@
 @Abstract Base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 04.02.2013
+@LastMod 21.02.2013
 }
 unit ABase;
 
@@ -176,16 +176,17 @@ type
   AIterator = type AInt; // =TAEntityIterator (=IAIterator)
 
   AXmlNodeCollection = type AInt; // TProfXmlCollection
-  AXmlDocument = ADocument; // AXmlDocumentImpl.TProfXmlDocument
-  AProfXmlDocument = AXmlDocument; // deprecated
-  AProfXmlDocument1 = AXmlDocument; // deprecated
   AXmlNode = ANode; // TProfXmlNode or TProfXmlNode1 or TProfXmlNode2 or TANode
-  AProfXmlNode = type AXmlNode; // AXmlNodeImpl.TProfXmlNode or TProfXmlNode2
-  AProfXmlNode1 = type AProfXmlNode; // TProfXmlNode1
-  AProfXmlNode2 = type AProfXmlNode; // TProfXmlNode2
-  AProfXmlNodeA = type AInt; // IProfXmlNodeA
   AXmlNodeList = ANodeList; // =AXmlNodeList_Type.Id (TProfXmlNodeList) or TProfNodes3
   AConfigNode = AXmlNode; // =AXmlNode or AConfig
+
+  //AXmlDocument = ADocument; // AXmlDocumentImpl.TProfXmlDocument
+  //AProfXmlDocument = AXmlDocument; // deprecated
+  //AProfXmlDocument1 = AXmlDocument; // deprecated
+  //AProfXmlNode = type AXmlNode; // AXmlNodeImpl.TProfXmlNode or TProfXmlNode2
+  //AProfXmlNode1 = type AProfXmlNode; // TProfXmlNode1
+  //AProfXmlNode2 = type AProfXmlNode; // TProfXmlNode2
+  //AProfXmlNodeA = type AInt; // IProfXmlNodeA
 
 implementation
 

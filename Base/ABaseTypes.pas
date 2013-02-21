@@ -2,7 +2,7 @@
 @Abstract ABaseTypes
 @Author Prof1983 <prof1983@ya.ru>
 @Created 23.06.2011
-@LastMod 18.12.2012
+@LastMod 21.02.2013
 }
 unit ABaseTypes;
 
@@ -59,38 +59,39 @@ const
   MB_USERICON = AMessageBoxFlags_USERICON;
 
 type
-  ALogFlags = type Integer;
+  ALogType = type AInt;
 const
-  ALogFlags_IconMask = $000000F0;
-  ALogFlags_IconError = $00000010;
-  ALogFlags_IconQuestion = $00000020;
-  ALogFlags_IconWarning = $00000030;
-  ALogFlags_IconInformation = $00000040;
-  ALogFlags_IconUser = $00000080;
-const
-  ALogIconMask         = $000000F0;
-  ALogIconError        = $00000010;
-  ALogIconQuestion     = $00000020;
-  ALogIconWarning      = $00000030;
-  ALogIconInformation  = $00000040;
-  ALogIconUser         = $00000080;
-{const
-  L_ICONERROR = ALogIconError;       // MB_ICONHAND, MB_ICONSTOP
-  L_ICONQUESTION = ALogIconQuestion;
-  L_ICONWARNING = ALogIconWarning;     // ICONEXCLAMATION
-  L_ICONINFORMATION = ALogIconInformation; // MB_ICONASTERISK
-  L_USERICON = ALogIconUser;}
+  ALogType_Error = $00000010;
+  ALogType_Question = $00000020;
+  ALogType_Warning = $00000030;
+  ALogType_Information = $00000040;
 
 type
+  ALogFlags = ALogType;
+const
+  ALogFlags_IconMask = $000000F0;
+  ALogFlags_IconError = ALogType_Error;
+  ALogFlags_IconQuestion = ALogType_Question;
+  ALogFlags_IconWarning = ALogType_Warning;
+  ALogFlags_IconInformation = ALogType_Information;
+  ALogFlags_IconUser = $00000080;
+const
+  ALogIconMask = ALogFlags_IconMask;
+  ALogIconError = ALogFlags_IconError;
+  ALogIconQuestion = ALogFlags_IconQuestion;
+  ALogIconWarning = ALogFlags_IconWarning;
+  ALogIconInformation = ALogFlags_IconInformation;
+  ALogIconUser = ALogFlags_IconUser;
+
+type
+  AAddToLogA_Proc = function(Msg: AStr; Flags: ALogFlags; Data: AInt): AInt; stdcall;
   AShowErrorA_Proc = function(Caption, UserMessage, ExceptMessage: AStr): AError; stdcall;
   AShowMessageA_Proc = function(Text, Caption: AStr; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 
-  // TAShowErrorProc
-  TAShowErrorWSProc = procedure(const Caption, UserMessage, ExceptMessage: AWideString); stdcall;
-  // TAShowMessageProc
-  TAShowMessageWSProc = function(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
-  // TAddToLogProc
-  TAddToLogWSProc = procedure(const Msg: AWideString; Flags: ALogFlags);
+  //TAShowErrorWSProc = procedure(const Caption, UserMessage, ExceptMessage: AWideString); stdcall;
+  //TAShowMessageWSProc = function(const Text, Caption: AWideString; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+  //TAddToLogWSProc = procedure(const Msg: AWideString; Flags: ALogFlags); - Use AAddToLogA_Proc()
+  //TAddToLogProc = TAddToLogWSProc
 
 type
   TRealArray = array of Real;

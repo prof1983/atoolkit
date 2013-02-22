@@ -66,7 +66,7 @@ function ASystem_GetDescription(out Value: AString_Type): AError; {$ifdef AStdCa
 
 function ASystem_GetDescriptionP(): APascalString;
 
-function ASystem_GetDirectoryPath(out Value: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
+function ASystem_GetDirectoryPath(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_GetDirectoryPathP(): APascalString;
 
@@ -78,6 +78,10 @@ function ASystem_GetExePath(out Value: AString_Type): AError; {$ifdef AStdCall}s
 
 function ASystem_GetExePathP(): APascalString;
 
+function ASystem_GetParamStr(Index: AInt; out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_GetParamStrP(Index: AInt): APascalString;
+
 function ASystem_GetProductName(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_GetProductNameP(): APascalString;
@@ -86,7 +90,7 @@ function ASystem_GetProductVersionStr(out Value: AString_Type): AError; {$ifdef 
 
 function ASystem_GetProductVersionStrP(): APascalString;
 
-function ASystem_GetProgramName(out Value: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
+function ASystem_GetProgramName(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_GetProgramNameP(): APascalString;
 
@@ -104,9 +108,9 @@ function ASystem_GetUrlP(): APascalString;
 
 function ASystem_Init(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function ASystem_ParamStr(Index: AInt; out Value: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
+function ASystem_ParamStr(Index: AInt; out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif} deprecated {$ifdef ADeprText}'Use ASystem_GetParamStr()'{$endif};
 
-function ASystem_ParamStrP(Index: AInt): APascalString;
+function ASystem_ParamStrP(Index: AInt): APascalString; deprecated {$ifdef ADeprText}'Use ASystem_GetParamStrP()'{$endif};
 
 function ASystem_Prepare(const Title, ProgramName: AString_Type; ProgramVersion: AVersion;
     const ProductName: AString_Type; ProductVersion: AVersion;
@@ -123,6 +127,8 @@ function ASystem_PrepareP(const Title, ProgramName: APascalString; ProgramVersio
 function ASystem_ProcessMessages(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_SetConfig(Value: AConfig): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_SetDataDirectoryPath(const DataDir: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_SetDataDirectoryPathP(const DataDir: APascalString): AError;
 
@@ -242,7 +248,7 @@ begin
   Result := FDescription;
 end;
 
-function ASystem_GetDirectoryPath(out Value: AString_Type): AInt;
+function ASystem_GetDirectoryPath(out Value: AString_Type): AError;
 begin
   Result := AString_AssignP(Value, FExePath);
 end;
@@ -272,6 +278,27 @@ begin
   Result := FExePath;
 end;
 
+function ASystem_GetParamStr(Index: AInt; out Value: AString_Type): AError;
+var
+  Res: string;
+begin
+  try
+    Res := System.ParamStr(Index);
+    Result := AString_AssignP(Value, Res);
+  except
+    Result := -1;
+  end;
+end;
+
+function ASystem_GetParamStrP(Index: AInt): APascalString;
+begin
+  try
+    Result := System.ParamStr(Index);
+  except
+    Result := '';
+  end;
+end;
+
 function ASystem_GetProductName(out Value: AString_Type): AError;
 begin
   Result := AString_AssignP(Value, FProductName);
@@ -292,7 +319,7 @@ begin
   Result := FProductVersionStr;
 end;
 
-function ASystem_GetProgramName(out Value: AString_Type): AInt;
+function ASystem_GetProgramName(out Value: AString_Type): AError;
 begin
   Result := AString_AssignP(Value, FProgramName);
 end;
@@ -340,25 +367,14 @@ begin
   Result := 0;
 end;
 
-function ASystem_ParamStr(Index: AInt; out Value: AString_Type): AInt;
-var
-  Res: string;
+function ASystem_ParamStr(Index: AInt; out Value: AString_Type): AError;
 begin
-  try
-    Res := System.ParamStr(Index);
-    Result := AString_AssignP(Value, Res);
-  except
-    Result := -1;
-  end;
+  Result := ASystem_GetParamStr(Index, Value);
 end;
 
-function ASystem_ParamStrP(Index: AInt): APascalString; 
+function ASystem_ParamStrP(Index: AInt): APascalString;
 begin
-  try
-    Result := System.ParamStr(Index);
-  except
-    Result := '';
-  end;
+  Result := ASystem_GetParamStrP(Index);
 end;
 
 function ASystem_Prepare(const Title, ProgramName: AString_Type; ProgramVersion: AVersion;
@@ -447,6 +463,11 @@ function ASystem_SetConfig(Value: AConfig): AError;
 begin
   FConfig := Value;
   Result := 0;
+end;
+
+function ASystem_SetDataDirectoryPath(const DataDir: AString_Type): AError;
+begin
+  Result := ASystem_SetDataDirectoryPathP(AString_ToPascalString(DataDir));
 end;
 
 function ASystem_SetDataDirectoryPathP(const DataDir: APascalString): AError;

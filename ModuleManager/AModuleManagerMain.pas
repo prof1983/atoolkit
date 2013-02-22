@@ -119,20 +119,18 @@ begin
   SModules := ASystem_GetResourceStringP('', 'Modules', 'Modules');
 
   miHelp := AUiMainWindow_AddMenuItemP('', 'Help', '?', nil, 0, 10000);
-  AUiMenu_AddItem2P(miHelp, 'Modules', 'Modules'{SModules}, DoMenuModuleClick, 0, 10);
+  AUiMenu_AddItem2P(miHelp, 'Modules', SModules, DoMenuModuleClick, 0, 10);
 
-  (*
   // --- Init recomended modules ---
 
   //if AUiWorkbench_IsBoot then
   begin
     if (AUiWorkbench_Init() >= 0) then
     begin
-      FPage := AUiWorkbench_AddPageP('ModuleManager', 'Modules'{SModules});
+      FPage := AUiWorkbench_AddPageP('ModuleManager', SModules);
       FModuleManagerControl := ModuleManagerControl_New(FPage);
     end;
   end;
-  *)
 
   FInitialized := True;
   Result := 0;

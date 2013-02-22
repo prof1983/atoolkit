@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.06.2004
-@LastMod 04.02.2013
+@LastMod 22.02.2013
 }
 unit ABaseUtils2;
 
@@ -31,7 +31,7 @@ type // ------------------------------------------------------------------------
   *)
 
 type // ------------------------------------------------------------------------
-  TVariantType = type UInt32;
+  TVariantType = type AUInt32;
    {0-Uncnown,
     1-Boolean,
     2-UInt,
@@ -61,70 +61,70 @@ function cArrayByteToUInt64(const A: TArrayByte): UInt64;
 function cChar08ToHex(Value: Char): string;
 function cCharToByte(Value: Char): Byte;
 function cCharToUInt08(C: Char): AUInt08;
-function cFloat32ToInt32(Value: Float32): Int32;
+function cFloat32ToInt32(Value: AFloat32): AInt32;
 function cFloat64ToArrayByte(Value: Float64): TArrayByte;
-function cFloat64ToUInt32(F: Float64): UInt32;
+function cFloat64ToUInt32(F: Float64): AUInt32;
 function cHexToUInt08(H: Char): AUInt08;
 {** Delimer #9 }
 function cStringToArrayString(Value: string): TArrayString;
 function cStrToHex(Value: string; Delimiter: string = ''): string;
 function cStrToHtmlStr(Str: string): string;
-function cStrToInt32(Str: string): Int32; deprecated; // Use ABaseUtils3.pas
-function cStrToUInt32(Str: string): UInt32;
-function cStrToUInt64(Str: string): UInt64;
+function cStrToInt32(Str: string): AInt32; deprecated; // Use ABaseUtils3.pas
+function cStrToUInt32(Str: string): AUInt32;
+function cStrToUInt64(Str: string): AUInt64;
 function cUInt08ToHex(I: AUInt08): string;
-function cUInt64ToInt32(Value: UInt64): Int32;
-function cUInt64ToUInt08(Value: UInt64): AUInt08;
-function cUInt64ToInt16(Value: UInt64): UInt16;
-function cUInt64ToUInt32(Value: UInt64): UInt32;
-function cUInt32ToArrayByte(Value: UInt32): TArrayByte;
+function cUInt64ToInt32(Value: AUInt64): AInt32;
+function cUInt64ToUInt08(Value: AUInt64): AUInt08;
+function cUInt64ToInt16(Value: AUInt64): AUInt16;
+function cUInt64ToUInt32(Value: AUInt64): AUInt32;
+function cUInt32ToArrayByte(Value: AUInt32): TArrayByte;
 
 function IsCharEng(C: Char): Boolean;
 function IsCharRus(C: Char): Boolean;
 function IsCharRusEng(C: Char): Boolean;
-function mathMinInt32(V1, V2: Int32): Int32;
-function mathMinUInt32(V1: UInt32; V2: UInt32): UInt32;
-function strEqual(Str1, Str2: string): UInt32;
+function mathMinInt32(V1, V2: AInt32): AInt32;
+function mathMinUInt32(V1, V2: AUInt32): AUInt32;
+function strEqual(Str1, Str2: string): AUInt32;
 function strEqual2(S1, S2: string; A1: Float64 = 0; A2: Float64 = 0; A3: Float64 = 0): Float64;
 function StrExtractWord(Num: Integer; Str: WideString; Delims: TArrayChar): WideString;
 function StrHtmlFromStr(Value: string): string;
 function StrHtmlToStr(Value: WideString): WideString;
-procedure strInsert(var S: String; SubSt: String; Index: UInt32);
-function strLength(const S: String): UInt32;
-function strPos(St: String; SubSt: String): UInt32;
+procedure strInsert(var S: String; SubSt: String; Index: AUInt32);
+function strLength(const S: String): AUInt32;
+function strPos(St: String; SubSt: String): AUInt32;
 // Search first symbol . ! ? ...
-function strPos3(S: String; var Ch: TStrPosChar): UInt32;
+function strPos3(S: String; var Ch: TStrPosChar): AUInt32;
 function StrPosEnd(const St: WideString; C: WideChar): Integer;
 function urlDecode(Value: string): string;
 function urlParamDecode(const InParams: TUrlParams; var Params: TURLParams2): AError;
 function urlParamByName(InParams: TUrlParams; Name: string): string;
 function urlParamByName_UInt064(InParams: TUrlParams; Name: String): UInt64;
 
-function MinInt32(Value1, Value2: Int32): Int32;
+function MinInt32(Value1, Value2: AInt32): AInt32;
 
-function _StrToBool(const S: String; var Value: Boolean): Boolean;
-function _StrToFloat32(const S: String; var Value: Float32): UInt32;
-function _StrToFloat64(const S: String; var Value: Float64): UInt32;
-function _StrToInt08(const S: String; var Value: AInt08): UInt32;
-function _StrToInt16(const S: String; var Value: Int16): UInt32;
-function _StrToInt32(const S: String; var Value: Int32): UInt32;
-function _StrToInt64(const S: String; var Value: Int64): UInt32;
-function _StrToUInt08(const S: String; var Value: AUInt08): UInt32;
-function _StrToUInt16(const S: String; var Value: UInt16): UInt32;
-function _StrToUInt32(const S: String; var Value: UInt32): UInt32;
-function _StrToUInt64(const S: String; var Value: UInt64): UInt32;
+function _StrToBool(const S: String; var Value: ABool): ABool;
+function _StrToFloat32(const S: String; var Value: AFloat32): AUInt32;
+function _StrToFloat64(const S: String; var Value: AFloat64): AUInt32;
+function _StrToInt08(const S: String; var Value: AInt08): AUInt32;
+function _StrToInt16(const S: String; var Value: AInt16): AUInt32;
+function _StrToInt32(const S: String; var Value: AInt32): AUInt32;
+function _StrToInt64(const S: String; var Value: AInt64): AUInt32;
+function _StrToUInt08(const S: String; var Value: AUInt08): AUInt32;
+function _StrToUInt16(const S: String; var Value: AUInt16): AUInt32;
+function _StrToUInt32(const S: String; var Value: AUInt32): AUInt32;
+function _StrToUInt64(const S: String; var Value: AUInt64): AUInt32;
 
 {** Delete prefix and postfix space (probel) and delete prefix and postfix #13#10 }
-function _StrDeleteSpace(var S: APascalString; Options: TDeleteSpaceOptionSet): AError;
+function _StrDeleteSpace(var S: String; Options: TDeleteSpaceOptionSet): AError;
 
 function cBoolToStr(Value: Boolean): String;
 function cUInt08ToChar(I: AUInt08): Char;
 procedure strAdd(var Str: String; S2: String);
-function strCopy(SIn: String; Index, Count: Int32): String;
-function strDelete(var St: String; Index, Count: UInt32): AError;
+function strCopy(SIn: String; Index, Count: AInt32): String;
+function strDelete(var St: String; Index, Count: AUInt32): AError;
 
 {** Delete prefix and postfix space (probel) and delete prefix and postfix #13#10 }
-function StrDeleteSpace(const SIn: WideString; Options: TDeleteSpaceOptionsSet = [dsFirst, dsLast, dsRep]): APascalString;
+function StrDeleteSpace(const SIn: WideString; Options: TDeleteSpaceOptionsSet = [dsFirst, dsLast, dsRep]): String;
 
 function Tag(Name, Value: String): String;
 
@@ -133,7 +133,7 @@ implementation
 // API -------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 function __CloseHandle(hObject: THandle32): Boolean; stdcall; external 'kernel32.dll' name 'CloseHandle';
-function __GetLastError: UInt32; stdcall; external 'kernel32.dll' name 'GetLastError';
+function __GetLastError(): Integer; stdcall; external 'kernel32.dll' name 'GetLastError';
 
 // Functions -------------------------------------------------------------------
 
@@ -144,7 +144,7 @@ end;
 
 function cArrayByteToString(const A: TArrayByte): String;
 var
-  I: Int32;
+  I: AInt32;
 begin
   SetLength(Result, Length(A));
   for I := 0 to High(A) do
@@ -176,7 +176,7 @@ begin
   Result := Ord(C);
 end;
 
-function cFloat32ToInt32(Value: Float32): Int32;
+function cFloat32ToInt32(Value: AFloat32): AInt32;
 begin
   Result := Round(Value);
 end;
@@ -186,7 +186,7 @@ begin
   SetLength(Result, 8);
 end;
 
-function cFloat64ToUInt32(F: Float64): UInt32;
+function cFloat64ToUInt32(F: AFloat64): AUInt32;
 begin
   Result := Round(F);
 end;
@@ -207,9 +207,9 @@ end;
 
 function cStringToArrayString(Value: String): TArrayString;
 var
-  I: Int32;
-  Index: Int32;
-  IStart: Int32;
+  I: AInt32;
+  Index: AInt32;
+  IStart: AInt32;
 begin
   SetLength(Result, 0);
   Value := StrDeleteSpace(Value);
@@ -243,7 +243,7 @@ end;
 
 function cStrToHtmlStr(Str: String): String;
 var
-  I: UInt32;
+  I: AUInt32;
 begin
   Result := '';
   for I := 1 to strLength(Str) do case Str[I] of
@@ -254,9 +254,9 @@ begin
   end;
 end;
 
-function cStrToInt32(Str: String): Int32;
+function cStrToInt32(Str: String): AInt32;
 var
-  Code: Int32;
+  Code: AInt32;
 begin
   Result := 0;
   try
@@ -266,9 +266,9 @@ begin
   end;
 end;
 
-function cStrToUInt32(Str: String): UInt32;
+function cStrToUInt32(Str: String): AUInt32;
 var
-  Code: Int32;
+  Code: AInt32;
 begin
   Result := 0;
   try
@@ -278,9 +278,9 @@ begin
   end;
 end;
 
-function cStrToUInt64(Str: String): UInt64;
+function cStrToUInt64(Str: String): AUInt64;
 var
-  Code: Int32;
+  Code: AInt32;
 begin
   Result := 0;
   try
@@ -306,17 +306,17 @@ begin
   Result := a(I shr 4) + a(I and $0F);
 end;
 
-function cUInt64ToInt32(Value: UInt64): Int32;
+function cUInt64ToInt32(Value: AUInt64): AInt32;
 begin
-  if Value > High(Int32) then
-    Result := High(Int32)
-  else if Value <= Low(Int32) then
-    Result := Low(Int32)
+  if (Value > High(AInt32)) then
+    Result := High(AInt32)
+  else if (Value <= Low(AInt32)) then
+    Result := Low(AInt32)
   else
     Result := Value;
 end;
 
-function cUInt64ToUInt08(Value: UInt64): AUInt08;
+function cUInt64ToUInt08(Value: AUInt64): AUInt08;
 begin
   if (Value > High(AUInt08)) then
     Result := High(AUInt08)
@@ -326,27 +326,27 @@ begin
     Result := Value;
 end;
 
-function cUInt64ToInt16(Value: UInt64): UInt16;
+function cUInt64ToInt16(Value: AUInt64): AUInt16;
 begin
-  if Value > High(UInt16) then
-    Result := High(UInt16)
-  else if Value <= 0 then
+  if (Value > High(AUInt16)) then
+    Result := High(AUInt16)
+  else if (Value <= 0) then
     Result := 0
   else
     Result := Value;
 end;
 
-function cUInt64ToUInt32(Value: UInt64): UInt32;
+function cUInt64ToUInt32(Value: AUInt64): AUInt32;
 begin
-  if Value > High(UInt32) then
-    Result := High(UInt32)
-  else if Value <= 0 then
+  if (Value > High(AUInt32)) then
+    Result := High(AUInt32)
+  else if (Value <= 0) then
     Result := 0
   else
     Result := Value;
 end;
 
-function cUInt32ToArrayByte(Value: UInt32): TArrayByte;
+function cUInt32ToArrayByte(Value: AUInt32): TArrayByte;
 begin
   SetLength(Result, 0);
 end;
@@ -374,35 +374,36 @@ begin
   Result := IsCharEng(C) or IsCharRus(C);
 end;
 
-function mathAbs(F: Float64): Float64; overload;
+function mathAbs(F: AFloat64): AFloat64; overload;
 begin
   Result := Abs(F);
 end;
 
-function mathAbs(I: UInt32): UInt32; overload;
+function mathAbs(I: AUInt32): AUInt32; overload;
 begin
   Result := Abs(I);
 end;
 
-function mathMax(V1, V2: UInt32): UInt32;
+function mathMax(V1, V2: AUInt32): AUInt32;
 begin
   if V1 < V2 then Result := V2 else Result := V1;
 end;
 
-function mathMinInt32(V1, V2: Int32): Int32;
+function mathMinInt32(V1, V2: AInt32): AInt32;
 begin
   if V1 > V2 then Result := V2 else Result := V1;
 end;
 
-function mathMinUInt32(V1, V2: UInt32): UInt32;
+function mathMinUInt32(V1, V2: AUInt32): AUInt32;
 begin
   if V1 > V2 then Result := V2 else Result := V1;
 end;
 
-function strEqual(Str1, Str2: String): UInt32;
+function strEqual(Str1, Str2: String): AUInt32;
 var
-  I: UInt32;
-  L1, L2: UInt32;
+  I: AUInt32;
+  L1: AUInt32;
+  L2: AUInt32;
 begin
   L1 := Length(Str1); L2 := Length(Str2);
   if (L1 <> L2) then begin Result := mathMinUInt32(L1, L2) + 1; Exit; end;
@@ -418,13 +419,14 @@ var
   K2: Float64;
   K3: Float64;
   K: Float64;
-  L1: UInt32;
-  L2: UInt32;
-  Lmin: UInt32;
-  dL: UInt32;
+  L1: AUInt32;
+  L2: AUInt32;
+  Lmin: AUInt32;
+  dL: AUInt32;
   S: String;
-  L: UInt32;
-  I, I2: UInt32;
+  L: AUInt32;
+  I: AUInt32;
+  I2: AUInt32;
 begin
   Result := 0;
   L1 := strLength(S1);
@@ -448,14 +450,14 @@ end;
 
 function StrExtractWord(Num: Integer; Str: WideString; Delims: TArrayChar): WideString;
 var
-  INum: Int32;
-  Pos: Int32;
-  MinDelimPos: Int32;
+  INum: AInt32;
+  Pos: AInt32;
+  MinDelimPos: AInt32;
 
-  function GetMinDelimPos(Str: WideString; Start: UInt32; Delims: TArrayChar): Int32;
+  function GetMinDelimPos(Str: WideString; Start: AUInt32; Delims: TArrayChar): AInt32;
   var
-    I: Int32;
-    I2: Int32;
+    I: AInt32;
+    I2: AInt32;
   begin
     Result := 0;
     for I := 0 to High(Delims) do
@@ -497,7 +499,7 @@ end;
 
 function StrHtmlFromStr(Value: String): String;
 var
-  I: Int32;
+  I: AInt32;
 begin
   Result := '';
   for I := 1 to Length(Value) do case Value[I] of
@@ -510,8 +512,8 @@ end;
 
 function StrHtmlToStr(Value: WideString): WideString;
 var
-  Igt: Int32;
-  Ilt: Int32;
+  Igt: AInt32;
+  Ilt: AInt32;
 begin
   Result := '';
   repeat
@@ -533,25 +535,25 @@ begin
   until (Igt = 0) and (Ilt = 0);
 end;
 
-procedure strInsert(var S: String; SubSt: String; Index: UInt32);
+procedure strInsert(var S: String; SubSt: String; Index: AUInt32);
 begin
   Insert(SubSt, S, Index);
 end;
 
-function strLength(const S: String): UInt32;
+function strLength(const S: String): AUInt32;
 begin
   Result := Length(S);
 end;
 
-function strPos(St, SubSt: String): UInt32;
+function strPos(St, SubSt: String): AUInt32;
 begin
   Result := Pos(SubSt, St);
 end;
 
-function strPos3(S: String; var Ch: TStrPosChar): UInt32;
+function strPos3(S: String; var Ch: TStrPosChar): AUInt32;
 var
-  I: UInt32;
-  L: UInt32;
+  I: AUInt32;
+  L: AUInt32;
 begin
   Result := 0; Ch := 0;
   L := strLength(S);
@@ -615,8 +617,8 @@ function urlParamDecode(const InParams: TUrlParams; var Params: TURLParams2): AE
 var
   SS: String;
   ST: String;
-  I: Int32;
-  K: Int32;
+  I: AInt32;
+  K: AInt32;
 begin
   Result := 0;
   SetLength(Params, 0);
@@ -643,7 +645,7 @@ function urlParamByName(InParams: TUrlParams; Name: string): string;
 var
   SS: String;
   ST: String;
-  K: Int32;
+  K: AInt32;
 begin
   Result := '';
   SS := InParams;
@@ -671,7 +673,7 @@ begin
 end;
 
 {$IFNDEF VER170}
-function _strLen(const Str: PChar): UInt32; assembler;
+function _strLen(const Str: PChar): AUInt32; assembler;
 asm
   MOV     EDX,EDI
   MOV     EDI,EAX
@@ -684,12 +686,12 @@ asm
 end;
 {$ENDIF}
 
-function cUInt32ToInt32(Value: UInt32): Int32;
+function cUInt32ToInt32(Value: AUInt32): AInt32;
 begin
-  Result := Int32(Value);
+  Result := AInt32(Value);
 end;
 
-function MinInt32(Value1, Value2: Int32): Int32;
+function MinInt32(Value1, Value2: AInt32): AInt32;
 begin
   if Value1 > Value2 then
     Result := Value2
@@ -705,60 +707,60 @@ begin
     Result := False;
 end;
 
-function _StrToFloat32(const S: String; var Value: Float32): UInt32;
+function _StrToFloat32(const S: String; var Value: AFloat32): AUInt32;
 begin
   Val(S, Value, Result);
 end;
 
-function _StrToFloat64(const S: String; var Value: Float64): UInt32;
+function _StrToFloat64(const S: String; var Value: AFloat64): AUInt32;
 begin
   Val(S, Value, Result);
 end;
 
-function _StrToInt08(const S: String; var Value: AInt08): UInt32;
+function _StrToInt08(const S: String; var Value: AInt08): AUInt32;
 begin
   Val(S, Value, Result);
 end;
 
-function _StrToInt16(const S: String; var Value: Int16): UInt32;
+function _StrToInt16(const S: String; var Value: AInt16): AUInt32;
 begin
   Val(S, Value, Result);
 end;
 
-function _StrToInt32(const S: String; var Value: Int32): UInt32;
+function _StrToInt32(const S: String; var Value: AInt32): AUInt32;
 begin
   Val(S, Value, Result);
 end;
 
-function _StrToInt64(const S: String; var Value: Int64): UInt32;
+function _StrToInt64(const S: String; var Value: AInt64): AUInt32;
 begin
   Val(S, Value, Result);
 end;
 
-function _StrToUInt08(const S: String; var Value: AUInt08): UInt32;
+function _StrToUInt08(const S: String; var Value: AUInt08): AUInt32;
 begin
   Val(S, Value, Result);
 end;
 
-function _StrToUInt16(const S: String; var Value: UInt16): UInt32;
+function _StrToUInt16(const S: String; var Value: AUInt16): AUInt32;
 begin
   Val(S, Value, Result);
 end;
 
-function _StrToUInt32(const S: String; var Value: UInt32): UInt32;
+function _StrToUInt32(const S: String; var Value: AUInt32): AUInt32;
 begin
   Val(S, Value, Result);
 end;
 
-function _StrToUInt64(const S: String; var Value: UInt64): UInt32;
+function _StrToUInt64(const S: String; var Value: AUInt64): AUInt32;
 begin
   Val(S, Value, Result);
 end;
 
-function _StrDeleteSpace(var S: APascalString; Options: TDeleteSpaceOptionSet): AError;
+function _StrDeleteSpace(var S: String; Options: TDeleteSpaceOptionSet): AError;
 var
   B: Boolean;
-  I: UInt32;
+  I: AUInt32;
 begin
   repeat
     B := False;
@@ -806,18 +808,18 @@ begin
   Str := Concat(Str, S2);
 end;
 
-function strCopy(SIn: String; Index, Count: Int32): String;
+function strCopy(SIn: String; Index, Count: AInt32): String;
 begin
   if Count <= 0 then Result := '' else Result := Copy(SIn, Index, Count);
 end;
 
-function strDelete(var St: String; Index, Count: UInt32): AError;
+function strDelete(var St: String; Index, Count: AUInt32): AError;
 begin
   Delete(St, Index, Count);
   Result := 0;
 end;
 
-function StrDeleteSpace(const SIn: WideString; Options: TDeleteSpaceOptionsSet): APascalString;
+function StrDeleteSpace(const SIn: WideString; Options: TDeleteSpaceOptionsSet): String;
 begin
   Result := ''; if (strLength(SIn) = 0) then Exit;
   Result := SIn;

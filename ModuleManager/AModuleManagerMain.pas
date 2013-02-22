@@ -2,7 +2,7 @@
 @Abstract AModuleManager main functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.11.2012
-@LastMod 20.02.2013
+@LastMod 22.02.2013
 }
 unit AModuleManagerMain;
 
@@ -24,6 +24,8 @@ uses
   AUiMenus,
   AUiWindows,
   AUiWorkbenchMain;
+
+// --- AModuleManager ---
 
 function AModuleManager_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -119,6 +121,7 @@ begin
   miHelp := AUiMainWindow_AddMenuItemP('', 'Help', '?', nil, 0, 10000);
   AUiMenu_AddItem2P(miHelp, 'Modules', 'Modules'{SModules}, DoMenuModuleClick, 0, 10);
 
+  (*
   // --- Init recomended modules ---
 
   //if AUiWorkbench_IsBoot then
@@ -129,6 +132,7 @@ begin
       FModuleManagerControl := ModuleManagerControl_New(FPage);
     end;
   end;
+  *)
 
   FInitialized := True;
   Result := 0;

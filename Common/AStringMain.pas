@@ -2,7 +2,7 @@
 @Abstract AStrings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.05.2011
-@LastMod 18.02.2013
+@LastMod 22.02.2013
 }
 unit AStringMain;
 
@@ -113,11 +113,14 @@ end;
 function AString_Clear(var S: AString_Type): AError;
 begin
   try
-    S.Str := '';
+    S.Str := nil;
     S.Len := 0;
+    S.AllocSize := 0;
+    S.Code := 1;
+    Result := 0;
   except
+    Result := -1;
   end;
-  Result := 0;
 end;
 
 function AString_Copy(var S: AString_Type; const Value: AString_Type): ASize;

@@ -2,7 +2,7 @@
 @Abstract ASystem
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.09.2011
-@LastMod 01.02.2013
+@LastMod 22.02.2013
 }
 unit ASystemMain;
 
@@ -66,7 +66,7 @@ function ASystem_GetDescription(out Value: AString_Type): AError; {$ifdef AStdCa
 
 function ASystem_GetDescriptionP(): APascalString;
 
-function ASystem_GetDirectoryPath(out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function ASystem_GetDirectoryPath(out Value: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_GetDirectoryPathP(): APascalString;
 
@@ -86,7 +86,7 @@ function ASystem_GetProductVersionStr(out Value: AString_Type): AError; {$ifdef 
 
 function ASystem_GetProductVersionStrP(): APascalString;
 
-function ASystem_GetProgramName(out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function ASystem_GetProgramName(out Value: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_GetProgramNameP(): APascalString;
 
@@ -104,9 +104,9 @@ function ASystem_GetUrlP(): APascalString;
 
 function ASystem_Init(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function ASystem_ParamStr(Index: AInteger; out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function ASystem_ParamStr(Index: AInt; out Value: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function ASystem_ParamStrP(Index: AInteger): APascalString;
+function ASystem_ParamStrP(Index: AInt): APascalString;
 
 function ASystem_Prepare(const Title, ProgramName: AString_Type; ProgramVersion: AVersion;
     const ProductName: AString_Type; ProductVersion: AVersion;
@@ -132,9 +132,9 @@ function ASystem_SetOnShowErrorA(Value: AShowErrorA_Proc): AError; {$ifdef AStdC
 
 function ASystem_SetOnShowMessageA(Value: AShowMessageA_Proc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function ASystem_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+function ASystem_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function ASystem_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger;
+function ASystem_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInt;
 
 function ASystem_ShowError(const UserMessage, ExceptMessage: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -242,7 +242,7 @@ begin
   Result := FDescription;
 end;
 
-function ASystem_GetDirectoryPath(out Value: AString_Type): AInteger;
+function ASystem_GetDirectoryPath(out Value: AString_Type): AInt;
 begin
   Result := AString_AssignP(Value, FExePath);
 end;
@@ -292,7 +292,7 @@ begin
   Result := FProductVersionStr;
 end;
 
-function ASystem_GetProgramName(out Value: AString_Type): AInteger;
+function ASystem_GetProgramName(out Value: AString_Type): AInt;
 begin
   Result := AString_AssignP(Value, FProgramName);
 end;
@@ -340,7 +340,7 @@ begin
   Result := 0;
 end;
 
-function ASystem_ParamStr(Index: AInteger; out Value: AString_Type): AInteger;
+function ASystem_ParamStr(Index: AInt; out Value: AString_Type): AInt;
 var
   Res: string;
 begin
@@ -352,7 +352,7 @@ begin
   end;
 end;
 
-function ASystem_ParamStrP(Index: AInteger): APascalString; 
+function ASystem_ParamStrP(Index: AInt): APascalString; 
 begin
   try
     Result := System.ParamStr(Index);
@@ -473,7 +473,7 @@ begin
   Result := 0;
 end;
 
-function ASystem_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger;
+function ASystem_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInt;
 begin
   try
     Result := ASystem_ShellExecuteP(
@@ -486,7 +486,7 @@ begin
   end;
 end;
 
-function ASystem_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInteger;
+function ASystem_ShellExecuteP(const Operation, FileName, Parameters, Directory: APascalString): AInt;
 begin
   Result := ShellExecuteA(0,
       PAnsiChar(AnsiString(Operation)),

@@ -2,7 +2,7 @@
 @Abstract AData base consts and types
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.08.2011
-@LastMod 27.12.2012
+@LastMod 25.02.2013
 }
 unit ADataBase;
 
@@ -16,21 +16,12 @@ const
   AData_Uid = $08101301;
 
 type
-  ADataConnection = type Integer; // IADatabase
-
-type
-  ADataStructure = type Integer; // IADatabaseStructure
-
-type
-  // Описания таблицы
-  ATableStructure = type Integer; // IATableStructure
-
-type
-  ADataDriver = type Integer; // ^ADataDriverRec
-
-type
-  ADataModel = type AInt; // ADataModel_Type
-  ADataSet = ADataModel; // ^TDataSet
+  ADataConnection = type AInt;
+  ADataDriver = type AInt;
+  ADataModel = type AInt;
+  ADataSet = ADataModel;
+  ADataStructure = type AInt;
+  ATableStructure = type AInt;
 
 implementation
 

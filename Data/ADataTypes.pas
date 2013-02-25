@@ -2,7 +2,7 @@
 @Abstract Модуль работы с базами и структурами данных
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2008
-@LastMod 30.01.2013
+@LastMod 25.02.2013
 }
 unit ADataTypes;
 
@@ -68,149 +68,36 @@ type // Тип доступа внешних пользователей
 
 type
   // описание поля
-  {PAFieldStructure = type Integer;
-  TAFieldStructureFuncs = interface
-    // значение по умолчанию
-    function Field_GetFieldDefault: AString;
-    // наименование поля
-    function Field_GetFieldName: AString;
-    // тип поля
-    function Field_GetFieldType: TAFieldType;
-    // размер поля
-    function Field_GetFieldSize: AInteger;
-    // не может содержать пустых значений
-    function Field_GetFieldNotNull: ABoolean;
-    // наименование поля по русский
-    function Field_GetDescription: AString;
-    procedure Field_SetFieldDefault(const Value: AString);
-  end;}
-  AFieldStructure = type Integer; // IAFieldStructure;
+  AFieldStructure = type AInt; // IAFieldStructure;
 
   // Описание индекса
-  AIndexStructure = type Integer; // IAIndexStructure
-
-  {TAIndexStructureFuncs = interface
-    // Список полей
-    function GetIndexField: WideString;
-    // Тип индекса
-    function GetIndexType: TAIndexType;
-    // Имя индекса
-    function GetName: WideString;
-  end;}
-
-  // описание связи таблиц
-  {IAJoinStructure = interface
-    // тип объединения
-    property JoinType: TJoinType;
-    // внешняя таблица
-    property JoinTable: string;
-    // поля для связи
-    property JoinFieldIn: string;
-    // поля во внешней таблице для связи
-    property JoinFieldOut: string;
-    // оператор связи
-    property JoinOperator: string;
-  end;}
-
-  // описания представлений
-  {IAViewStructure = interface
-    function Get_Access: TATableAccess; safecall;
-    function Get_Description: WideString; safecall;
-    function Get_FieldByIndex(Index: Integer): IAFieldStructure; safecall;
-    function Get_FieldCount: Integer; safecall;
-    function Get_Name: WideString; safecall;
-
-    // имя представления
-    property Name: WideString read Get_Name;
-    // наименование представления по русский
-    property Description: WideString read Get_Description;
-    // Доступ для других пользователей
-    property Access: TATableAccess read Get_Access;
-    // Количество столбцов
-    property FieldCount: Integer read Get_FieldCount;
-    //** описание полей
-    property FieldsByIndex[Index: Integer]: IAFieldStructure read Get_FieldByIndex;
-    //** Количество объединений
-    //ViewJoinsCount: word;
-    //** Список обьединений
-    //ViewJoins: PJoinArray;
-    //** строка для создания представления
-    //ViewSQLCreate: string;
-  end;}
+  AIndexStructure = type AInt; // IAIndexStructure
 
 type
-  TADatabaseVersion = Integer;
+  TADatabaseVersion = AInt;
 const
   DatabaseVersionMask = $FFFF0000;
-  DatabaseVersion10   = $01000000;
-  DatabaseVersion11   = $01010000; // v 1.1
-  DatabaseVersion12   = $01020000; // v 1.2
+  DatabaseVersion10 = $01000000;
+  DatabaseVersion11 = $01010000; // v 1.1
+  DatabaseVersion12 = $01020000; // v 1.2
 
+{
 type
   TADatabaseStructureProc = procedure(Struct: ADataStructure; DatabaseVersion: TADatabaseVersion); stdcall;
   TAGetStrProc = function: AWideString; stdcall;
-
-// --- Database ---
-
-type
-  ADataDriver_GetName_Proc = function(): AWideString; stdcall;
-
-type
-  ADataDriverRec = packed record
-    GetName: ADataDriver_GetName_Proc;
-    //Connect: function(const ConnectionString: AString): IADatabase;
-    NewDatabase: function: ADataConnection; stdcall;
-
-    Database_GetConnected: function: ABoolean; stdcall;
-    Database_GetConnectionString: function: AWideString; stdcall;
-    Database_SetConnectionString: procedure(const Value: AWideString); stdcall;
-    Database_SetReadOnly: procedure(DataSet: ADataSet; ReadOnly: ABoolean); stdcall;
-
-    Database_Close: procedure; stdcall;
-    Database_Connect: function: ABoolean; stdcall;
-    Database_CreateDatabase: function: ABoolean; stdcall;
-    Database_Disconnect: procedure; stdcall;
-    Database_ExecuteSql: function(const Sql: AWideString): ABoolean; stdcall;
-
-    DataSet_Change: procedure(DataSet: ADataSet; const SelectSql: AWideString);
-
-    Reserved12: AInteger;
-    Reserved13: AInteger;
-    Reserved14: AInteger;
-    Reserved15: AInteger;
-
-    Reserved16: AInteger;
-    Reserved17: AInteger;
-    Reserved18: AInteger;
-    Reserved19: AInteger;
-    Reserved20: AInteger;
-    Reserved21: AInteger;
-    Reserved22: AInteger;
-    Reserved23: AInteger;
-
-    Reserved24: AInteger;
-    Reserved25: AInteger;
-    Reserved26: AInteger;
-    Reserved27: AInteger;
-    Reserved28: AInteger;
-    Reserved29: AInteger;
-    Reserved31: AInteger;
-    Reserved30: AInteger;
-  end;
-
-type
-  PDataDriver = ^ADataDriverRec;
+}
 
 // --- Interfaces ----------------------------------------------------------------------------------
 
+{
 type // Описание поля
   IAFieldStructure = interface
-    function Get_FieldDefault: WideString;
-    function Get_FieldName: WideString;
-    function Get_FieldType: TAFieldType;
-    function Get_FieldSize: Integer;
-    function Get_FieldNotNull: WordBool;
-    function Get_Description: WideString;
+    function Get_FieldDefault(): WideString;
+    function Get_FieldName(): WideString;
+    function Get_FieldType(): TAFieldType;
+    function Get_FieldSize(): AInt;
+    function Get_FieldNotNull(): WordBool;
+    function Get_Description(): WideString;
     procedure Set_FieldDefault(const Value: WideString);
 
     // наименование поля
@@ -218,17 +105,19 @@ type // Описание поля
     // тип поля
     property FieldType: TAFieldType read Get_FieldType;
     // размер поля
-    property FieldSize: Integer read Get_FieldSize;
+    property FieldSize: AInt read Get_FieldSize;
     // не может содержать пустых значений
     property FieldNotNull: WordBool read Get_FieldNotNull;
     // наименование поля по русский
     property Description: WideString read Get_Description;
     // Вычисляемое виртуальное поле
-    //IsCalculated: Boolean;
+    //IsCalculated: Bool;
     // значение по умолчанию
     property FieldDefault: WideString read Get_FieldDefault write Set_FieldDefault;
   end;
+}
 
+{
 type // Описание индекса
   IAIndexStructure = interface
     function Get_IndexField: WideString;
@@ -242,22 +131,24 @@ type // Описание индекса
     // Тип индекса
     property IndexType: TAIndexType read Get_IndexType;
   end;
+}
 
+{
 type // Описания таблицы
   IATableStructure = interface
-    function Get_Description: WideString;
-    function Get_FieldByIndex(Index: Integer): IAFieldStructure;
-    function Get_FieldCount: Integer;
-    function Get_IndexByIndex(Index: Integer): IAIndexStructure;
-    function Get_IndexCount: Integer;
-    function Get_Access: TATableAccess;
-    function Get_Name: WideString;
+    function Get_Description(): WideString;
+    function Get_FieldByIndex(Index: AInt): IAFieldStructure;
+    function Get_FieldCount(): Integer;
+    function Get_IndexByIndex(Index: AInt): IAIndexStructure;
+    function Get_IndexCount(): AInt;
+    function Get_Access(): TATableAccess;
+    function Get_Name(): WideString;
     procedure Set_Description(const Value: WideString);
 
     function AddField(const FieldName: WideString; FieldType: TAFieldType): IAFieldStructure; overload;
-    function AddField(const FieldName: WideString; FieldType: TAFieldType; FieldSize: Integer; NotNull: Boolean; const Description: WideString): IAFieldStructure; overload;
-    function AddField(const FieldName: WideString; FieldType: TAFieldType; FieldSize: Integer; NotNull: Boolean; const Default, Description: WideString): IAFieldStructure; overload;
-    function AddFieldItem(Field: IAFieldStructure): Integer;
+    function AddField(const FieldName: WideString; FieldType: TAFieldType; FieldSize: AInt; NotNull: ABool; const Description: WideString): IAFieldStructure; overload;
+    function AddField(const FieldName: WideString; FieldType: TAFieldType; FieldSize: AInt; NotNull: ABool; const Default, Description: WideString): IAFieldStructure; overload;
+    function AddFieldItem(Field: IAFieldStructure): AInt;
     function AddIndex(const IndexName: WideString; IndexType: TAIndexType; const IndexFields: WideString): IAIndexStructure;
 
     // Наименование таблицы
@@ -267,95 +158,62 @@ type // Описания таблицы
     // Доступ для других пользователей
     property Access: TATableAccess read Get_Access;
     // Количество столбцов
-    property FieldCount: Integer read Get_FieldCount;
+    property FieldCount: AInt read Get_FieldCount;
     // Поля
-    property FieldByIndex[Index: Integer]: IAFieldStructure read Get_FieldByIndex;
+    property FieldByIndex[Index: AInt]: IAFieldStructure read Get_FieldByIndex;
     // Количество индексов в таблице
-    property IndexCount: Integer read Get_IndexCount;
+    property IndexCount: AInt read Get_IndexCount;
     // Список индексов
-    property IndexByIndex[Index: Integer]: IAIndexStructure read Get_IndexByIndex;
+    property IndexByIndex[Index: AInt]: IAIndexStructure read Get_IndexByIndex;
     // Количество объединений
     //TableJoinsCount: Word;
     // Список обьединений
     //TableJoins: PJoinArray;
   end;
-
-type
-  IADatabaseStructure = interface
-    function Get_TableByIndex(Index: Integer): IATableStructure;
-    function Get_TableByName(const Name: WideString): IATableStructure;
-    function Get_TableCount: Integer;
-
-    function AddTable(const TableName: WideString): IATableStructure;
-    function AddTableItem(Table: IATableStructure): Integer;
-    procedure Clear;
-
-    property TableByIndex[Index: Integer]: IATableStructure read Get_TableByIndex;
-    property TableByName[const Name: WideString]: IATableStructure read Get_TableByName;
-    property TableCount: Integer read Get_TableCount;
-  end;
-
-// ---
-
-type
-  IADatabase = interface
-    function GetConnected: Boolean;
-    function GetConnectionString: AWideString;
-    //function Get_DatabaseName: AString;
-    procedure SetConnectionString(const Value: AWideString);
-    procedure SetReadOnly(DataSet: ADataSet; ReadOnly: Boolean);
-
-    procedure Close;
-    function Connect: Boolean;
-    function CreateDatabase: Boolean;
-    procedure Disconnect;
-    function ExecuteSql(const Sql: AWideString): Boolean;
-
-    procedure ChangeDataSet(DataSet: ADataSet; const SelectSql: AWideString);
-    function ChechDatabaseStructure(Struct: IADatabaseStructure; Logger: TAddToLogWSProc): Boolean;
-    function CheckTableStructure(TableStruct: IATableStructure; Logger: TAddToLogWSProc): Boolean;
-    function NewDataSet(const SelectSqlText: AWideString; ReadOnly: ABoolean): ADataSet;
-    function NewDataSetA(const SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText, RefreshSqlText: AWideString): ADataSet;
-  end;
+}
 
 // --- Procs ---
 
+{
 type
-  ADatabase_Close = procedure(Database: ADataConnection); stdcall;
-  ADatabase_Connect = function(Database: ADataConnection): ABoolean; stdcall;
-  ADatabase_CreateDatabase = function(Database: ADataConnection): ABoolean; stdcall;
-  ADatabase_Disconnect = procedure(Database: ADataConnection); stdcall;
-  ADatabase_ExecuteSql = function(Database: ADataConnection; const Sql: AWideString): ABoolean; stdcall;
-  ADatabase_ChechDatabaseStructure = function(Database: ADataConnection; Struct: ADataStructure; Logger: TAddToLogWSProc): ABoolean; stdcall;
-  ADatabase_CheckTableStructure = function(Database: ADataConnection; TableStruct: ATableStructure; Logger: TAddToLogWSProc): ABoolean; stdcall;
-  ADatabase_GetConnected = function(Database: ADataConnection): ABoolean; stdcall;
-  ADatabase_GetConnectionString = function(Database: ADataConnection): AWideString; stdcall;
-  ADatabase_New = function(const DriverName: AWideString): ADataConnection; stdcall;
-  ADatabase_NewDataSet = function(Database: ADataConnection; const SelectSqlText: AWideString; ReadOnly: ABoolean): ADataSet; stdcall;
-  ADatabase_NewDataSetA = function(Database: ADataConnection; const SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText, RefreshSqlText: AWideString): ADataSet; stdcall;
-  ADatabase_SetConnectionString = procedure(Database: ADataConnection; const Value: AWideString); stdcall;
+  ADatabase_Close_Proc = function(Database: ADataConnection): AError; stdcall;
+  ADatabase_Connect_Proc = function(Database: ADataConnection): ABool; stdcall;
+  ADatabase_CreateDatabase_Proc = function(Database: ADataConnection): ABool; stdcall;
+  ADatabase_Disconnect_Proc = function(Database: ADataConnection): AError; stdcall;
+  //ADatabase_ExecuteSql = function(Database: ADataConnection; const Sql: AWideString): ABool; stdcall;
+  ADatabase_ChechDatabaseStructure_Proc = function(Database: ADataConnection; Struct: ADataStructure;
+      Logger: AAddToLogA_Proc): ABool; stdcall;
+  ADatabase_CheckTableStructure = function(Database: ADataConnection; TableStruct: ATableStructure;
+      Logger: AAddToLogA_Proc): ABool; stdcall;
+  ADatabase_GetConnected = function(Database: ADataConnection): ABool; stdcall;
+  //ADatabase_GetConnectionString = function(Database: ADataConnection): AWideString; stdcall;
+  //ADatabase_New = function(const DriverName: AWideString): ADataConnection; stdcall;
+  //ADatabase_NewDataSet = function(Database: ADataConnection; const SelectSqlText: AWideString; ReadOnly: ABool): ADataSet; stdcall;
+  //ADatabase_NewDataSetA = function(Database: ADataConnection; const SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText, RefreshSqlText: AWideString): ADataSet; stdcall;
+  //ADatabase_SetConnectionString = procedure(Database: ADataConnection; const Value: AWideString); stdcall;
 type
-  ADatabaseStructure_New = function: ADataStructure; stdcall;
+  ADatabaseStructure_New_Proc = function(): ADataStructure; stdcall;
 type
-  ADriver_Register = function(DataDriver: ADataDriver): AInteger; stdcall;
+  ADriver_Register_Proc = function(DataDriver: ADataDriver): AInt; stdcall;
+type
+  // Значение по умолчанию
+  AFieldStructure_GetFieldDefault = function(): AWideString;
+  // Наименование поля
+  AFieldStructure_GetFieldName = function(): AWideString;
+  // Тип поля
+  AFieldStructure_GetFieldType = function(): TAFieldType;
+  // Размер поля
+  AFieldStructure_GetFieldSize = function(): AInt;
+  // Не может содержать пустых значений
+  AFieldStructure_GetFieldNotNull = function(): ABool;
+  // Наименование поля по русский
+  AFieldStructure_GetDescription = function(): AWideString;
+  AFieldStructure_SetFieldDefault = procedure(const Value: AWideString);
+}
 
 // --- Testing functions ---------------------------------------------------------------------------
 
-type
-  // Значение по умолчанию
-  AFieldStructure_GetFieldDefault = function: AWideString;
-  // Наименование поля
-  AFieldStructure_GetFieldName = function: AWideString;
-  // Тип поля
-  AFieldStructure_GetFieldType = function: TAFieldType;
-  // Размер поля
-  AFieldStructure_GetFieldSize = function: AInteger;
-  // Не может содержать пустых значений
-  AFieldStructure_GetFieldNotNull = function: ABoolean;
-  // Наименование поля по русский
-  AFieldStructure_GetDescription = function: AWideString;
-  AFieldStructure_SetFieldDefault = procedure(const Value: AWideString);
-
+{
 var
   FieldStructure_GetFieldDefault: AFieldStructure_GetFieldDefault;
   FieldStructure_GetFieldName: AFieldStructure_GetFieldName;
@@ -364,6 +222,10 @@ var
   FieldStructure_GetFieldNotNull: AFieldStructure_GetFieldNotNull;
   FieldStructure_GetDescription: AFieldStructure_GetDescription;
   FieldStructure_SetFieldDefault: AFieldStructure_SetFieldDefault;
+}
+
+type
+  ADataDriverGetProc_Proc = function(ProcName: AStr): Pointer; stdcall;
 
 implementation
 

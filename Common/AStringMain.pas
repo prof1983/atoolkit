@@ -2,7 +2,7 @@
 @Abstract AStrings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.05.2011
-@LastMod 22.02.2013
+@LastMod 25.02.2013
 }
 unit AStringMain;
 
@@ -35,6 +35,12 @@ function AString_CopyWS(var S: AString_Type; const Value: AWideString): ASize;
 function AString_GetChar(const S: AString_Type; Index: AInt): AChar; {$ifdef AStdCall}stdcall;{$endif}
 
 function AString_GetLength(const S: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
+
+function AString_Set(var S: AString_Type; const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AString_SetA(var S: AString_Type; Value: AStr): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AString_SetP(var S: AString_Type; const Value: APascalString): AError;
 
 function AString_ToPascalString(const S: AString_Type): APascalString;
 
@@ -162,6 +168,24 @@ begin
   except
     Result := 0;
   end;
+end;
+
+function AString_Set(var S: AString_Type; const Value: AString_Type): AError;
+begin
+  FillChar(S, SizeOf(AString_Type), 0);
+  Result := AString_Assign(S, Value);
+end;
+
+function AString_SetA(var S: AString_Type; Value: AStr): AError;
+begin
+  FillChar(S, SizeOf(AString_Type), 0);
+  Result := AString_AssignA(S, Value);
+end;
+
+function AString_SetP(var S: AString_Type; const Value: APascalString): AError;
+begin
+  FillChar(S, SizeOf(AString_Type), 0);
+  Result := AString_AssignP(S, Value);
 end;
 
 function AString_ToPascalString(const S: AString_Type): APascalString;

@@ -568,6 +568,7 @@ begin
     if (I < 0) then
     begin
       Result := -3;
+      Exit;
     end;
     Result := _Connection_SetConnectionString(I, Value);
   except

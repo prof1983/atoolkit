@@ -2,7 +2,7 @@
 @Abstract ACore
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.10.2009
-@LastMod 30.01.2013
+@LastMod 25.02.2013
 }
 unit ACore;
 
@@ -15,30 +15,32 @@ uses
 
 {$ifdef Static}
 
-function Core_Boot(): Integer; stdcall;
-function Core_Init(): Integer; stdcall;
-function Core_Fin(): Integer; stdcall;
-function Core_Run(): Integer; stdcall;
+function ACore_Boot(): AError; stdcall;
+function ACore_Fin(): AError; stdcall;
+function ACore_Init(): AError; stdcall;
+function ACore_Run(): AError; stdcall;
 
 {$else}
 
 type
-  A_Core_Boot_Proc = AProc;
-  A_Core_Fin_Proc = AProc;
-  A_Core_Init_Proc = AProc;
-  A_Core_Run_Proc = AProc;
+  ACore_Boot_Proc = AProc;
+  ACore_Fin_Proc = AProc;
+  ACore_Init_Proc = AProc;
+  ACore_Run_Proc = AProc;
 
 var
-  Core_Boot: A_Core_Boot_Proc;
-  Core_Fin: A_Core_Fin_Proc;
-  Core_Init: A_Core_Init_Proc;
-  Core_Run: A_Core_Run_Proc;
+  ACore_Boot: ACore_Boot_Proc;
+  ACore_Fin: ACore_Fin_Proc;
+  ACore_Init: ACore_Init_Proc;
+  ACore_Run: ACore_Run_Proc;
 
-procedure CoreLib_Close;
+// --- CoreLib ---
 
-function CoreLib_GetLib(): ALibrary;
+function ACoreLib_Close(): AError;
 
-function CoreLib_Open(const CoreLibName: string): AInteger;
+function ACoreLib_GetLib(): ALibrary;
+
+function ACoreLib_Open(const CoreLibName: APascalString): AError;
 
 {$endif Static}
 
@@ -49,10 +51,10 @@ implementation
 const
   ACoreLibName = 'ACore32.dll';
 
-function Core_Boot; external ACoreLibName;
-function Core_Fin; external ACoreLibName;
-function Core_Init; external ACoreLibName;
-function Core_Run; external ACoreLibName;
+function ACore_Boot(): AError; external ACoreLibName;
+function ACore_Fin(): AError; external ACoreLibName;
+function ACore_Init(): AError; external ACoreLibName;
+function ACore_Run(): AError; external ACoreLibName;
 
 {$else} // Static
 
@@ -64,21 +66,22 @@ var
 
 { CoreLib }
 
-procedure CoreLib_Close();
+function ACoreLib_Close(): AError;
 begin
   if (FLib <> 0) then
   begin
     ALibrary_Close(FLib);
     FLib := 0;
   end;
+  Result := 0;
 end;
 
-function CoreLib_GetLib(): ALibrary;
+function ACoreLib_GetLib(): ALibrary;
 begin
   Result := FLib;
 end;
 
-function CoreLib_Open(const CoreLibName: string): Integer;
+function ACoreLib_Open(const CoreLibName: APascalString): AError;
 begin
   if (CoreLibName = '') then
     FLib := ALibrary_OpenP(ACoreLibNameDef, 0)
@@ -90,10 +93,10 @@ begin
     Exit;
   end;
   Result := -2;
-  if not(ALibrary_GetSymbolP(FLib, 'Core_Boot', Addr(Core_Boot))) then Exit;
-  if not(ALibrary_GetSymbolP(FLib, 'Core_Fin', Addr(Core_Fin))) then Exit;
-  if not(ALibrary_GetSymbolP(FLib, 'Core_Init', Addr(Core_Init))) then Exit;
-  if not(ALibrary_GetSymbolP(FLib, 'Core_Run', Addr(Core_Run))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'ACore_Boot', Addr(ACore_Boot))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'ACore_Fin', Addr(ACore_Fin))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'ACore_Init', Addr(ACore_Init))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'ACore_Run', Addr(ACore_Run))) then Exit;
   Result := 0;
 end;
 

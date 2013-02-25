@@ -2,7 +2,7 @@
 @Abstract AUi Splash
 @Author Prof1983 <prof1983@ya.ru>
 @Created 08.12.2009
-@LastMod 31.01.2013
+@LastMod 25.02.2013
 }
 unit AUiSplashMain;
 
@@ -71,7 +71,7 @@ begin
   Result := False;
   I := 1;
   repeat
-    S := ASystem_ParamStrP(I);
+    S := ASystem_GetParamStrP(I);
     if (AString_ToUpperP(S) = '-NOSPLASH') then
     begin
       Result := True;

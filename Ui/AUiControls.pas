@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 19.02.2013
+@LastMod 26.02.2013
 }
 unit AUiControls;
 
@@ -58,9 +58,9 @@ function AUiControl_GetVisible(Control: AControl): ABool; {$ifdef AStdCall}stdca
 
 function AUiControl_GetWidth(Control: AControl): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetAlign(Control: AControl; Align: TUiAlign): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiControl_SetAlign(Control: AControl; Align: AUiAlign): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiControl_SetAnchors(Control: AControl; Anchors: TUiAnchors): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiControl_SetAnchors(Control: AControl; Anchors: AUiAnchors): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetBevel(Control: AControl; Value: AUiBevel; Width: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -394,7 +394,7 @@ begin
   end;
 end;
 
-function AUiControl_SetAlign(Control: AControl; Align: TUiAlign): AError;
+function AUiControl_SetAlign(Control: AControl; Align: AUiAlign): AError;
 begin
   try
     if (TObject(Control) is TControl) then
@@ -405,7 +405,7 @@ begin
   end;
 end;
 
-function AUiControl_SetAnchors(Control: AControl; Anchors: TUiAnchors): AError;
+function AUiControl_SetAnchors(Control: AControl; Anchors: AUiAnchors): AError;
 var
   A: TAnchors;
 begin

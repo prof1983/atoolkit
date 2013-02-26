@@ -2,11 +2,11 @@
 @Abstract AUi button functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.06.2011
-@LastMod 14.11.2011
+@LastMod 26.02.2013
 }
 unit AUiButtons;
 
-{$define AStdCall}
+{define AStdCall}
 
 interface
 
@@ -18,9 +18,9 @@ uses
 
 function AUiButton_New(Parent: AControl): AButton; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiButton_LoadGlyphP(Button: AButton; const FileName: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiButton_LoadGlyphP(Button: AButton; const FileName: APascalString): AError;
 
-function AUiButton_SetKind(Button: AButton; Kind: TAUiButtonKind): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiButton_SetKind(Button: AButton; Kind: AUiButtonKind): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
@@ -64,7 +64,7 @@ begin
   end;
 end;
 
-function AUiButton_SetKind(Button: AButton; Kind: TAUiButtonKind): AError;
+function AUiButton_SetKind(Button: AButton; Kind: AUiButtonKind): AError;
 begin
   try
     TBitBtn(Button).Kind := TBitBtnKind(Kind);

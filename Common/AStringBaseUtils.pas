@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.11.2012
-@LastMod 05.02.2013
+@LastMod 26.02.2013
 }
 unit AStringBaseUtils;
 
@@ -21,6 +21,8 @@ function AStr_AssignP(S: AStr; const Source: APascalString; MaxLen: AInt): AErro
 function AStr_Cmp(S, S2: AStr): AInt;
 
 function AStr_GetLength(S: AStr): AInt; {$ifdef DELPHI_XE_UP}inline;{$endif}
+
+function AStr_ToP(S: AStr): APascalString;
 
 function AStr_ToPascalString(S: AStr): APascalString;
 
@@ -148,6 +150,11 @@ end;
 function AStr_GetLength(S: AStr): AInt;
 begin
   Result := StrLen(S);
+end;
+
+function AStr_ToP(S: AStr): APascalString;
+begin
+  Result := APascalString(AnsiString(S));
 end;
 
 function AStr_ToPascalString(S: AStr): APascalString;

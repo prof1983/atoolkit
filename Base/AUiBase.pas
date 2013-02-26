@@ -2,7 +2,7 @@
 @Abstract User Interface base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 19.02.2013
+@LastMod 26.02.2013
 }
 unit AUiBase;
 
@@ -43,42 +43,83 @@ const
   ABoxType_GroupBox = 3;
 
 type
-  AUIWindowFlags = type AInteger;
+  AMouseButton = type AInt;
 const
-  AUIWindowCreateMenu = $00010000;
-  AUIWindowCreateToolBar = $00020000;
-  AUIWindowCreateButtonsPanel = $00040000;
-type
-  AUIWindowButtons = type AMessageBoxFlags;
+  AMouseButton_Left = 0;
+  AMouseButton_Right = 1;
+  AMouseButton_Middle = 2;
 
 type
-  TUIAlign = (uiAlignNone, uiAlignTop, uiAlignBottom, uiAlignLeft, uiAlignRight, uiAlignClient, uiAlignCustom);
+  AShiftState = type AInt;
 const
-  UI_Align_None = 0;
-  UI_Align_Top = 1;
-  UI_Align_Bottom = 2;
-  UI_Align_Left = 3;
-  UI_Align_Right = 4;
-  UI_Align_Client = 5;
-  UI_Align_Custom = 6;
+  AShiftState_Shift = $01;
+  AShiftState_Alt = $02;
+  AShiftState_Ctrl = $04;
+  AShiftState_Left = $08;
+  AShiftState_Right = $10;
+  AShiftState_Middle = $20;
+  AShiftState_Double = $40;
+
+type
+  AUiWindowFlags = type AInt;
+const
+  AUiWindowCreateMenu = $00010000;
+  AUiWindowCreateToolBar = $00020000;
+  AUiWindowCreateButtonsPanel = $00040000;
+type
+  AUiWindowButtons = type AMessageBoxFlags;
+
+type
+  AUiAlign = type AInt;
+  //TUiAlign = AUiAlign;
+const
+  AUiAlign_None = 0;
+  AUiAlign_Top = 1;
+  AUiAlign_Bottom = 2;
+  AUiAlign_Left = 3;
+  AUiAlign_Right = 4;
+  AUiAlign_Client = 5;
+  AUiAlign_Custom = 6;
+const
+  uiAlignNone = AUiAlign_None;
+  uiAlignTop = AUiAlign_Top;
+  uiAlignBottom = AUiAlign_Bottom;
+  uiAlignLeft = AUiAlign_Left;
+  uiAlignRight = AUiAlign_Right;
+  uiAlignClient = AUiAlign_Client;
+  uiAlignCustom = AUiAlign_Custom;
 
 type
   AUiAlignment = type AInt;
 const
-  uitaLeftJustify = $0000;
-  uitaRightJustify = $0001;
-  uitaCenter = $0002;
-  uitlTop = $0000;
-  uitlCenter = $0100;
-  uitlBottom = $0200;
+  AUiAlignment_LeftJustify = $0000;
+  AUiAlignment_RightJustify = $0001;
+  AUiAlignment_HCenter = $0002;
+  // --- TTextLayout ---
+  AUiAlignment_Top = $0000;
+  AUiAlignment_VCenter = $0100;
+  AUiAlignment_Bottom = $0200;
+const
+  uitaLeftJustify = AUiAlignment_LeftJustify;
+  uitaRightJustify = AUiAlignment_RightJustify;
+  uitaCenter = AUiAlignment_HCenter;
+  uitlTop = AUiAlignment_Top;
+  uitlCenter = AUiAlignment_VCenter;
+  uitlBottom = AUiAlignment_Bottom;
 
 type
-  TUiAnchors = AInt;
+  AUiAnchors = type AInt;
+  //TUiAnchors = AUiAnchors;
 const
-  uiakLeft = $01;
-  uiakTop = $02;
-  uiakRight = $04;
-  uiakBottom = $08;
+  AUiAnchors_Left = $01;
+  AUiAnchors_Top = $02;
+  AUiAnchors_Right = $04;
+  AUiAnchors_Bottom = $08;
+const
+  uiakLeft = AUiAnchors_Left;
+  uiakTop = AUiAnchors_Top;
+  uiakRight = AUiAnchors_Right;
+  uiakBottom = AUiAnchors_Bottom;
 
 type
   AUiBevel = type AInt;
@@ -93,27 +134,45 @@ const
   AUiBevel_OuterSpace = $0400;
 
 type
-  TAUIButtonKind = (
-    uibkCustom,
-    uibkOK,
-    uibkCancel,
-    uibkHelp,
-    uibkYes,
-    uibkNo,
-    uibkClose,
-    uibkAbort,
-    uibkRetry,
-    uibkIgnore,
-    uibkAll
-    );
+  AUiButtonKind = type AInt;
+  //TAUiButtonKind = AUiButtonKind;
+const
+  AUiButtonKind_Custom = 0;
+  AUiButtonKind_Ok = 1;
+  AUiButtonKind_Cancel = 2;
+  AUiButtonKind_Help = 3;
+  AUiButtonKind_Yes = 4;
+  AUiButtonKind_No = 5;
+  AUiButtonKind_Close = 6;
+  AUiButtonKind_Abort = 7;
+  AUiButtonKind_Retry = 8;
+  AUiButtonKind_Ignore = 9;
+  AUiButtonKind_All = 10;
+const
+  uibkCustom = AUiButtonKind_Custom;
+  uibkOk = AUiButtonKind_Ok;
+  uibkCancel = AUiButtonKind_Cancel;
+  uibkHelp = AUiButtonKind_Help;
+  uibkYes = AUiButtonKind_Yes;
+  uibkNo = AUiButtonKind_No;
+  uibkClose = AUiButtonKind_Close;
+  uibkAbort = AUiButtonKind_Abort;
+  uibkRetry = AUiButtonKind_Retry;
+  uibkIgnore = AUiButtonKind_Ignore;
+  uibkAll = AUiButtonKind_All;
 
 type
   AUiFontStyle = AInt;
 const
-  uifsBold = $0001;
-  uifsItalic = $0002;
-  uifsUnderline = $0004;
-  uifsStrikeOut = $0008;
+  AUiFontStyle_Bold = $0001;
+  AUiFontStyle_Italic = $0002;
+  AUiFontStyle_Underline = $0004;
+  AUiFontStyle_StrikeOut = $0008;
+const
+  uifsBold = AUiFontStyle_Bold;
+  uifsItalic = AUiFontStyle_Italic;
+  uifsUnderline = AUiFontStyle_Underline;
+  uifsStrikeOut = AUiFontStyle_StrikeOut;
 
 type
   AUiProgramState = AInteger;

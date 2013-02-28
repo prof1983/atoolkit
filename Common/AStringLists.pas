@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 01.10.2009
-@LastMod 20.02.2013
+@LastMod 28.02.2013
 }
 unit AStringLists;
 
@@ -30,6 +30,8 @@ function AStringList_Delete(StringList: AStringList; Index: AInt): AError; {$ifd
 function AStringList_GetCount(StringList: AStringList): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AStringList_GetStringP(StringList: AStringList; Index: AInt): APascalString;
+
+function AStringList_GetTextLength(StringList: AStringList): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AStringList_Free(StringList: AStringList): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -127,6 +129,20 @@ begin
     Result := TStringList(StringList).Strings[Index];
   except
     Result := '';
+  end;
+end;
+
+function AStringList_GetTextLength(StringList: AStringList): AInt;
+begin
+  if (StringList = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  try
+    Result := Length(TStringList(StringList).Text);
+  except
+    Result := -1;
   end;
 end;
 

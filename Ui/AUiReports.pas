@@ -2,7 +2,7 @@
 @Abstract AUiReports
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 30.01.2013
+@LastMod 28.02.2013
 }
 unit AUiReports;
 
@@ -40,6 +40,11 @@ function AUiReportWin_New2(ReportWinType: AInt; const Text: AString_Type): AWind
 function AUiReportWin_New2P(ReportWinType: AInt; const Text: APascalString): AWindow;
 
 function AUiReportWin_ShowReport(const Text: AString_Type; Font: AFont): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiReportWin_ShowReport2A(Text: AStr; Font: AFont; Width, Height: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiReportWin_ShowReport2P(const Text: APascalString; Font: AFont;
+    Width, Height: AInt): AError;
 
 function AUiReportWin_ShowReportP(const Text: APascalString; Font: AFont): AError;
 
@@ -143,7 +148,37 @@ begin
   Result := AUiReportWin_ShowReportP(AString_ToPascalString(Text), Font);
 end;
 
-function AUiReportWin_ShowReportP(const Text: APascalString; Font: AFont): AError;
+function AUiReportWin_ShowReport2A(Text: AStr; Font: AFont; Width, Height: AInt): AError;
+{$IFDEF USE_REPORTS}
+var
+  Form: TReportForm;
+{$ENDIF}
+begin
+  try
+    {$IFDEF USE_REPORTS}
+    Form := TReportForm.Create(nil);
+    try
+      Form.Editor.Clear();
+      Form.Editor.Lines.SetText(Text);
+      if (Font <> 0) then
+        Form.Editor.Font.Assign(TFont(Font));
+      if (Width > 0) then
+        Form.Width := Width;
+      if (Height > 0) then
+        Form.Height := Height;
+      Form.ShowModal();
+    finally
+      Form.Free();
+    end;
+    {$ENDIF}
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiReportWin_ShowReport2P(const Text: APascalString; Font: AFont;
+    Width, Height: AInt): AError;
 {$IFDEF USE_REPORTS}
 var
   Form: TReportForm;
@@ -157,6 +192,10 @@ begin
       Form.Editor.Text := Text;
       if (Font <> 0) then
         Form.Editor.Font.Assign(TFont(Font));
+      if (Width > 0) then
+        Form.Width := Width;
+      if (Height > 0) then
+        Form.Height := Height;
       Form.ShowModal();
     finally
       Form.Free();
@@ -166,6 +205,11 @@ begin
   except
     Result := -1;
   end;
+end;
+
+function AUiReportWin_ShowReportP(const Text: APascalString; Font: AFont): AError;
+begin
+  Result := AUiReportWin_ShowReport2P(Text, Font, 600, 400);
 end;
 
 end.

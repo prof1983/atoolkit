@@ -2,7 +2,7 @@
 @Abstract AUi Menus
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2011
-@LastMod 19.02.2013
+@LastMod 28.02.2013
 }
 unit AUiMenus;
 
@@ -59,6 +59,7 @@ function AUiMenu_FindItemByNameP(MenuItem: AMenuItem; const Name: APascalString)
 
 function AUiMenu_GetItems(Menu: AMenu): AMenuItem; {$ifdef AStdCall}stdcall;{$endif}
 
+{ Parent - AMenu or AMenuItem }
 function AUiMenu_GetSubMenuP(Parent: AMenuItem; const Name, Text: APascalString;
     ImageId, Weight: AInt): AMenuItem;
 
@@ -248,7 +249,7 @@ begin
       Exit;
     end;
 
-    Value := AUiMenu_FindItemByNameP(Parent, 'mi'+Name);
+    Value := AUiMenu_FindItemByNameP(Parent, Name);
 
     if (Value <> 0) then
     begin
@@ -330,7 +331,9 @@ begin
       Exit;
     end;
 
-    I := _FindByName(MenuItem, Name);
+    I := _FindByName(MenuItem, 'mi'+Name);
+    if (I < 0) then
+      I := _FindByName(MenuItem, Name);
     if (I >= 0) then
       Result := AMenuItem(TMenuItem(MenuItem).Items[I])
     else
@@ -362,7 +365,15 @@ function AUiMenu_GetSubMenuP(Parent: AMenuItem; const Name, Text: APascalString;
 var
   Index: Integer;
 begin
+  if (Parent = 0) then
+  begin
+    Result := 0;
+    Exit;
+  end;
   try
+    if (TObject(Parent) is TMainMenu) then
+      Parent := AMenuItem(TMainMenu(Parent).Items);
+
     if not(TObject(Parent) is TMenuItem) then
     begin
       {$ifdef UseToolMenu}
@@ -373,7 +384,9 @@ begin
       Exit;
     end;
 
-    Index := _FindByName(Parent, Name);
+    Index := _FindByName(Parent, 'mi'+Name);
+    if (Index < 0) then
+      Index := _FindByName(Parent, Name);
     if (Index >= 0) then
     begin
       Result := AMenuItem(TMenuItem(Parent).Items[Index]);

@@ -2,7 +2,7 @@
 @Abstract AUi MainWindow2
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.06.2011
-@LastMod 30.01.2013
+@LastMod 28.02.2013
 }
 unit AUiMainWindow2;
 
@@ -76,18 +76,18 @@ begin
     Items := AMenu(TForm(FMainWindow).Menu.Items);
     if (ParentItemName = '') then
     begin
-      Result := AUiMenu_FindItemByNameP(Items, 'mi'+Name);
+      Result := AUiMenu_FindItemByNameP(Items, Name);
       Parent := Items;
     end
     else
     begin
-      Parent := AUiMenu_FindItemByNameP(Items, 'mi'+ParentItemName);
+      Parent := AUiMenu_FindItemByNameP(Items, ParentItemName);
       if (Parent = 0) then
       begin
         Result := 0;
         Exit;
       end;
-      Result := AUiMenu_FindItemByNameP(Parent, 'mi'+Name)
+      Result := AUiMenu_FindItemByNameP(Parent, Name)
     end;
 
     if (Result = 0) then

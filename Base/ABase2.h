@@ -1,7 +1,7 @@
 ﻿/* Base types and consts
  * Author Prof1983 <prof1983@ya.ru>
  * Created 06.03.2008
- * LastMod 29.08.2012
+ * LastMod 04.03.2013
  */
 
 #ifndef ABase2_H
@@ -38,9 +38,7 @@ typedef size_t ASize;
 
 // TODO: int AFunction -> func
 typedef AInt AFunction (*AProc)();
-typedef void AFunction (*ACallbackProc02)(AInt Obj, AInt Data);
-typedef AError AFunction (*ACallbackProc03)(AInt Obj, AInt Data);
-typedef ACallbackProc03 ACallbackProc;
+typedef AError AFunction (*ACallbackProc)(AInt Obj, AInt Data);
 
 // --- AId ---
 

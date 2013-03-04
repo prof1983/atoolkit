@@ -1,7 +1,7 @@
 ﻿/*  Base consts and types
  *  Author Prof1983 <prof1983@ya.ru>
  *  Created 06.03.2008
- *  LastMod 29.08.2012
+ *  LastMod 04.03.2013
  */
 
 #ifndef ABaseH
@@ -28,7 +28,8 @@ typedef uint64_t AUInt64; //typedef unsigned __int64 AUInt64;
 
 typedef char AChar;
 
-typedef int ABoolean;
+typedef int ABool;
+typedef ABool ABoolean;
 typedef AFloat64 AFloat;
 typedef AInt AInteger;
 

@@ -1,105 +1,122 @@
 /* Dirent functions
  * Author Prof1983 <prof1983@ya.ru>
  * Created 17.07.2012
- * LastMod 17.07.2012
- * Version 0.5
+ * LastMod 04.03.2013
  */
 
-#include "AIoDir"
+#ifndef AIoDirC
+#define AIoDirC
+
+#include "AIoDir.h"
 
 AInt
-func ADir_Close(ADir Dir)
+afunc ADir_Close(ADir Dir)
 {
-	return closedir(Dir);
+    return closedir(Dir);
 }
 
+/*
 AInt
-func ADir_CloseW(ADirW Dir)
+afunc ADir_CloseW(ADirW Dir)
 {
-	return _wclosedir(Dir);
+    return _wclosedir(Dir);
 }
+*/
 
 AError
-func ADir_GetList(AStr DirName)
+afunc ADir_GetList(AStr DirName)
 {
-	ADir dp;
-	ADirent ep; //struct dirent *ep;
+    ADir dp;
+    ADirent ep; //struct dirent *ep;
 
-	//stat()
+    //stat()
 
-	dp = ADir_Open(DirName);
-	if (dp != NULL)
-	{
-		while (ep = ADir_Read(dp))
-			puts(ep->d_name);
-		ADir_Close(dp);
-	}
-	else
-		return -2; //perror("Couldn't open the directory");
+    dp = ADir_Open(DirName);
+    if (dp != NULL)
+    {
+        while (ep = ADir_Read(dp))
+            puts(ep->d_name);
+        ADir_Close(dp);
+    }
+    else
+        return -2; //perror("Couldn't open the directory");
 
-	return 0;
+    return 0;
 }
 
 ADir
-func ADir_Open(AStr DirName)
+afunc ADir_Open(AStr DirName)
 {
-	return opendir(DirName);
+    return opendir(DirName);
 }
 
+/*
 ADirW
-func ADir_OpenW(const AStrW DirName)
+afunc ADir_OpenW(const AStrW DirName)
 {
-	return _wopendir(DirName);
+    return _wopendir(DirName);
 }
+*/
 
 ADirent //struct dirent*
-func ADir_Read(ADir Dir)
+afunc ADir_Read(ADir Dir)
 {
-	return readdir(Dir);
+    return readdir(Dir);
 }
 
+/*
 ADirentW
-func ADir_ReadW(ADirW Dir)
+afunc ADir_ReadW(ADirW Dir)
 {
-	return _wreaddir(Dir);
+    return _wreaddir(Dir);
 }
+*/
 
 AError //void
-func ADir_Rewind(ADir Dir)
+afunc ADir_Rewind(ADir Dir)
 {
-	rewinddir(Dir);
-	return 0;
+    rewinddir(Dir);
+    return 0;
 }
 
+/*
 AError
 func ADir_RewindW(ADirW Dir)
 {
-	_wrewinddir(Dir);
-	return 0;
+    _wrewinddir(Dir);
+    return 0;
 }
+*/
 
 AError //void
-func ADir_Seek(ADir Dir, AInt/*long*/ Pos)
+afunc ADir_Seek(ADir Dir, AInt Pos)
 {
-	seekdir(Dir, Pos);
-	return 0;
+    seekdir(Dir, Pos);
+    return 0;
 }
 
 
+/*
 AError
-ADir_SeekW(ADirW Dir, AInt/*long*/ Pos)
+ADir_SeekW(ADirW Dir, AInt Pos)
 {
-	_wseekdir(Dir, Pos);
-	return 0;
+    _wseekdir(Dir, Pos);
+    return 0;
 }
+*/
 
 AInt //long
-func ADir_Tell(ADir Dir)
+afunc ADir_Tell(ADir Dir)
 {
-	return telldir(Dir);
+    return telldir(Dir);
 }
+
+/*
 AInt //long
-func ADir_TellW(ADirW Dir)
+afunc ADir_TellW(ADirW Dir)
 {
-	return _wtelldir(Dir);
+    return _wtelldir(Dir);
 }
+*/
+
+#endif

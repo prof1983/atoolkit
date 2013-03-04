@@ -1,177 +1,102 @@
 ﻿/*
 Author Prof1983 <prof1983@ya.ru>
 Created 17.06.2011
-LastMod 10.12.2012
+LastMod 04.03.2013
 */
 
-#ifndef ARuntime_H
-#define ARuntime_H
+#ifndef ARuntimeH
+#define ARuntimeH
 
-#include "ABase2.h"
+#include "ABase.h"
+#include "ARuntimeBase.h"
 
-// --- Types ---------------------------------------------------------------------------------------
+// --- ARuntime ---
 
-// Уникальный идентификатор модуля.
-// Записывается в формате $YYMMDDxx, где YY - год, MM-месяц, DD-день, xx-порядковый номер }
-typedef AInteger AModuleUid;
-typedef char* PAnsiChar;
-typedef AInt AModuleDescription;
-typedef void* Pointer;
+AInt
+afunc ARuntime_AddModule(AModule Module);
 
-//typedef int AModule;
+AInt
+afunc ARuntime_DeleteModuleByIndex(AInt Index);
 
-typedef AError AFunction (*AModuleFinProc)();
-typedef AError AFunction (*AModuleInitProc)();
-typedef Pointer (*AModuleGetProc)(AStr ProcName);
 
-typedef struct AModule_Type {
-    /** Module version ($AABBCCDD) */
-    AVersion Version;
-    /** Module unique identificator $YYMMDDxx YY - Year, MM - Month, DD - Day */
-    AModuleUid Uid;
-    /** Module unuque name */
-    PAnsiChar Name;
-    /** Module information and description */
-    AModuleDescription Description;
-    /** Initialize proc */
-    AModuleInitProc Init;
-    /** Finalize proc */
-    AModuleFinProc Fin;
-    /** Get proc address */
-    AModuleGetProc GetProc;
-    /** Module proc list */
-    Pointer Procs;
-};
+AInt
+afunc ARuntime_DeleteModuleByName(AStr Name);
 
-typedef struct AModule_Type * AModule;
+AInt
+afunc ARuntime_DeleteModuleByUid(AModuleUid Uid);
 
-// --- Procs ---------------------------------------------------------------------------------------
+AError
+afunc ARuntime_Fin();
 
-// --- Set event functions ---
+AInt
+afunc ARuntime_FindModuleByName(AStr Name);
 
-typedef AError AFunction (*ARuntime_SetOnRun_Proc)(AProc Value);
+AInt
+afunc ARuntime_FindModuleByUid(AModuleUid Uid);
 
-typedef AError AFunction (*ARuntime_SetOnShutdown_Proc)(AProc Value);
+ABool
+afunc ARuntime_GetIsShutdown();
 
-typedef AError AFunction (*ARuntime_SetOnAfterRun_Proc)(AProc Value);
+// Module - out
+AInt
+afunc ARuntime_GetModuleByName(AStr Name, AModule Module);
 
-typedef AError AFunction (*ARuntime_SetOnBeforeRun_Proc)(AProc Value);
+// Module - out
+AInt
+afunc ARuntime_GetModuleByUid(AModuleUid Uid, AModule Module);
 
-// --- Module ---
+AInt
+afunc ARuntime_GetModuleNameByIndex(AInt Index, AStr Name, AInt MaxLen);
 
-typedef AInteger AFunction (*ARuntime_RegisterModule_Proc)(AModule Module);
+AInt
+afunc ARuntime_GetModuleNameByUid(AInt Uid, AStr Name, AInt MaxLen);
 
-// --- Modules ---
+AModuleUid
+afunc ARuntime_GetModuleUidByIndex(AInt Index);
 
-typedef AInteger AFunction (*ARuntime_AddModule_Proc)(AModule Module);
+APointer
+afunc ARuntime_GetModuleProcsByUid(AModuleUid Uid);
 
-typedef AInteger AFunction (*ARuntime_GetModulesCount_Proc)();
+AInt
+afunc ARuntime_GetModulesCount();
 
-typedef AInteger AFunction (*ARuntime_DeleteModuleByName_Proc)(AAnsiString Name);
+AProc
+afunc ARuntime_GetOnAfterRun();
 
-typedef AInteger AFunction (*ARuntime_DeleteModuleByUid_Proc)(AModuleUid Uid);
+AProc
+afunc ARuntime_GetOnBeforeRun();
 
-typedef AInteger AFunction (*ARuntime_FindModuleByName_Proc)(AAnsiString Name);
+APointer
+afunc ARuntime_GetProcByName(AStr ModuleName, AStr ProcName);
 
-typedef AInteger AFunction (*ARuntime_FindModuleByUid_Proc)(AModuleUid Uid);
+AError
+afunc ARuntime_Init();
 
-typedef AInteger AFunction (*ARuntime_GetModuleByName_Proc)(AAnsiString Name, AModule Module);
+AInt
+afunc ARuntime_InitModuleByName(AStr Name);
 
-typedef AInteger AFunction (*ARuntime_GetModuleByUid_Proc)(AModuleUid Uid, AModule Module);
+AInt
+afunc ARuntime_InitModuleByUid(AModuleUid Uid);
 
-typedef AInteger AFunction (*ARuntime_InitModuleByName_Proc)(AAnsiString Name);
+AInt
+afunc ARuntime_RegisterModule(AModule Module);
 
-typedef AInteger AFunction (*ARuntime_InitModuleByUid_Proc)(AModuleUid Uid);
+AError
+afunc ARuntime_Run();
 
-typedef AInteger AFunction (*ARuntime_GetModuleNameByIndex_Proc)(AInteger Index, AAnsiString Name, AInteger MaxLen);
+AError
+afunc ARuntime_SetOnAfterRun(AProc Value);
 
-typedef APointer AFunction (*ARuntime_GetModuleProcsByUid_Proc)(AModuleUid Uid);
+AError
+afunc ARuntime_SetOnBeforeRun(AProc Value);
 
-typedef AModuleUid AFunction (*ARuntime_GetModuleUidByIndex_Proc)(AInteger Index);
+AError
+afunc ARuntime_SetOnRun(AProc Value);
 
-// --- System ---
+AError
+afunc ARuntime_SetOnShutdown(AProc Value);
 
-typedef ABoolean AFunction (*ARuntime_GetIsShutdown_Proc)();
+AError
+afunc ARuntime_Shutdown();
 
-typedef AError AFunction (*ARuntime_Run_Proc)();
-
-typedef AInteger AFunction (*ARuntime_Shutdown_Proc)();
-
-// --- ARuntimeProcs_Type --------------------------------------------------------------------------
-
-typedef struct ARuntimeProcs_Type
-{
-	// --- Set event functions ---
-	ARuntime_SetOnAfterRun_Proc SetOnAfterRun;
-	ARuntime_SetOnBeforeRun_Proc SetOnBeforeRun;
-	ARuntime_SetOnRun_Proc SetOnRun;
-	AInt Reserved03;
-
-	ARuntime_AddModule_Proc AddModule;
-	ARuntime_GetModulesCount_Proc GetModulesCount;
-	ARuntime_FindModuleByName_Proc FindModuleByName;
-	ARuntime_FindModuleByUid_Proc FindModuleByUid;
-	ARuntime_DeleteModuleByName_Proc DeleteModuleByName;
-	ARuntime_DeleteModuleByUid_Proc DeleteModuleByUid;
-	ARuntime_GetModuleByName_Proc GetModuleByName;
-	ARuntime_GetModuleByUid_Proc GetModuleByUid;
-	ARuntime_GetModuleNameByIndex_Proc GetModuleNameByIndex;
-	ARuntime_GetModuleUidByIndex_Proc GetModuleUidByIndex;
-	ARuntime_InitModuleByName_Proc InitModuleByName;
-	ARuntime_InitModuleByUid_Proc InitModuleByUid;
-
-	ARuntime_GetIsShutdown_Proc GetIsShutdown;
-	ARuntime_Shutdown_Proc Shutdown;
-	ARuntime_RegisterModule_Proc RegisterModule;
-	ARuntime_GetModuleProcsByUid_Proc GetModuleProcsByUid;
-    ARuntime_Run_Proc Run;
-    ARuntime_SetOnShutdown_Proc SetOnShutdown;
-	AInteger Reserved22;
-	AInteger Reserved23;
-	AInteger Reserved24;
-	AInteger Reserved25;
-	AInteger Reserved26;
-	AInteger Reserved27;
-	AInteger Reserved28;
-	AInteger Reserved29;
-	AInteger Reserved30;
-	AInteger Reserved31;
-
-	AInteger Reserved32;
-	AInteger Reserved33;
-	AInteger Reserved34;
-	AInteger Reserved35;
-	AInteger Reserved36;
-	AInteger Reserved37;
-	AInteger Reserved38;
-	AInteger Reserved39;
-	AInteger Reserved40;
-	AInteger Reserved41;
-	AInteger Reserved42;
-	AInteger Reserved43;
-	AInteger Reserved44;
-	AInteger Reserved45;
-	AInteger Reserved46;
-	AInteger Reserved47;
-	AInteger Reserved48;
-	AInteger Reserved49;
-	AInteger Reserved50;
-	AInteger Reserved51;
-	AInteger Reserved52;
-	AInteger Reserved53;
-	AInteger Reserved54;
-	AInteger Reserved55;
-	AInteger Reserved56;
-	AInteger Reserved57;
-	AInteger Reserved58;
-	AInteger Reserved59;
-	AInteger Reserved60;
-	AInteger Reserved61;
-	AInteger Reserved62;
-	AInteger Reserved63;
-};
-
-#define ARuntimeProcs struct ARuntimeProcs_Type *
-typedef struct ARuntimeProcs_Type * ARuntimeProc1;
-
-#endif ARuntime_H
+#endif

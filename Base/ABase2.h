@@ -4,29 +4,27 @@
  * LastMod 04.03.2013
  */
 
+#define AExport __declspec(dllexport) /* __export */
+#define AImport __declspec(dllimport) /* __import */
+
+// --- API function define ---
+#if defined(A_BUILD_DLL)
+#  define afunc AExport __stdcall
+#else
+# if defined(A_BUILD_APP)
+#  define afunc AImport __stdcall
+# else
+#  define afunc __stdcall
+# endif // A_BUILD_APP
+#endif // A_BUILD_DLL
+
+
 #ifndef ABase2_H
 #define ABase2_H
 
 // For size_t
 #include <stddef.h>
 #include "ABase.h"
-
-// --- API function define ---
-#if defined(A_BUILD_DLL)
-//#  define func __export
-#  define afunc __declspec(dllexport) __stdcall
-#else
-# if defined(A_BUILD_APP)
-//#  define func __import
-#  define afunc __declspec(dllimport) __stdcall
-# else
-#  define afunc __stdcall
-# endif // A_BUILD_APP
-#endif // A_BUILD_DLL
-
-#ifndef A_NoFunc
-#define func afunc
-#endif
 
 #define AFunction __stdcall
 
@@ -57,20 +55,7 @@ typedef AError AFunction (*ACallbackProc)(AInt Obj, AInt Data);
 */
 typedef int AId;
 
-// deprecated
-typedef AId TAId;
-
 // -------------------------------------------------------------------------------------------------
-
-typedef int ALogFlags;
-
-/*
-int L_ICONERROR = 00000010x0;       // MB_ICONHAND, MB_ICONSTOP
-const int L_ICONQUESTION = 00000020x0;
-const int L_ICONWARNING = 00000030x0;     // ICONEXCLAMATION
-const int L_ICONINFORMATION = 00000040x0; // MB_ICONASTERISK
-const int L_USERICON = 00000080x0;
-*/
 
 //#define A_BOOL_TRUE 0
 //#define A_BOOL_FALSE 1
@@ -102,40 +87,9 @@ const // Текстовых описания глобальных типов ---
 	('none', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
 */
 
-typedef int AMessageBoxFlags;
-/*
-const int MB_OK = $00000000;
-const MB_OKCANCEL = $00000001;
-const MB_ABORTRETRYIGNORE = $00000002;
-const MB_YESNOCANCEL = $00000003;
-const MB_YESNO = $00000004;
-const MB_RETRYCANCEL = $00000005;
-
-const MB_ICONERROR = $00000010;       // MB_ICONHAND, MB_ICONSTOP
-const MB_ICONQUESTION = $00000020;
-const MB_ICONWARNING = $00000030;     // ICONEXCLAMATION
-const MB_ICONINFORMATION = $00000040; // MB_ICONASTERISK
-const MB_USERICON = $00000080;
-*/
-
-/*
-enum AMessageBoxFlags {
- MB_OK = 0,
- MB_OKCANCEL = 1,
- MB_ABORTRETRYIGNORE = 2,
- MB_YESNOCANCEL = 3,
- MB_YESNO = 4,
- MB_RETRYCANCEL = 5,
- MB_ICONERROR = $00000010,       // MB_ICONHAND, MB_ICONSTOP
- MB_ICONQUESTION = $00000020,
- MB_ICONWARNING = $00000030,     // ICONEXCLAMATION
- MB_ICONINFORMATION = $00000040, // MB_ICONASTERISK
- MB_USERICON = $00000080 }
-*/
-
+// -------------------------------------------------------------------------------------------------
 
 typedef int ADialogBoxCommands;
-/*
 const ID_OK = 1;
 const ID_CANCEL = 2;
 const ID_ABORT = 3;
@@ -147,8 +101,48 @@ const ID_CLOSE = 8;
 const ID_HELP = 9;
 const ID_TRYAGAIN = 10;
 const ID_CONTINUE = 11;
-*/
 
-//typedef ADialogBoxCommands *TAShowMessageProc(const AString Text, const AString Caption, AMessageBoxFlags Flags);
+typedef AInt ALogType;
+const ALogType_Error = 0x00000010;
+const ALogType_Question = 0x00000020;
+const ALogType_Warning = 0x00000030;
+const ALogType_Information = 0x00000040;
+
+typedef AInt ALogFlags;
+const ALogFlags_IconMask = 0x000000F0;
+const ALogFlags_IconError = 0x00000010; // ALogType_Error
+const ALogFlags_IconQuestion = 0x00000020; // ALogType_Question
+const ALogFlags_IconWarning = 0x00000030; // ALogType_Warning
+const ALogFlags_IconInformation = 0x00000040; // ALogType_Information
+const ALogFlags_IconUser = 0x00000080;
+
+typedef AInt AMessageBoxFlags;
+const AMessageBoxFlags_Ok = 0x00000000;
+const AMessageBoxFlags_OkCancel = 0x00000001;
+const AMessageBoxFlags_AbortRetryIgnore = 0x00000002;
+const AMessageBoxFlags_YesNoCancel = 0x00000003;
+const AMessageBoxFlags_YesNo = 0x00000004;
+const AMessageBoxFlags_RetryCancel = 0x00000005;
+const AMessageBoxFlags_ApplyOkCancel = 0x00000006;
+const AMessageBoxFlags_IconError = 0x00000010;
+const AMessageBoxFlags_IconQuestion = 0x00000020;
+const AMessageBoxFlags_IconWarning = 0x00000030;
+const AMessageBoxFlags_IconInformation = 0x00000040;
+const AMessageBoxFlags_UserIcon = 0x00000080;
+
+typedef AInt AFunction (*AAddToLogA_Proc)(AStr Msg, ALogFlags Flags, AInt Data);
+typedef AError AFunction (*AShowErrorA_Proc)(AStr Caption, AStr UserMessage, AStr ExceptMessage);
+typedef ADialogBoxCommands AFunction (*AShowMessageA_Proc)(AStr Text, AStr Caption, AMessageBoxFlags Flags);
+
+/*
+TRealArray = array of Real;
+TIntArray = array of Integer;
+TLongIntArray = array of LongInt;
+TBoolArray = array of Boolean;
+*/
+
+typedef AInt ACollection;
+typedef AInt AStream;
+typedef AInt AStringList;
 
 #endif

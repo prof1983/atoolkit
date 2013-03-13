@@ -2,7 +2,7 @@
 @Abstract AUiReports
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 28.02.2013
+@LastMod 13.03.2013
 }
 unit AUiReports;
 
@@ -159,7 +159,7 @@ begin
     Form := TReportForm.Create(nil);
     try
       Form.Editor.Clear();
-      Form.Editor.Lines.SetText(Text);
+      Form.Editor.Lines.Text := AnsiString(Text);
       if (Font <> 0) then
         Form.Editor.Font.Assign(TFont(Font));
       if (Width > 0) then

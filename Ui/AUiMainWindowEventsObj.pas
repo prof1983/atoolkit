@@ -2,7 +2,7 @@
 @Abstract AUi events object
 @Author Prof1983 <prof1983@ya.ru>
 @Created 29.01.2013
-@LastMod 30.01.2013
+@LastMod 26.03.2013
 }
 unit AUiMainWindowEventsObj;
 
@@ -50,7 +50,7 @@ begin
       FIsShowApp := False;
   end
   else
-    _MainWindow_Shutdown();
+    AUiMainWindow_Shutdown();
 end;
 
 end.

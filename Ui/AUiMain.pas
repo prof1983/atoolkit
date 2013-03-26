@@ -2,7 +2,7 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 19.02.2013
+@LastMod 26.03.2013
 }
 unit AUiMain;
 
@@ -168,18 +168,14 @@ begin
   MainForm.Left := 0;
   MainForm.Top := 0;
   {$IFDEF OLDMAINFORM}
-    {$IFDEF OLDMAINFORM2}
-    _MainWindow_Create(MainForm, 0, ASystem_GetConfig());
-    {$ELSE}
     _MainWindow_Create(MainForm, MainWindowFormatCreateMenu or MainWindowFormatCreateToolBar or MainWindowFormatCreateStatusBar, ASystem_GetConfig());
-    {$ENDIF}
     FMainWindow := AddObject(MainForm);
   {$ELSE}
     FMainWindow := AddObject(MainForm);
     MainForm.Name := 'MainForm';
     MainForm.Caption := ASystem_GetProgramNameP();
     {$ifdef UseMainWindow}
-    _MainWindow_Create(MainForm, MainWindowFormatCreateAll, ASystem_GetConfig());
+    AUiMainWindow_Create(AWindow(MainForm), MainWindowFormatCreateAll, ASystem_GetConfig());
     if not(Assigned(UiEventsObj)) then
       UiEventsObj := TUiEventsObj.Create();
     MainForm.OnCloseQuery := UiEventsObj.MainFormCloseQuery;
@@ -209,7 +205,7 @@ begin
   end;
 
   {$ifdef UseMainWindow}
-  _MainWindow_Shutdown();
+  AUiMainWindow_Shutdown();
   {$endif}
 
   ASystem_SetOnProcessMessages(nil);
@@ -241,7 +237,7 @@ end;
 function AUi_GetMainToolBar(): AControl;
 begin
   {$ifdef UseMainWindow}
-  Result := _MainWindow_ToolBar;
+  Result := AUiMainWindow_GetToolBar();
   {$else}
   Result := 0;
   {$endif}
@@ -349,7 +345,7 @@ begin
   try
     {$ifdef UseMainWindow}
     if (FConfig <> 0) then
-      _MainWindow_LoadConfig(FConfig);
+      AUiMainWindow_LoadConfig(FConfig);
     {$endif}
     Application.Run();
     Result := 0;
@@ -407,12 +403,7 @@ end;
 function AUi_SetMainToolBar(ToolBar: AControl): AError;
 begin
   {$ifdef UseMainWindow}
-  try
-    _MainWindow_ToolBar_Set(ToolBar);
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  Result := AUiMainWindow_SetToolBar(ToolBar);
   {$else}
   Result := 0;
   {$endif}
@@ -504,14 +495,11 @@ end;
 
 function AUi_Shutdown(): AError;
 begin
-  try
-    {$ifdef UseMainWindow}
-    _MainWindow_Shutdown();
-    {$endif}
-    Result := 0;
-  except
-    Result := -1;
-  end;
+  {$ifdef UseMainWindow}
+  Result := AUiMainWindow_Shutdown();
+  {$else}
+  Result := 0;
+  {$endif}
 end;
 
 function AUi_TextWidthP(const S, FontName: APascalString; FontSize: AInt): AInt;

@@ -2,7 +2,7 @@
 @Abstract AUiMainWindow
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2008
-@LastMod 01.02.2013
+@LastMod 26.03.2013
 }
 unit AUiMainWindow;
 
@@ -13,17 +13,14 @@ unit AUiMainWindow;
 interface
 
 uses
-  Classes, ComCtrls, Controls, ExtCtrls, Forms, Graphics, Menus, StdCtrls, SysUtils, {$IFNDEF UNIX}Windows,{$ENDIF}
   ABase,
-  {$IFDEF OLDMAINFORM}fMain,{$ENDIF}
   AUiBase,
   AUiBox,
   AUiControls,
   AUiData,
   AUiMainWindowData,
   AUiSplitter,
-  AUiToolBar,
-  AUiWindowSettings;
+  AUiToolBar;
 
 type
   TMainWindowFormat = type Integer;
@@ -43,28 +40,23 @@ function AUi_SetMainWindow2(Value: AWindow; ToolBar, StatusBar: AControl;
 
 // --- AUiMainWindow ---
 
+function AUiMainWindow_Create(Win: AWindow; Format: TMainWindowFormat; Config: AConfig): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiMainWindow_GetLeftContainer(): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-{** Возврящает основной контейнер UI }
+{** Returns the main container UI }
 function AUiMainWindow_GetMainContainer(): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiMainWindow_GetRightContainer(): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-// ---
+function AUiMainWindow_GetToolBar(): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-function _MainWindow_GetLeftContainer: AControl;
-function _MainWindow_GetMainContainer: AControl;
-function _MainWindow_GetRightContainer: AControl;
+function AUiMainWindow_LoadConfig(Config: AConfig): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-procedure _MainWindow_LoadConfig(Config: AConfig);
-procedure _MainWindow_SaveConfig(Config: AConfig);
+function AUiMainWindow_SetToolBar(ToolBar: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-procedure _MainWindow_Create(Form: TForm; Format: TMainWindowFormat; Config: AConfig);
-procedure _MainWindow_Set(Value: AWindow); stdcall;
-procedure _MainWindow_SetA(Window: AWindow; ToolBar, StatusBar: AControl; Config: AConfig);
-procedure _MainWindow_Shutdown;
-function _MainWindow_ToolBar: AControl;
-procedure _MainWindow_ToolBar_Set(ToolBar: AControl);
+function AUiMainWindow_Shutdown(): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 
 {$IFDEF UNIX}
 const
@@ -79,9 +71,16 @@ const
 {$ENDIF}
 
 var
-  DefWindowState: AInteger{TWindowState};
+  DefWindowState: AInt{TWindowState};
 
 implementation
+
+uses
+  ComCtrls,
+  Controls,
+  ExtCtrls,
+  Forms,
+  Menus;
 
 (*
 const
@@ -92,6 +91,12 @@ const
     {$IFDEF FPC},'Pages'{$ENDIF}
     );
 *)
+
+// --- Forward ---
+
+procedure _MainWindow_SetA(Window: AWindow; ToolBar, StatusBar: AControl; Config: AConfig); forward;
+
+// --- Private ---
 
 {
 function StrToDockOrientation(S: WideString): TDockOrientation;
@@ -107,68 +112,6 @@ begin
   Result := doNoOrient;
 end;
 }
-
-// --- AUi ---
-
-function AUi_SetMainWindow(Value: AWindow): AError;
-begin
-  _MainWindow_SetA(Value, 0, 0, 0);
-  Result := 0;
-end;
-
-function AUi_SetMainWindow2(Value: AWindow; ToolBar, StatusBar: AControl; Config: AConfig): AError;
-begin
-  try
-    if (Value = 0) then
-      FMainWindow := 0
-    else
-    begin
-      FMainWindow := AddObject(TForm(Value));
-      if Assigned(TForm(Value).Menu) then
-      begin
-        {FMainMenu :=} AddObject(TForm(Value).Menu);
-        miMain := AMenuItem(TForm(Value).Menu.Items);
-      end;
-      //FMainWindow := Value;
-
-      _MainWindow_SetA(Value, ToolBar, StatusBar, Config);
-    end;
-    Result := 0;
-  except
-    Result := -1;
-  end;
-end;
-
-// --- AUiMainWindow ---
-
-function AUiMainWindow_GetLeftContainer(): AControl;
-begin
-  try
-    Result := _MainWindow_GetLeftContainer();
-  except
-    Result := 0;
-  end;
-end;
-
-function AUiMainWindow_GetMainContainer(): AControl;
-begin
-  try
-    Result := _MainWindow_GetMainContainer();
-  except
-    Result := 0;
-  end;
-end;
-
-function AUiMainWindow_GetRightContainer(): AControl;
-begin
-  try
-    Result := _MainWindow_GetRightContainer();
-  except
-    Result := 0;
-  end;
-end;
-
-{ MainWindow }
 
 procedure _MainWindow_Create(Form: TForm; Format: TMainWindowFormat; Config: AConfig);
 var
@@ -371,19 +314,6 @@ begin
   AUiWindow_LoadConfig3P(FMainWindow, Config, TForm(FMainWindow).Name, DefWindowState);
   {$ENDIF}
 
-  {$IFNDEF OLDMAINFORM}
-  {
-  LeftPanel.Width := Settings.ReadInteger(FControl.Name, 'LeftPanel_Width', 50);
-  RightPanel.Width := Settings.ReadInteger(FControl.Name, 'RightPanel_Width', 50);
-  BottomPanel.Height := Settings.ReadInteger(FControl.Name, 'BottomPanel_Height', 50);
-
-  ReadPanels(MainForm);
-  ReadDockClients(MainForm, 'LeftPanel', LeftPanel);
-  ReadDockClients(MainForm, 'RightPanel', RightPanel);
-  ReadDockClients(MainForm, 'BottomPanel', BottomPanel);
-  }
-  {$ENDIF}
-
   (*
   if Settings.ReadBool(FControl.Name, 'NoStandartBorderStyle', False) then
   begin
@@ -464,13 +394,6 @@ begin
   {$IFDEF USE_EVENTS}
   AUiWindow_SaveConfig(FMainWindow, Config);
   {$ENDIF}
-
-  {$IFNDEF OLDMAINFORM}
-  {WritePanels(FControl);
-  WriteDockClients(FControl, 'LeftPanel', LeftPanel);
-  WriteDockClients(FControl, 'RightPanel', RightPanel);
-  WriteDockClients(FControl, 'BottomPanel', BottomPanel);}
-  {$ENDIF}
 end;
 
 procedure _MainWindow_Set(Value: AWindow); stdcall;
@@ -528,36 +451,109 @@ begin
   end;
 end;
 
-function _MainWindow_ToolBar: AControl;
+// --- AUi ---
+
+function AUi_SetMainWindow(Value: AWindow): AError;
+begin
+  _MainWindow_SetA(Value, 0, 0, 0);
+  Result := 0;
+end;
+
+function AUi_SetMainWindow2(Value: AWindow; ToolBar, StatusBar: AControl; Config: AConfig): AError;
+begin
+  try
+    if (Value = 0) then
+      FMainWindow := 0
+    else
+    begin
+      FMainWindow := AddObject(TForm(Value));
+      if Assigned(TForm(Value).Menu) then
+      begin
+        {FMainMenu :=} AddObject(TForm(Value).Menu);
+        miMain := AMenuItem(TForm(Value).Menu.Items);
+      end;
+      //FMainWindow := Value;
+
+      _MainWindow_SetA(Value, ToolBar, StatusBar, Config);
+    end;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+// --- AUiMainWindow ---
+
+function AUiMainWindow_Create(Win: AWindow; Format: TMainWindowFormat; Config: AConfig): AError;
+begin
+  try
+    _MainWindow_Create(TForm(Win), Format, Config);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiMainWindow_GetLeftContainer(): AControl;
+begin
+  try
+    Result := _MainWindow_GetLeftContainer();
+  except
+    Result := 0;
+  end;
+end;
+
+function AUiMainWindow_GetMainContainer(): AControl;
+begin
+  try
+    Result := _MainWindow_GetMainContainer();
+  except
+    Result := 0;
+  end;
+end;
+
+function AUiMainWindow_GetToolBar(): AControl;
 begin
   Result := FMainToolBar;
 end;
 
-procedure _MainWindow_ToolBar_Set(ToolBar: AControl);
+function AUiMainWindow_GetRightContainer(): AControl;
 begin
-  FMainToolBar := ToolBar;
+  try
+    Result := _MainWindow_GetRightContainer();
+  except
+    Result := 0;
+  end;
 end;
 
-(*function TAMainWindow.NewPanel(PanelTag: Integer): TPanel;
+function AUiMainWindow_LoadConfig(Config: AConfig): AError;
 begin
-  Result := TPanel.Create(FControl);
-  Result.Parent := FControl;
-  {$IFNDEF UNIX}
-  Result.DragKind := dkDock;
-  Result.DragMode := dmAutomatic;
-  {$ENDIF}
-  if (PanelTag > 0) then
-    Result.Tag := PanelTag
-  else
-  begin
-    Result.Tag := FNextTag;
-    if (FNextTag = High(Integer)) then
-      FNextTag := 1
-    else
-      Inc(FNextTag);
+  try
+    _MainWindow_LoadConfig(Config);
+    Result := 0;
+  except
+    Result := -1;
   end;
+end;
 
-  Result.Caption := IntToStr(Result.Tag);
-end;*)
+function AUiMainWindow_SetToolBar(ToolBar: AControl): AError;
+begin
+  try
+    FMainToolBar := ToolBar;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiMainWindow_Shutdown(): AError;
+begin
+  try
+    _MainWindow_Shutdown();
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
 
 end.

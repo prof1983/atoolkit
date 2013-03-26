@@ -19,8 +19,10 @@ uses
   AUiControls,
   AUiData,
   AUiMainWindowData,
+  AUiMenus,
   AUiSplitter,
-  AUiToolBar;
+  AUiToolBar,
+  AUiWindowMenu;
 
 type
   TMainWindowFormat = type Integer;
@@ -55,6 +57,8 @@ function AUiMainWindow_LoadConfig(Config: AConfig): AError; {$ifdef AStdCall}std
 
 function AUiMainWindow_SetToolBar(ToolBar: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiMainWindow_ShowContainers(): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiMainWindow_Shutdown(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 
@@ -78,9 +82,17 @@ implementation
 uses
   ComCtrls,
   Controls,
-  ExtCtrls,
-  Forms,
-  Menus;
+  Forms;
+
+var
+  _BaseBox: AControl;
+  _BottomBox: AControl;
+  _BottomSplitter: AControl;
+  _LeftBox: AControl;
+  _LeftSplitter: AControl;
+  _MainBox: AControl;
+  _RightBox: AControl;
+  _RightSplitter: AControl;
 
 (*
 const
@@ -113,7 +125,7 @@ begin
 end;
 }
 
-procedure _MainWindow_Create(Form: TForm; Format: TMainWindowFormat; Config: AConfig);
+procedure _MainWindow_Create(Form: AControl; Format: TMainWindowFormat; Config: AConfig);
 var
   MainStatusBar: TStatusBar;
   MainToolBar: AControl;
@@ -128,81 +140,95 @@ begin
 
   if (Format and MainWindowFormatCreateStatusBar = MainWindowFormatCreateStatusBar) then
   begin
-    MainStatusBar := TStatusBar.Create(Form);
-    MainStatusBar.Parent := Form;
+    MainStatusBar := TStatusBar.Create(TWinControl(Form));
+    MainStatusBar.Parent := TWinControl(Form);
   end
   else
     MainStatusBar := nil;
 
   if (Format and MainWindowFormatCreatePanels = MainWindowFormatCreatePanels) then
   begin
-    LeftPanel := TPanel(AUiBox_New(AWindow(Form),0));
-    LeftPanel.Align := alLeft;
-    LeftPanel.Width := 50;
-    LeftPanel.DockSite := True;
-    LeftPanel.DragMode := dmAutomatic;
-    LeftPanel.Visible := False;
+    _LeftBox := AUiBox_New(Form,0);
+    AUiBox_SetDockSite(_LeftBox, True);
+    AUiBox_SetDragMode(_LeftBox, AUiDragMode_Automatic);
+    AUiControl_SetAlign(_LeftBox, AUiAlign_Left);
+    AUiControl_SetWidth(_LeftBox, 50);
+    AUiControl_SetBevel(_LeftBox, AUiBevel_InnerNone + AUiBevel_OuterNone, 0);
+    AUiControl_SetColor(_BottomBox, $C0F0C0);
 
-    LeftSplitter := TSplitter(AUiSplitter_New(AWindow(Form),0));
-    LeftSplitter.Align := alLeft;
-    LeftSplitter.Width := 3;
-    LeftSplitter.Visible := False;
+    _LeftSplitter := AUiSplitter_New(Form,0);
+    AUiControl_SetAlign(_LeftSplitter, AUiAlign_Left);
+    AUiControl_SetPosition(_LeftSplitter, 60, 0);
+    AUiControl_SetWidth(_LeftSplitter, 3);
 
-    BasePanel := TPanel(AUiBox_New(AWindow(Form),0));
-    BasePanel.Align := alClient;
-    BasePanel.BevelInner := bvNone;
-    BasePanel.BevelOuter := bvNone;
+    // --- Base ---
 
-      RightPanel := TPanel(AUiBox_New(AControl(BasePanel),0));
-      RightPanel.Align := alRight;
-      RightPanel.Width := 50;
-      RightPanel.DockSite := True;
-      RightPanel.DragMode := dmAutomatic;
-      RightPanel.Visible := False;
+    _BaseBox := AUiBox_New(Form,0);
+    AUiControl_SetPosition(_BaseBox, 100, 100);
+    AUiControl_SetAlign(_BaseBox, AUiAlign_Client);
+    AUiControl_SetBevel(_BaseBox, AUiBevel_InnerNone + AUiBevel_OuterNone, 0);
 
-      RightSplitter := TSplitter(AUiSplitter_New(AControl(BasePanel),0));
-      RightSplitter.Align := alRight;
-      RightSplitter.Width := 3;
-      RightSplitter.Visible := False;
+    // --- Right ---
 
-      MainPanel := TPanel(AUiBox_New(AControl(BasePanel),0));
-      MainPanel.Align := alClient;
-      MainPanel.BevelInner := bvNone;
-      MainPanel.BevelOuter := bvNone;
+    _RightBox := AUiBox_New(_BaseBox,0);
+    AUiBox_SetDockSite(_RightBox, True);
+    AUiBox_SetDragMode(_RightBox, AUiDragMode_Automatic);
+    AUiControl_SetAlign(_RightBox, AUiAlign_Right);
+    AUiControl_SetWidth(_RightBox, 50);
+    AUiControl_SetBevel(_RightBox, AUiBevel_InnerNone + AUiBevel_OuterNone, 0);
+    AUiControl_SetColor(_RightBox, $C0F0C0);
 
-        BottomPanel := TPanel(AUiBox_New(AControl(MainPanel),0));
-        BottomPanel.Align := alBottom;
-        BottomPanel.Height := 50;
-        BottomPanel.DockSite := True;
-        BottomPanel.DragMode := dmAutomatic;
-        BottomPanel.Visible := False;
+    _RightSplitter := AUiSplitter_New(_BaseBox,0);
+    AUiControl_SetPosition(_RightSplitter, 0, 0);
+    AUiControl_SetAlign(_RightSplitter, AUiAlign_Right);
+    AUiControl_SetWidth(_RightSplitter, 3);
 
-        BottomSplitter := TSplitter(AUiSplitter_New(AControl(MainPanel),0));
-        BottomSplitter.Align := alBottom;
-        BottomSplitter.Height := 3;
+    // --- Main ---
+
+    _MainBox := AUiBox_New(_BaseBox,0);
+    AUiControl_SetAlign(_MainBox, AUiAlign_Client);
+    AUiControl_SetBevel(_MainBox, AUiBevel_InnerNone + AUiBevel_OuterNone, 0);
+
+    // --- Bottom ---
+
+    _BottomBox := AUiBox_New(_MainBox,0);
+    AUiBox_SetDockSite(_BottomBox, True);
+    AUiBox_SetDragMode(_BottomBox, AUiDragMode_Automatic);
+    AUiControl_SetAlign(_BottomBox, AUiAlign_Bottom);
+    AUiControl_SetHeight(_BottomBox, 50);
+    AUiControl_SetBevel(_BottomBox, AUiBevel_InnerNone + AUiBevel_OuterNone, 0);
+    AUiControl_SetColor(_BottomBox, $C0C0F0);
+
+    _BottomSplitter := AUiSplitter_New(_MainBox,0);
+    AUiControl_SetPosition(_BottomSplitter, 0, 0);
+    AUiControl_SetAlign(_BottomSplitter, AUiAlign_Bottom);
+    AUiControl_SetHeight(_BottomSplitter, 3);
+
+    AUiControl_SetVisible(_BaseBox, False);
+    AUiControl_SetVisible(_LeftSplitter, False);
+    AUiControl_SetVisible(_LeftBox, False);
   end;
 
   if (Format and MainWindowFormatCreateMenu = MainWindowFormatCreateMenu) then
   begin
-    MainMenu := TMainMenu.Create(Form);
-    Form.Menu := MainMenu;
+    AUiWindow_SetMenu(Form, AUiMenu_New(0));
   end;
-  AUi_SetMainWindow2(AWindow(Form), MainToolBar, AControl(MainStatusBar), Config);
+  AUi_SetMainWindow2(Form, MainToolBar, AControl(MainStatusBar), Config);
 end;
 
-function _MainWindow_GetLeftContainer: AControl;
+function _MainWindow_GetLeftContainer(): AControl;
 begin
-  Result := Integer(LeftPanel);
+  Result := _LeftBox;
 end;
 
-function _MainWindow_GetMainContainer: AControl;
+function _MainWindow_GetMainContainer(): AControl;
 begin
-  Result := Integer(MainPanel);
+  Result := _MainBox;
 end;
 
-function _MainWindow_GetRightContainer: AControl;
+function _MainWindow_GetRightContainer(): AControl;
 begin
-  Result := Integer(RightPanel);
+  Result := _RightBox;
 end;
 
 procedure _MainWindow_LoadConfig(Config: AConfig);
@@ -487,7 +513,7 @@ end;
 function AUiMainWindow_Create(Win: AWindow; Format: TMainWindowFormat; Config: AConfig): AError;
 begin
   try
-    _MainWindow_Create(TForm(Win), Format, Config);
+    _MainWindow_Create(Win, Format, Config);
     Result := 0;
   except
     Result := -1;
@@ -540,6 +566,18 @@ function AUiMainWindow_SetToolBar(ToolBar: AControl): AError;
 begin
   try
     FMainToolBar := ToolBar;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiMainWindow_ShowContainers(): AError;
+begin
+  try
+    AUiControl_SetVisible(_LeftBox, True);
+    AUiControl_SetVisible(_LeftSplitter, True);
+    AUiControl_SetVisible(_BaseBox, True);
     Result := 0;
   except
     Result := -1;

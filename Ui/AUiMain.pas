@@ -137,7 +137,7 @@ function DoRun(): AInteger; stdcall;
 begin
   {$ifdef UseSettings}
   if (FConfig <> 0) then
-    _MainWindow_LoadConfig(FConfig);
+    AUiMainWindow_LoadConfig(FConfig);
   {$endif}
   Application.Run();
   Result := 0;

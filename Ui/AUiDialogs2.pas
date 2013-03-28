@@ -2,7 +2,7 @@
 @Abstract AUiDialogs
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 19.02.2013
+@LastMod 28.03.2013
 }
 unit AUiDialogs2;
 
@@ -31,10 +31,7 @@ uses
   AUiLabels,
   AUiListBox,
   AUiTextView,
-  AUiWindows,
-  fInputDialog,
-  fLogin,
-  fPasswordDialog;
+  AUiWindows;
 
 // --- AUi ---
 
@@ -112,6 +109,333 @@ function AUi_ExecuteSelectDialogP(DialogType: AInt; const SelectList: APascalStr
 function AUi_ExecuteSelectDirectoryDialogP(var Directory: APascalString): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
+
+uses
+  Buttons,
+  Forms;
+
+type
+  TInputDialog = class
+    Form: TForm;
+    Edit1: TEdit;
+    Panel1: TPanel;
+    btnOk: TBitBtn;
+    btnCancel: TBitBtn;
+    Memo: TMemo;
+  end;
+
+  TLoginDialog = class
+    Form: TForm;
+    Panel2: TPanel;
+    Label1: TLabel;
+    Label2: TLabel;
+    edtUserName: TEdit;
+    edtPassword: TEdit;
+    pnlButtons: TPanel;
+    btnOk: TBitBtn;
+    btnCancel: TBitBtn;
+    cbSavePassword: TCheckBox;
+  end;
+
+  TPasswordDialog = record
+    Form: TForm;
+    btnOk: TBitBtn;
+    btnCancel: TBitBtn;
+    lblValue1: TLabel;
+    edtValue1: TEdit;
+    lblValue2: TLabel;
+    edtValue2: TEdit;
+  end;
+
+// --- Private ---
+
+procedure _InputDialog_Init(var Dialog: TInputDialog);
+var
+  Form: TForm;
+begin
+  Form := Dialog.Form;
+
+  Form.Left := 252;
+  Form.Top := 176;
+  Form.BorderStyle := bsToolWindow;
+  Form.ClientHeight := 138;
+  Form.ClientWidth := 277;
+  Form.Color := clBtnFace;
+  Form.Font.Color := clWindowText;
+
+  Dialog.Edit1 := TEdit.Create(Form);
+  Dialog.Edit1.Parent := Form;
+  Dialog.Edit1.Left := 12;
+  Dialog.Edit1.Top := 66;
+  Dialog.Edit1.Width := 249;
+  Dialog.Edit1.Height := 24;
+  Dialog.Edit1.CharCase := ecUpperCase;
+  Dialog.Edit1.TabOrder := 0;
+
+  Dialog.Panel1 := TPanel.Create(Form);
+  Dialog.Panel1.Parent := Form;
+  Dialog.Panel1.Left := 0;
+  Dialog.Panel1.Top := 105;
+  Dialog.Panel1.Width := 277;
+  Dialog.Panel1.Height := 33;
+  Dialog.Panel1.Align := alBottom;
+  Dialog.Panel1.TabOrder := 1;
+
+  Dialog.btnOk := TBitBtn.Create(Dialog.Panel1);
+  Dialog.btnOk.Parent := Dialog.Panel1;
+  Dialog.btnOk.Left := 40;
+  Dialog.btnOk.Top := 4;
+  Dialog.btnOk.Width := 75;
+  Dialog.btnOk.Height := 25;
+  Dialog.btnOk.TabOrder := 0;
+  Dialog.btnOk.Kind := bkOK;
+
+  Dialog.btnCancel := TBitBtn.Create(Dialog.Panel1);
+  Dialog.btnCancel.Parent := Dialog.Panel1;
+  Dialog.btnCancel.Left := 152;
+  Dialog.btnCancel.Top := 4;
+  Dialog.btnCancel.Width := 75;
+  Dialog.btnCancel.Height := 25;
+  Dialog.btnCancel.Caption := 'Cancel';
+  Dialog.btnCancel.TabOrder := 1;
+  Dialog.btnCancel.Kind := bkCancel;
+
+  Dialog.Memo := TMemo.Create(Form);
+  Dialog.Memo.Parent := Form;
+  Dialog.Memo.Left := 0;
+  Dialog.Memo.Top := 0;
+  Dialog.Memo.Width := 277;
+  Dialog.Memo.Height := 49;
+  Dialog.Memo.Align := alTop;
+  Dialog.Memo.BorderStyle := bsNone;
+  Dialog.Memo.Color := clBtnFace;
+  Dialog.Memo.ReadOnly := True;
+  Dialog.Memo.TabOrder := 2;
+end;
+
+function _InputDialog_InputBox(const Caption, Text: APascalString; var Value: APascalString): ABool;
+var
+  InputDialog: TInputDialog;
+begin
+  InputDialog.Form := TForm.Create(nil);
+  _InputDialog_Init(InputDialog);
+  try
+    InputDialog.Form.Caption := Caption;
+    InputDialog.Edit1.Text := Value;
+    Result := (InputDialog.Form.ShowModal() = mrOk);
+    if Result then
+      Value := InputDialog.Edit1.Text;
+  finally
+    InputDialog.Form.Free();
+  end;
+end;
+
+function _LoginDialog_Init(var Dialog: TLoginDialog): AError;
+var
+  Form: TForm;
+begin
+  Form := Dialog.Form;
+
+  Form.BorderIcons := [biSystemMenu];
+  Form.BorderStyle := bsDialog;
+  Form.ClientHeight := 118;
+  Form.ClientWidth := 248;
+  Form.Position := poScreenCenter;
+
+  Dialog.Panel2 := TPanel.Create(Form);
+  Dialog.Panel2.Parent := Form;
+  Dialog.Panel2.Left := 0;
+  Dialog.Panel2.Top := 0;
+  Dialog.Panel2.Width := 248;
+  Dialog.Panel2.Height := 77;
+  Dialog.Panel2.Align := alClient;
+  Dialog.Panel2.TabOrder := 0;
+
+    Dialog.Label1 := TLabel.Create(Dialog.Panel2);
+    Dialog.Label1.Parent := Dialog.Panel2;
+    Dialog.Label1.Left := 8;
+    Dialog.Label1.Top := 12;
+    Dialog.Label1.Width := 99;
+    Dialog.Label1.Height := 13;
+    Dialog.Label1.Caption := 'User name';
+
+    Dialog.Label2 := TLabel.Create(Dialog.Panel2);
+    Dialog.Label2.Parent := Dialog.Panel2;
+    Dialog.Label2.Left := 8;
+    Dialog.Label2.Top := 39;
+    Dialog.Label2.Width := 115;
+    Dialog.Label2.Height := 13;
+    Dialog.Label2.Caption := 'User password';
+
+    Dialog.edtUserName := TEdit.Create(Dialog.Panel2);
+    Dialog.edtUserName.Parent := Dialog.Panel2;
+    Dialog.edtUserName.Left := 128;
+    Dialog.edtUserName.Top := 9;
+    Dialog.edtUserName.Width := 110;
+    Dialog.edtUserName.Height := 21;
+    Dialog.edtUserName.TabOrder := 0;
+
+    Dialog.edtPassword := TEdit.Create(Dialog.Panel2);
+    Dialog.edtPassword.Parent := Dialog.Panel2;
+    Dialog.edtPassword.Left := 128;
+    Dialog.edtPassword.Top := 36;
+    Dialog.edtPassword.Width := 110;
+    Dialog.edtPassword.Height := 21;
+    Dialog.edtPassword.PasswordChar := '*';
+    Dialog.edtPassword.TabOrder := 1;
+
+    Dialog.cbSavePassword := TCheckBox.Create(Dialog.Panel2);
+    Dialog.cbSavePassword.Parent := Dialog.Panel2;
+    Dialog.cbSavePassword.Left := 8;
+    Dialog.cbSavePassword.Top := 56;
+    Dialog.cbSavePassword.Width := 129;
+    Dialog.cbSavePassword.Height := 17;
+    Dialog.cbSavePassword.Caption := 'Запомнить пароль';
+    Dialog.cbSavePassword.TabOrder := 2;
+    Dialog.cbSavePassword.Visible := False;
+
+  Dialog.pnlButtons := TPanel.Create(Form);
+  Dialog.pnlButtons.Parent := Form;
+  Dialog.pnlButtons.Left := 0;
+  Dialog.pnlButtons.Top := 77;
+  Dialog.pnlButtons.Width := 248;
+  Dialog.pnlButtons.Height := 41;
+  Dialog.pnlButtons.Align := alBottom;
+  Dialog.pnlButtons.TabOrder := 1;
+
+    Dialog.btnOk := TBitBtn.Create(Dialog.pnlButtons);
+    Dialog.btnOk.Parent := Dialog.pnlButtons;
+    Dialog.btnOk.Left := 9;
+    Dialog.btnOk.Top := 6;
+    Dialog.btnOk.Width := 90;
+    Dialog.btnOk.Height := 30;
+    Dialog.btnOk.Caption := 'OK';
+    Dialog.btnOk.Default := True;
+    Dialog.btnOk.ModalResult := 1;
+    Dialog.btnOk.TabOrder := 0;
+
+    Dialog.btnCancel := TBitBtn.Create(Dialog.pnlButtons);
+    Dialog.btnCancel.Parent := Dialog.pnlButtons;
+    Dialog.btnCancel.Left := 149;
+    Dialog.btnCancel.Top := 5;
+    Dialog.btnCancel.Width := 90;
+    Dialog.btnCancel.Height := 30;
+    Dialog.btnCancel.Caption := 'Cancel';
+    Dialog.btnCancel.TabOrder := 1;
+    Dialog.btnCancel.Kind := bkCancel;
+
+  Form.ActiveControl := Dialog.edtUserName;
+end;
+
+function _PasswordDialog_Init(var Dialog: TPasswordDialog; const Caption, Label1, Label2, Value1, Value2: string): AError;
+var
+  Form: TForm;
+begin
+  Form := Dialog.Form;
+  Form.BorderStyle := bsDialog;
+  Form.Caption := Caption;
+  Form.ClientHeight := 135;
+  Form.ClientWidth := 221;
+  Form.Font.Style := [fsBold];
+  Form.Position := poScreenCenter;
+
+  Dialog.lblValue1 := TLabel.Create(Form);
+  Dialog.lblValue1.Parent := Form;
+  Dialog.lblValue1.Left := 14;
+  Dialog.lblValue1.Top := 17;
+  Dialog.lblValue1.Caption := Label1;
+
+  Dialog.lblValue2 := TLabel.Create(Form);
+  Dialog.lblValue2.Parent := Form;
+  Dialog.lblValue2.Left := 12;
+  Dialog.lblValue2.Top := 55;
+  Dialog.lblValue2.Caption := Label2;
+
+  Dialog.edtValue1 := TEdit.Create(Form);
+  Dialog.edtValue1.Parent := Form;
+  Dialog.edtValue1.Left := 80;
+  Dialog.edtValue1.Top := 13;
+  Dialog.edtValue1.Width := 100;
+  Dialog.edtValue1.Height := 21;
+  Dialog.edtValue1.TabOrder := 0;
+  Dialog.edtValue1.Text := Value1;
+
+  Dialog.edtValue2 := TEdit.Create(Form);
+  Dialog.edtValue2.Parent := Form;
+  Dialog.edtValue2.Left := 80;
+  Dialog.edtValue2.Top := 48;
+  Dialog.edtValue2.Width := 100;
+  Dialog.edtValue2.Height := 21;
+  Dialog.edtValue2.TabOrder := 1;
+  Dialog.edtValue2.Text := Value2;
+
+  Dialog.btnOk := TBitBtn.Create(Form);
+  Dialog.btnOk.Parent := Form;
+  Dialog.btnOk.Left := 12;
+  Dialog.btnOk.Top := 96;
+  Dialog.btnOk.Width := 77;
+  Dialog.btnOk.Height := 27;
+  Dialog.btnOk.TabOrder := 2;
+  Dialog.btnOk.Kind := bkOK;
+  Dialog.btnOk.Margin := 2;
+  Dialog.btnOk.Spacing := -1;
+
+  Dialog.btnCancel := TBitBtn.Create(Form);
+  Dialog.btnCancel.Parent := Form;
+  Dialog.btnCancel.Left := 115;
+  Dialog.btnCancel.Top := 96;
+  Dialog.btnCancel.Width := 78;
+  Dialog.btnCancel.Height := 27;
+  Dialog.btnCancel.Caption := 'Cancel';
+  Dialog.btnCancel.TabOrder := 3;
+  Dialog.btnCancel.Kind := bkCancel;
+  Dialog.btnCancel.Margin := 2;
+  Dialog.btnCancel.Spacing := -1;
+
+  Form.ActiveControl := Dialog.edtValue1;
+end;
+
+function _PasswordDialog_InputBox1(const Caption, Text: APascalString;
+    var Value: APascalString): ABool;
+var
+  Dialog: TPasswordDialog;
+begin
+  Dialog.Form := TForm.Create(nil);
+  _PasswordDialog_Init(Dialog, Caption, Text, '', '', Value);
+  try
+    Dialog.lblValue2.Visible := False;
+    Dialog.edtValue1.Visible := False;
+    Result := (Dialog.Form.ShowModal() = mrOk);
+    if Result then
+    begin
+      Value := Dialog.edtValue2.Text;
+    end;
+  finally
+    Dialog.Form.Free();
+  end;
+end;
+
+function _PasswordDialog_InputBox2(const Caption, Text1, Text2: APascalString;
+    var Value1, Value2: APascalString): ABool;
+var
+  Dialog: TPasswordDialog;
+begin
+  Dialog.Form := TForm.Create(nil);
+  _PasswordDialog_Init(Dialog, Caption, Text1, Text2, Value1, Value2);
+  try
+    if (Dialog.edtValue1.Text <> '') then
+      Dialog.Form.ActiveControl := Dialog.edtValue2;
+
+    Result := (Dialog.Form.ShowModal() = mrOk);
+    if Result then
+    begin
+      Value1 := Dialog.edtValue1.Text;
+      Value2 := Dialog.edtValue2.Text;
+    end;
+  finally
+    Dialog.Form.Free();
+  end;
+end;
 
 // --- AUi ---
 
@@ -260,28 +584,20 @@ end;
 function AUi_ExecuteInputBox2P(const Caption, Text1, Text2: APascalString;
     var Value1, Value2: APascalString): ABool;
 begin
-  {$IFDEF FPC}
-  Result := False;
-  {$ELSE}
   try
-    Result := fPasswordDialog.InputBox2(Caption, Text1, Text2, Value1, Value2);
+    Result := _PasswordDialog_InputBox2(Caption, Text1, Text2, Value1, Value2);
   except
     Result := False;
   end;
-  {$ENDIF}
 end;
 
 function AUi_ExecuteInputBox3P(const Caption, Text: APascalString; var Value: APascalString): ABool;
 begin
-  {$IFDEF FPC}
-  Result := False;
-  {$ELSE}
   try
-    Result := fInputDialog.InputBox(Caption, Text, Value);
+    Result := _InputDialog_InputBox(Caption, Text, Value);
   except
     Result := False;
   end;
-  {$ENDIF}
 end;
 
 function AUi_ExecuteInputBox4P(const Caption, Prompt: APascalString; var Value: APascalString): ABool;
@@ -327,31 +643,28 @@ begin
 end;
 
 function AUi_ExecuteLoginDialogP(var UserName, Password: APascalString; IsSave: ABool): ABool;
-{$IFNDEF FPC}
 var
-  fmLogin: TLoginForm;
-{$ENDIF}
+  LoginDialog: TLoginDialog;
 begin
-  {$IFDEF FPC}
-  Result := False;
-  {$ELSE}
   try
-    fmLogin := TLoginForm.Create(nil);
+    LoginDialog.Form := TForm.Create(nil);
+    _LoginDialog_Init(LoginDialog);
     try
-      fmLogin.UserName := UserName;
-      Result := (fmLogin.ShowModal() = mrOk);
+      LoginDialog.edtUserName.Text := UserName;
+      if (UserName <> '') then
+        LoginDialog.Form.ActiveControl := LoginDialog.edtPassword;
+      Result := (LoginDialog.Form.ShowModal() = mrOk);
       if Result then
       begin
-        UserName := fmLogin.UserName;
-        Password := fmLogin.UserPassword;
+        UserName := LoginDialog.edtUserName.Text;
+        Password := LoginDialog.edtPassword.Text;
       end;
     finally
-      fmLogin.Free();
+      LoginDialog.Form.Free();
     end;
   except
     Result := False;
   end;
-  {$ENDIF}
 end;
 
 function AUi_ExecuteMessageDialog2P(const Msg: APascalString; MsgDlgTypeFlag: AMessageBoxFlags;

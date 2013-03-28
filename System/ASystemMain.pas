@@ -2,7 +2,7 @@
 @Abstract ASystem
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.09.2011
-@LastMod 22.02.2013
+@LastMod 27.03.2013
 }
 unit ASystemMain;
 
@@ -16,7 +16,6 @@ unit ASystemMain;
 
 {$ifdef UseRuntime}
   {$ifndef NoRuntimeEvents}
-    {$DEFINE USE_EVENTS}
     {$define UseEvents}
   {$endif}
 {$endif}

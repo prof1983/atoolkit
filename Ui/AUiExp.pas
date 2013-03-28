@@ -2,7 +2,7 @@
 @Abstract User Interface exports
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.04.2011
-@LastMod 20.02.2013
+@LastMod 28.03.2013
 }
 unit AUiExp;
 
@@ -20,7 +20,8 @@ uses
   AUiControlsA,
   AUiDataSource,
   AUiDialogs,
-  AUiDialogs2,
+  AUiDialogsEx1,
+  AUiDialogsEx2,
   AUiEdit,
   AUiErrorDialog,
   AUiEvents,

@@ -2,7 +2,7 @@
 @Abstract AUiDialogs
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 20.02.2013
+@LastMod 28.03.2013
 }
 unit AUiDialogs;
 
@@ -11,31 +11,15 @@ unit AUiDialogs;
 interface
 
 uses
-  Controls,
-  Forms,
-  Graphics,
   ABase,
   ABaseTypes,
   AStringMain,
-  AUiAboutDialog,
   AUiBase,
   AUiBox,
   AUiButtons,
   AUiConsts,
   AUiControls,
-  AUiTextView,
   AUiWindows;
-
-// --- AUi ---
-
-function AUi_ExecuteMessageDialog1(const Text, Caption: AString_Type;
-    Flags: AMessageBoxFlags): ADialogBoxCommands; {$ifdef AStdCall}stdcall;{$endif}
-
-function AUi_ExecuteMessageDialog1A(Text, Caption: AStr;
-    Flags: AMessageBoxFlags): ADialogBoxCommands; {$ifdef AStdCall}stdcall;{$endif}
-
-function AUi_ExecuteMessageDialog1P(const Text, Caption: APascalString;
-    Flags: AMessageBoxFlags): ADialogBoxCommands;
 
 // --- AUiDialog ---
 
@@ -138,37 +122,6 @@ begin
     Result := 0;
   except
     Result := -1;
-  end;
-end;
-
-// --- AUi ---
-
-function AUi_ExecuteMessageDialog1(const Text, Caption: AString_Type;
-    Flags: AMessageBoxFlags): ADialogBoxCommands;
-begin
-  Result := AUi_ExecuteMessageDialog1P(
-      AString_ToPascalString(Text),
-      AString_ToPascalString(Caption),
-      Flags);
-end;
-
-function AUi_ExecuteMessageDialog1A(Text, Caption: AStr;
-    Flags: AMessageBoxFlags): ADialogBoxCommands;
-begin
-  Result := AUi_ExecuteMessageDialog1P(AnsiString(Text), AnsiString(Caption), Flags);
-end;
-
-function AUi_ExecuteMessageDialog1P(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands;
-var
-  PrevCursor: TCursor;
-begin
-  try
-    PrevCursor := Screen.Cursor;
-    Screen.Cursor := crDefault;
-    Result := Application.MessageBox(PChar(string(Text)), PChar(string(Caption)), Flags);
-    Screen.Cursor := PrevCursor;
-  except
-    Result := 0;
   end;
 end;
 
@@ -303,7 +256,7 @@ begin
     _DialogArray[I].ButtonsBox := Box;
 
     AUiWindow_SetPosition(Window, AUiWindowPosition_OwnerFormCenter);
-    if (Buttons = MB_OK) then
+    if (Buttons = AMessageBoxFlags_Ok) then
     begin
       Button := AUiButton_New(Box);
       AUiControl_SetTextP(Button, cOkText);
@@ -311,7 +264,7 @@ begin
       AUiButton_SetKind(Button, uibkOk);
       _DialogArray[I].Button1 := Button;
     end
-    else if (Buttons = MB_OKCANCEL) then
+    else if (Buttons = AMessageBoxFlags_OkCancel) then
     begin
       Button := AUiButton_New(Box);
       AUiControl_SetTextP(Button, cOkText);
@@ -325,7 +278,7 @@ begin
       AUiButton_SetKind(Button, uibkCancel);
       _DialogArray[I].Button2 := Button;
     end
-    else if (Buttons = MB_ApplyOkCancel) then
+    else if (Buttons = AMessageBoxFlags_ApplyOkCancel) then
     begin
       Button := AUiButton_New(Box);
       AUiControl_SetPosition(Button, 5, 5);

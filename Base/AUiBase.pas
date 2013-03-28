@@ -2,7 +2,7 @@
 @Abstract User Interface base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 26.02.2013
+@LastMod 28.03.2013
 }
 unit AUiBase;
 
@@ -33,6 +33,16 @@ type
   ADialog = type AInteger;
 type
   PADataSource = type AInteger;
+
+type
+  AUiBorderStyle = type AInt;
+const
+  AUiBorderStyle_None = 0;
+  AUiBorderStyle_Single = 1;
+  AUiBorderStyle_Sizeable = 2;
+  AUiBorderStyle_Dialog = 3;
+  AUiBorderStyle_ToolWindow = 4;
+  AUiBorderStyle_SizeToolWin = 5;
 
 type
   ABoxType = AInt;

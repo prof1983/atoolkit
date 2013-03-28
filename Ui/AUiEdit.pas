@@ -2,13 +2,18 @@
 @Abstract AUiEdit
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.01.2010
-@LastMod 19.02.2013
+@LastMod 28.03.2013
 }
 unit AUiEdit;
 
 interface
 
 {define AStdCall}
+{define NoSpin}
+
+{$ifndef NoSpin}
+  {$define UseSpin}
+{$endif}
 
 uses
   Controls, StdCtrls,
@@ -41,6 +46,8 @@ function AUiEdit_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$end
 function AUiEdit_NewEx(Parent: AControl; EditType: AInt; OnClick: ACallbackProc;
     Left, Top, Width: AInt): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiEdit_SetPasswordChar(Edit: AControl; Value: AChar): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 // ---
 
 function Edit_CheckDate(Edit: TCustomEdit{TMaskEdit}; out Value: TDateTime): ABool;
@@ -51,8 +58,10 @@ function Edit_CheckInt(Edit: TCustomEdit; out Value: AInt): ABool;
 
 implementation
 
+{$ifdef UseSpin}
 uses
   AUiSpinEdit;
+{$endif}
 
 // --- AUiEdit ---
 
@@ -157,6 +166,7 @@ begin
           AUiControl_SetTextP(Button, '...');
           AUiControl_SetOnClick(Button, OnClick);
         end;
+      {$ifdef UseSpin}
       3:
         begin
           Result := AUiSpinEdit_New(Parent);
@@ -164,11 +174,22 @@ begin
           AUiControl_SetPosition(Result, Left, Top);
           AUiControl_SetWidth(Result, Width);
         end
+      {$endif}
     else
       Result := 0;
     end;
   except
     Result := 0;
+  end;
+end;
+
+function AUiEdit_SetPasswordChar(Edit: AControl; Value: AChar): AError;
+begin
+  try
+    TEdit(Edit).PasswordChar := Value;
+    Result := 0;
+  except
+    Result := -1;
   end;
 end;
 

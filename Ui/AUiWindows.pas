@@ -2,7 +2,7 @@
 @Abstract User Interface window functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 11.08.2011
-@LastMod 19.02.2013
+@LastMod 28.03.2013
 }
 unit AUiWindows;
 
@@ -26,7 +26,9 @@ function AUiWindow_GetMenu(Window: AWindow): AMenu; {$ifdef AStdCall}stdcall;{$e
 
 function AUiWindow_New(): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUiWindow_SetBorderStyle(Window: AWindow; BorderStyle: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUiWindow_SetActiveControl(Window: AWindow; Control: AControl): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiWindow_SetBorderStyle(Window: AWindow; BorderStyle: AUiBorderStyle): AError; {$ifdef AStdCall}stdcall;{$endif} deprecated {$ifdef ADeprText}'Use AUiControl_SetBorderStyle()'{$endif};
 
 function AUiWindow_SetFormStyle(Window: AWindow; FormStyle: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -121,14 +123,19 @@ begin
   end;
 end;
 
-function AUiWindow_SetBorderStyle(Window: AWindow; BorderStyle: AInt): AError;
+function AUiWindow_SetActiveControl(Window: AWindow; Control: AControl): AError;
 begin
   try
-    TForm(Window).BorderStyle := TBorderStyle(BorderStyle);
+    TForm(Window).ActiveControl := TWinControl(Control);
     Result := 0;
   except
     Result := -1;
   end;
+end;
+
+function AUiWindow_SetBorderStyle(Window: AWindow; BorderStyle: AUiBorderStyle): AError;
+begin
+  Result := AUiControl_SetBorderStyle(Window, BorderStyle);
 end;
 
 function AUiWindow_SetFormStyle(Window: AWindow; FormStyle: AInt): AError;

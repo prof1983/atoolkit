@@ -2,7 +2,7 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 26.02.2013
+@LastMod 28.02.2013
 }
 unit AUiControls;
 
@@ -64,6 +64,8 @@ function AUiControl_SetAnchors(Control: AControl; Anchors: AUiAnchors): AError; 
 
 function AUiControl_SetBevel(Control: AControl; Value: AUiBevel; Width: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiControl_SetBorderStyle(Control: AControl; BorderStyle: AUiBorderStyle): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiControl_SetClientSize(Control: AControl; ClientWidth, ClientHeight: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetColor(Control: AControl; Color: AColor): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -112,6 +114,8 @@ function AUiControl_SetOnClick(Control: AControl; Value: ACallbackProc): AError;
 function AUiControl_SetPosition(Control: AControl; Left, Top: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetSize(Control: AControl; Width, Height: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_SetTabOrder(Control: AControl; Value: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetTabStop(Control: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -462,6 +466,37 @@ begin
   end;
 end;
 
+function AUiControl_SetBorderStyle(Control: AControl; BorderStyle: AUiBorderStyle): AError;
+var
+  Obj: TObject;
+begin
+  try
+    Obj := TObject(Control);
+    if (Obj is TEdit) then
+      TEdit(Control).BorderStyle := TBorderStyle(BorderStyle)
+    else if (Obj is TForm) then
+      TForm(Obj).BorderStyle := TBorderStyle(BorderStyle)
+    else if (Obj is TListBox) then
+      TListBox(Obj).BorderStyle := TBorderStyle(BorderStyle)
+    else if (Obj is TListView) then
+      TListView(Obj).BorderStyle := TBorderStyle(BorderStyle)
+    else if (Obj is TMemo) then
+      TMemo(Obj).BorderStyle := TBorderStyle(BorderStyle)
+    else if (Obj is TPanel) then
+      TPanel(Obj).BorderStyle := TBorderStyle(BorderStyle)
+    else if (Obj is TTreeView) then
+      TTreeView(Obj).BorderStyle := TBorderStyle(BorderStyle)
+    else
+    begin
+      Result := -2;
+      Exit;
+    end;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
 function AUiControl_SetClientSize(Control: AControl; ClientWidth, ClientHeight: AInt): AError;
 begin
   try
@@ -756,6 +791,16 @@ begin
       C.Width := Width;
       C.Height := Height;
     end;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiControl_SetTabOrder(Control: AControl; Value: AInt): AError;
+begin
+  try
+    TWinControl(Control).TabOrder := 0;
     Result := 0;
   except
     Result := -1;

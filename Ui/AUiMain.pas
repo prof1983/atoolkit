@@ -2,7 +2,7 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 26.03.2013
+@LastMod 28.03.2013
 }
 unit AUiMain;
 
@@ -50,7 +50,7 @@ uses
   {$IFDEF OLDMAINFORM}fMain,{$ENDIF}
   AUiBase,
   AUiData,
-  AUiDialogs,
+  AUiDialogsEx1,
   AUiErrorDialog,
   {$ifdef UseMainWindow}
   AUiMainWindow,

@@ -2,7 +2,7 @@
 @Abstract AUiReports
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 13.03.2013
+@LastMod 29.03.2013
 }
 unit AUiReports;
 
@@ -21,7 +21,11 @@ uses
   ABase,
   AStringMain,
   {$IFDEF USE_REPORTS}fReport, fSimpleReport,{$ENDIF}
-  AUiBase, AUiBox, AUiControls, AUiData, AUiTextView;
+  AUiBase,
+  AUiBox,
+  AUiControls,
+  AUiData,
+  AUiTextView;
 
 // --- AUiReport ---
 

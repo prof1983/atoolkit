@@ -1,17 +1,15 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.12.2012
-@LastMod 19.02.2013
+@LastMod 29.03.2013
 }
 unit AUiWaitWin;
 
 {define AStdCall}
-{define UseWaitForm}
 
 interface
 
 uses
-  {$ifdef UseWaitForm}fWait,{$endif}
   ABase,
   AStringMain,
   AUiBase,
@@ -127,22 +125,8 @@ end;
 
 function AUiWaitWin_NewP(const Caption, Text: APascalString; MaxPosition: AInt): AWindow;
 var
-  {$ifdef UseWaitForm}
-  WaitForm: TWaitForm;
-  {$else}
   WaitWin: AWindow;
-  {$endif}
 begin
-  {$ifdef UseWaitForm}
-  try
-    WaitForm := TWaitForm.Create(nil);
-    WaitForm.Init(Caption, Text, MaxPosition);
-    AUiData.AddObject(WaitForm);
-    Result := AWindow(WaitForm);
-  except
-    Result := 0;
-  end;
-  {$else}
   WaitWin := AUiWindow_New();
   if (WaitWin = 0) then
   begin
@@ -155,7 +139,6 @@ begin
 
   _Init(WaitWin, Caption, Text, MaxPosition);
   Result := WaitWin;
-  {$endif}
 end;
 
 function AUiWaitWin_SetMaxPosition(WaitWin: AWindow; MaxPosition: AInt): AError;
@@ -170,22 +153,7 @@ begin
     Result := 0;
     Exit;
   end;
-  {$ifdef UseWaitForm}
-  if not(TObject(WaitWin) is TWaitForm) then
-  begin
-    Result := -3;
-    Exit;
-  end;
-  try
-    TWaitForm(WaitWin).ProgressBar.Max := MaxPosition;
-    AUi_ProcessMessages();
-    Result := 0;
-  except
-    Result := -1;
-  end;
-  {$else}
   Result := -2;
-  {$endif}
 end;
 
 function AUiWaitWin_SetPosition(WaitWin: AWindow; Position: AInt): AError;
@@ -200,22 +168,7 @@ begin
     Result := 0;
     Exit;
   end;
-  {$ifdef UseWaitForm}
-  if not(TObject(WaitWin) is TWaitForm) then
-  begin
-    Result := -3;
-    Exit;
-  end;
-  try
-    TWaitForm(WaitWin).ProgressBar.Position := Position;
-    AUi_ProcessMessages();
-    Result := 0;
-  except
-    Result := -1;
-  end;
-  {$else}
   Result := -2;
-  {$endif}
 end;
 
 function AUiWaitWin_SetText(Window: AWindow; const Text: AString_Type): AError;
@@ -235,22 +188,7 @@ begin
     Result := 0;
     Exit;
   end;
-  {$ifdef UseWaitWin}
-  if not(TObject(WaitWin) is TWaitForm) then
-  begin
-    Result := -3;
-    Exit;
-  end;
-  try
-    TWaitForm(Window).lblText.Caption := Text;
-    AUi_ProcessMessages();
-    Result := 0;
-  except
-    Result := -1;
-  end;
-  {$else}
   Result := -2;
-  {$endif}
 end;
 
 function AUiWaitWin_StepBy(Window: AWindow; Step: AInt): AInt;
@@ -264,22 +202,7 @@ begin
     AUi_ProcessMessages();
     Exit;
   end;
-  {$ifdef UseWaitWin}
-  if not(TObject(WaitWin) is TWaitForm) then
-  begin
-    Result := -3;
-    Exit;
-  end;
-  try
-    TWaitForm(Window).ProgressBar.Position := TWaitForm(Window).ProgressBar.Position + 1;
-    AUi_ProcessMessages();
-    Result := 0;
-  except
-    Result := -1;
-  end;
-  {$else}
   Result := -2;
-  {$endif}
 end;
 
 end.

@@ -209,6 +209,23 @@ begin
   end;
 end;
 
+function _FormatFloat(Value: AFloat; Digits, DigitsAfterComma: AInt): APascalString;
+var
+  FormatS: string;
+begin
+  if (Digits < 0) or (Digits > 99) or (DigitsAfterComma < 0) or (DigitsAfterComma > 9) then
+  begin
+    Result := AUtils_FloatToStr2P(Value, DigitsAfterComma, True, False);
+    Exit;
+  end;
+
+  if (Digits >= 10) then
+    FormatS := '%' + Chr(Ord('0')+(Digits div 10)) + Chr(Ord('0')+(Digits mod 10)) + '.' + Chr(Ord('0')+DigitsAfterComma) + 'f'
+  else
+    FormatS := '%' + Chr(Ord('0')+Digits) + '.' + Chr(Ord('0')+DigitsAfterComma) + 'f';
+  Result := Format(FormatS, [Value]);
+end;
+
 {** Заменяет все точки на запятые или все запятые на точки в зависимости от региональных настроек.
     Если параметр DecimalSeparator указан, то региональные настройки игнорируются. }
 function _ReplaceComma(const S: APascalString; DecimalSeparator: AChar; ClearSpace: ABool): APascalString;
@@ -613,17 +630,11 @@ begin
 end;
 
 function AUtils_FormatFloatP(Value: AFloat; DigitsBeforeComma, DigitsAfterComma: AInt): APascalString;
-var
-  FormatS: string;
 begin
   try
-    if (DigitsBeforeComma >= 0) and (DigitsBeforeComma <= 9) and (DigitsAfterComma >= 0) and (DigitsAfterComma <= 9) then
-    begin
-      FormatS := '%' + Chr(Ord('0')+DigitsBeforeComma) + '.' + Chr(Ord('0')+DigitsAfterComma) + 'f';
-      Result := Format(FormatS,[Value]);
-    end
-    else
-      Result := AUtils_FloatToStr2P(Value, DigitsAfterComma, True, False);
+    if (DigitsAfterComma > 0) then
+      Inc(DigitsAfterComma);
+    Result := _FormatFloat(Value, DigitsBeforeComma + DigitsAfterComma, DigitsAfterComma);
   except
     Result := '';
   end;

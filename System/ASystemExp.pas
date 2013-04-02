@@ -2,7 +2,7 @@
 @Abstract ASystem exports
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.08.2007
-@LastMod 31.01.2013
+@LastMod 01.04.2013
 }
 unit ASystemExp;
 
@@ -18,20 +18,25 @@ uses
   ASystemResourceString;
 
 exports
-  ASystem_GetConfig,
+  ASystem_Fin,
+  ASystem_GetComments,
   ASystem_GetCompanyName,
+  ASystem_GetConfig,
+  ASystem_GetConfigDirectoryPath,
   ASystem_GetCopyright,
   ASystem_GetDataDirectoryPath,
   ASystem_GetDescription,
   ASystem_GetDirectoryPath,
   ASystem_GetExeName,
   ASystem_GetExePath,
+  ASystem_GetParamStr,
   ASystem_GetProductName,
   ASystem_GetProductVersionStr,
   ASystem_GetProgramName,
   ASystem_GetProgramVersionStr,
   ASystem_GetTitle,
   ASystem_GetUrl,
+  ASystem_Init,
   ASystem_GetResourceString,
   {$ifdef UseEvents}
   ASystem_OnAfterRun_Connect,
@@ -43,13 +48,18 @@ exports
   ASystem_PrepareA,
   ASystem_ProcessMessages,
   ASystem_SetConfig,
-  ASystem_ShowError,
-  ASystem_ShowMessage,
-  ASystem_ShowMessageEx,
-  ASystem_Shutdown,
+  ASystem_SetDataDirectoryPath,
   ASystem_SetOnProcessMessages,
   ASystem_SetOnShowErrorA,
-  ASystem_SetOnShowMessageA;
+  ASystem_SetOnShowMessageA,
+  ASystem_ShellExecute,
+  ASystem_ShowError,
+  ASystem_ShowErrorA,
+  ASystem_ShowMessage,
+  ASystem_ShowMessageA,
+  ASystem_ShowMessageEx,
+  ASystem_ShowMessageExA,
+  ASystem_Shutdown;
 
 implementation
 

@@ -6,7 +6,7 @@
 }
 unit ASettingsExp;
 
-{$define ASettings_Old}
+{define ASettings_Old}
 
 interface
 

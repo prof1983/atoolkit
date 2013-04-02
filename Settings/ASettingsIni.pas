@@ -7,7 +7,7 @@
 unit ASettingsIni;
 
 {define AStdCall}
-{$define ASettings_Old}
+{define ASettings_Old}
 
 interface
 

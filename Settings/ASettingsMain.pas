@@ -9,7 +9,7 @@ unit ASettingsMain;
 {$I A.inc}
 
 {define AStdCall}
-{$define ASettings_Old}
+{define ASettings_Old}
 
 {$ifndef NoXmlNode}
   {$define UseXmlNode}
@@ -750,6 +750,7 @@ begin
       AString_SetP(Value, DefValue);
       PSettings(Settings)^.Control.ReadString(Settings, SectionStr, NameStr, Value);
       Result := AString_ToPascalString(Value);
+      Exit;
     end;
     {$ifdef ASettings_Old}
     if (TObject(Settings) is TAbstractSettings) then

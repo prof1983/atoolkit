@@ -2,7 +2,7 @@
 @Abstract AUtils - Main
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.09.2011
-@LastMod 20.02.2013
+@LastMod 02.04.2013
 }
 unit AUtilsMain;
 
@@ -185,6 +185,8 @@ function AUtils_TryStrToFloat64P(const S: APascalString; var Value: AFloat64): A
 function AUtils_TryStrToInt(const S: AString_Type; var Value: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_TryStrToIntP(const S: APascalString; var Value: AInt): ABool;
+
+function AUtils_StrToUpperP(const S: APascalString): APascalString;
 
 implementation
 
@@ -1103,6 +1105,15 @@ begin
     Result := SysUtils.TryStrToInt(SysUtils.Trim(S), Value);
   except
     Result := False;
+  end;
+end;
+
+function AUtils_StrToUpperP(const S: APascalString): APascalString;
+begin
+  try
+    Result := SysUtils.UpperCase(S);
+  except
+    Result := '';
   end;
 end;
 

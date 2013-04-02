@@ -46,7 +46,7 @@ var
   P: Pointer;
 begin
   GetMem(P, Size);
-  FillChar(P, Size, 0);
+  FillChar(P^, Size, 0);
   PObject(P)^.ObjConst := AObjConst;
   Result := AObject(P);
 end;

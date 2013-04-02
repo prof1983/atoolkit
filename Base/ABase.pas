@@ -2,7 +2,7 @@
 @Abstract Base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 21.02.2013
+@LastMod 02.04.2013
 }
 unit ABase;
 
@@ -128,10 +128,12 @@ type
   //ACallbackProc03 = ACallbackProc;
 
 type
-  // = TAbstractSettings or TProfXmlNode1 or TProfXmlNode4
-  AConfig = type AInteger;
+  AObject = type AInt;
+  ASettings = type AInt;
   AEvent = type AInt; // = AEvent_Type.Id
-  AColor = type AInteger;
+  AColor = type AInt;
+
+  AConfig = ASettings;
 
 type
   ALibrary = type AInteger;
@@ -187,6 +189,9 @@ type
   //AProfXmlNode1 = type AProfXmlNode; // TProfXmlNode1
   //AProfXmlNode2 = type AProfXmlNode; // TProfXmlNode2
   //AProfXmlNodeA = type AInt; // IProfXmlNodeA
+
+const
+  AObjConst = $414F626A; // = 'AObj'
 
 implementation
 

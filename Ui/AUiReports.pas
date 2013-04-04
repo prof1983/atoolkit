@@ -8,19 +8,12 @@ unit AUiReports;
 
 {$I Defines.inc}
 
-{$IFNDEF FPC}
-  {$IFNDEF NoUiReports}
-    {$DEFINE USE_REPORTS}
-  {$ENDIF}
-{$ENDIF}
-
 interface
 
 uses
   Graphics,
   ABase,
   AStringMain,
-  {$IFDEF USE_REPORTS}fReport, fSimpleReport,{$ENDIF}
   AUiBase,
   AUiBox,
   AUiControls,
@@ -114,31 +107,9 @@ begin
 end;
 
 function AUiReportWin_New2P(ReportWinType: AInt; const Text: APascalString): AWindow;
-{$IFDEF USE_REPORTS}
-var
-  ReportForm: TReportForm;
-  Form: TSimpleReportForm;
-{$ENDIF}
 begin
   try
-    {$IFDEF USE_REPORTS}
-    if (ReportWinType = 0) then
-    begin
-      ReportForm := TReportForm.Create(nil);
-      ReportForm.Editor.Text := Text;
-      Result := AWindow(ReportForm);
-    end
-    else if (ReportWinType = 1) then
-    begin
-      Form := TSimpleReportForm.Create(nil);
-      Form.Memo.Lines.Text := Text;
-      Result := AWindow(Form);
-    end
-    else
-      Result := 0;
-    {$ELSE}
     Result := ReportWin_NewP(Text);
-    {$ENDIF}
   except
     Result := 0;
   end;
@@ -150,31 +121,9 @@ begin
 end;
 
 function AUiReportWin_ShowReport2A(Text: AStr; Font: AFont; Width, Height: AInt): AError;
-{$IFDEF USE_REPORTS}
-var
-  Form: TReportForm;
-{$ENDIF}
 begin
   try
-    {$IFDEF USE_REPORTS}
-    Form := TReportForm.Create(nil);
-    try
-      Form.Editor.Clear();
-      Form.Editor.Lines.Text := AnsiString(Text);
-      if (Font <> 0) then
-        Form.Editor.Font.Assign(TFont(Font));
-      if (Width > 0) then
-        Form.Width := Width;
-      if (Height > 0) then
-        Form.Height := Height;
-      Form.ShowModal();
-    finally
-      Form.Free();
-    end;
-    Result := 0;
-    {$else}
     Result := ReportWin_ShowReportP(AnsiString(Text), Font, Width, Height);
-    {$ENDIF}
   except
     Result := -1;
   end;
@@ -182,31 +131,9 @@ end;
 
 function AUiReportWin_ShowReport2P(const Text: APascalString; Font: AFont;
     Width, Height: AInt): AError;
-{$IFDEF USE_REPORTS}
-var
-  Form: TReportForm;
-{$ENDIF}
 begin
   try
-    {$IFDEF USE_REPORTS}
-    Form := TReportForm.Create(nil);
-    try
-      Form.Editor.Clear();
-      Form.Editor.Text := Text;
-      if (Font <> 0) then
-        Form.Editor.Font.Assign(TFont(Font));
-      if (Width > 0) then
-        Form.Width := Width;
-      if (Height > 0) then
-        Form.Height := Height;
-      Form.ShowModal();
-    finally
-      Form.Free();
-    end;
-    Result := 0;
-    {$else}
     Result := ReportWin_ShowReportP(Text, Font, Width, Height);
-    {$ENDIF}
   except
     Result := -1;
   end;
@@ -218,4 +145,3 @@ begin
 end;
 
 end.
- 

@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.12.2012
-@LastMod 25.02.2013
+@LastMod 04.04.2013
 }
 unit ADataStruct;
 
@@ -11,23 +11,27 @@ uses
   ABase,
   ADataBase,
   ADatabaseStructure,
-  ADataUtils;
+  ADataUtils,
+  AStringMain;
 
 // --- ADataStruct ---
+
+function ADataStruct_AddTable(Struct: ADataStructure;
+    const TableName: AString_Type): ATableStructure; {$ifdef ADtdCall}stdcall;{$endif}
 
 function ADataStruct_AddTableP(Struct: ADataStructure; const TableName: APascalString): ATableStructure;
 
 function ADataStruct_Clear(Struct: ADataStructure): AError; {$ifdef ADtdCall}stdcall;{$endif}
 
-// --- Data_Struct ---
-
-function Data_Struct_AddTableP(Struct: ADataStructure; const TableName: APascalString): ATableStructure; deprecated {$ifdef ADeprText}'Use ADataStruct_AddTableP()'{$endif};
-
-function Data_Struct_Clear(Struct: ADataStructure): AError; {$ifdef AStdCall}stdcall;{$endif} deprecated {$ifdef ADeprText}'Use ADataStruct_Clear()'{$endif};
-
 implementation
 
 // --- ADataStruct ---
+
+function ADataStruct_AddTable(Struct: ADataStructure;
+    const TableName: AString_Type): ATableStructure;
+begin
+  Result := ADataStruct_AddTableP(Struct, AString_ToP(TableName));
+end;
 
 function ADataStruct_AddTableP(Struct: ADataStructure; const TableName: APascalString): ATableStructure;
 begin
@@ -61,18 +65,6 @@ begin
   except
     Result := -1;
   end;
-end;
-
-// --- Data_Struct ---
-
-function Data_Struct_AddTableP(Struct: ADataStructure; const TableName: APascalString): ATableStructure;
-begin
-  Result := ADataStruct_AddTableP(Struct, TableName);
-end;
-
-function Data_Struct_Clear(Struct: ADataStructure): AError;
-begin
-  Result := ADataStruct_Clear(Struct);
 end;
 
 end.

@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.12.2012
-@LastMod 25.02.2013
+@LastMod 04.04.2013
 }
 unit ADataConnections;
 
@@ -12,11 +12,13 @@ uses
   ABaseTypes,
   ADataBase,
   ADataPrivData,
-  ADataTypes,
   ADataUtils,
   AStringMain;
 
 // --- ADataConnection ---
+
+function ADataConnection_ChangeDataSet(Connection: ADataConnection; DataSet: ADataSet;
+    const SelectSql: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function ADataConnection_ChangeDataSetP(Connection: ADataConnection; DataSet: ADataSet;
     const SelectSql: APascalString): AError;
@@ -35,22 +37,38 @@ function ADataConnection_CreateDatabase(Connection: ADataConnection): AError; {$
 
 function ADataConnection_Disconnect(Connection: ADataConnection): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function ADataConnection_ExecuteSql(Connection: ADataConnection;
+    const Sql: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function ADataConnection_ExecuteSqlP(Connection: ADataConnection;
     const Sql: APascalString): AError;
 
 function ADataConnection_GetConnected(Connection: ADataConnection): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
+function ADataConnection_GetConnectionString(Connection: ADataConnection;
+    out ConnectionString: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function ADataConnection_GetConnectionStringP(Connection: ADataConnection): APascalString;
+
+function ADataConnection_NewDataSet(Connection: ADataConnection;
+    const SelectSqlText: AString_Type; ReadOnly: ABool): ADataSet; {$ifdef AStdCall}stdcall;{$endif}
+
+function ADataConnection_NewDataSetEx(Connection: ADataConnection;
+    const SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText,
+    RefreshSqlText: AString_Type): ADataSet; {$ifdef AStdCall}stdcall;{$endif}
 
 function ADataConnection_NewDataSetExP(Connection: ADataConnection;
     const SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText,
-    RefreshSqlText: AWideString): ADataSet;
+    RefreshSqlText: APascalString): ADataSet;
 
 function ADataConnection_NewDataSetP(Connection: ADataConnection;
     const SelectSqlText: APascalString; ReadOnly: ABool): ADataSet;
 
+function ADataConnection_SetConnectionString(Connection: ADataConnection;
+    const Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function ADataConnection_SetConnectionStringP(Connection: ADataConnection;
-    const Value: AWideString): AError;
+    const Value: APascalString): AError;
 
 // --- Database ---
 
@@ -290,6 +308,12 @@ end;
 
 // --- ADataConnection ---
 
+function ADataConnection_ChangeDataSet(Connection: ADataConnection; DataSet: ADataSet;
+    const SelectSql: AString_Type): AError;
+begin
+  Result := ADataConnection_ChangeDataSetP(Connection, DataSet, AString_ToP(SelectSql));
+end;
+
 function ADataConnection_ChangeDataSetP(Connection: ADataConnection; DataSet: ADataSet;
     const SelectSql: APascalString): AError;
 var
@@ -439,6 +463,12 @@ begin
   end;
 end;
 
+function ADataConnection_ExecuteSql(Connection: ADataConnection;
+    const Sql: AString_Type): AError;
+begin
+  Result := ADataConnection_ExecuteSqlP(Connection, AString_ToP(Sql));
+end;
+
 function ADataConnection_ExecuteSqlP(Connection: ADataConnection;
     const Sql: APascalString): AError;
 var
@@ -484,6 +514,14 @@ begin
   end;
 end;
 
+function ADataConnection_GetConnectionString(Connection: ADataConnection;
+    out ConnectionString: AString_Type): AError;
+begin
+  Result := AString_AssignP(
+      ConnectionString,
+      ADataConnection_GetConnectionStringP(Connection));
+end;
+
 function ADataConnection_GetConnectionStringP(Connection: ADataConnection): APascalString;
 var
   I: AInt;
@@ -504,6 +542,25 @@ begin
   except
     Result := '';
   end;
+end;
+
+function ADataConnection_NewDataSet(Connection: ADataConnection;
+    const SelectSqlText: AString_Type; ReadOnly: ABool): ADataSet;
+begin
+  Result := ADataConnection_NewDataSetP(Connection, AString_ToP(SelectSqlText), ReadOnly);
+end;
+
+function ADataConnection_NewDataSetEx(Connection: ADataConnection;
+    const SelectSqlText, UpdateSqlText, InsertSqlText, DeleteSqlText,
+    RefreshSqlText: AString_Type): ADataSet;
+begin
+  Result := ADataConnection_NewDataSetExP(
+      Connection,
+      AString_ToP(SelectSqlText),
+      AString_ToP(UpdateSqlText),
+      AString_ToP(InsertSqlText),
+      AString_ToP(DeleteSqlText),
+      AString_ToP(RefreshSqlText));
 end;
 
 function ADataConnection_NewDataSetExP(Connection: ADataConnection;
@@ -551,6 +608,12 @@ begin
   except
     Result := 0;
   end;
+end;
+
+function ADataConnection_SetConnectionString(Connection: ADataConnection;
+    const Value: AString_Type): AError;
+begin
+  Result := ADataConnection_SetConnectionStringP(Connection, AString_ToP(Value));
 end;
 
 function ADataConnection_SetConnectionStringP(Connection: ADataConnection;

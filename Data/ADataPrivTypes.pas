@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.02.2013
-@LastMod 25.02.2013
+@LastMod 04.04.2013
 }
 unit ADataPrivTypes;
 
@@ -38,43 +38,6 @@ type
   ADataConnection_SetReadOnly_Proc = function(Connection: ADataConnection;
       DataSet: ADataSet; ReadOnly: ABool): AError; stdcall;
 
-{
-type
-  ADataConnectionProcs = record // IADatabase
-    ChangeDataSet: ADataConnection_ChangeDataSet_Proc;
-    ChechDatabaseStructure: ADataConnection_CheckDatabaseStructure_Proc;
-    CheckTableStructure: ADataConnection_CheckTableStructure_Proc;
-    Close: ADataConnection_Close_Proc;
-    Connect: ADataConnection_Connect_Proc;
-    CreateDatabase: ADataConnection_CreateDatabase_Proc;
-    Disconnect: ADataConnection_Disconnect_Proc;
-    ExecuteSql: ADataConnection_ExecuteSql_Proc;
-    GetConnected: ADataConnection_GetConnected_Proc;
-    GetConnectionString: ADataConnection_GetConnectionString_Proc;
-    NewDataSet: ADataConnection_NewDataSet_Proc;
-    NewDataSetEx: ADataConnection_NewDataSetEx_Proc;
-    SetConnectionString: ADataConnection_SetConnectionString_Proc;
-    SetReadOnly: ADataConnection_SetReadOnly_Proc;
-  end;
-}
-
-{
-type
-  ADatabaseStructureProcs = record // IADatabaseStructure
-    function Get_TableByIndex(Index: AInt): IATableStructure;
-    function Get_TableByName(const Name: WideString): IATableStructure;
-    function Get_TableCount(): AInt;
-
-    function AddTable(const TableName: WideString): IATableStructure;
-    function AddTableItem(Table: IATableStructure): AInt;
-    procedure Clear;
-
-    property TableByIndex[Index: Integer]: IATableStructure read Get_TableByIndex;
-    property TableByName[const Name: WideString]: IATableStructure read Get_TableByName;
-    property TableCount: AInt read Get_TableCount;
-  end;
-}
-
 type
   ADataDriver_Close_Proc = function(): AError; stdcall;
   ADataDriver_ChangeDataSet_Proc = function(DataSet: ADataSet; const SelectSql: AString_Type): AError; stdcall;
@@ -89,11 +52,8 @@ type
   ADataDriver_SetConnectionString_Proc = function(const Value: AString_Type): AError; stdcall;
   ADataDriver_SetDataSetReadOnly_Proc = function(DataSet: ADataSet; ReadOnly: ABool): AError; stdcall;
 
-{type
-  PDataDriver = ^ADataDriverRec;}
-
 type
-  ADataDriverProcs = record // ADataDriverRec
+  ADataDriverProcs = record
     Driver_Close: ADataDriver_Close_Proc;
     Driver_Connect: ADataDriver_Connect_Proc;
     Driver_CreateDatabase: ADataDriver_CreateDatabase_Proc;

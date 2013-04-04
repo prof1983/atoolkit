@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.12.2012
-@LastMod 25.02.2013
+@LastMod 04.04.2013
 }
 unit ADataMain;
 
@@ -25,6 +25,8 @@ function AData_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AData_Init(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function AData_NewConnection(const DriverName: AString_Type): ADataConnection; {$ifdef AStdCall}stdcall;{$endif}
+
 function AData_NewConnectionP(const DriverName: APascalString): ADataConnection;
 
 function AData_NewDatabaseStructure(): ADataStructure; {$ifdef AStdCall}stdcall;{$endif}
@@ -32,14 +34,6 @@ function AData_NewDatabaseStructure(): ADataStructure; {$ifdef AStdCall}stdcall;
 function AData_NewDatabaseP(const DriverName: APascalString): ADataConnection; deprecated {$ifdef ADeprText}'Use AData_NewConnectionP()'{$endif};
 
 function AData_RegisterDriver(GetProc: ADataDriverGetProc_Proc): ADataDriver; {$ifdef AStdCall}stdcall;{$endif}
-
-// --- Data ---
-
-function Data_NewDatabaseP(const DriverName: APascalString): ADataConnection; deprecated {$ifdef ADeprText}'Use AData_NewConnectionP()'{$endif};
-
-function Data_NewDatabaseStructure(): ADataStructure; {$ifdef AStdCall}stdcall;{$endif}
-
-function Data_RegisterDriver(GetProc: ADataDriverGetProc_Proc): ADataDriver; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
@@ -90,6 +84,11 @@ begin
   except
     Result := 0;
   end;
+end;
+
+function AData_NewConnection(const DriverName: AString_Type): ADataConnection;
+begin
+  Result := AData_NewConnectionP(AString_ToP(DriverName));
 end;
 
 function AData_NewConnectionP(const DriverName: APascalString): ADataConnection;
@@ -177,23 +176,6 @@ begin
   except
     Result := 0;
   end;
-end;
-
-// --- Data ---
-
-function Data_NewDatabaseP(const DriverName: APascalString): ADataConnection;
-begin
-  Result := AData_NewConnectionP(DriverName);
-end;
-
-function Data_NewDatabaseStructure(): ADataStructure;
-begin
-  Result := AData_NewDatabaseStructure();
-end;
-
-function Data_RegisterDriver(GetProc: ADataDriverGetProc_Proc): ADataDriver;
-begin
-  Result := AData_RegisterDriver(GetProc);
 end;
 
 end.

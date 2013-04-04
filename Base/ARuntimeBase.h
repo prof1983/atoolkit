@@ -1,7 +1,7 @@
 ﻿/*  ARuntime base consts and types
  *  Author Prof1983 <prof1983@ya.ru>
  *  Created 04.03.2013
- *  LastMod 04.03.2013
+ *  LastMod 04.04.2013
  */
 
 #ifndef ARuntimeBaseH
@@ -15,7 +15,7 @@
 typedef APointer AModuleDescription;
 
 /** The unique identifier of the module
-	Format: $YYMMDDxx, YY - Year, MM - Month, DD - Day, xx - Number */
+    Format: $YYMMDDxx, YY - Year, MM - Month, DD - Day, xx - Number */
 typedef AInt AModuleUid;
 
 // ----
@@ -29,22 +29,22 @@ typedef APointer AFunction (*ARuntime_GetProcByName_Proc)(AStr ModuleName, AStr 
 // --- Module ---
 
 typedef struct {
-	/** Module version ($AABBCCDD) */
-	AVersion Version;
-	/** Module unique identificator $YYMMDDxx YY - Year, MM - Month, DD - Day */
-	AModuleUid Uid;
-	/** Module unuque name */
-	AStr Name;
-	/** Module information and description */
-	AModuleDescription Description;
-	/** Initialize proc */
-	AModuleInitProc Init;
-	/** Finalize proc */
-	AModuleFinProc Fin;
-	/** Get proc address */
-	AModuleGetProc GetProc;
-	/** Module proc list */
-	APointer Procs;
+    /** Module version ($AABBCCDD) */
+    AVersion Version;
+    /** Module unique identificator $YYMMDDxx YY - Year, MM - Month, DD - Day */
+    AModuleUid Uid;
+    /** Module unuque name */
+    AStr Name;
+    /** Module information and description */
+    AModuleDescription Description;
+    /** Initialize proc */
+    AModuleInitProc Init;
+    /** Finalize proc */
+    AModuleFinProc Fin;
+    /** Get proc address */
+    AModuleGetProc GetProc;
+    /** Module proc list */
+    APointer Procs;
 } AModule_Type;
 
 typedef AModule_Type* AModule;

@@ -2,7 +2,7 @@
 @Abstract AStrings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.05.2011
-@LastMod 18.02.2013
+@LastMod 04.04.2013
 }
 unit AStringsMain;
 
@@ -13,9 +13,9 @@ uses
 
 // --- AStrings ---
 
-function AStrings_Fin(): AError; stdcall;
+function AStrings_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AStrings_Init(): AError; stdcall;
+function AStrings_Init(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 

@@ -2,7 +2,7 @@
 @Abstract AUiReports
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 29.03.2013
+@LastMod 04.04.2013
 }
 unit AUiReports;
 
@@ -25,6 +25,7 @@ uses
   AUiBox,
   AUiControls,
   AUiData,
+  AUiReportWin,
   AUiTextView;
 
 // --- AUiReport ---
@@ -120,28 +121,24 @@ var
 {$ENDIF}
 begin
   try
+    {$IFDEF USE_REPORTS}
     if (ReportWinType = 0) then
     begin
-      {$IFDEF USE_REPORTS}
       ReportForm := TReportForm.Create(nil);
       ReportForm.Editor.Text := Text;
       Result := AWindow(ReportForm);
-      {$ELSE}
-      Result := 0;
-      {$ENDIF}
     end
     else if (ReportWinType = 1) then
     begin
-      {$IFDEF USE_REPORTS}
       Form := TSimpleReportForm.Create(nil);
       Form.Memo.Lines.Text := Text;
       Result := AWindow(Form);
-      {$ELSE}
-      Result := 0;
-      {$ENDIF}
     end
     else
       Result := 0;
+    {$ELSE}
+    Result := ReportWin_NewP(Text);
+    {$ENDIF}
   except
     Result := 0;
   end;
@@ -174,8 +171,10 @@ begin
     finally
       Form.Free();
     end;
-    {$ENDIF}
     Result := 0;
+    {$else}
+    Result := ReportWin_ShowReportP(AnsiString(Text), Font, Width, Height);
+    {$ENDIF}
   except
     Result := -1;
   end;
@@ -204,8 +203,10 @@ begin
     finally
       Form.Free();
     end;
-    {$ENDIF}
     Result := 0;
+    {$else}
+    Result := ReportWin_ShowReportP(Text, Font, Width, Height);
+    {$ENDIF}
   except
     Result := -1;
   end;

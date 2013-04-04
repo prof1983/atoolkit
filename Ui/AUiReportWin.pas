@@ -920,6 +920,7 @@ begin
   finally
     Win.Form.Free();
   end;
+  Result := 0;
 end;
 
 end.

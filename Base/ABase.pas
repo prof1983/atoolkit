@@ -2,7 +2,7 @@
 @Abstract Base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 02.04.2013
+@LastMod 09.04.2013
 }
 unit ABase;
 
@@ -120,12 +120,8 @@ type
 // --- ---
 
 type
-  AProc = function(): AInteger; stdcall;
-  ACallbackProc = function(Obj, Data: AInteger): AError; stdcall;
-
-  //ANotifyProc = procedure(Sender: AInteger); stdcall;
-  //AProc03 = AProc;
-  //ACallbackProc03 = ACallbackProc;
+  AProc = function(): AError; stdcall;
+  ACallbackProc = function(Obj, Data: AInt): AError; stdcall;
 
 type
   AObject = type AInt;

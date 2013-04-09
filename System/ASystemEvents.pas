@@ -2,7 +2,7 @@
 @Abstract ASystem event function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.11.2012
-@LastMod 31.01.2013
+@LastMod 09.04.2013
 }
 unit ASystemEvents;
 
@@ -36,12 +36,12 @@ implementation
 
 // --- Events ---
 
-function DoAfterRun(): AInteger; stdcall;
+function DoAfterRun(): AError; stdcall;
 begin
   Result := AEvent_Invoke(FOnAfterRunEvent, 0);
 end;
 
-function DoBeforeRun(): AInteger; stdcall;
+function DoBeforeRun(): AError; stdcall;
 begin
   Result := AEvent_Invoke(FOnBeforeRunEvent, 0);
 end;

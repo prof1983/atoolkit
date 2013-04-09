@@ -2,7 +2,7 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 28.03.2013
+@LastMod 09.04.2013
 }
 unit AUiMain;
 
@@ -123,7 +123,7 @@ implementation
 
 // --- Events ---
 
-function DoProcessMessages(): AInteger; stdcall;
+function DoProcessMessages(): AError; stdcall;
 begin
   try
     Application.ProcessMessages();
@@ -133,7 +133,7 @@ begin
   end;
 end;
 
-function DoRun(): AInteger; stdcall;
+function DoRun(): AError; stdcall;
 begin
   {$ifdef UseSettings}
   if (FConfig <> 0) then
@@ -153,7 +153,7 @@ begin
   Result := AUi_ExecuteMessageDialog1A(Text, Caption, Flags);
 end;
 
-function DoShutdown(): AInteger; stdcall;
+function DoShutdown(): AError; stdcall;
 begin
   Result := AUi_Shutdown();
 end;

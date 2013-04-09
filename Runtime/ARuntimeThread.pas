@@ -2,7 +2,7 @@
 @Abstract AThread
 @Author Prof1983 <prof1983@ya.ru>
 @Created 03.10.2005
-@Lastmod 24.07.2012
+@Lastmod 09.04.2013
 }
 unit ARuntimeThread;
 
@@ -11,7 +11,9 @@ unit ARuntimeThread;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes,
+  SysUtils,
+  ABase;
 
 type
   TThreadState = (
@@ -29,7 +31,7 @@ type
   AThread = type Integer;
 
 type
-  TThreadProc = procedure; stdcall;
+  TThreadProc = AProc;
 
 type
   TProfThread = class(TThread)

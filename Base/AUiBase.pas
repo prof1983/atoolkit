@@ -2,7 +2,7 @@
 @Abstract User Interface base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 28.03.2013
+@LastMod 09.04.2013
 }
 unit AUiBase;
 
@@ -208,7 +208,7 @@ const
   AUiSplitter_VSplitterRight = 3;  //(Align=alRight)
 
 type
-  AUiWindowPosition = AInt;
+  AUiWindowPosition = type AInt;
 const
   AUiWindowPosition_Designed = 0;
   AUiWindowPosition_Default = 1;

@@ -2,7 +2,7 @@
 @Abstract AUiImage
 @Author Prof1983 <prof1983@ya.ru>
 @Created 05.09.2012
-@LastMod 20.02.2013
+@LastMod 09.04.2013
 }
 unit AUiImages;
 
@@ -33,6 +33,10 @@ function AUiImage_LoadFromFileP(Image: AControl; const FileName: APascalString):
 function AUiImage_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiImage_SetCenter(Image: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiImage_SetProportional(Image: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiImage_SetStretch(Image: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiImage_SetTransparent(Image: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -87,6 +91,46 @@ begin
       Exit;
     end;
     TImage(Image).Center := Value;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiImage_SetProportional(Image: AControl; Value: ABool): AError;
+begin
+  if (Image = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  try
+    if not(TObject(Image) is TImage) then
+    begin
+      Result := -3;
+      Exit;
+    end;
+    TImage(Image).Proportional := Value;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiImage_SetStretch(Image: AControl; Value: ABool): AError;
+begin
+  if (Image = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  try
+    if not(TObject(Image) is TImage) then
+    begin
+      Result := -3;
+      Exit;
+    end;
+    TImage(Image).Stretch := Value;
     Result := 0;
   except
     Result := -1;

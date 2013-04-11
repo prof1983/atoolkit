@@ -2,7 +2,7 @@
 @Abstract AStrings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.05.2011
-@LastMod 27.02.2013
+@LastMod 11.04.2013
 }
 unit AStringMain;
 
@@ -63,11 +63,14 @@ function Str_CopyA({var} S: AString; {const} Value: PAnsiChar): ASize; stdcall;
 function Str_CopyW({var} S: AString; {const} Value: PWideChar): ASize; stdcall;
 function Str_CopyWS({var} S: AString; const Value: WideString): ASize; stdcall;
 function Str_Length({const} S: AString): AInt; stdcall;
-function Str_ToP({const} S: AString): APascalString; stdcall; deprecated; // Use String_ToPascalString()
-function Str_ToUtf8String({const} S: AString): UTF8String; stdcall; deprecated; // Use String_ToUtf8String()
+function Str_ToP({const} S: AString): APascalString; stdcall;
+function Str_ToUtf8String({const} S: AString): UTF8String; stdcall;
 function Str_Free({var} S: AString): AError; stdcall;
 
 implementation
+
+type
+  PStr = ^AString_Type;
 
 // --- AnsiString ---
 
@@ -217,12 +220,12 @@ end;
 
 function Str_Assign(S: AString; Value: AString): ASize;
 begin
-  Result := AString_Assign(S^, Value^);
+  Result := AString_Assign(PStr(S)^, PStr(Value)^);
 end;
 
 function Str_AssignA(S: AString; Value: AStr): ASize;
 begin
-  Result := AString_AssignA(S^, Value);
+  Result := AString_AssignA(PStr(S)^, Value);
 end;
 
 function Str_AssignW(S: AString; Value: PWideChar): ASize;
@@ -230,57 +233,57 @@ var
   Tmp: WideString;
 begin
   Tmp := WideString(Value);
-  Result := AString_AssignP(S^, Tmp);
+  Result := AString_AssignP(PStr(S)^, Tmp);
 end;
 
 function Str_AssignWS(S: AString; const Value: WideString): ASize;
 begin
-  Result := AString_AssignP(S^, Value);
+  Result := AString_AssignP(PStr(S)^, Value);
 end;
 
 function Str_Copy(S: AString; Value: AString): ASize;
 begin
-  Result := AString_Copy(S^, Value^);
+  Result := AString_Copy(PStr(S)^, PStr(Value)^);
 end;
 
 function Str_CopyA(S: AString; Value: AStr): ASize;
 begin
-  Result := AString_CopyA(S^, Value);
+  Result := AString_CopyA(PStr(S)^, Value);
 end;
 
 function Str_CopyW(S: AString; Value: PWideChar): ASize;
 begin
-  Result := AString_CopyWS(S^, AWideString(Value));
+  Result := AString_CopyWS(PStr(S)^, AWideString(Value));
 end;
 
 function Str_CopyWS(S: AString; const Value: WideString): ASize;
 begin
-  Result := AString_CopyWS(S^, Value);
+  Result := AString_CopyWS(PStr(S)^, Value);
 end;
 
 function Str_Free(S: AString): AError;
 begin
-  Result := AString_Clear(S^);
+  Result := AString_Clear(PStr(S)^);
 end;
 
 function Str_Length(S: AString): AInt;
 begin
-  Result := AString_GetLength(S^);
+  Result := AString_GetLength(PStr(S)^);
 end;
 
 function Str_ToP(S: AString): APascalString;
 begin
-  if not(Assigned(S)) then
+  if (S = 0) then
   begin
     Result := '';
     Exit;
   end;
-  Result := AString_ToPascalString(S^);
+  Result := AString_ToPascalString(PStr(S)^);
 end;
 
 function Str_ToUtf8String(S: AString): UTF8String;
 begin
-  Result := AString_ToUtf8String(S^);
+  Result := AString_ToUtf8String(PStr(S)^);
 end;
 
 end.

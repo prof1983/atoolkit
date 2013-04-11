@@ -2,7 +2,7 @@
 @Abstract Base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 09.04.2013
+@LastMod 11.04.2013
 }
 unit ABase;
 
@@ -25,8 +25,9 @@ type // Simple types
 
 type // Simple types
   ABool = Boolean;
-  AChar = AnsiChar; // or UTF-32 (UCS4Char)
+  AChar = AnsiChar;
   AInt = Integer;
+  ARune = AInt32; // UTF-32 (UCS4Char)
   ASize = LongWord;
 
 type
@@ -84,14 +85,6 @@ type
   AWideString = WideString;
   APascalString = {$IFDEF DELPHI_2010_UP}string{$ELSE}WideString{$ENDIF};
 
-  { (4x4 = 16 bytes) }
-  AString_Type_Old = packed record
-    Str: AnsiString;
-    Reserved01: AInteger;
-    Reserved02: AInteger;
-    Code: AInteger;
-  end;
-
     // (4x4 = 16 bytes)
   AString_Type_4 = packed record
       //** UTF-8. Analog GString Points to the string's current \0-terminated value (gchar).
@@ -107,7 +100,7 @@ type
   AString_Type = AString_Type_4;
 
   AStr = PAnsiChar;
-  AString  = ^AString_Type;
+  AString  = AInt; // ^AString_Type;
 
 {
 type

@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.12.2012
-@LastMod 29.03.2013
+@LastMod 11.04.2013
 }
 unit AUiWaitWin;
 
@@ -179,11 +179,16 @@ end;
 function AUiWaitWin_SetTextP(Window: AWindow; const Text: APascalString): AError;
 var
   I: Integer;
+  W: AInt;
 begin
   I := _FindWaitWin(Window);
   if (I >= 0) then
   begin
     AUiControl_SetTextP(FWaitWin[I].TextLabel, Text);
+
+    W := AUiControl_GetClientWidth(Window);
+    AUiControl_SetSize(FWaitWin[I].TextLabel, W, 40);
+
     AUi_ProcessMessages();
     Result := 0;
     Exit;

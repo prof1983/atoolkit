@@ -2,7 +2,7 @@
 @Abstract AUiDialogs
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 28.03.2013
+@LastMod 12.04.2013
 }
 unit AUiDialogs;
 
@@ -52,31 +52,30 @@ implementation
 
 type
   AUiDialog_Type = record
-    DialogId: ADialog;
     Window: AWindow;
     ButtonsBox: AControl;
     Button1: AButton;
     Button2: AButton;
     Button3: AButton;
   end;
+  PUiDialog = ^AUiDialog_Type;
 
 var
-  _DialogArray: array of AUiDialog_Type;
+  _DialogArray: array of PUiDialog;
 
 // --- Private ---
 
-function _AddButton(I, Left, Width: AInt; const Text: APascalString; OnClick: ACallbackProc): AButton;
+function _AddButton(Dialog: PUiDialog; Left, Width: AInt; const Text: APascalString; OnClick: ACallbackProc): AButton;
 var
   Button: AButton;
 begin
-  Button := AUiButton_New(_DialogArray[I].ButtonsBox);
+  Button := AUiButton_New(Dialog^.ButtonsBox);
   if (Button <> 0) then
   begin
     AUiControl_SetPosition(Button, Left, 4);
     AUiControl_SetSize(Button, Width, 25);
     AUiControl_SetTextP(Button, Text);
     AUiControl_SetOnClick(Button, OnClick);
-    AUiControl_SetAnchors(Button, uiakRight + uiakBottom);
   end;
   Result := Button;
 end;
@@ -87,7 +86,7 @@ var
 begin
   for I := 0 to High(_DialogArray) do
   begin
-    if (_DialogArray[I].DialogId = Dialog) then
+    if (ADialog(_DialogArray[I]) = Dialog) then
     begin
       Result := I;
       Exit;
@@ -102,27 +101,13 @@ var
 begin
   for I := 0 to High(_DialogArray) do
   begin
-    if (_DialogArray[I].Window = Win) then
+    if (_DialogArray[I]^.Window = Win) then
     begin
       Result := I;
       Exit;
     end;
   end;
   Result := -1;
-end;
-
-function _FreeDialog(Index: AInt): AError;
-begin
-  try
-    AUiControl_Free(_DialogArray[Index].ButtonsBox);
-    AUiControl_Free(_DialogArray[Index].Window);
-    _DialogArray[Index].DialogId := 0;
-    _DialogArray[Index].ButtonsBox := 0;
-    _DialogArray[Index].Window := 0;
-    Result := 0;
-  except
-    Result := -1;
-  end;
 end;
 
 // --- AUiDialog ---
@@ -150,7 +135,7 @@ begin
       Result := 0;
       Exit;
     end;
-    Result := _AddButton(I, Left, Width, Text, OnClick);
+    Result := _AddButton(PUiDialog(Dialog), Left, Width, Text, OnClick);
   except
     Result := 0;
   end;
@@ -179,7 +164,7 @@ begin
       Result := 0;
       Exit;
     end;
-    Result := _AddButton(I, Left, Width, Text, OnClick);
+    Result := _AddButton(_DialogArray[I], Left, Width, Text, OnClick);
   except
     Result := 0;
   end;
@@ -196,7 +181,12 @@ begin
       Result := -2;
       Exit;
     end;
-    Result := _FreeDialog(I);
+    AUiControl_Free(_DialogArray[I]^.ButtonsBox);
+    AUiControl_Free(_DialogArray[I]^.Window);
+    FreeMem(_DialogArray[I]);
+    _DialogArray[I] := _DialogArray[High(_DialogArray)];
+    SetLength(_DialogArray, High(_DialogArray));
+    Result := 0;
   except
     Result := -1;
   end;
@@ -213,7 +203,7 @@ begin
       Result := 0;
       Exit;
     end;
-    Result := _DialogArray[I].ButtonsBox;
+    Result := _DialogArray[I]^.ButtonsBox;
   except
     Result := 0;
   end;
@@ -230,7 +220,7 @@ begin
       Result := 0;
       Exit;
     end;
-    Result := _DialogArray[I].Window;
+    Result := _DialogArray[I]^.Window;
   except
     Result := 0;
   end;
@@ -251,9 +241,10 @@ begin
 
     I := Length(_DialogArray);
     SetLength(_DialogArray, I + 1);
-    _DialogArray[I].DialogId := I + 1;
-    _DialogArray[I].Window := Window;
-    _DialogArray[I].ButtonsBox := Box;
+    GetMem(_DialogArray[I], SizeOf(AUiDialog_Type));
+    FillChar(_DialogArray[I]^, SizeOf(AUiDialog_Type), 0);
+    _DialogArray[I]^.Window := Window;
+    _DialogArray[I]^.ButtonsBox := Box;
 
     AUiWindow_SetPosition(Window, AUiWindowPosition_OwnerFormCenter);
     if (Buttons = AMessageBoxFlags_Ok) then
@@ -262,7 +253,7 @@ begin
       AUiControl_SetTextP(Button, cOkText);
       AUiControl_SetPosition(Button, 5, 5);
       AUiButton_SetKind(Button, uibkOk);
-      _DialogArray[I].Button1 := Button;
+      _DialogArray[I]^.Button1 := Button;
     end
     else if (Buttons = AMessageBoxFlags_OkCancel) then
     begin
@@ -270,34 +261,34 @@ begin
       AUiControl_SetTextP(Button, cOkText);
       AUiControl_SetPosition(Button, 5, 5);
       AUiButton_SetKind(Button, uibkOk);
-      _DialogArray[I].Button1 := Button;
+      _DialogArray[I]^.Button1 := Button;
 
       Button := AUiButton_New(Box);
       AUiControl_SetTextP(Button, cCancelText);
       AUiControl_SetPosition(Button, 90, 5);
       AUiButton_SetKind(Button, uibkCancel);
-      _DialogArray[I].Button2 := Button;
+      _DialogArray[I]^.Button2 := Button;
     end
     else if (Buttons = AMessageBoxFlags_ApplyOkCancel) then
     begin
       Button := AUiButton_New(Box);
       AUiControl_SetPosition(Button, 5, 5);
       AUiControl_SetTextP(Button, cApplyText);
-      _DialogArray[I].Button1 := Button;
+      _DialogArray[I]^.Button1 := Button;
 
       Button := AUiButton_New(Box);
       AUiControl_SetPosition(Button, 90, 5);
       AUiButton_SetKind(Button, uibkOk);
       AUiControl_SetTextP(Button, cOkText);
-      _DialogArray[I].Button2 := Button;
+      _DialogArray[I]^.Button2 := Button;
 
       Button := AUiButton_New(Box);
       AUiControl_SetPosition(Button, 175, 5);
       AUiButton_SetKind(Button, uibkCancel);
       AUiControl_SetTextP(Button, cCancelText);
-      _DialogArray[I].Button3 := Button;
+      _DialogArray[I]^.Button3 := Button;
     end;
-    Result := ADialog(I + 1);
+    Result := ADialog(_DialogArray[I]);
   except
     Result := 0;
   end;
@@ -313,7 +304,7 @@ begin
     Result := False;
     Exit;
   end;
-  Result := AUiWindow_ShowModal(_DialogArray[I].Window);
+  Result := AUiWindow_ShowModal(_DialogArray[I]^.Window);
 end;
 
 end.

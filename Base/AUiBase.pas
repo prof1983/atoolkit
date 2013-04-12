@@ -2,7 +2,7 @@
 @Abstract User Interface base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 09.04.2013
+@LastMod 12.04.2013
 }
 unit AUiBase;
 
@@ -185,7 +185,7 @@ const
   uifsStrikeOut = AUiFontStyle_StrikeOut;
 
 type
-  AUiProgramState = AInteger;
+  AUiProgramState = type AInt;
 const
   AUiProgramState_Default = 0;
   AUiProgramState_None = 1;

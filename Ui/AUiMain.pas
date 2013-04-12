@@ -2,7 +2,7 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 09.04.2013
+@LastMod 12.04.2013
 }
 unit AUiMain;
 
@@ -95,7 +95,7 @@ function AUi_SetOnAboutClick(Value: AProc): AError; {$ifdef AStdCall}stdcall;{$e
 
 function AUi_SetOnMainFormCreate(Value: AProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
-function AUi_SetProgramState(State: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
+function AUi_SetProgramState(State: AUiProgramState): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -421,7 +421,7 @@ begin
   Result := 0;
 end;
 
-function AUi_SetProgramState(State: AInt): AError;
+function AUi_SetProgramState(State: AUiProgramState): AError;
 begin
   try
     if (State = AUiProgramState_None) then

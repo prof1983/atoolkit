@@ -27,7 +27,9 @@ uses
     {$IFNDEF UNIX}ShellApi,{$ENDIF}
   {$ENDIF}
   {$IFNDEF UNIX}Windows,{$ENDIF}
-  ABase, ABaseTypes,
+  ABase,
+  ABaseTypes,
+  AErrorObj,
   {$ifdef UseRuntime}ARuntimeMain,{$endif}
   AStringMain,
   {$ifdef UseConfig}ASystemConfig,{$endif}
@@ -144,6 +146,8 @@ function ASystem_ShellExecuteP(const Operation, FileName, Parameters, Directory:
 function ASystem_ShowError(const UserMessage, ExceptMessage: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_ShowErrorA(UserMessage, ExceptMessage: AStr): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_ShowErrorExP(const SimpleMessage: APascalString; Error: AError): AError;
 
 function ASystem_ShowErrorP(const UserMessage, ExceptMessage: APascalString): AError;
 
@@ -536,6 +540,11 @@ begin
   except
     Result := -1;
   end;
+end;
+
+function ASystem_ShowErrorExP(const SimpleMessage: APascalString; Error: AError): AError;
+begin
+  Result := ASystem_ShowErrorP(SimpleMessage, AError_GetMsgP(Error));
 end;
 
 function ASystem_ShowErrorP(const UserMessage, ExceptMessage: APascalString): AError;

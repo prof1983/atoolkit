@@ -2,7 +2,7 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.01.2012
-@LastMod 18.02.2013
+@LastMod 15.04.2013
 }
 unit APluginsMain;
 
@@ -38,6 +38,10 @@ function APlugins_FinAll(): AError; {$ifdef AStdCall}stdcall;{$endif}
 function APlugins_Find2A(Path, Exclusion: AStr): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function APlugins_Find2P(const Path, Exclusion: APascalString): AError;
+
+function APlugins_Find3A(Path, Exclusion: AStr; SubDirsOnly: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function APlugins_Find3P(const Path, Exclusion: APascalString; SubDirsOnly: ABool): AError;
 
 function APlugins_FindA(Path: AStr): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -160,6 +164,7 @@ end;
 
 function DoCheckPlugin(Lib: ALibrary): ABoolean; stdcall;
 var
+  Er: AError;
   PluginBootProc: APluginBootProc;
 begin
   if not(ALibrary_GetSymbolP(Lib, 'Plugin_Boot', @PluginBootProc)) then
@@ -168,7 +173,8 @@ begin
     Exit;
   end;
   try
-    Result := (PluginBootProc(Addr(ARuntime_GetProcByName)) >= 0);
+    Er := PluginBootProc(Addr(ARuntime_GetProcByName));
+    Result := (Er >= 0);
   except
     Result := False;
   end;
@@ -316,6 +322,16 @@ begin
 end;
 
 function APlugins_Find2P(const Path, Exclusion: APascalString): AError;
+begin
+  Result := APlugins_Find3P(Path, Exclusion, True);
+end;
+
+function APlugins_Find3A(Path, Exclusion: AStr; SubDirsOnly: ABool): AError;
+begin
+  Result := APlugins_Find2P(Path, Exclusion);
+end;
+
+function APlugins_Find3P(const Path, Exclusion: APascalString; SubDirsOnly: ABool): AError;
 
   procedure PFind(const Path: APascalString);
   var
@@ -332,6 +348,9 @@ var
   SearchRec: TSearchRec;
 begin
   try
+    if not(SubDirsOnly) then
+      PFind(Path);
+
     if (FindFirst(Path + '*', faDirectory, SearchRec) <> 0) then
     begin
       Result := 1;

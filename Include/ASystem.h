@@ -1,10 +1,10 @@
 /*
 Author Prof1983 <prof1983@ya.ru>
 Created 04.03.2013
-LastMod 04.03.2013
+LastMod 15.04.2013
 */
 
-#include "ABase"
+#include "ABase.h"
 
 AError
 afunc ASystem_Fin();
@@ -65,7 +65,7 @@ afunc ASystem_Init();
 
 AError
 afunc ASystem_Prepare(AString Title, AString ProgramName, AVersion ProgramVersion,
-    AString ProductName, AVersion ProductVersion, Astring CompanyName, AString Copyright,
+    AString ProductName, AVersion ProductVersion, AString CompanyName, AString Copyright,
     AString Url, AString Description, AString DataPath, AString ConfigPath);
 
 AError

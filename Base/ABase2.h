@@ -1,7 +1,7 @@
 ﻿/* Base types and consts
  * Author Prof1983 <prof1983@ya.ru>
  * Created 06.03.2008
- * LastMod 04.03.2013
+ * LastMod 15.04.2013
  */
 
 #define AExport __declspec(dllexport) /* __export */
@@ -34,8 +34,7 @@ typedef size_t ASize;
 
 // --- Proc ---
 
-// TODO: int AFunction -> func
-typedef AInt AFunction (*AProc)();
+typedef AError AFunction (*AProc)();
 typedef AError AFunction (*ACallbackProc)(AInt Obj, AInt Data);
 
 // --- AId ---

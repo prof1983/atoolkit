@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.04.2013
-@LastMod 12.04.2013
+@LastMod 15.04.2013
 }
 unit AErrorObj;
 
@@ -83,6 +83,7 @@ begin
     Exit;
   end;
   PError(Er)^.Msg := S + PError(Er)^.Msg;
+  Result := 0;
 end;
 
 function AError_NewP(const Msg: APascalString): AError;

@@ -2,7 +2,7 @@
 @Abstract User Interface base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 15.01.2013
+@LastMod 16.04.2013
 }
 unit AUiBase;
 
@@ -52,13 +52,21 @@ type
 type
   TUIAlign = (uiAlignNone, uiAlignTop, uiAlignBottom, uiAlignLeft, uiAlignRight, uiAlignClient, uiAlignCustom);
 const
-  UI_Align_None = 0;
-  UI_Align_Top = 1;
-  UI_Align_Bottom = 2;
-  UI_Align_Left = 3;
-  UI_Align_Right = 4;
-  UI_Align_Client = 5;
-  UI_Align_Custom = 6;
+  AUiAlign_None = 0;
+  AUiAlign_Top = 1;
+  AUiAlign_Bottom = 2;
+  AUiAlign_Left = 3;
+  AUiAlign_Right = 4;
+  AUiAlign_Client = 5;
+  AUiAlign_Custom = 6;
+const
+  UI_Align_None = AUiAlign_None;
+  UI_Align_Top = AUiAlign_Top;
+  UI_Align_Bottom = AUiAlign_Bottom;
+  UI_Align_Left = AUiAlign_Left;
+  UI_Align_Right = AUiAlign_Right;
+  UI_Align_Client = AUiAlign_Client;
+  UI_Align_Custom = AUiAlign_Custom;
 
 type
   AUiAlignment = type AInt;
@@ -77,6 +85,18 @@ const
   uiakTop = $02;
   uiakRight = $04;
   uiakBottom = $08;
+
+type
+  AUiBevel = type AInt;
+const
+  AUiBevel_InnerNone = $01;
+  AUiBevel_InnerLowered = $02;
+  AUiBevel_InnerRaised = $03;
+  AUiBevel_InnerSpace = $04;
+  AUiBevel_OuterNone = $0100;
+  AUiBevel_OuterLowered = $0200;
+  AUiBevel_OuterRaised = $0300;
+  AUiBevel_OuterSpace = $0400;
 
 type
   TAUIButtonKind = (

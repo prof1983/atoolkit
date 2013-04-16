@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.11.2012
-@LastMod 28.11.2012
+@LastMod 16.04.2013
 }
 unit AStringBaseUtils;
 
@@ -17,6 +17,8 @@ function AStr_AssignA(S: AStr; Source: AStr; MaxLen: AInt): AError;
 function AStr_AssignP(S: AStr; const Source: APascalString; MaxLen: AInt): AError;
 
 function AStr_GetLength(S: AStr): AInt;
+
+function AStr_ToP(S: AStr): APascalString;
 
 function AStr_ToPascalString(S: AStr): APascalString;
 
@@ -122,6 +124,11 @@ end;
 function AStr_GetLength(S: AStr): AInt;
 begin
   Result := StrLen(S);
+end;
+
+function AStr_ToP(S: AStr): APascalString;
+begin
+  Result := AnsiString(S);
 end;
 
 function AStr_ToPascalString(S: AStr): APascalString;

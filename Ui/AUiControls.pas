@@ -52,6 +52,8 @@ function AUiControl_GetText(Control: AControl; out Value: AString_Type): AError;
 
 function AUiControl_GetTextP(Control: AControl): APascalString; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiControl_GetTop(Control: AControl): AInt; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiControl_GetVisible(Control: AControl): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_GetWidth(Control: AControl): AInt; {$ifdef AStdCall}stdcall;{$endif}
@@ -60,13 +62,20 @@ function AUiControl_SetAlign(Control: AControl; Align: TUiAlign): AError; {$ifde
 
 function AUiControl_SetAnchors(Control: AControl; Anchors: TUiAnchors): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiControl_SetBevel(Control: AControl; Value: AUiBevel; Width: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiControl_SetClientSize(Control: AControl; ClientWidth, ClientHeight: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetColor(Control: AControl; Color: AColor): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiControl_SetCursor(Control: AControl; Value: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUiControl_SetEnabled(Control: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetFocus(Control: AControl): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_SetFont1(Control: AControl; const FontName: AString_Type;
+    FontSize: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 { @param FontName - (const) }
 function AUiControl_SetFont1A(Control: AControl; FontName: AStr;
@@ -118,6 +127,8 @@ function AUiControl_SetText(Control: AControl; const Value: AString_Type): AErro
 function AUiControl_SetTextA(Control: AControl; Value: AStr): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetTextP(Control: AControl; const Value: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_SetTop(Control: AControl; Value: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetVisible(Control: AControl; Value: ABoolean): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -436,6 +447,18 @@ begin
   end;
 end;
 
+function AUiControl_GetTop(Control: AControl): AInt;
+begin
+  try
+    if (TObject(Control) is TControl) then
+      Result := TControl(Control).Top
+    else
+      Result := 0;
+  except
+    Result := 0;
+  end;
+end;
+
 function AUiControl_GetVisible(Control: AControl): ABoolean;
 begin
   try
@@ -493,6 +516,40 @@ begin
   end;
 end;
 
+function AUiControl_SetBevel(Control: AControl; Value: AUiBevel; Width: AInt): AError;
+var
+  V: AInt;
+begin
+  try
+    V := Value and $00FF;
+    if (V = AUiBevel_InnerNone) then
+      TPanel(Control).BevelInner := bvNone
+    else if (V = AUiBevel_InnerLowered) then
+      TPanel(Control).BevelInner := bvLowered
+    else if (V = AUiBevel_InnerRaised) then
+      TPanel(Control).BevelInner := bvRaised
+    else if (V = AUiBevel_InnerSpace) then
+      TPanel(Control).BevelInner := bvSpace;
+
+    V := Value and $FF00;
+    if (V = AUiBevel_OuterNone) then
+      TPanel(Control).BevelOuter := bvNone
+    else if (V = AUiBevel_OuterLowered) then
+      TPanel(Control).BevelOuter := bvLowered
+    else if (V = AUiBevel_OuterRaised) then
+      TPanel(Control).BevelOuter := bvRaised
+    else if (V = AUiBevel_OuterSpace) then
+      TPanel(Control).BevelOuter := bvSpace;
+
+    if (Width >= 0) then
+      TPanel(Control).BevelWidth := Width;
+
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
 function AUiControl_SetClientSize(Control: AControl; ClientWidth, ClientHeight: AInt): AError;
 begin
   try
@@ -529,6 +586,17 @@ begin
   end;
 end;
 
+function AUiControl_SetCursor(Control: AControl; Value: AInt): AError;
+begin
+  try
+    if (TObject(Control) is TControl) then
+      TControl(Control).Cursor := TCursor(Value);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
 function AUiControl_SetEnabled(Control: AControl; Value: ABoolean): AError;
 begin
   try
@@ -554,6 +622,16 @@ begin
     Result := True;
   except
     Result := False;
+  end;
+end;
+
+function AUiControl_SetFont1(Control: AControl; const FontName: AString_Type;
+    FontSize: AInt): AError;
+begin
+  try
+    Result := AUiControl_SetFont1P(Control, AString_ToPascalString(FontName), FontSize);
+  except
+    Result := -1;
   end;
 end;
 
@@ -891,6 +969,17 @@ begin
     end
     else if (Obj is TMenuItem) then
       TMenuItem(Obj).Caption := Value;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiControl_SetTop(Control: AControl; Value: AInt): AError;
+begin
+  try
+    if (TObject(Control) is TControl) then
+      TControl(Control).Top := Value;
     Result := 0;
   except
     Result := -1;

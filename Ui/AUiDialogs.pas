@@ -142,6 +142,9 @@ function AUiDialog_AddButton(Win: AWindow; Left, Width: AInt;
 function AUiDialog_AddButton02(Win: AWindow; Left, Width: AInteger; const Text: APascalString;
     OnClick: ACallbackProc02): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiDialog_AddButton1P(Dialog: ADialog; Left, Width: AInt; const Text: APascalString;
+    OnClick: ACallbackProc): AControl;
+
 function AUiDialog_AddButtonP(Win: AWindow; Left, Width: AInt; const Text: APascalString;
     OnClick: ACallbackProc): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -150,6 +153,8 @@ function AUiDialog_Free(Dialog: ADialog): AError; {$ifdef AStdCall}stdcall;{$end
 function AUiDialog_GetWindow(Dialog: ADialog): AWindow; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiDialog_New(Buttons: AUiWindowButtons): ADialog; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiDialog_ShowModal(Dialog: ADialog): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 // --- UI_Dialog ---
 
@@ -976,6 +981,26 @@ begin
   end;
 end;
 
+function AUiDialog_AddButton1P(Dialog: ADialog; Left, Width: AInt; const Text: APascalString;
+    OnClick: ACallbackProc): AControl;
+begin
+  if (Dialog = 0) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+  try
+    if not(TObject(Dialog) is TAUiDialog) then
+    begin
+      Result := 0;
+      Exit;
+    end;
+    Result := AUiDialog_AddButtonP(TAUiDialog(Dialog).FWindow, Left, Width, Text, OnClick);
+  except
+    Result := 0;
+  end;
+end;
+
 function AUiDialog_AddButtonP(Win: AWindow; Left, Width: AInt; const Text: APascalString;
     OnClick: ACallbackProc): AControl;
 begin
@@ -1060,6 +1085,27 @@ begin
     Result := ADialog(Dialog);
   except
     Result := 0;
+  end;
+end;
+
+function AUiDialog_ShowModal(Dialog: ADialog): ABool;
+var
+  I: AInt;
+begin
+  if (Dialog = 0) then
+  begin
+    Result := False;
+    Exit;
+  end;
+  try
+    if not(TObject(Dialog) is TAUiDialog) then
+    begin
+      Result := False;
+      Exit;
+    end;
+    Result := AUiWindow_ShowModal(TAUiDialog(Dialog).FWindow);
+  except
+    Result := False;
   end;
 end;
 

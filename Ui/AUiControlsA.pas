@@ -2,7 +2,7 @@
 @Abstract AUi controls functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2011
-@LastMod 20.11.2012
+@LastMod 16.04.2013
 }
 unit AUiControlsA;
 
@@ -21,6 +21,8 @@ function AUiControl_SetOnChange(Control: AControl; OnChange: ACallbackProc): AEr
 function AUiControl_SetOnChange02(Control: AControl; OnChange: ACallbackProc02): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetOnChange03(Control: AControl; OnChange: ACallbackProc03): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiControl_SetOnChangeEx(Control: AControl; OnChange: ACallbackProc; Obj: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiControl_SetOnChangeEx02(Control: AControl; OnChange: ACallbackProc02; Obj: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -119,6 +121,11 @@ begin
   except
     Result := -1;
   end;
+end;
+
+function AUiControl_SetOnChangeEx(Control: AControl; OnChange: ACallbackProc; Obj: AInteger): AError;
+begin
+  Result := AUiControl_SetOnChangeEx03(Control, OnChange, Obj);
 end;
 
 function AUiControl_SetOnChangeEx02(Control: AControl; OnChange: ACallbackProc02; Obj: AInteger): AError;

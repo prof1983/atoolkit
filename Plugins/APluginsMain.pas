@@ -2,7 +2,7 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.01.2012
-@LastMod 17.01.2013
+@LastMod 16.04.2013
 }
 unit APluginsMain;
 
@@ -26,6 +26,10 @@ function APlugins_Clear(): AError; stdcall;
 function APlugins_Delete(Index: AInteger): AError; stdcall;
 
 function APlugins_Fin(): AError; stdcall;
+
+function APlugins_FinAll(): AError; stdcall;
+
+function APlugins_Find2A(Path, Exclusion: AStr): AError; stdcall;
 
 function APlugins_Find2P(const Path, Exclusion: APascalString): AError; stdcall;
 
@@ -55,7 +59,7 @@ function Plugins_Count: AInteger; stdcall;
 
 function Plugins_Delete(Index: Integer): ABoolean; stdcall;
 
-function Plugins_DoneAll(): AError; stdcall;
+function Plugins_DoneAll(): AError; stdcall; deprecated {$ifdef ADeprText}'Use APlugins_FinAll()'{$endif};
 
 procedure Plugins_Find(const Path: APascalString); {stdcall;}
 
@@ -321,6 +325,23 @@ begin
   end;
 end;
 
+function APlugins_FinAll(): AError;
+var
+  I: AInt;
+begin
+  for I := 0 to High(FPlugins) do
+  try
+    _Plugin_Fin(I);
+  except
+  end;
+  Result := 0;
+end;
+
+function APlugins_Find2A(Path, Exclusion: AStr): AError;
+begin
+  Result := APlugins_Find2P(AnsiString(Path), AnsiString(Exclusion));
+end;
+
 function APlugins_Find2P(const Path, Exclusion: APascalString): AError;
 
   procedure PFind(const Path: APascalString);
@@ -423,15 +444,8 @@ begin
 end;
 
 function Plugins_DoneAll(): AError; stdcall;
-var
-  I: Integer;
 begin
-  for I := 0 to High(FPlugins) do
-  try
-    _Plugin_Fin(I);
-  except
-  end;
-  Result := 0;
+  Result := APlugins_FinAll();
 end;
 
 procedure Plugins_Find(const Path: APascalString);

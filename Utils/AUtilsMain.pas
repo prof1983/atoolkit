@@ -13,6 +13,7 @@ interface
 uses
   SysUtils,
   ABase,
+  AStringBaseUtils,
   AStringMain,
   AStringUtils,
   ASystemMain;
@@ -95,6 +96,10 @@ function AUtils_FloatToStrP(Value: AFloat): APascalString; stdcall;
 
 function AUtils_FloatToStrWS(Value: AFloat): AWideString; stdcall;
 
+function AUtils_ForceDirectories(const Dir: AString_Type): AError; stdcall;
+
+function AUtils_ForceDirectoriesA(Dir: AStr): AError; stdcall;
+
 function AUtils_ForceDirectoriesP(const Dir: APascalString): AError;
 
 function AUtils_FormatFloat(Value: AFloat; Count, Digits: AInteger;
@@ -115,6 +120,10 @@ function AUtils_FormatStr(const Value: AString_Type; Len: AInteger; out Res: ASt
 function AUtils_FormatStrAnsi(const Value: AnsiString; Len: AInteger): AnsiString; stdcall;
 
 function AUtils_FormatStrP(const Value: APascalString; Len: AInteger): APascalString; stdcall;
+
+function AUtils_FormatStrStr(const FormatStr, S: AString_Type; out Res: AString_Type): AError; stdcall;
+
+function AUtils_FormatStrStrA(FormatStr, S: AStr; Res: AStr; MaxLen: AInt): AError; stdcall;
 
 function AUtils_FormatStrStrP(const FormatStr, S: APascalString): APascalString; stdcall;
 
@@ -161,19 +170,33 @@ function AUtils_Round2(Value: Real; Digits1, DigitsAfterComma: Integer): Real; s
 
 function AUtils_Sleep(Milliseconds: AUInt): AError; stdcall;
 
+function AUtils_StrToDate(const Value: AString_Type): TDateTime; stdcall;
+
 function AUtils_StrToDateP(const Value: APascalString): TDateTime;
+
+function AUtils_StrToFloat(const Value: AString_Type): AFloat; stdcall;
+
+function AUtils_StrToFloatDef(const S: AString_Type; DefValue: AFloat): AFloat; stdcall;
 
 {** ѕреобразует строку в Float. –азделителем может быть как точка, так и зап€та€.
     ¬ исходной строке могут присутствовать начальные и конечные пробелы. }
-function AUtils_StrToFloatDefP(const S: APascalString; DefValue: AFloat): AFloat; 
+function AUtils_StrToFloatDefP(const S: APascalString; DefValue: AFloat): AFloat;
 
 function AUtils_StrToFloatP(const Value: APascalString): AFloat;
+
+function AUtils_StrToInt(const Value: AString_Type): AInt; stdcall;
+
+function AUtils_StrToIntDef(const S: AString_Type; DefValue: AInt): AInt; stdcall;
 
 function AUtils_StrToIntDefP(const S: APascalString; DefValue: AInteger): AInteger; 
 
 function AUtils_StrToIntP(const Value: APascalString): AInteger;
 
+function AUtils_Trim(var S: AString_Type): AError; stdcall;
+
 function AUtils_TrimP(const S: APascalString): APascalString;
+
+function AUtils_TryStrToDate(const S: AString_Type; var Value: TDateTime): AError; stdcall;
 
 function AUtils_TryStrToDateP(const S: APascalString; var Value: TDateTime): ABoolean;
 
@@ -181,13 +204,19 @@ function AUtils_TryStrToDateP(const S: APascalString; var Value: TDateTime): ABo
     ¬ исходной строке могут присутствовать начальные и конечные пробелы. }
 function AUtils_TryStrToFloatP(const S: APascalString; var Value: AFloat): ABoolean;
 
+function AUtils_TryStrToFloat32(const S: AString_Type; var Value: AFloat32): AError; stdcall;
+
 {** ѕреобразует строку в Float32. –азделителем может быть как точка, так и зап€та€.
     ¬ исходной строке могут присутствовать начальные и конечные пробелы. }
 function AUtils_TryStrToFloat32P(const S: APascalString; var Value: AFloat32): ABoolean;
 
+function AUtils_TryStrToFloat64(const S: AString_Type; var Value: AFloat64): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 {** ѕреобразует строку в Float64. –азделителем может быть как точка, так и зап€та€.
     ¬ исходной строке могут присутствовать начальные и конечные пробелы. }
 function AUtils_TryStrToFloat64P(const S: APascalString; var Value: AFloat64): ABoolean;
+
+function AUtils_TryStrToInt(const S: AString_Type; var Value: AInt): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_TryStrToIntP(const S: APascalString; var Value: AInteger): ABoolean;
 
@@ -593,6 +622,16 @@ begin
   end;
 end;
 
+function AUtils_ForceDirectories(const Dir: AString_Type): AError;
+begin
+  Result := AUtils_ForceDirectoriesP(AString_ToPascalString(Dir));
+end;
+
+function AUtils_ForceDirectoriesA(Dir: AStr): AError;
+begin
+  Result := AUtils_ForceDirectoriesP(Dir);
+end;
+
 function AUtils_ForceDirectoriesP(const Dir: APascalString): AError;
 begin
   try
@@ -719,6 +758,19 @@ begin
   except
     Result := '';
   end;
+end;
+
+function AUtils_FormatStrStr(const FormatStr, S: AString_Type; out Res: AString_Type): AError;
+begin
+  Result := AString_AssignP(Res, AUtils_FormatStrStrP(AString_ToPascalString(FormatStr), AString_ToPascalString(S)));
+end;
+
+function AUtils_FormatStrStrA(FormatStr, S: AStr; Res: AStr; MaxLen: AInt): AError;
+var
+  SRes: APascalString;
+begin
+  SRes := AUtils_FormatStrStrP(AStr_ToPascalString(FormatStr), AStr_ToPascalString(S));
+  Result := AStr_AssignP(Res, SRes, MaxLen);
 end;
 
 function AUtils_FormatStrStrP(const FormatStr, S: APascalString): APascalString;
@@ -948,12 +1000,57 @@ begin
   end;
 end;
 
+function AUtils_StrToDate(const Value: AString_Type): TDateTime;
+begin
+  try
+    Result := AUtils_StrToDateP(AString_ToPascalString(Value));
+  except
+    Result := 0;
+  end;
+end;
+
 function AUtils_StrToDateP(const Value: APascalString): TDateTime;
 begin
   try
     Result := SysUtils.StrToDate(Value);
   except
     Result := 0;
+  end;
+end;
+
+function AUtils_StrToFloat(const Value: AString_Type): AFloat;
+begin
+  try
+    Result := AUtils_StrToFloatP(AString_ToPascalString(Value));
+  except
+    Result := 0;
+  end;
+end;
+
+function AUtils_StrToFloatDef(const S: AString_Type; DefValue: AFloat): AFloat;
+begin
+  try
+    Result := AUtils_StrToFloatDefP(AString_ToPascalString(S), DefValue);
+  except
+    Result := DefValue;
+  end;
+end;
+
+function AUtils_StrToInt(const Value: AString_Type): AInt;
+begin
+  try
+    Result := AUtils_StrToIntP(AString_ToPascalString(Value));
+  except
+    Result := 0;
+  end;
+end;
+
+function AUtils_StrToIntDef(const S: AString_Type; DefValue: AInt): AInt;
+begin
+  try
+    Result := AUtils_StrToIntDefP(AString_ToPascalString(S), DefValue);
+  except
+    Result := DefValue;
   end;
 end;
 
@@ -989,12 +1086,33 @@ begin
     Result := 0;
 end;
 
+function AUtils_Trim(var S: AString_Type): AError;
+begin
+  try
+    Result := AString_AssignP(S, SysUtils.Trim(AString_ToPascalString(S)));
+  except
+    Result := -1;
+  end;
+end;
+
 function AUtils_TrimP(const S: APascalString): APascalString;
 begin
   try
     Result := SysUtils.Trim(S);
   except
     Result := '';
+  end;
+end;
+
+function AUtils_TryStrToDate(const S: AString_Type; var Value: TDateTime): AError;
+begin
+  try
+    if AUtils_TryStrToDateP(AString_ToPascalString(S), Value) then
+      Result := 0
+    else
+      Result := -2;
+  except
+    Result := -1;
   end;
 end;
 
@@ -1014,6 +1132,18 @@ begin
   {$ELSE}
   Result := AUtils_TryStrToFloat64P(S, Value);
   {$ENDIF}
+end;
+
+function AUtils_TryStrToFloat32(const S: AString_Type; var Value: AFloat32): AError;
+begin
+  try
+    if AUtils_TryStrToFloat32P(AString_ToPascalString(S), Value) then
+      Result := 0
+    else
+      Result := -2;
+  except
+    Result := -1;
+  end;
 end;
 
 function AUtils_TryStrToFloat32P(const S: APascalString; var Value: AFloat32): ABoolean;
@@ -1036,6 +1166,18 @@ begin
   end;
 end;
 
+function AUtils_TryStrToFloat64(const S: AString_Type; var Value: AFloat64): AError;
+begin
+  try
+    if AUtils_TryStrToFloat64P(AString_ToPascalString(S), Value) then
+      Result := 0
+    else
+      Result := -2;
+  except
+    Result := -1;
+  end;
+end;
+
 function AUtils_TryStrToFloat64P(const S: APascalString; var Value: AFloat64): ABoolean;
 var
   Value1: Extended;
@@ -1053,6 +1195,18 @@ begin
       Result := False;
   except
     Result := False;
+  end;
+end;
+
+function AUtils_TryStrToInt(const S: AString_Type; var Value: AInt): AError;
+begin
+  try
+    if AUtils_TryStrToIntP(AString_ToPascalString(S), Value) then
+      Result := 0
+    else
+      Result := -2;
+  except
+    Result := -1;
   end;
 end;
 

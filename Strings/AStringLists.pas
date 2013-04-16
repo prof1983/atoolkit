@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 01.10.2009
-@LastMod 18.12.2012
+@LastMod 16.04.2013
 }
 unit AStringLists;
 
@@ -13,7 +13,7 @@ uses
   Classes,
   ABase,
   ABaseTypes,
-  AStrings;
+  AStringMain;
 
 // --- AStringList ---
 
@@ -28,6 +28,8 @@ function AStringList_Clear(StringList: AStringList): AError; {$ifdef AStdCall}st
 function AStringList_Delete(StringList: AStringList; Index: AInteger): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AStringList_GetCount(StringList: AStringList): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+
+function AStringList_GetTextLength(StringList: AStringList): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
 function AStringList_GetStringP(StringList: AStringList; Index: AInteger): APascalString;
 
@@ -113,6 +115,20 @@ begin
     Result := TStringList(StringList).Count;
   except
     Result := 0;
+  end;
+end;
+
+function AStringList_GetTextLength(StringList: AStringList): AInt;
+begin
+  if (StringList = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  try
+    Result := Length(TStringList(StringList).Text);
+  except
+    Result := -1;
   end;
 end;
 

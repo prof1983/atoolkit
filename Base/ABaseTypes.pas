@@ -2,7 +2,7 @@
 @Abstract ABaseTypes
 @Author Prof1983 <prof1983@ya.ru>
 @Created 23.06.2011
-@LastMod 18.12.2012
+@LastMod 16.04.2013
 }
 unit ABaseTypes;
 
@@ -59,13 +59,21 @@ const
   MB_USERICON = AMessageBoxFlags_USERICON;
 
 type
+  ALogType = type AInt;
+const
+  ALogType_Error = $00000010;
+  ALogType_Question = $00000020;
+  ALogType_Warning = $00000030;
+  ALogType_Information = $00000040;
+
+type
   ALogFlags = type Integer;
 const
   ALogFlags_IconMask = $000000F0;
-  ALogFlags_IconError = $00000010;
-  ALogFlags_IconQuestion = $00000020;
-  ALogFlags_IconWarning = $00000030;
-  ALogFlags_IconInformation = $00000040;
+  ALogFlags_IconError = ALogType_Error;
+  ALogFlags_IconQuestion = ALogType_Question;
+  ALogFlags_IconWarning = ALogType_Warning;
+  ALogFlags_IconInformation = ALogType_Information;
   ALogFlags_IconUser = $00000080;
 const
   ALogIconMask         = $000000F0;
@@ -82,6 +90,7 @@ const
   L_USERICON = ALogIconUser;}
 
 type
+  AAddToLogA_Proc = function(Msg: AStr; Flags: ALogFlags; Data: AInt): AInt; stdcall;
   AShowErrorA_Proc = function(Caption, UserMessage, ExceptMessage: AStr): AError; stdcall;
   AShowMessageA_Proc = function(Text, Caption: AStr; Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
 

@@ -34,6 +34,24 @@ type
   PADataSource = type AInteger;
 
 type
+  AMouseButton = type AInt;
+const
+  AMouseButton_Left = 0;
+  AMouseButton_Right = 1;
+  AMouseButton_Middle = 2;
+
+type
+  AShiftState = type AInt;
+const
+  AShiftState_Shift = $01;
+  AShiftState_Alt = $02;
+  AShiftState_Ctrl = $04;
+  AShiftState_Left = $08;
+  AShiftState_Right = $10;
+  AShiftState_Middle = $20;
+  AShiftState_Double = $40;
+
+type
   AUIBoxType = type AInteger;
 const
   AUIBoxTypeNone = 0;

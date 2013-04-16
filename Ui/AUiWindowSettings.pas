@@ -2,7 +2,7 @@
 @Abstract AUi window setting functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2012
-@LastMod 18.12.2012
+@LastMod 16.04.2013
 }
 unit AUiWindowSettings;
 
@@ -12,7 +12,11 @@ interface
 
 uses
   Forms,
-  ABase, ASettings, AStrings, AUiForm, AUiBase;
+  ABase,
+  ASettings,
+  AStringMain,
+  AUiForm,
+  AUiBase;
 
 // --- AUiWindow ---
 
@@ -89,7 +93,7 @@ begin
       Result := -5;
       Exit;
     end;
-    Result := Form_LoadConfig2(TForm(Window), Config, AStrings.String_ToWideString(ConfigKey));
+    Result := Form_LoadConfig2(TForm(Window), Config, AString_ToP(ConfigKey));
   except
     Result := -1;
   end;
@@ -165,7 +169,7 @@ begin
       Result := -5;
       Exit;
     end;
-    Result := AUiWindow_SaveConfig2P(Window, Config, AStrings.String_ToPascalString(ConfigKey));
+    Result := AUiWindow_SaveConfig2P(Window, Config, AString_ToP(ConfigKey));
   except
     Result := -1;
   end;

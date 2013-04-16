@@ -9,7 +9,9 @@ unit AEventsMain;
 interface
 
 uses
-  ABase, AEventObj, AStrings;
+  ABase,
+  AEventObj,
+  AStringMain;
 
 // --- AEvents ---
 

@@ -16,7 +16,7 @@ uses
   ABase,
   ABaseTypes,
   {$ifdef UseXmlNode}AConfigUtils,{$endif}
-  AStrings,
+  AStringMain,
   AAbstractSettings;
 
 // --- ASettings ---
@@ -224,8 +224,8 @@ function ASettings_ReadBoolDef(Config: AConfig; const Section, Name: AString_Typ
 begin
   try
     Result := ASettings_ReadBoolDefP(Config,
-        AStrings.String_ToWideString(Section),
-        AStrings.String_ToWideString(Name),
+        AString_ToP(Section),
+        AString_ToP(Name),
         DefValue);
   except
     Result := DefValue;

@@ -2,17 +2,18 @@
 @Abstract AUi controls
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 17.01.2013
+@LastMod 16.04.2013
 }
 unit AUiControls;
 
-{$ifdef A04}{$define AStdCall}{$endif}
+{$define AStdCall}
 
 interface
 
 uses
   Buttons, Classes, {$IFNDEF FPC}ComCtrls,{$ENDIF} Controls, ExtCtrls, Forms, Graphics, Menus, StdCtrls,
-  ABase, AStrings,
+  ABase,
+  AStringMain,
   AUiBase, AUiData;
 
 // --- AUiControl ---

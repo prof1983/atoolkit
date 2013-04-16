@@ -2,7 +2,7 @@
 @Abstract ASystem function
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.08.2009
-@LastMod 12.12.2012
+@LastMod 16.04.2013
 }
 unit ASystem;
 
@@ -49,7 +49,12 @@ uses
   {$IFDEF USE_EVENTS}ASystemEvents,{$ENDIF}
   ABase, ABaseTypes, ABaseUtils,
   {$IFDEF USE_RUNTIME}ARuntime,{$ENDIF}
-  AStrings, ASystemData, ASystemMain, ASystemPrepare, ASystemResourceString, ASystemUtils;
+  AStringMain,
+  ASystemData,
+  ASystemMain,
+  ASystemPrepare,
+  ASystemResourceString,
+  ASystemUtils;
 
 // --- Info functions ---
 
@@ -545,7 +550,7 @@ end;
 
 function Info_GetCompanyName(out Value: AString_Type): AInteger; stdcall;
 begin
-  Result := AStrings.String_AssignP(Value, FCompanyName);
+  Result := AString_AssignP(Value, FCompanyName);
 end;
 
 function Info_GetCompanyNameP: APascalString; stdcall;
@@ -565,7 +570,7 @@ end;
 
 function Info_GetCopyright(out Value: AString_Type): AInteger; stdcall;
 begin
-  Result := AStrings.String_AssignP(Value, FCopyright);
+  Result := AString_AssignP(Value, FCopyright);
 end;
 
 function Info_GetCopyrightP: APascalString; stdcall;
@@ -590,7 +595,7 @@ end;
 
 function Info_GetDescription(out Value: AString_Type): AInteger; stdcall;
 begin
-  Result := AStrings.String_AssignP(Value, FDescription);
+  Result := AString_AssignP(Value, FDescription);
 end;
 
 function Info_GetDescriptionP: APascalString; stdcall;
@@ -605,7 +610,7 @@ end;
 
 function Info_GetDirectoryPath(out Value: AString_Type): AInteger; stdcall;
 begin
-  Result := AStrings.String_AssignP(Value, FExePath);
+  Result := AString_AssignP(Value, FExePath);
 end;
 
 function Info_GetDirectoryPathP: APascalString; stdcall;
@@ -620,7 +625,7 @@ end;
 
 function Info_GetProductName(out Value: AString_Type): AInteger; stdcall;
 begin
-  Result := AStrings.String_AssignP(Value, FProductName);
+  Result := AString_AssignP(Value, FProductName);
 end;
 
 function Info_GetProductNameP: APascalString; stdcall;
@@ -650,7 +655,7 @@ end;
 
 function Info_GetProgramName(out Value: AString_Type): AInteger; stdcall;
 begin
-  Result := AStrings.String_AssignP(Value, FProgramName);
+  Result := AString_AssignP(Value, FProgramName);
 end;
 
 function Info_GetProgramNameP: APascalString; stdcall;
@@ -680,7 +685,7 @@ end;
 
 function Info_GetTitle(out Value: AString_Type): AInteger; stdcall;
 begin
-  Result := AStrings.String_AssignP(Value, FTitle);
+  Result := AString_AssignP(Value, FTitle);
 end;
 
 function Info_GetTitleP: APascalString; stdcall;
@@ -695,7 +700,7 @@ end;
 
 function Info_GetUrl(out Value: AString_Type): AInteger; stdcall;
 begin
-  Result := AStrings.String_AssignP(Value, FUrl);
+  Result := AString_AssignP(Value, FUrl);
 end;
 
 function Info_GetUrlP: APascalString; stdcall;
@@ -857,16 +862,16 @@ function Prepare2(const Title, ProgramName: AString_Type; ProgramVersion: AVersi
 begin
   try
     Prepare2P(
-        AStrings.String_ToWideString(Title),
-        AStrings.String_ToWideString(ProgramName),
+        AString_ToP(Title),
+        AString_ToP(ProgramName),
         ProgramVersion,
-        AStrings.String_ToWideString(ProductName),
+        AString_ToP(ProductName),
         ProductVersion,
-        AStrings.String_ToWideString(CompanyName),
-        AStrings.String_ToWideString(Copyright),
-        AStrings.String_ToWideString(Url),
-        AStrings.String_ToWideString(Description),
-        AStrings.String_ToWideString(DataPath));
+        AString_ToP(CompanyName),
+        AString_ToP(Copyright),
+        AString_ToP(Url),
+        AString_ToP(Description),
+        AString_ToP(DataPath));
     Result := 0;
   except
     Result := -1;
@@ -1215,7 +1220,7 @@ end;
 
 function GetExePath(out Value: AString_Type): AInteger;
 begin
-  Result := AStrings.String_AssignP(Value, FExePath);
+  Result := AString_AssignP(Value, FExePath);
 end;
 
 function GetExePathP(): APascalString;

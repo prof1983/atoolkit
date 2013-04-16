@@ -2,7 +2,7 @@
 @Abstract AUiListBox
 @Author Prof1983 <prof1983@ya.ru>
 @Created 05.09.2012
-@LastMod 15.01.2013
+@LastMod 16.04.2013
 }
 unit AUiListBox;
 
@@ -15,7 +15,8 @@ uses
   Controls,
   ExtCtrls,
   StdCtrls,
-  ABase, AStrings,
+  ABase,
+  AStringMain,
   AUiBase, AUiData, AUiEventsObj;
 
 // --- AUiListBox ---
@@ -380,7 +381,7 @@ end;
 
 function AUiListBox_SetItem(ListBox: AControl; Index: AInteger; const Value: AString_Type): AError;
 begin
-  Result := AUiListBox_SetItemP(ListBox, Index, AStrings.String_ToWideString(Value));
+  Result := AUiListBox_SetItemP(ListBox, Index, AString_ToP(Value));
 end;
 
 function AUiListBox_SetItemHeight(ListBox: AControl; Value: AInt): AError;

@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.12.2012
-@LastMod 11.01.2013
+@LastMod 16.04.2013
 }
 unit AUiWaitWin;
 
@@ -13,7 +13,7 @@ interface
 uses
   {$ifdef UseWaitForm}fWait,{$endif}
   ABase,
-  AStrings,
+  AStringMain,
   AUiBase,
   AUiControls,
   AUiData,

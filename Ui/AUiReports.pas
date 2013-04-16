@@ -2,7 +2,7 @@
 @Abstract AUiReports
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.08.2011
-@LastMod 14.12.2012
+@LastMod 16.04.2013
 }
 unit AUiReports;
 
@@ -17,7 +17,9 @@ unit AUiReports;
 interface
 
 uses
-  Graphics, ABase, AStrings,
+  Graphics,
+  ABase,
+  AStringMain,
   {$IFDEF USE_REPORTS}fReport, fSimpleReport,{$ENDIF}
   AUiBase, AUiBox, AUiControls, AUiData, AUiTextView;
 
@@ -93,7 +95,7 @@ end;
 function AUiReport_SetText(Report: AReport; const Value: AString_Type): AError;
 begin
   try
-    Result := AUiReport_SetTextP(Report, AStrings.String_ToWideString(Value));
+    Result := AUiReport_SetTextP(Report, AString_ToP(Value));
   except
     Result := -1;
   end;

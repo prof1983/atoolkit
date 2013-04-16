@@ -2,17 +2,18 @@
 @Abstract AUi text view
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.11.2012
-@LastMod 23.11.2012
+@LastMod 16.04.2013
 }
 unit AUiTextView;
 
-{$ifdef A04}{$define AStdCall}{$endif}
+{$define AStdCall}
 
 interface
 
 uses
   ComCtrls, Controls, Graphics, StdCtrls,
-  ABase, AStrings,
+  ABase,
+  AStringMain,
   AUiBase, AUiData;
 
 // --- AUi_TextView ---
@@ -99,7 +100,7 @@ implementation
 
 function AUiTextView_AddLine(TextView: AControl; const Text: AString_Type): AInteger;
 begin
-  Result := AUiTextView_AddLineP(TextView, AStrings.String_ToWideString(Text));
+  Result := AUiTextView_AddLineP(TextView, AString_ToP(Text));
 end;
 
 function AUiTextView_AddLineP(TextView: AControl; const Text: APascalString): AInteger;
@@ -147,7 +148,7 @@ end;
 
 function AUiTextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger): AError;
 begin
-  Result := AUiTextView_SetFontP(TextView, AStrings.String_ToWideString(FontName), FontSize);
+  Result := AUiTextView_SetFontP(TextView, AString_ToP(FontName), FontSize);
 end;
 
 function AUiTextView_SetFontP(TextView: AControl; const FontName: APascalString; FontSize: AInteger): AError;
@@ -221,7 +222,7 @@ end;
 
 function AUi_TextView_AddLine(TextView: AControl; const Text: AString_Type): AInteger;
 begin
-  Result := AUiTextView_AddLineP(TextView, AStrings.String_ToWideString(Text));
+  Result := AUiTextView_AddLineP(TextView, AString_ToP(Text));
 end;
 
 function AUi_TextView_New(Parent: AControl; ViewType: AInteger): AControl;
@@ -231,7 +232,7 @@ end;
 
 procedure AUi_TextView_SetFont(TextView: AControl; const FontName: AString_Type; FontSize: AInteger);
 begin
-  AUiTextView_SetFontP(TextView, AStrings.String_ToWideString(FontName), FontSize);
+  AUiTextView_SetFontP(TextView, AString_ToP(FontName), FontSize);
 end;
 
 procedure AUi_TextView_SetReadOnly(TextView: AControl; ReadOnly: ABoolean);

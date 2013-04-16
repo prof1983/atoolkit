@@ -2,7 +2,7 @@
 @Abstract The icon in the system tray
 @Author Prof1983 <prof1983@ya.ru>
 @Created 22.12.2007
-@Lastmod 25.12.2012
+@Lastmod 16.04.2013
 }
 unit AUiTrayIcon;
 
@@ -15,7 +15,7 @@ uses
   ExtCtrls,
   {$ELSE}
   Classes, Controls, Forms, Graphics, Menus, Messages, ShellApi, SysUtils, Windows,
-  AStrings,
+  AStringMain,
   {$ENDIF}
   ABase, AUiBase;
 

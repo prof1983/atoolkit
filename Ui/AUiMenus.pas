@@ -2,7 +2,7 @@
 @Abstract AUi Menus
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2011
-@LastMod 23.01.2013
+@LastMod 16.04.2013
 }
 unit AUiMenus;
 
@@ -12,7 +12,9 @@ unit AUiMenus;
 interface
 
 uses
-  Menus, ABase, AStrings,
+  Menus,
+  ABase,
+  AStringMain,
   AUiBase, AUiData, AUiEventsObj;
 
 // --- AUiMenu ---

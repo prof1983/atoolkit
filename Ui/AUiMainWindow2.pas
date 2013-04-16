@@ -2,7 +2,7 @@
 @Abstract AUi MainWindow2
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.06.2011
-@LastMod 13.12.2012
+@LastMod 16.04.2013
 }
 unit AUiMainWindow2;
 
@@ -12,7 +12,8 @@ interface
 
 uses
   Forms,
-  ABase, AStrings,
+  ABase,
+  AStringMain,
   AUiBase, AUiData, AUiMainWindow, AUiMenus;
 
 // --- AUiMainWindow ---

@@ -2,7 +2,7 @@
 @Abstract ASettingsConfig
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 09.01.2013
+@LastMod 16.04.2013
 }
 unit ASettingsConfig;
 
@@ -12,7 +12,7 @@ uses
   ABase,
   ABaseTypes,
   ACollectionsBase,
-  AStrings,
+  AStringMain,
   AAbstractSettings, ASettingsMain;
 
 {deprecated}

@@ -2,7 +2,7 @@
 @Abstract ASystem
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.09.2011
-@LastMod 25.12.2012
+@LastMod 16.04.2013
 }
 unit ASystemMain;
 
@@ -23,7 +23,8 @@ uses
   {$IFNDEF UNIX}Windows,{$ENDIF}
   ABase, ABaseTypes,
   {$IFDEF USE_RUNTIME}ARuntimeMain,{$ENDIF}
-  AStrings, ASystemData;
+  AStringMain,
+  ASystemData;
 
 // --- ASystem ---
 
@@ -152,7 +153,7 @@ end;
 
 function ASystem_GetDirectoryPath(out Value: AString_Type): AInteger;
 begin
-  Result := AStrings.String_AssignP(Value, FExePath);
+  Result := AString_AssignP(Value, FExePath);
 end;
 
 function ASystem_GetDirectoryPathP(): APascalString;
@@ -206,7 +207,7 @@ var
 begin
   try
     Res := System.ParamStr(Index);
-    Result := AStrings.String_AssignP(Value, Res);
+    Result := AString_AssignP(Value, Res);
   except
     Result := -1;
   end;
@@ -285,11 +286,11 @@ end;
 function ASystem_ShellExecute(const Operation, FileName, Parameters, Directory: AString_Type): AInteger;
 begin
   try
-    Result := ShellExecuteWS(
-        AStrings.String_ToWideString(Operation),
-        AStrings.String_ToWideString(FileName),
-        AStrings.String_ToWideString(Parameters),
-        AStrings.String_ToWideString(Directory));
+    Result := ShellExecuteP(
+        AString_ToP(Operation),
+        AString_ToP(FileName),
+        AString_ToP(Parameters),
+        AString_ToP(Directory));
   except
     Result := -1;
   end;

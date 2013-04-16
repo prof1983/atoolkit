@@ -2,7 +2,7 @@
 @Abstract AUi ToolBar
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.08.2011
-@LastMod 12.12.2012
+@LastMod 16.04.2013
 }
 unit AUiToolBar;
 
@@ -12,7 +12,12 @@ interface
 
 uses
   ComCtrls, Controls,
-  ABase, AStrings, AUiBase, AUiButtons, AUiControls, AUiData;
+  ABase,
+  AStringMain,
+  AUiBase,
+  AUiButtons,
+  AUiControls,
+  AUiData;
 
 // --- AUiToolBar ---
 

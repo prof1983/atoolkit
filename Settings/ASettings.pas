@@ -2,7 +2,7 @@
 @Abstract The module for work with the settings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 09.01.2013
+@LastMod 16.04.2013
 }
 unit ASettings;
 
@@ -16,7 +16,7 @@ uses
   ASettingsMain,
   ASettingsReg,
   AStringBaseUtils,
-  AStrings;
+  AStringMain;
 
 // ----
 
@@ -219,7 +219,7 @@ uses
 function A_Settings_Config_DeleteKey(Config: AConfig; const Section, Name: AString_Type): ABoolean; stdcall;
 begin
   try
-    Result := Settings_DeleteKey(Config, AStrings.String_ToWideString(Section), AStrings.String_ToWideString(Name));
+    Result := Settings_DeleteKey(Config, AString_ToP(Section), AString_ToP(Name));
   except
     Result := False;
   end;
@@ -228,7 +228,7 @@ end;
 function A_Settings_Config_DeleteSection(Config: AConfig; const Section: AString_Type): ABoolean; stdcall;
 begin
   try
-    Result := Settings_DeleteSection(Config, AStrings.String_ToWideString(Section));
+    Result := Settings_DeleteSection(Config, AString_ToP(Section));
   except
     Result := False;
   end;
@@ -238,8 +238,8 @@ function A_Settings_Config_ReadBool(Config: AConfig; const Section, Name: AStrin
 begin
   try
     Result := Settings_ReadBool(Config,
-        AStrings.String_ToWideString(Section),
-        AStrings.String_ToWideString(Name),
+        AString_ToP(Section),
+        AString_ToP(Name),
         DefValue);
   except
     Result := DefValue;
@@ -249,7 +249,7 @@ end;
 function A_Settings_Config_ReadDateTime(Config: AConfig; const Section, Name: AString_Type; DefValue: TDateTime): TDateTime; stdcall;
 begin
   try
-    Result := Settings_ReadDateTime(Config, AStrings.String_ToWideString(Section), AStrings.String_ToWideString(Name), DefValue);
+    Result := Settings_ReadDateTime(Config, AString_ToP(Section), AString_ToP(Name), DefValue);
   except
     Result := DefValue;
   end;
@@ -258,7 +258,7 @@ end;
 function A_Settings_Config_ReadFloat(Config: AConfig; const Section, Name: AString_Type; DefValue: AFloat): AFloat; stdcall;
 begin
   try
-    Result := Settings_ReadFloat(Config, AStrings.String_ToWideString(Section), AStrings.String_ToWideString(Name), DefValue);
+    Result := Settings_ReadFloat(Config, AString_ToP(Section), AString_ToP(Name), DefValue);
   except
     Result := DefValue;
   end;
@@ -267,7 +267,7 @@ end;
 function A_Settings_Config_ReadInteger(Config: AConfig; const Section, Name: AString_Type; DefValue: AInteger): AInteger; stdcall;
 begin
   try
-    Result := Settings_ReadInteger(Config, AStrings.String_ToWideString(Section), AStrings.String_ToWideString(Name), DefValue);
+    Result := Settings_ReadInteger(Config, AString_ToP(Section), AString_ToP(Name), DefValue);
   except
     Result := DefValue;
   end;
@@ -276,7 +276,7 @@ end;
 function A_Settings_Config_ReadSection(Config: AConfig; const Section: AString_Type; Strings: AStringList): ABoolean; stdcall;
 begin
   try
-    Result := Settings_ReadSection(Config, AStrings.String_ToWideString(Section), Strings);
+    Result := Settings_ReadSection(Config, AString_ToP(Section), Strings);
   except
     Result := False;
   end;
@@ -288,13 +288,13 @@ var
 begin
   try
     Result := Settings_ReadStringA(Config,
-        AStrings.String_ToWideString(Section),
-        AStrings.String_ToWideString(Name),
-        AStrings.String_ToWideString(DefValue),
+        AString_ToP(Section),
+        AString_ToP(Name),
+        AString_ToP(DefValue),
         TmpValue);
-    AStrings.String_AssignP(Value, TmpValue);
+    AString_AssignP(Value, TmpValue);
   except
-    AStrings.String_Assign(Value, DefValue);
+    AString_Assign(Value, DefValue);
     Result := 0;
   end;
 end;
@@ -302,7 +302,7 @@ end;
 function A_Settings_Config_WriteBool(Config: AConfig; const Section, Name: AString_Type; Value: ABoolean): ABoolean; stdcall;
 begin
   try
-    Result := Settings_WriteBool(Config, AStrings.String_ToWideString(Section), AStrings.String_ToWideString(Name), Value);
+    Result := Settings_WriteBool(Config, AString_ToP(Section), AString_ToP(Name), Value);
   except
     Result := False;
   end;
@@ -312,8 +312,8 @@ function A_Settings_Config_WriteDateTime(Config: AConfig; const Section, Name: A
 begin
   try
     Result := Settings_WriteDateTime(Config,
-        AStrings.String_ToWideString(Section),
-        AStrings.String_ToWideString(Name),
+        AString_ToP(Section),
+        AString_ToP(Name),
         Value);
   except
     Result := False;
@@ -324,8 +324,8 @@ function A_Settings_Config_WriteFloat(Config: AConfig; const Section, Name: AStr
 begin
   try
     Result := Settings_WriteFloat(Config,
-        AStrings.String_ToWideString(Section),
-        AStrings.String_ToWideString(Name),
+        AString_ToP(Section),
+        AString_ToP(Name),
         Value);
   except
     Result := False;
@@ -336,8 +336,8 @@ function A_Settings_Config_WriteInteger(Config: AConfig; const Section, Name: AS
 begin
   try
     Result := Settings_WriteInteger(Config,
-        AStrings.String_ToWideString(Section),
-        AStrings.String_ToWideString(Name),
+        AString_ToP(Section),
+        AString_ToP(Name),
         Value);
   except
     Result := False;
@@ -348,9 +348,9 @@ function A_Settings_Config_WriteString(Config: AConfig; const Section, Name, Val
 begin
   try
     Result := Settings_WriteString(Config,
-        AStrings.String_ToWideString(Section),
-        AStrings.String_ToWideString(Name),
-        AStrings.String_ToWideString(Value));
+        AString_ToP(Section),
+        AString_ToP(Name),
+        AString_ToP(Value));
   except
     Result := False;
   end;
@@ -358,18 +358,18 @@ end;
 
 function A_Settings_IniConfig_New(const FileName: AString_Type): AConfig; stdcall;
 begin
-  Result := ASettings_IniConfig_NewP(AStrings.String_ToWideString(FileName));
+  Result := ASettings_IniConfig_NewP(AString_ToP(FileName));
 end;
 
 function A_Settings_RegConfig_New(const Prefix: AString_Type): AConfig; stdcall;
 begin
-  Result := ASettings_RegConfig_NewP(AStrings.String_ToWideString(Prefix));
+  Result := ASettings_RegConfig_NewP(AString_ToP(Prefix));
 end;
 
 function A_Settings_RegConfig_NewA(const Prefix: AString_Type; HKEY: Integer): AConfig; stdcall;
 begin
   try
-    Result := Settings_RegConfig_NewA(AStrings.String_ToWideString(Prefix), HKEY);
+    Result := Settings_RegConfig_NewA(AString_ToP(Prefix), HKEY);
   except
     Result := 0;
   end;
@@ -390,7 +390,7 @@ end;
 function Config_DeleteKey(Config: AConfig; const Section, Name: AString_Type): AError; stdcall;
 begin
   try
-    if ASettingsConfig.Settings_DeleteKey(Config, AStrings.String_ToWideString(Section), AStrings.String_ToWideString(Name)) then
+    if ASettingsConfig.Settings_DeleteKey(Config, AString_ToP(Section), AString_ToP(Name)) then
       Result := 0
     else
       Result := -1;
@@ -457,7 +457,7 @@ end;
 function Config_DeleteSection(Config: AConfig; const Section: AString_Type): AError; stdcall;
 begin
   try
-    if Settings_DeleteSection(Config, AStrings.String_ToWideString(Section)) then
+    if Settings_DeleteSection(Config, AString_ToP(Section)) then
       Result := 0
     else
       Result := -1;
@@ -550,8 +550,8 @@ function Config_ReadIntegerDef(Config: AConfig; const Section, Name: AString_Typ
 begin
   try
     Result := ASettingsConfig.Settings_ReadInteger(Config,
-        AStrings.String_ToWideString(Section),
-        AStrings.String_ToWideString(Name),
+        AString_ToP(Section),
+        AString_ToP(Name),
         DefValue);
   except
     Result := DefValue;
@@ -599,8 +599,8 @@ function Config_ReadFloatDef(Config: AConfig; const Section, Name: AString_Type;
 begin
   try
     Result := Settings_ReadFloat(Config,
-        AStrings.String_ToWideString(Section),
-        AStrings.String_ToWideString(Name),
+        AString_ToP(Section),
+        AString_ToP(Name),
         DefValue);
   except
     Result := DefValue;
@@ -647,7 +647,7 @@ end;
 function Config_ReadSection(Config: AConfig; const Section: AString_Type; Strings: AStringList): AError; stdcall;
 begin
   try
-    if Settings_ReadSection(Config, AStrings.String_ToWideString(Section), Strings) then
+    if Settings_ReadSection(Config, AString_ToP(Section), Strings) then
       Result := 0
     else
       Result := -1;
@@ -715,11 +715,11 @@ var
 begin
   try
     Result := ASettingsConfig.Settings_ReadString(Config,
-        AStrings.String_ToWideString(Section),
-        AStrings.String_ToWideString(Name),
+        AString_ToP(Section),
+        AString_ToP(Name),
         S);
     if (Result >= 0) then
-      Result := AStrings.String_AssignP(Value, S);
+      Result := AString_AssignP(Value, S);
   except
     Result := -1;
   end;
@@ -745,10 +745,10 @@ var
 begin
   try
     S := ASettings_ReadStringDefP(Config,
-        AStrings.String_ToPascalString(Section),
-        AStrings.String_ToPascalString(Name),
-        AStrings.String_ToPascalString(DefValue));
-    Result := AStrings.String_AssignP(Value, S);
+        AString_ToP(Section),
+        AString_ToP(Name),
+        AString_ToP(DefValue));
+    Result := AString_AssignP(Value, S);
   except
     Result := -1;
   end;
@@ -856,8 +856,8 @@ function Config_ReadDateTimeDef(Config: AConfig; const Section, Name: AString_Ty
 begin
   try
     Result := Settings_ReadDateTime(Config,
-        AStrings.String_ToPascalString(Section),
-        AStrings.String_ToPascalString(Name),
+        AString_ToP(Section),
+        AString_ToP(Name),
         DefValue);
   except
     Result := DefValue;
@@ -912,8 +912,8 @@ function Config_WriteBool(Config: AConfig; const Section, Name: AString_Type; Va
 begin
   try
     if Settings_WriteBool(Config,
-        AStrings.String_ToPascalString(Section),
-        AStrings.String_ToPascalString(Name),
+        AString_ToP(Section),
+        AString_ToP(Name),
         Value) then
       Result := 0
     else
@@ -982,7 +982,7 @@ end;
 function Config_WriteInteger(Config: AConfig; const Section, Name: AString_Type; Value: AInteger): AError; stdcall;
 begin
   try
-    if ASettingsConfig.Settings_WriteInteger(Config, AStrings.String_ToPascalString(Section), AStrings.String_ToPascalString(Name), Value) then
+    if ASettingsConfig.Settings_WriteInteger(Config, AString_ToP(Section), AString_ToP(Name), Value) then
       Result := 0
     else
       Result := -1;
@@ -1043,7 +1043,7 @@ end;
 function Config_WriteFloat(Config: AConfig; const Section, Name: AString_Type; Value: AFloat): AError; stdcall;
 begin
   try
-    if Settings_WriteFloat(Config, AStrings.String_ToPascalString(Section), AStrings.String_ToPascalString(Name), Value) then
+    if Settings_WriteFloat(Config, AString_ToP(Section), AString_ToP(Name), Value) then
       Result := 0
     else
       Result := -1;
@@ -1105,9 +1105,9 @@ function Config_WriteString(Config: AConfig; const Section, Name, Value: AString
 begin
   try
     if ASettingsConfig.Settings_WriteString(Config,
-        AStrings.String_ToPascalString(Section),
-        AStrings.String_ToPascalString(Name),
-        AStrings.String_ToPascalString(Value)) then
+        AString_ToP(Section),
+        AString_ToP(Name),
+        AString_ToP(Value)) then
       Result := 0
     else
       Result := -1;
@@ -1176,8 +1176,8 @@ function Config_WriteDateTime(Config: AConfig; const Section, Name: AString_Type
 begin
   try
     if Settings_WriteDateTime(Config,
-        AStrings.String_ToPascalString(Section),
-        AStrings.String_ToPascalString(Name),
+        AString_ToP(Section),
+        AString_ToP(Name),
         Value) then
       Result := 0
     else
@@ -1251,7 +1251,7 @@ end;
 function IniConfig_New(const FileName: AString_Type): AConfig; stdcall;
 begin
   try
-    Result := ASettings_IniConfig_NewP(AStrings.String_ToPascalString(FileName));
+    Result := ASettings_IniConfig_NewP(AString_ToP(FileName));
   except
     Result := 0;
   end;
@@ -1329,7 +1329,7 @@ end;
 function RegConfig_New(const Prefix: AString_Type): AConfig; stdcall;
 begin
   try
-    Result := ASettings_RegConfig_NewP(AStrings.String_ToPascalString(Prefix));
+    Result := ASettings_RegConfig_NewP(AString_ToP(Prefix));
   except
     Result := 0;
   end;
@@ -1338,7 +1338,7 @@ end;
 function RegConfig_New2(const Prefix: AString_Type; HKEY: Integer): AConfig; stdcall;
 begin
   try
-    Result := Settings_RegConfig_NewA(AStrings.String_ToWideString(Prefix), HKEY);
+    Result := Settings_RegConfig_NewA(AString_ToP(Prefix), HKEY);
   except
     Result := 0;
   end;

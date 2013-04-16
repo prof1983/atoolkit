@@ -2,7 +2,7 @@
 @Abstract AUiDialogs
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 15.01.2013
+@LastMod 16.04.2013
 }
 unit AUiDialogs;
 
@@ -14,7 +14,11 @@ interface
 uses
   {$IFDEF USE_JEDI}JvBaseDlg, JvSelectDirectory,{$ENDIF}
   Controls, Dialogs, Forms,
-  ABase, ABaseTypes, AStringBaseUtils, AStrings, ASystem,
+  ABase,
+  ABaseTypes,
+  AStringBaseUtils,
+  AStringMain,
+  ASystem,
   AUiAboutDialog, AUiAboutDialog1, AUiAboutDialog2, AUiBase, AUiBox, AUiButtons,
   AUiConsts,
   AUiControls,

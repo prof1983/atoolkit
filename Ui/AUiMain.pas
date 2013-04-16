@@ -2,7 +2,7 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 17.01.2013
+@LastMod 16.04.2013
 }
 unit AUiMain;
 
@@ -37,7 +37,8 @@ uses
   AEventsMain,
   ARuntimeMain,
   ASettings,
-  AStrings,
+  AStringMain,
+  AStringsMain,
   ASystemMain,
   AUtilsMain,
   {$IFDEF OLDMAINFORM}fMain,{$ENDIF}
@@ -468,10 +469,10 @@ function AUi_ShellExecute(const Operation, FileName, Parameters, Directory: AStr
 begin
   try
     Result := AUi_ShellExecuteP(
-        AStrings.String_ToWideString(Operation),
-        AStrings.String_ToWideString(FileName),
-        AStrings.String_ToWideString(Parameters),
-        AStrings.String_ToWideString(Directory));
+        AString_ToP(Operation),
+        AString_ToP(FileName),
+        AString_ToP(Parameters),
+        AString_ToP(Directory));
   except
     Result := -1;
   end;

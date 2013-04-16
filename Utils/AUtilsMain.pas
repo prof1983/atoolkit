@@ -2,7 +2,7 @@
 @Abstract AUtils - Main
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.09.2011
-@LastMod 26.12.2012
+@LastMod 16.04.2013
 }
 unit AUtilsMain;
 
@@ -12,7 +12,10 @@ interface
 
 uses
   SysUtils,
-  ABase, AStrings, AStringUtils, ASystemMain;
+  ABase,
+  AStringMain,
+  AStringUtils,
+  ASystemMain;
 
 // --- AUtils ---
 

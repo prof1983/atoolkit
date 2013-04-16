@@ -117,6 +117,8 @@ procedure StringGrid_DeleteRowByValue(Grid: TStringGrid; Col: Integer; const Val
 // Возвращает номер строки с указанным значением в указанной ячейке.
 function StringGrid_Find(Grid: TStringGrid; Col: Integer; const Value: string): Integer;
 
+function StringGrid_Find2P(Grid: TStringGrid; const Value: APascalString; Col, FromRow, ToRow: AInt): AInt;
+
 // Возвращает номер строки с указанным значением в указанной ячейке.
 function StringGrid_FindInt(Grid: TStringGrid; Col, Value: Integer): Integer;
 
@@ -653,6 +655,35 @@ begin
   begin
     if (Grid.Cells[Col,I] = Value) then
     begin
+      Result := I;
+      Exit;
+    end;
+  end;
+  Result := -1;
+end;
+
+function StringGrid_Find2P(Grid: TStringGrid; const Value: APascalString; Col, FromRow, ToRow: AInt): AInt;
+var
+  TR: Integer;
+  I: Integer;
+  SRect: TGridRect;
+begin
+  Tr := Grid.Row;
+  for I := FromRow to ToRow do
+  begin
+    if (Grid.Cells[Col,I] = Value) then
+    begin
+      SRect.Top := I;
+      SRect.Left := Col;
+      SRect.Bottom := I;
+      SRect.Right := Col;
+      if ((I < Grid.TopRow) or (I > Grid.TopRow+Grid.VisibleRowCount)) then
+        TR := I-2;
+      if (TR > 2) then
+        Grid.TopRow := TR
+      else
+        Grid.TopRow := 2;
+      Grid.Selection := SRect;
       Result := I;
       Exit;
     end;

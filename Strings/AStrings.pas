@@ -2,7 +2,7 @@
 @Abstract AStrings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.05.2011
-@LastMod 28.11.2012
+@LastMod 16.04.2013
 }
 unit AStrings;
 
@@ -33,6 +33,8 @@ function AString_CopyWS(var S: AString_Type; const Value: AWideString): ASize; s
 function AString_GetChar(const S: AString_Type; Index: AInt): AChar; stdcall;
 
 function AString_GetLength(const S: AString_Type): AInteger; stdcall;
+
+function AString_ToP(const S: AString_Type): APascalString; stdcall;
 
 function AString_ToPascalString(const S: AString_Type): APascalString; stdcall;
 
@@ -191,6 +193,14 @@ begin
   except
     Result := 0;
   end;
+end;
+
+function AString_ToP(const S: AString_Type): APascalString;
+var
+  A: AnsiString;
+begin
+  A := S.Str;
+  Result := A;
 end;
 
 function AString_ToPascalString(const S: AString_Type): APascalString; stdcall;

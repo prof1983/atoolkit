@@ -42,7 +42,13 @@ uses
   ASystemMain,
   AUtilsMain,
   {$IFDEF OLDMAINFORM}fMain,{$ENDIF}
-  AUiBase, AUiData, AUiDialogs, AUiEventsObj, AUiMainWindow, AUiTrayIcon;
+  AUiBase,
+  AUiData,
+  AUiDialogsEx1,
+  AUiDialogsEx2,
+  AUiEventsObj,
+  AUiMainWindow,
+  AUiTrayIcon;
 
 // --- AUi ---
 

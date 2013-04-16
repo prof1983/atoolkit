@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 17.01.2013
+@LastMod 16.04.2013
 }
 unit AUi;
 
@@ -35,20 +35,39 @@ uses
   ABase, ABaseTypes,
   {$IFDEF USE_RUNTIME}ARuntime,{$ENDIF}
   {$IFDEF USE_SETTINGS}ASettings,{$ENDIF}
-  AStrings, ASystem,
-  AUiBase, AUiBox, AUiButtons, AUiCalendar, AUiControls, AUiControlsA,
+  AUiBase,
+  AUiBox,
+  AUiButtons,
+  AUiCalendar,
+  AUiControls,
+  AUiControlsA,
   AUiData,
   AUiDataSource,
   AUiDialogs,
+  AUiDialogsEx1,
+  AUiDialogsEx2,
   AUiEdit,
   AUiEvents,
-  AUiEventsObj,
-  AUiForm,
   AUiGrids,
-  AUiImages, AUiInit, AUiLabels, AUiListBox, AUiMain, AUiMainWindow, AUiMainWindow2, AUiMenus,
-  AUiPageControl, AUiProgressBar, AUiPropertyBox, AUiReports, AUiSpin, AUiSplitter,
-  AUiTextView, AUiToolBar, AUiToolMenu, AUiTrayIcon, AUiTreeView,
-  AUiWaitWin, AUiWindows, AUiWindowSettings;
+  AUiImages,
+  AUiInit,
+  AUiLabels,
+  AUiListBox,
+  AUiMain,
+  AUiMainWindow,
+  AUiMainWindow2,
+  AUiMenus,
+  AUiPageControl,
+  AUiProgressBar,
+  AUiReports,
+  AUiSplitter,
+  AUiTextView,
+  AUiToolBar,
+  AUiToolMenu,
+  AUiTreeView,
+  AUiWaitWin,
+  AUiWindows,
+  AUiWindowSettings;
 
 // --- Procs ---
 

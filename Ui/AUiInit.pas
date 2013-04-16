@@ -2,7 +2,7 @@
 @Abstract AUi
 @Author Prof1983 <prof1983@ya.ru>
 @Created 03.09.2012
-@LastMod 13.12.2012
+@LastMod 16.04.2013
 }
 unit AUiInit;
 
@@ -14,7 +14,11 @@ interface
 
 uses
   ABase, ASystemMain,
-  AUiConsts, AUiData, AUiDialogs, AUiMenus, AUiTrayIcon;
+  AUiConsts,
+  AUiData,
+  AUiDialogsEx2,
+  AUiMenus,
+  AUiTrayIcon;
 
 // --- AUi ---
 

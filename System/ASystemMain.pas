@@ -30,19 +30,37 @@ uses
 
 function ASystem_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
+function ASystem_GetComments(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_GetCommentsP(): APascalString;
+
+function ASystem_GetCompanyName(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_GetCompanyNameP(): APascalString;
+
 function ASystem_GetConfig(): AConfig; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_GetConfigDirectoryPath(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_GetConfigDirectoryPathP(): APascalString; stdcall;
 
+function ASystem_GetCopyright(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_GetCopyrightP(): APascalString;
+
 function ASystem_GetDataDirectoryPath(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_GetDataDirectoryPathP(): APascalString; stdcall;
 
+function ASystem_GetDescription(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_GetDescriptionP(): APascalString;
+
 function ASystem_GetDirectoryPath(out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_GetDirectoryPathP(): APascalString;
+
+function ASystem_GetExeName(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_GetExeNameP(): APascalString;
 
@@ -50,13 +68,33 @@ function ASystem_GetExePath(out Value: AString_Type): AError; {$ifdef AStdCall}s
 
 function ASystem_GetExePathP(): APascalString; stdcall;
 
+function ASystem_GetParamStr(Index: AInt; out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_GetParamStrP(Index: AInt): APascalString;
+
+function ASystem_GetProductName(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_GetProductNameP(): APascalString;
+
+function ASystem_GetProductVersionStr(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_GetProductVersionStrP(): APascalString;
+
 function ASystem_GetProgramName(out Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_GetProgramNameP(): APascalString; stdcall;
 
+function ASystem_GetProgramVersionStr(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_GetProgramVersionStrP(): APascalString;
+
 function ASystem_GetTitle(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function ASystem_GetTitleP(): APascalString; stdcall;
+
+function ASystem_GetUrl(out Value: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_GetUrlP(): APascalString;
 
 function ASystem_Init(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -64,11 +102,29 @@ function ASystem_ParamStr(Index: AInteger; out Value: AString_Type): AInteger; {
 
 function ASystem_ParamStrP(Index: AInteger): APascalString; stdcall;
 
+function ASystem_Prepare(const Title, ProgramName: AString_Type; ProgramVersion: AVersion;
+    const ProductName: AString_Type; ProductVersion: AVersion;
+    const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_PrepareA(Title, ProgramName: AStr; ProgramVersion: AVersion;
+    ProductName: AStr; ProductVersion: AVersion;
+    CompanyName, Copyright, Url, Description, DataPath, ConfigPath: AStr): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_PrepareP(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
+    const ProductName: APascalString; ProductVersion: AVersion;
+    const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString): AError;
+
 function ASystem_Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
     const ProductName: APascalString; ProductVersion: AVersion;
     const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString): AError; stdcall;
 
 function ASystem_ProcessMessages(): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_SetConfig(Value: AConfig): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_SetDataDirectoryPath(const DataDir: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function ASystem_SetDataDirectoryPathP(const DataDir: APascalString): AError;
 
 function ASystem_SetOnProcessMessages(Value: AProc): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -126,6 +182,26 @@ begin
   Result := 0;
 end;
 
+function ASystem_GetComments(out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, FComments);
+end;
+
+function ASystem_GetCommentsP(): APascalString;
+begin
+  Result := FComments;
+end;
+
+function ASystem_GetCompanyName(out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, FCompanyName);
+end;
+
+function ASystem_GetCompanyNameP(): APascalString;
+begin
+  Result := FCompanyName;
+end;
+
 function ASystem_GetConfig(): AConfig;
 begin
   Result := FConfig;
@@ -141,6 +217,16 @@ begin
   Result := FConfigPath;
 end;
 
+function ASystem_GetCopyright(out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, FCopyright);
+end;
+
+function ASystem_GetCopyrightP(): APascalString;
+begin
+  Result := FCopyright;
+end;
+
 function ASystem_GetDataDirectoryPath(out Value: AString_Type): AError;
 begin
   Result := AString_AssignP(Value, FDataPath);
@@ -151,6 +237,16 @@ begin
   Result := FDataPath;
 end;
 
+function ASystem_GetDescription(out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, FDescription);
+end;
+
+function ASystem_GetDescriptionP(): APascalString;
+begin
+  Result := FDescription;
+end;
+
 function ASystem_GetDirectoryPath(out Value: AString_Type): AInteger;
 begin
   Result := AString_AssignP(Value, FExePath);
@@ -159,6 +255,11 @@ end;
 function ASystem_GetDirectoryPathP(): APascalString;
 begin
   Result := FExePath;
+end;
+
+function ASystem_GetExeName(out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, FExeName);
 end;
 
 function ASystem_GetExeNameP(): APascalString;
@@ -176,6 +277,47 @@ begin
   Result := FExePath;
 end;
 
+function ASystem_GetParamStr(Index: AInt; out Value: AString_Type): AError;
+var
+  Res: string;
+begin
+  try
+    Res := System.ParamStr(Index);
+    Result := AString_AssignP(Value, Res);
+  except
+    Result := -1;
+  end;
+end;
+
+function ASystem_GetParamStrP(Index: AInt): APascalString;
+begin
+  try
+    Result := System.ParamStr(Index);
+  except
+    Result := '';
+  end;
+end;
+
+function ASystem_GetProductName(out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, FProductName);
+end;
+
+function ASystem_GetProductNameP(): APascalString;
+begin
+  Result := FProductName;
+end;
+
+function ASystem_GetProductVersionStr(out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, FProductVersionStr);
+end;
+
+function ASystem_GetProductVersionStrP(): APascalString;
+begin
+  Result := FProductVersionStr;
+end;
+
 function ASystem_GetProgramName(out Value: AString_Type): AInteger;
 begin
   Result := AString_AssignP(Value, FProgramName);
@@ -186,6 +328,16 @@ begin
   Result := FProgramName;
 end;
 
+function ASystem_GetProgramVersionStr(out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, FProgramVersionStr);
+end;
+
+function ASystem_GetProgramVersionStrP(): APascalString;
+begin
+  Result := FProgramVersionStr;
+end;
+
 function ASystem_GetTitle(out Value: AString_Type): AError;
 begin
   Result := AString_AssignP(Value, FTitle);
@@ -194,6 +346,16 @@ end;
 function ASystem_GetTitleP(): APascalString;
 begin
   Result := FTitle;
+end;
+
+function ASystem_GetUrl(out Value: AString_Type): AError;
+begin
+  Result := AString_AssignP(Value, FUrl);
+end;
+
+function ASystem_GetUrlP(): APascalString;
+begin
+  Result := FUrl;
 end;
 
 function ASystem_Init(): AError;
@@ -220,6 +382,50 @@ begin
   except
     Result := '';
   end;
+end;
+
+function ASystem_Prepare(const Title, ProgramName: AString_Type; ProgramVersion: AVersion;
+    const ProductName: AString_Type; ProductVersion: AVersion;
+    const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: AString_Type): AError;
+begin
+  Result := ASystem_PrepareP(
+      AString_ToPascalString(Title),
+      AString_ToPascalString(ProgramName),
+      ProgramVersion,
+      AString_ToPascalString(ProductName),
+      ProductVersion,
+      AString_ToPascalString(CompanyName),
+      AString_ToPascalString(Copyright),
+      AString_ToPascalString(Url),
+      AString_ToPascalString(Description),
+      AString_ToPascalString(DataPath),
+      AString_ToPascalString(ConfigPath));
+end;
+
+function ASystem_PrepareA(Title, ProgramName: AStr; ProgramVersion: AVersion;
+    ProductName: AStr; ProductVersion: AVersion;
+    CompanyName, Copyright, Url, Description, DataPath, ConfigPath: AStr): AError;
+begin
+  Result := ASystem_PrepareP(
+      AnsiString(Title),
+      AnsiString(ProgramName),
+      ProgramVersion,
+      AnsiString(ProductName),
+      ProductVersion,
+      AnsiString(CompanyName),
+      AnsiString(Copyright),
+      AnsiString(Url),
+      AnsiString(Description),
+      AnsiString(DataPath),
+      AnsiString(ConfigPath));
+end;
+
+function ASystem_PrepareP(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
+    const ProductName: APascalString; ProductVersion: AVersion;
+    const CompanyName, Copyright, Url, Description, DataPath, ConfigPath: APascalString): AError;
+begin
+  Result := Prepare3WS(Title, ProgramName, ProgramVersion, ProductName, ProductVersion,
+      CompanyName, Copyright, Url, Description, DataPath, ConfigPath);
 end;
 
 function ASystem_Prepare3P(const Title, ProgramName: APascalString; ProgramVersion: AVersion;
@@ -257,6 +463,23 @@ begin
 
   Result := R;
   Exit;
+end;
+
+function ASystem_SetConfig(Value: AConfig): AError;
+begin
+  FConfig := Value;
+  Result := 0;
+end;
+
+function ASystem_SetDataDirectoryPath(const DataDir: AString_Type): AError;
+begin
+  Result := ASystem_SetDataDirectoryPathP(AString_ToPascalString(DataDir));
+end;
+
+function ASystem_SetDataDirectoryPathP(const DataDir: APascalString): AError;
+begin
+  FDataPath := DataDir;
+  Result := 0;
 end;
 
 function ASystem_SetOnProcessMessages(Value: AProc): AError;

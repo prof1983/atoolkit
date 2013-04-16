@@ -2,7 +2,7 @@
 @abstract Base types and consts
 @author Prof1983 <prof1983@ya.ru>
 @created 06.03.2008
-@lastmod 27.11.2012
+@lastmod 16.04.2013
 }
 unit ABase;
 
@@ -151,10 +151,10 @@ type
   {$ENDIF}
 
 type
-  // = TAbstractSettings or TProfXmlNode1 or TProfXmlNode4
-  AConfig = type AInteger;
+  ASettings = type AInt;
   AEvent = type AInteger;       // = AEvent_Type^
   AColor = type AInteger;
+  AConfig = ASettings;
   {$IFDEF A02}
   //AStrings = type AInteger; - Use ACollectionsBase.AStringList
   {$ENDIF A02}

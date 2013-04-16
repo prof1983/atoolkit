@@ -2,7 +2,7 @@
 @Abstract AUiComboBox
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.09.2012
-@LastMod 06.09.2012
+@LastMod 16.04.2013
 }
 unit AUiComboBox;
 
@@ -12,8 +12,11 @@ interface
 
 uses
   Controls, StdCtrls,
-  ABase, AStrings,
+  ABase,
+  AStringMain,
   AUiBase, AUiData;
+
+// --- AUiComboBox ---
 
 function AUiComboBox_Add(ComboBox: AControl; const Value: AString_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 

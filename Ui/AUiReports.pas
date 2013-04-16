@@ -7,6 +7,7 @@
 unit AUiReports;
 
 {$I Defines.inc}
+{$define AStdCall}
 
 {$IFNDEF FPC}
   {$IFNDEF NoUiReports}

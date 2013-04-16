@@ -1,5 +1,4 @@
 {**
-@Abstract
 @Author Prof1983 <prof1983@ya.ru>
 @Created 04.08.2008
 @LastMod 15.11.2012

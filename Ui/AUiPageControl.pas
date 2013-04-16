@@ -2,7 +2,7 @@
 @Abstract AUi PageControl
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.02.2012
-@LastMod 14.01.2013
+@LastMod 16.04.2013
 }
 unit AUiPageControl;
 
@@ -12,7 +12,8 @@ interface
 
 uses
   ComCtrls, Controls,
-  ABase, AStrings,
+  ABase,
+  AStringMain,
   AUiBase, AUiData;
 
 // --- AUiPageControl ---

@@ -2,7 +2,7 @@
 @abstract AUi PropertyBox
 @author Prof1983 <prof1983@ya.ru>
 @created 24.08.2009
-@lastmod 22.11.2012
+@lastmod 16.04.2013
 }
 unit AUiPropertyBox;
 
@@ -10,11 +10,15 @@ unit AUiPropertyBox;
   {$MODE Delphi}
 {$ENDIF}
 
+{$define AStdCall}
+
 interface
 
 uses
   Controls, ExtCtrls, Forms, Graphics, StdCtrls, 
-  ABase, AStrings, AUiBase;
+  ABase,
+  AStringMain,
+  AUiBase;
 
 // --- AUiPropertyBox ---
 
@@ -159,7 +163,7 @@ implementation
 function AUiPropertyBox_Add(PropertyBox: AControl; const Caption: AString_Type): AInt;
 begin
   try
-    Result := AUiPropertyBox_AddP(PropertyBox, AStrings.String_ToPascalString(Caption));
+    Result := AUiPropertyBox_AddP(PropertyBox, AString_ToP(Caption));
   except
     Result := 0;
   end;
@@ -170,9 +174,9 @@ function AUiPropertyBox_Add2(PropertyBox: AControl; const Caption, Text, Hint: A
 begin
   try
     Result := AUiPropertyBox_Add2P(PropertyBox,
-        AStrings.String_ToWideString(Caption),
-        AStrings.String_ToWideString(Text),
-        AStrings.String_ToWideString(Hint),
+        AString_ToP(Caption),
+        AString_ToP(Text),
+        AString_ToP(Hint),
         EditWidth);
   except
     Result := 0;
@@ -220,7 +224,7 @@ function AUiPropertyBox_Item_SetValue(PropertyBox: AControl; Index: AInt;
     const Value: AString_Type): AError;
 begin
   try
-    Result := AUiPropertyBox_Item_SetValueP(PropertyBox, Index, AStrings.String_ToWideString(Value));
+    Result := AUiPropertyBox_Item_SetValueP(PropertyBox, Index, AString_ToP(Value));
   except
     Result := -1;
   end;

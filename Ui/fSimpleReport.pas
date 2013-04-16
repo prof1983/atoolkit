@@ -1,9 +1,7 @@
 {**
-@Abstract()
 @Author(Prof1983 prof1983@ya.ru)
 @Created(27.08.2008)
 @LastMod(03.05.2011)
-@Version(0.5)
 }
 unit fSimpleReport;
 

@@ -3,7 +3,6 @@
 @Author(Prof1983 prof1983@ya.ru)
 @Created(24.06.2011)
 @LastMod(24.06.2011)
-@Version(0.5)
 }
 unit fStringGrid;
 

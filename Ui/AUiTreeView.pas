@@ -2,7 +2,7 @@
 @Abstract AUi TreeView
 @Author Prof1983 <prof1983@ya.ru>
 @Created 01.11.2011
-@LastMod 19.11.2012
+@LastMod 16.04.2013
 }
 unit AUiTreeView;
 
@@ -11,7 +11,9 @@ unit AUiTreeView;
 interface
 
 uses
-  ComCtrls, Controls, AStrings,
+  ComCtrls,
+  Controls,
+  AStringMain,
   ABase, AUiBase, AUiData;
 
 // --- AUiTreeView ---

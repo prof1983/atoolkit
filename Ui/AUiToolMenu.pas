@@ -2,7 +2,7 @@
 @abstract AUi ToolMenu
 @author Prof1983 <prof1983@ya.ru>
 @created 28.02.2012
-@lastmod 12.12.2012
+@lastmod 16.04.2013
 }
 unit AUiToolMenu;
 
@@ -12,7 +12,13 @@ interface
 
 uses
   ComCtrls, Menus,
-  ABase, AStrings, AUiBase, AUiControls, AUiData, AUiMenus, AUiPageControl;
+  ABase,
+  AStringMain,
+  AUiBase,
+  AUiControls,
+  AUiData,
+  AUiMenus,
+  AUiPageControl;
 
 // --- AUiToolMenu ---
 

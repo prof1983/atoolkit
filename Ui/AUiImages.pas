@@ -2,7 +2,7 @@
 @Abstract AUiImage
 @Author Prof1983 <prof1983@ya.ru>
 @Created 05.09.2012
-@LastMod 05.09.2012
+@LastMod 16.04.2013
 }
 unit AUiImages;
 
@@ -12,7 +12,8 @@ interface
 
 uses
   Controls, ExtCtrls,
-  ABase, AStrings,
+  ABase,
+  AStringMain,
   AUiBase, AUiData;
 
 // --- AUiImage ---

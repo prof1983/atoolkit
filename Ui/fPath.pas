@@ -2,7 +2,6 @@
 Author:  Prof1983 <prof1983@yandex.ru>
 Created: 03.06.2008
 LastMod: 03.05.2011
-Version: 0.3.0
 }
 unit fPath;
 

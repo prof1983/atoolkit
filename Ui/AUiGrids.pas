@@ -2,7 +2,7 @@
 @Abstract AUi grids
 @Author Prof1983 <prof1983@ya.ru>
 @Created 11.01.2010
-@LastMod 05.09.2012
+@LastMod 16.04.2013
 }
 unit AUiGrids;
 
@@ -18,7 +18,9 @@ interface
 
 uses
   Classes, Controls, Db, DbGrids, Grids, SysUtils,
-  ABase, {$IFDEF USE_SETTINGS}ASettings,{$ENDIF} AStrings,
+  ABase,
+  {$IFDEF USE_SETTINGS}ASettings,{$ENDIF}
+  AStringMain,
   AUiBase;
 
 { Grid }

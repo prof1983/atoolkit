@@ -67,6 +67,8 @@ function ASettings_ReadIntDef(Settings: ASettings; const Section, Name: AString_
   Name - const }
 function ASettings_ReadIntDefA(Settings: ASettings; Section, Name: AStr; DefValue: AInt): AInt; stdcall;
 
+function ASettings_ReadIntDefP(Settings: ASettings; const Section, Name: APascalString; DefValue: AInt): AInt;
+
 function ASettings_ReadIntegerDefP(Config: AConfig; const Section, Name: APascalString; DefValue: AInteger): AInteger;
 
 function ASettings_ReadSection(Settings: ASettings; const Section: AString_Type;
@@ -124,6 +126,8 @@ function ASettings_WriteInt(Settings: ASettings; const Section, Name: AString_Ty
 
 { Section, Name - const }
 function ASettings_WriteIntA(Settings: ASettings; Section, Name: AStr; Value: AInt): AError; stdcall;
+
+function ASettings_WriteIntP(Settings: ASettings; const Section, Name: APascalString; Value: AInt): AError;
 
 function ASettings_WriteIntegerP(Config: AConfig; const Section, Name: APascalString; Value: AInteger): AError;
 
@@ -344,6 +348,11 @@ begin
   except
     Result := DefValue;
   end;
+end;
+
+function ASettings_ReadIntDefP(Settings: ASettings; const Section, Name: APascalString; DefValue: AInt): AInt;
+begin
+  Result := ASettings_ReadIntegerDefP(Settings, Section, Name, DefValue);
 end;
 
 function ASettings_ReadIntegerDefP(Config: AConfig; const Section, Name: APascalString; DefValue: AInteger): AInteger;
@@ -598,6 +607,11 @@ begin
   except
     Result := -1;
   end;
+end;
+
+function ASettings_WriteIntP(Settings: ASettings; const Section, Name: APascalString; Value: AInt): AError;
+begin
+  Result := ASettings_WriteIntegerP(Settings, Section, Name, Value);
 end;
 
 function ASettings_WriteIntegerP(Config: AConfig; const Section, Name: APascalString; Value: AInteger): AError;

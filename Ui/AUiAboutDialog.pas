@@ -2,7 +2,7 @@
 @Abstract AUi common about dialog win
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.11.2012
-@LastMod 19.02.2013
+@LastMod 17.04.2013
 }
 unit AUiAboutDialog;
 
@@ -243,13 +243,19 @@ var
   Dialog: ADialog;
 begin
   Dialog := AUiAboutDialog_New();
-  Result := AUiAboutDialog_Init2(Dialog);
-  {try
-    ShowAboutWinA(UiAboutWinMemoWidthDefault, UiAboutWinMemoHeightDefault);
-    Result := 0;
-  except
-    Result := -1;
-  end;}
+  if (Dialog = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if (AUiAboutDialog_Init2(Dialog) < 0) then
+  begin
+    Result := -3;
+    Exit;
+  end;
+  AUiDialog_ShowModal(Dialog);
+  AUiDialog_Free(Dialog);
+  Result := 0;
 end;
 
 {function AUi_InitAboutDialog1(AboutDialog: AWindow): AError;

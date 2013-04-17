@@ -2,7 +2,7 @@
 @Abstract AUiDialogs
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 16.04.2013
+@LastMod 17.04.2013
 }
 unit AUiDialogs;
 
@@ -190,7 +190,7 @@ begin
     AUiWindow_SetPosition(Window, AUiWindowPosition_OwnerFormCenter);
     if (Buttons = MB_OK) then
     begin
-      Button := AUiButton_New(Window);
+      Button := AUiButton_New(Box);
       AUiControl_SetTextP(Button, cOkText);
       AUiControl_SetPosition(Button, 5, 5);
       AUiButton_SetKind(Button, uibkOk);

@@ -2,7 +2,7 @@
 @Abstract AUi Menus
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2011
-@LastMod 16.04.2013
+@LastMod 17.04.2013
 }
 unit AUiMenus;
 
@@ -124,6 +124,11 @@ function _Find(Parent, Item: AMenuItem): AInt;
 var
   I: Integer;
 begin
+  if not(TObject(Parent) is TMenuItem) then
+  begin
+    Result := -2;
+    Exit;
+  end;
   for I := 0 to TMenuItem(Parent).Count - 1 do
   begin
     if (AMenuItem(TMenuItem(Parent).Items[I]) = Item) then
@@ -139,6 +144,11 @@ function _FindByName(MenuItem: AMenuItem; const Name: APascalString): AInteger;
 var
   I: Integer;
 begin
+  if not(TObject(MenuItem) is TMenuItem) then
+  begin
+    Result := -2;
+    Exit;
+  end;
   for I := 0 to TMenuItem(MenuItem).Count - 1 do
   begin
     if (TMenuItem(MenuItem).Items[I].Name = Name) then
@@ -265,10 +275,21 @@ var
   I: Integer;
   Res: AMenuItem;
 begin
+  if (MenuItem = 0) then
+  begin
+    Result := 0;
+    Exit;
+  end;
   try
     {$ifdef UseToolMenu}
     xxx
     {$endif}
+
+    if not(TObject(MenuItem) is TMenuItem) then
+    begin
+      Result := 0;
+      Exit;
+    end;
 
     Res := AddObject(TMenuItem(MenuItem));
     I := Length(FMenuItems);
@@ -342,10 +363,21 @@ var
   Value: AMenuItem;
   ResIndex: AInt;
 begin
+  if (ParentMenuItem = 0) then
+  begin
+    Result := 0;
+    Exit;
+  end;
   try
     {$ifdef UseToolMenu}
     xxx
     {$endif}
+
+    if not(TObject(ParentMenuItem) is TMenuItem) then
+    begin
+      Result := 0;
+      Exit;
+    end;
 
     Item := TMenuItem(ParentMenuItem);
 
@@ -411,10 +443,21 @@ end;
 
 function AUiMenu_Clear(MenuItem: AMenuItem): AError;
 begin
+  if (MenuItem = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
   try
     {$ifdef UseToolMenu}
     xxx
     {$endif}
+
+    if not(TObject(MenuItem) is TMenuItem) then
+    begin
+      Result := -3;
+      Exit;
+    end;
 
     TMenuItem(MenuItem).Clear();
     Result := 0;
@@ -430,9 +473,9 @@ begin
   try
     O := AUiData.GetObject(Menu);
     if Assigned(O) and (O is TMenu) then
-    begin
-      Result := Integer(TMenu(O).Items);
-    end
+      Result := AMenuItem(TMenu(O).Items)
+    else if Assigned(O) and (O is TMenuItem) then
+      Result := AMenuItem(TMenuItem(O))
     else
       Result := 0;
   except
@@ -445,14 +488,31 @@ function AUiMenu_GetSubMenuP(Parent: AMenuItem; const Name, Text: APascalString;
 var
   Index: Integer;
 begin
+  if (Parent = 0) then
+  begin
+    Result := 0;
+    Exit;
+  end;
   try
-    Index := _FindByName(Parent, Name);
-    if (Index >= 0) then
+    Parent := AUiMenu_GetItems(Parent);
+
+    if not(TObject(Parent) is TMenuItem) then
     begin
-      Result := AMenuItem(TMenuItem(Parent).Items[Index]);
+      Result := 0;
       Exit;
     end;
-    Result := AUiMenu_AddItem1P(Parent, Name, Text, nil, ImageId, Weight);
+
+    Index := _FindByName(Parent, Name);
+    if (Index < 0) then
+    begin
+      Index := _FindByName(Parent, 'mi'+Name);
+      if (Index < 0) then
+      begin
+        Result := AUiMenu_AddItem1P(Parent, Name, Text, nil, ImageId, Weight);
+        Exit;
+      end;
+    end;
+    Result := AMenuItem(TMenuItem(Parent).Items[Index]);
   except
     Result := 0;
   end;
@@ -467,10 +527,21 @@ function AUiMenu_FindItemByNameP(MenuItem: AMenuItem; const Name: APascalString)
 var
   I: Integer;
 begin
+  if (MenuItem = 0) then
+  begin
+    Result := 0;
+    Exit;
+  end;
   try
     {$ifdef UseToolMenu}
     xxx
     {$endif}
+
+    if not(TObject(MenuItem) is TMenuItem) then
+    begin
+      Result := 0;
+      Exit;
+    end;
 
     I := _FindByName(MenuItem, Name);
     if (I >= 0) then
@@ -496,15 +567,26 @@ end;
 
 function AUiMenu_SetChecked(MenuItem: AMenuItem; Checked: ABoolean): AError;
 begin
+  if (MenuItem = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
   try
     {$ifdef UseToolMenu}
     xxx
     {$endif}
 
+    if not(TObject(MenuItem) is TMenuItem) then
+    begin
+      Result := -3;
+      Exit;
+    end;
+
     TMenuItem(MenuItem).Checked := Checked;
-    Result := -1;
-  except
     Result := 0;
+  except
+    Result := -1;
   end;
 end;
 

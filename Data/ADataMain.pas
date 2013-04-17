@@ -1,13 +1,11 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.12.2012
-@LastMod 27.12.2012
+@LastMod 17.04.2013
 }
 unit ADataMain;
 
-{$ifdef A04}
-  {$define AStdCall}
-{$endif}
+{$define AStdCall}
 
 interface
 
@@ -15,13 +13,18 @@ uses
   ABase,
   ABaseTypes,
   ADataBase,
-  ADataUtils;
+  ADataUtils,
+  AStringMain;
 
 // --- AData ---
 
 function AData_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AData_Init(): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AData_NewConnection(const DriverName: AString_Type): ADataConnection; {$ifdef AStdCall}stdcall;{$endif}
+
+function AData_NewConnectionP(const DriverName: APascalString): ADataConnection;
 
 function AData_NewDatabaseStructure(): ADataStructure; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -61,6 +64,20 @@ begin
 
   FInitialized := True;
   Result := 0;
+end;
+
+function AData_NewConnection(const DriverName: AString_Type): ADataConnection;
+begin
+  Result := AData_NewConnectionP(AString_ToP(DriverName));
+end;
+
+function AData_NewConnectionP(const DriverName: APascalString): ADataConnection;
+begin
+  try
+    Result := ADataUtils.Data_NewDatabase(DriverName);
+  except
+    Result := 0;
+  end;
 end;
 
 function AData_NewDatabaseStructure(): ADataStructure;

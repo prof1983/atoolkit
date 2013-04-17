@@ -33,6 +33,10 @@ function AUiImage_LoadFromFileWS(Image: AControl; const FileName: AWideString): 
 {** Создает новый элемент-изображение }
 function AUiImage_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiImage_SetProportional(Image: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiImage_SetStretch(Image: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
+
 // --- AUi_Image ---
 
 function AUi_Image_LoadFromFile(Image: AControl; const FileName: AString_Type): ABoolean; stdcall;
@@ -86,6 +90,46 @@ begin
     Result := AddObject(Image);
   except
     Result := 0;
+  end;
+end;
+
+function AUiImage_SetProportional(Image: AControl; Value: ABool): AError;
+begin
+  if (Image = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  try
+    if not(TObject(Image) is TImage) then
+    begin
+      Result := -3;
+      Exit;
+    end;
+    TImage(Image).Proportional := Value;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiImage_SetStretch(Image: AControl; Value: ABool): AError;
+begin
+  if (Image = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  try
+    if not(TObject(Image) is TImage) then
+    begin
+      Result := -3;
+      Exit;
+    end;
+    TImage(Image).Stretch := Value;
+    Result := 0;
+  except
+    Result := -1;
   end;
 end;
 

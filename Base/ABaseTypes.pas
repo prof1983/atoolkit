@@ -67,7 +67,7 @@ const
   ALogType_Information = $00000040;
 
 type
-  ALogFlags = type Integer;
+  ALogFlags = ALogType;
 const
   ALogFlags_IconMask = $000000F0;
   ALogFlags_IconError = ALogType_Error;

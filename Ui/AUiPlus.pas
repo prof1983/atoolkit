@@ -2,14 +2,17 @@
 @Abstract AUiPlus
 @Author Prof1983 <prof1983@ya.ru>
 @Created 18.05.2011
-@LastMod 26.07.2012
+@LastMod 16.04.2013
 }
 unit AUiPlus;
 
 interface
 
 uses
-  Classes, ABase;
+  Classes,
+  Controls,
+  ABase,
+  AUiBase;
 
 type // Classes.TShiftState
   AUIShiftState = AInteger;
@@ -22,10 +25,16 @@ const
   uissMiddle = $00000020;
   uissDouble = $00000040;
 
+function MouseButtonToInt(Value: TMouseButton): AMouseButton;
 function ShiftStateFromInt(Value: AUIShiftState): TShiftState;
 function ShiftStateToInt(Value: TShiftState): AUIShiftState;
 
 implementation
+
+function MouseButtonToInt(Value: TMouseButton): AMouseButton;
+begin
+  Result := AMouseButton(Value);
+end;
 
 function ShiftStateFromInt(Value: AUIShiftState): TShiftState;
 begin

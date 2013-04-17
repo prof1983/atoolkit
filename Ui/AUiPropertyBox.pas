@@ -2,7 +2,7 @@
 @abstract AUi PropertyBox
 @author Prof1983 <prof1983@ya.ru>
 @created 24.08.2009
-@lastmod 16.04.2013
+@lastmod 17.04.2013
 }
 unit AUiPropertyBox;
 
@@ -20,6 +20,9 @@ uses
   AStringMain,
   AUiBase;
 
+type
+  TPropertyBoxChangeProc = function(Sender: AControl; ItemIndex: AInt; const Value: string): ABool;
+
 // --- AUiPropertyBox ---
 
 function AUiPropertyBox_Add(PropertyBox: AControl;
@@ -31,8 +34,13 @@ function AUiPropertyBox_Add2(PropertyBox: AControl; const Caption, Text, Hint: A
 function AUiPropertyBox_Add2P(PropertyBox: AControl; const Caption, Text, Hint: APascalString;
     EditWidth: AInt): AInt; {$ifdef AStdCall}stdcall;{$endif}
 
+function AUiPropertyBox_Add3P(PropertyBox: AControl; const Caption, Text, Hint: APascalString;
+    EditWidth: AInt; IsReadOnly: ABool): AInt;
+
 function AUiPropertyBox_AddP(PropertyBox: AControl;
     const Caption: APascalString): AInt; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiPropertyBox_GetUseBigFont(PropertyBox: AControl): ABool; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiPropertyBox_Item_GetValue(PropertyBox: AControl; Index: AInt;
     out Value: AString_Type): AInt; {$ifdef AStdCall}stdcall;{$endif}
@@ -47,6 +55,14 @@ function AUiPropertyBox_Item_SetValueP(PropertyBox: AControl; Index: AInt;
     const Value: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUiPropertyBox_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiPropertyBox_SetIsAppPoints(PropertyBox: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiPropertyBox_SetOnChange(PropertyBox: AControl; OnChange: TPropertyBoxChangeProc): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiPropertyBox_SetTextP(PropertyBox: AControl; Index: AInt; const Value: APascalString): AError; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiPropertyBox_SetUseBigFont(PropertyBox: AControl; Value: ABool): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 // --- AUi_PropertyBox ---
 
@@ -77,9 +93,6 @@ procedure UI_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; co
 function UI_PropertyBox_New(Parent: AControl): AControl; stdcall; deprecated;
 
 // --- Private ---
-
-type
-  TPropertyBoxChangeProc = function(Sender: AControl; ItemIndex: Integer; const Value: string): Boolean;
 
 type
   TPropertyBox1 = class(TScrollBox)
@@ -192,12 +205,31 @@ begin
   end;
 end;
 
+function AUiPropertyBox_Add3P(PropertyBox: AControl; const Caption, Text, Hint: APascalString;
+    EditWidth: AInt; IsReadOnly: ABool): AInt;
+begin
+  try
+    Result := TPropertyBox1(PropertyBox).AddNew2(Caption, Text, Hint, EditWidth, IsReadOnly);
+  except
+    Result := 0;
+  end;
+end;
+
 function AUiPropertyBox_AddP(PropertyBox: AControl; const Caption: APascalString): AInt;
 begin
   try
     Result := TPropertyBox1(PropertyBox).AddNew(Caption);
   except
     Result := 0;
+  end;
+end;
+
+function AUiPropertyBox_GetUseBigFont(PropertyBox: AControl): ABool;
+begin
+  try
+    Result := TPropertyBox1(PropertyBox).GetUseBigFont();
+  except
+    Result := False;
   end;
 end;
 
@@ -247,6 +279,46 @@ begin
     Result := AControl(TPropertyBox1.Create(TWinControl(Parent)));
   except
     Result := 0;
+  end;
+end;
+
+function AUiPropertyBox_SetIsAppPoints(PropertyBox: AControl; Value: ABool): AError;
+begin
+  try
+    TPropertyBox1(PropertyBox).IsAddPoints := Value;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiPropertyBox_SetOnChange(PropertyBox: AControl; OnChange: TPropertyBoxChangeProc): AError;
+begin
+  try
+    TPropertyBox1(PropertyBox).OnChange := OnChange;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiPropertyBox_SetTextP(PropertyBox: AControl; Index: AInt; const Value: APascalString): AError;
+begin
+  try
+    TPropertyBox1(PropertyBox).SetText(Index, Value);
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
+function AUiPropertyBox_SetUseBigFont(PropertyBox: AControl; Value: ABool): AError;
+begin
+  try
+    TPropertyBox1(PropertyBox).SetUseBigFont(Value);
+    Result := 0;
+  except
+    Result := -1;
   end;
 end;
 

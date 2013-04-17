@@ -2,7 +2,7 @@
 @Abstract The module for work with the settings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 16.04.2013
+@LastMod 17.04.2013
 }
 unit ASettings;
 
@@ -1251,7 +1251,7 @@ end;
 function IniConfig_New(const FileName: AString_Type): AConfig; stdcall;
 begin
   try
-    Result := ASettings_IniConfig_NewP(AString_ToP(FileName));
+    Result := ASettings_NewIniSettingsP(AString_ToP(FileName));
   except
     Result := 0;
   end;
@@ -1260,7 +1260,7 @@ end;
 function IniConfig_NewA({const} FileName: PAnsiChar): AConfig; stdcall;
 begin
   try
-    Result := ASettings_IniConfig_NewP(AnsiString(FileName));
+    Result := ASettings_NewIniSettingsP(AnsiString(FileName));
   except
     Result := 0;
   end;
@@ -1269,7 +1269,7 @@ end;
 function IniConfig_NewP(const FileName: APascalString): AConfig; stdcall;
 begin
   try
-    Result := ASettings_IniConfig_NewP(FileName);
+    Result := ASettings_NewIniSettingsP(FileName);
   except
     Result := 0;
   end;
@@ -1286,7 +1286,7 @@ end;
 function IniConfig_NewW({const} FileName: PWideChar): AConfig; stdcall;
 begin
   try
-    Result := ASettings_IniConfig_NewP(WideString(FileName));
+    Result := ASettings_NewIniSettingsP(WideString(FileName));
   except
     Result := 0;
   end;
@@ -1295,7 +1295,7 @@ end;
 function IniConfig_NewWS(const FileName: AWideString): AConfig; stdcall;
 begin
   try
-    Result := ASettings_IniConfig_NewP(FileName);
+    Result := ASettings_NewIniSettingsP(FileName);
   except
     Result := 0;
   end;
@@ -1329,7 +1329,7 @@ end;
 function RegConfig_New(const Prefix: AString_Type): AConfig; stdcall;
 begin
   try
-    Result := ASettings_RegConfig_NewP(AString_ToP(Prefix));
+    Result := ASettings_NewRegSettingsP(AString_ToP(Prefix), 0);
   except
     Result := 0;
   end;
@@ -1338,7 +1338,7 @@ end;
 function RegConfig_New2(const Prefix: AString_Type; HKEY: Integer): AConfig; stdcall;
 begin
   try
-    Result := Settings_RegConfig_NewA(AString_ToP(Prefix), HKEY);
+    Result := ASettings_NewRegSettingsP(AString_ToP(Prefix), HKEY);
   except
     Result := 0;
   end;
@@ -1347,7 +1347,7 @@ end;
 function RegConfig_New2P(const Prefix: APascalString; HKEY: Integer): AConfig; stdcall;
 begin
   try
-    Result := Settings_RegConfig_NewA(Prefix, HKEY);
+    Result := ASettings_NewRegSettingsP(Prefix, HKEY);
   except
     Result := 0;
   end;
@@ -1356,7 +1356,7 @@ end;
 function RegConfig_New2WS(const Prefix: AWideString; HKEY: Integer): AConfig; stdcall;
 begin
   try
-    Result := Settings_RegConfig_NewA(Prefix, HKEY);
+    Result := ASettings_NewRegSettingsP(Prefix, HKEY);
   except
     Result := 0;
   end;
@@ -1365,7 +1365,7 @@ end;
 function RegConfig_NewA({const} Prefix: PAnsiChar): AConfig; stdcall;
 begin
   try
-    Result := ASettings_RegConfig_NewP(AnsiString(Prefix));
+    Result := ASettings_NewRegSettingsP(AnsiString(Prefix), 0);
   except
     Result := 0;
   end;
@@ -1374,7 +1374,7 @@ end;
 function RegConfig_NewP(const Prefix: APascalString): AConfig; stdcall;
 begin
   try
-    Result := ASettings_RegConfig_NewP(Prefix);
+    Result := ASettings_NewRegSettingsP(Prefix, 0);
   except
     Result := 0;
   end;
@@ -1391,7 +1391,7 @@ end;
 function RegConfig_NewW({const} Prefix: PWideChar): AConfig; stdcall;
 begin
   try
-    Result := ASettings_RegConfig_NewP(WideString(Prefix));
+    Result := ASettings_NewRegSettingsP(WideString(Prefix), 0);
   except
     Result := 0;
   end;
@@ -1400,7 +1400,7 @@ end;
 function RegConfig_NewWS(const Prefix: AWideString): AConfig; stdcall;
 begin
   try
-    Result := ASettings_RegConfig_NewP(Prefix);
+    Result := ASettings_NewRegSettingsP(Prefix, 0);
   except
     Result := 0;
   end;

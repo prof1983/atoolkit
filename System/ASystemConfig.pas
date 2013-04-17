@@ -2,7 +2,7 @@
 @Abstract ASystem config
 @Author Prof1983 <prof1983@ya.ru>
 @Created 29.05.2011
-@LastMod 16.11.2012
+@LastMod 17.04.2013
 }
 unit ASystemConfig;
 
@@ -41,7 +41,7 @@ function System_InitConfig: AInteger;
 var
   S: APascalString;
 begin
-  FConfig := ASettings_IniConfig_NewP(FConfigPath+FProgramName+'.ini');
+  FConfig := ASettings_NewIniSettingsP(FConfigPath+FProgramName+'.ini');
 
   S := ASettings_ReadStringDefP(FConfig, 'App', 'DataPath', '');
   if (S <> '') then

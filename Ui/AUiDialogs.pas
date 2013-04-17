@@ -230,8 +230,6 @@ begin
 end;
 
 function AUiDialog_ShowModal(Dialog: ADialog): ABool;
-var
-  I: AInt;
 begin
   if (Dialog = 0) then
   begin

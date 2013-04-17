@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 16.04.2013
+@LastMod 17.04.2013
 }
 unit AUiDialogsEx2;
 
@@ -243,7 +243,20 @@ var
   W: AWindow;
 begin
   W := AUi_NewAboutDialog();
-  Result := AUi_InitAboutDialog2(W);
+  if (W = 0) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if (AUi_InitAboutDialog2(W) < 0) then
+  begin
+    AUiWindow_Free(W);
+    Result := -3;
+    Exit;
+  end;
+  AUiWindow_ShowModal(W);
+  AUiWindow_Free(W);
+  Result := 0;
 end;
 
 function AUi_ExecuteCalendarDialog(var Date: TDateTime; CenterX, CenterY: AInt): ABoolean;

@@ -2,7 +2,7 @@
 @Abstract ASettings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 04.05.2008
-@LastMod 25.12.2012
+@LastMod 17.04.2013
 }
 unit ARegistrySettings;
 
@@ -12,8 +12,7 @@ uses
   Classes, Registry, Windows,
   ABase,
   ABaseTypes,
-  ACollections,
-  ACollectionsBase,
+  AStringLists,
   AAbstractSettings;
 
 type
@@ -120,9 +119,9 @@ begin
     try
       {S := StringList_New();}S := TStringList.Create;
       FRegistry.GetValueNames({TStrings(S)}S);
-      ACollections.StringList_Clear(Strings);
+      AStringList_Clear(Strings);
       for I := 0 to {StringList_Count(S)}S.Count - 1 do
-        ACollections.StringList_AddP(Strings, S.Strings[I]+'='+FRegistry.ReadString(S.Strings[I]));
+        AStringList_AddP(Strings, S.Strings[I]+'='+FRegistry.ReadString(S.Strings[I]));
       {StringList_Free(S);}S.Free;
       Result := True;
     except

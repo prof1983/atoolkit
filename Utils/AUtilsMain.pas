@@ -2,7 +2,7 @@
 @Abstract AUtils - Main
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.09.2011
-@LastMod 16.04.2013
+@LastMod 17.04.2013
 }
 unit AUtilsMain;
 
@@ -26,6 +26,8 @@ function AUtils_ChangeFileExt(const FileName, Extension: AString_Type;
 function AUtils_ChangeFileExtP(const FileName, Extension: APascalString): APascalString; stdcall;
 
 function AUtils_ChangeFileExtWS(const FileName, Extension: AWideString): AWideString; stdcall;
+
+function AUtils_CharToUpper(Value: AChar): AChar; stdcall;
 
 function AUtils_DateToStr(Value: TDateTime; out Res: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -314,6 +316,19 @@ begin
     Result := SysUtils.ChangeFileExt(FileName, Extension);
   except
     Result := '';
+  end;
+end;
+
+function AUtils_CharToUpper(Value: AChar): AChar;
+var
+  S: String;
+begin
+  try
+    SetLength(S, 1);
+    S[1] := Value;
+    Result := SysUtils.UpperCase(S)[1];
+  except
+    Result := #0;
   end;
 end;
 

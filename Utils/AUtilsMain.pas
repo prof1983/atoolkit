@@ -2,7 +2,7 @@
 @Abstract AUtils - Main
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.09.2011
-@LastMod 03.04.2013
+@LastMod 18.04.2013
 }
 unit AUtilsMain;
 
@@ -86,6 +86,8 @@ function AUtils_ForceDirectories(const Dir: AString_Type): AError; {$ifdef AStdC
 function AUtils_ForceDirectoriesA(Dir: AStr): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUtils_ForceDirectoriesP(const Dir: APascalString): AError;
+
+function AUtils_FormatDateTimeP(const Format: APascalString; Value: TDateTime): APascalString;
 
 function AUtils_FormatFloat(Value: AFloat; DigitsBeforeComma, DigitsAfterComma: AInt;
     out Res: AString_Type): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -631,6 +633,15 @@ begin
       Result := -2;
   except
     Result := -1;
+  end;
+end;
+
+function AUtils_FormatDateTimeP(const Format: APascalString; Value: TDateTime): APascalString;
+begin
+  try
+    Result := FormatDateTime(Format, Value);
+  except
+    Result := '';
   end;
 end;
 

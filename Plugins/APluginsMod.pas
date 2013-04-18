@@ -2,7 +2,7 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.04.2009
-@LastMod 04.04.2013
+@LastMod 18.04.2013
 }
 unit APluginsMod;
 
@@ -28,7 +28,7 @@ function APluginsMod_Init(): AError; stdcall;
 implementation
 
 const
-  APlugins_Version = $00070500;
+  APlugins_Version = $00070700;
 
 const
   PluginsModule: AModule_Type = (
@@ -68,6 +68,8 @@ begin
     Result := Addr(APlugins_FinAll)
   else if (ProcName = 'APlugins_Find2A') then
     Result := Addr(APlugins_Find2A)
+  else if (ProcName = 'APlugins_Find3A') then
+    Result := Addr(APlugins_Find3A)
   else if (ProcName = 'APlugins_FindA') then
     Result := Addr(APlugins_FindA)
   else if (ProcName = 'APlugins_GetCount') then

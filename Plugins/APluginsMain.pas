@@ -2,7 +2,7 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.01.2012
-@LastMod 15.04.2013
+@LastMod 18.04.2013
 }
 unit APluginsMain;
 
@@ -328,7 +328,7 @@ end;
 
 function APlugins_Find3A(Path, Exclusion: AStr; SubDirsOnly: ABool): AError;
 begin
-  Result := APlugins_Find2P(Path, Exclusion);
+  Result := APlugins_Find3P(Path, Exclusion, SubDirsOnly);
 end;
 
 function APlugins_Find3P(const Path, Exclusion: APascalString; SubDirsOnly: ABool): AError;

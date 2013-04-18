@@ -2,7 +2,7 @@
 @Abstract ACore
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.10.2009
-@LastMod 25.02.2013
+@LastMod 18.04.2013
 }
 unit ACore;
 
@@ -92,11 +92,26 @@ begin
     Result := -1;
     Exit;
   end;
-  Result := -2;
-  if not(ALibrary_GetSymbolP(FLib, 'ACore_Boot', Addr(ACore_Boot))) then Exit;
-  if not(ALibrary_GetSymbolP(FLib, 'ACore_Fin', Addr(ACore_Fin))) then Exit;
-  if not(ALibrary_GetSymbolP(FLib, 'ACore_Init', Addr(ACore_Init))) then Exit;
-  if not(ALibrary_GetSymbolP(FLib, 'ACore_Run', Addr(ACore_Run))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'ACore_Boot', Addr(ACore_Boot))) then
+  begin
+    Result := -2;
+    Exit;
+  end;
+  if not(ALibrary_GetSymbolP(FLib, 'ACore_Fin', Addr(ACore_Fin))) then
+  begin
+    Result := -3;
+    Exit;
+  end;
+  if not(ALibrary_GetSymbolP(FLib, 'ACore_Init', Addr(ACore_Init))) then
+  begin
+    Result := -4;
+    Exit;
+  end;
+  if not(ALibrary_GetSymbolP(FLib, 'ACore_Run', Addr(ACore_Run))) then
+  begin
+    Result := -5;
+    Exit;
+  end;
   Result := 0;
 end;
 

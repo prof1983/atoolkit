@@ -2,7 +2,7 @@
 @abstract AUi ToolMenu
 @author Prof1983 <prof1983@ya.ru>
 @created 28.02.2012
-@lastmod 19.02.2013
+@lastmod 19.04.2013
 }
 unit AUiToolMenu;
 
@@ -17,7 +17,6 @@ uses
   AUiBase,
   AUiControls,
   AUiData,
-  AUiMenus,
   AUiPageControl,
   AUiToolBar;
 
@@ -28,6 +27,9 @@ function AUiToolMenu_AddButtonP(ToolMenu: AToolMenu; const Name, Text, Hint: APa
 
 function AUiToolMenu_AddNewItem(Parent: AToolMenu; const Name, Text: AString_Type;
     OnClick: ACallbackProc; ImageId, Weight: AInt): AToolMenu; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiToolMenu_AddNewItem2P(Parent: AToolMenu; const Name, Text, Hint: APascalString;
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AToolMenu;
 
 function AUiToolMenu_AddNewItemP(Parent: AToolMenu; const Name, Text: APascalString;
     OnClick: ACallbackProc; ImageId, Weight: AInt): AToolMenu;
@@ -90,14 +92,13 @@ begin
       Weight);
 end;
 
-function AUiToolMenu_AddNewItemP(Parent: AToolMenu; const Name, Text: APascalString;
+function AUiToolMenu_AddNewItem2P(Parent: AToolMenu; const Name, Text, Hint: APascalString;
     OnClick: ACallbackProc; ImageId, Weight: AInt): AToolMenu;
 var
   Index: AInteger;
   I: Integer;
   O: TObject;
   Page: AControl;
-  //CoolBar: TCoolBar;
 begin
   if (Parent = 0) then
   begin
@@ -109,41 +110,21 @@ begin
     Index := AUiData.FindToolMenu(Parent);
     if (Index >= 0) then
     begin
-
-      Page := AUiPageControl_AddPageP(FToolMenus[Index].PageControl,
-          TPageControl(FToolMenus[Index].PageControl).Name+'_'+Name, Text);
+      Page := AUiPageControl_InsertPageP(
+          FToolMenus[Index].PageControl,
+          TPageControl(FToolMenus[Index].PageControl).Name+'_'+Name,
+          Text,
+          Hint,
+          -1);
       I := Length(FToolMenus);
       SetLength(FToolMenus, I + 1);
       FToolMenus[I].PageControl := FToolMenus[Index].PageControl;
       FToolMenus[I].Page := Page;
-
-      {
-      CoolBar := TCoolBar.Create(TComponent(Page));
-      CoolBar.Parent := TWinControl(Page);
-      CoolBar.Align := alClient;
-
-      UI_ToolBar_New(AControl(CoolBar));
-      }
-
       Result := Page;
       Exit;
     end;
 
-    Index := AUiData.FindMenuItem(Parent);
-    if (Index >= 0) then
-    begin
-      Result := AToolMenu(AUiMenu_AddItem1P(AMenuItem(Parent), Name, Text, OnClick, ImageId, Weight));
-      Exit;
-    end;
-
     O := TObject(Parent);
-
-    if (O is TMenu) then
-    begin
-      Result := AToolMenu(AUiMenu_AddItem2P(AMenu(Parent), Name, Text, OnClick, ImageId, Weight));
-      Exit;
-    end;
-
     if (O is TToolBar) then
     begin
       Result := Parent;
@@ -154,6 +135,12 @@ begin
   except
     Result := 0;
   end;
+end;
+
+function AUiToolMenu_AddNewItemP(Parent: AToolMenu; const Name, Text: APascalString;
+    OnClick: ACallbackProc; ImageId, Weight: AInt): AToolMenu;
+begin
+  Result := AUiToolMenu_AddNewItem2P(Parent, Name, Text, '', OnClick, ImageId, Weight);
 end;
 
 function AUiToolMenu_AddNewSubMenu(Parent: AToolMenu; const Name, Text: AString_Type;

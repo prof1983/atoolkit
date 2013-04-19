@@ -2,7 +2,7 @@
 @Abstract AUi common about dialog win
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.11.2012
-@LastMod 18.04.2013
+@LastMod 19.04.2013
 }
 unit AUiAboutDialog;
 
@@ -199,7 +199,7 @@ begin
 
   // --- Panel1 ---
 
-  AboutWin.Panel := AUiBox_New(AboutWin.Window, ABoxType_Simple);
+  AboutWin.Panel := AUiBox_New(AboutWin.Window, AUiBoxType_Simple);
   AUiControl_SetPosition(AboutWin.Panel, 4, 16);
   AUiControl_SetSize(AboutWin.Panel, 83, 83);
   AUiControl_SetBevel(AboutWin.Panel, AUiBevel_InnerLowered, -1);

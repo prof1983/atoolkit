@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.02.2009
-@LastMod 28.03.2013
+@LastMod 19.04.2013
 }
 unit AUiDialogsEx1;
 
@@ -218,7 +218,7 @@ begin
   AUiWindow_SetPosition(Win, AUiWindowPosition_ScreenCenter);
   //Form.BorderIcons := [biSystemMenu];
 
-  Dialog.Panel := AUiBox_New(Win, ABoxType_Simple);
+  Dialog.Panel := AUiBox_New(Win, AUiBoxType_Simple);
   AUiControl_SetPosition(Dialog.Panel, 0, 0);
   AUiControl_SetSize(Dialog.Panel, 250, 77);
   AUiControl_SetAlign(Dialog.Panel, AUiAlign_Client);

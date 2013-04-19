@@ -2,7 +2,7 @@
 @Abstract User Interface base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 12.04.2013
+@LastMod 19.04.2013
 }
 unit AUiBase;
 
@@ -35,24 +35,6 @@ type
   PADataSource = type AInteger;
 
 type
-  AUiBorderStyle = type AInt;
-const
-  AUiBorderStyle_None = 0;
-  AUiBorderStyle_Single = 1;
-  AUiBorderStyle_Sizeable = 2;
-  AUiBorderStyle_Dialog = 3;
-  AUiBorderStyle_ToolWindow = 4;
-  AUiBorderStyle_SizeToolWin = 5;
-
-type
-  ABoxType = AInt;
-const
-  ABoxType_Simple = 0;
-  ABoxType_HBox = 1;
-  ABoxType_VBox = 2;
-  ABoxType_GroupBox = 3;
-
-type
   AMouseButton = type AInt;
 const
   AMouseButton_Left = 0;
@@ -69,15 +51,6 @@ const
   AShiftState_Right = $10;
   AShiftState_Middle = $20;
   AShiftState_Double = $40;
-
-type
-  AUiWindowFlags = type AInt;
-const
-  AUiWindowCreateMenu = $00010000;
-  AUiWindowCreateToolBar = $00020000;
-  AUiWindowCreateButtonsPanel = $00040000;
-type
-  AUiWindowButtons = type AMessageBoxFlags;
 
 type
   AUiAlign = type AInt;
@@ -144,6 +117,24 @@ const
   AUiBevel_OuterSpace = $0400;
 
 type
+  AUiBorderStyle = type AInt;
+const
+  AUiBorderStyle_None = 0;
+  AUiBorderStyle_Single = 1;
+  AUiBorderStyle_Sizeable = 2;
+  AUiBorderStyle_Dialog = 3;
+  AUiBorderStyle_ToolWindow = 4;
+  AUiBorderStyle_SizeToolWin = 5;
+
+type
+  AUiBoxType = AInt;
+const
+  AUiBoxType_Simple = 0;
+  AUiBoxType_HBox = 1;
+  AUiBoxType_VBox = 2;
+  AUiBoxType_GroupBox = 3;
+
+type
   AUiButtonKind = type AInt;
   //TAUiButtonKind = AUiButtonKind;
 const
@@ -206,6 +197,16 @@ const
   AUiSplitter_VSplitter = 1;       //(Align=alLeft)
   AUiSplitter_HSplitterBottom = 2; //(Align=alBottom)
   AUiSplitter_VSplitterRight = 3;  //(Align=alRight)
+
+type
+  AUiWindowButtons = type AMessageBoxFlags;
+  
+type
+  AUiWindowFlags = type AInt;
+const
+  AUiWindowCreateMenu = $00010000;
+  AUiWindowCreateToolBar = $00020000;
+  AUiWindowCreateButtonsPanel = $00040000;
 
 type
   AUiWindowPosition = type AInt;

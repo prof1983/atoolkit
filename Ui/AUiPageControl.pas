@@ -2,7 +2,7 @@
 @Abstract AUi PageControl
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.02.2012
-@LastMod 30.01.2013
+@LastMod 19.04.2013
 }
 unit AUiPageControl;
 
@@ -35,7 +35,8 @@ function AUiPageControl_AddPageP(PageControl: AControl; const Name, Text: APasca
 {** Создает новую вкладку
     @param Index - позиция вкладки
     @return 0 - если произошла ошибка, иначе идентификатор новой вкладки (если операция прошла успешно) }
-function AUiPageControl_InsertPageP(PageControl: AControl; const Name, Text: APascalString; Index: AInt): AControl;
+function AUiPageControl_InsertPageP(PageControl: AControl; const Name, Text, Hint: APascalString;
+    Index: AInt): AControl;
 
 function AUiPageControl_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -56,10 +57,11 @@ end;
 
 function AUiPageControl_AddPageP(PageControl: AControl; const Name, Text: APascalString): AControl;
 begin
-  Result := AUiPageControl_InsertPageP(PageControl, Name, Text, -1);
+  Result := AUiPageControl_InsertPageP(PageControl, Name, Text, '', -1);
 end;
 
-function AUiPageControl_InsertPageP(PageControl: AControl; const Name, Text: APascalString; Index: AInt): AControl;
+function AUiPageControl_InsertPageP(PageControl: AControl; const Name, Text, Hint: APascalString;
+    Index: AInt): AControl;
 var
   O: TObject;
   TabSheet: TTabSheet;
@@ -80,6 +82,7 @@ begin
     TabSheet.PageControl := TPageControl(O);
     TabSheet.Name := Name;
     TabSheet.Caption := Text;
+    TabSheet.Hint := Hint;
     if (Index >= 0) then
       TabSheet.PageIndex := Index;
     Result := AddObject(TabSheet);

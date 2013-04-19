@@ -2,12 +2,15 @@
 @Abstract AUi Menus
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2011
-@LastMod 28.02.2013
+@LastMod 19.04.2013
 }
 unit AUiMenus;
 
 {define AStdCall}
-{define UseToolMenu}
+
+{$ifndef NoUseToolMenu}
+  {$define UseToolMenu}
+{$endif}
 
 interface
 
@@ -232,9 +235,10 @@ begin
     begin
       {$ifdef UseToolMenu}
       if ItemType = 0 then
-        Result := AUiToolMenu_AddButtonP(Parent, Name, Text, TextMin, OnClick, ImageId, Weight)
+        Result := AUiToolMenu_AddButtonP(Parent, Name, TextMin, Text, OnClick, ImageId, Weight)
       else
-        Result := AUiToolMenu_AddNewItemP(Parent, Name, TextMin, OnClick, ImageId, Weight);
+        Result := AUiToolMenu_AddNewItem2P(Parent, Name, TextMin, Text, OnClick, ImageId, Weight);
+      Exit;
       {$else}
       Result := 0;
       {$endif}

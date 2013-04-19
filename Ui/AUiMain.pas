@@ -2,7 +2,7 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 12.04.2013
+@LastMod 19.04.2013
 }
 unit AUiMain;
 
@@ -62,6 +62,8 @@ uses
 
 // --- AUi ---
 
+function AUi_AddObject(Value: AInt): AInt; {$ifdef AStdCall}stdcall;{$endif}
+
 function AUi_CreateMainForm(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 function AUi_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -117,7 +119,7 @@ function AUi_TextWidthP(const S, FontName: APascalString; FontSize: AInt): AInt;
 
 // --- UI ---
 
-function UI_Object_Add(Value: AInteger): AInteger; stdcall;
+function UI_Object_Add(Value: AInteger): AInteger; stdcall; deprecated {$ifdef ADeprText}'Use AUi_AddObject()'{$endif};
 
 implementation
 
@@ -159,6 +161,25 @@ begin
 end;
 
 // --- AUi ---
+
+function AUi_AddObject(Value: AInt): AInt;
+begin
+  if (Value = 0) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+  try
+    if not(TObject(Value) is TObject) then
+    begin
+      Result := 0;
+      Exit;
+    end;
+    Result := AddObject(TObject(Value));
+  except
+    Result := 0;
+  end;
+end;
 
 function AUi_CreateMainForm(): AError;
 var
@@ -524,7 +545,7 @@ end;
 
 function UI_Object_Add(Value: AInteger): AInteger;
 begin
-  Result := AddObject(TObject(Value));
+  Result := AUi_AddObject(Value);
 end;
 
 end.

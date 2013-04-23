@@ -17,7 +17,7 @@ uses
   ARuntimeBase,
   ARuntimeMain,
   ASettingsModClient,
-  AStringsModClient,
+  AStringsBoot,
   {$ifdef Debug}
   ASystemMain,
   {$endif}

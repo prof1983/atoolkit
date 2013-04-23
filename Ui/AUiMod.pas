@@ -2,7 +2,7 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 16.04.2013
+@LastMod 23.04.2013
 }
 unit AUiMod;
 
@@ -70,7 +70,7 @@ function AUiMod_Init(): AError; stdcall;
 implementation
 
 const
-  AUi_Version = $00060100;
+  AUi_Version = $00060200;
 
 const
   Module: AModule_Type = (

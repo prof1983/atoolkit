@@ -2,7 +2,7 @@
 @Abstract ASystem
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.08.2007
-@LastMod 16.04.2013
+@LastMod 23.04.2013
 }
 unit ASystemMod;
 
@@ -30,7 +30,7 @@ function ASystemMod_Init(): AError; stdcall
 implementation
 
 const
-  ASystem_Version = $00060100;
+  ASystem_Version = $00060200;
 
 const
   SystemModule: AModule_Type = (

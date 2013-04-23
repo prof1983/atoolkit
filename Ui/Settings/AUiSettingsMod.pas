@@ -2,7 +2,7 @@
 @Abstract AUiSettings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.03.2009
-@LastMod 17.04.2013
+@LastMod 23.04.2013
 }
 unit AUiSettingsMod;
 
@@ -12,10 +12,10 @@ uses
   ABase,
   ARuntimeBase,
   ARuntimeMain,
-  AUiModClient,
+  AUiBoot,
   AUiSettingsBase,
   AUiSettingsMain,
-  AStringsModClient;
+  AStringsBoot;
 
 // --- AUiSettingsMod ---
 
@@ -36,7 +36,7 @@ implementation
 {$ENDIF}
 
 const
-  AUiSettings_Version = $00060100;
+  AUiSettings_Version = $00060200;
 
 const
   Module: AModule_Type = (

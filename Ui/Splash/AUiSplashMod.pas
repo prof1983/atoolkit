@@ -2,7 +2,7 @@
 @Abstract AUiSplash
 @Author Prof1983 <prof1983@ya.ru>
 @Created 08.12.2009
-@LastMod 17.04.2013
+@LastMod 23.04.2013
 }
 unit AUiSplashMod;
 
@@ -31,7 +31,7 @@ function AUiSplashMod_Init(): AError; stdcall;
 implementation
 
 const
-  AUiSplash_Version = $00060100;
+  AUiSplash_Version = $00060200;
 
 const
   UiSplashModule: AModule_Type = (

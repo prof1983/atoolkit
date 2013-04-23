@@ -2,7 +2,7 @@
 @Abstract AStringsModule
 @Author Prof1983 <prof1983@ya.ru>
 @Created 03.06.2011
-@LastMod 16.04.2013
+@LastMod 23.04.2013
 }
 unit AStringsMod;
 
@@ -31,7 +31,7 @@ function AStringsMod_Init(): AError; stdcall;
 implementation
 
 const
-  AStrings_Version = $00060100;
+  AStrings_Version = $00060200;
 
 const
   Module: AModule_Type = (

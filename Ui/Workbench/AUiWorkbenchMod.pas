@@ -2,7 +2,7 @@
 @Abstract AUiWorkbench
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.08.2009
-@LastMod 17.04.2013
+@LastMod 23.04.2013
 }
 unit AUiWorkbenchMod;
 
@@ -30,7 +30,7 @@ function AUiWorkbenchMod_Init(): AError; stdcall;
 implementation
 
 const
-  AUiWorkbench_Version = $00060100;
+  AUiWorkbench_Version = $00060200;
 
 const
   Module: AModule_Type = (

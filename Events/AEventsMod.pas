@@ -2,7 +2,7 @@
 @Abstract AEvents
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.05.2011
-@LastMod 16.04.2013
+@LastMod 23.04.2013
 }
 unit AEventsMod;
 
@@ -28,7 +28,7 @@ function AEventsMod_Init(): AError; stdcall;
 implementation
 
 const
-  AEvents_Version = $00060100;
+  AEvents_Version = $00060200;
 
 const
   EventsModule: AModule_Type = (

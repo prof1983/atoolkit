@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.10.2008
-@LastMod 17.04.2013
+@LastMod 23.04.2013
 }
 unit ADataMod;
 
@@ -29,7 +29,7 @@ function ADataMod_Init(): AError; stdcall;
 implementation
 
 const
-  AData_Version = $00060100;
+  AData_Version = $00060200;
 
 const
   Module: AModule_Type = (

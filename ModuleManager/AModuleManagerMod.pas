@@ -2,7 +2,7 @@
 @Abstract AModuleManager module
 @Author Prof1983 <prof1983@ya.ru>
 @Created 20.08.2009
-@LastMod 17.04.2013
+@LastMod 23.04.2013
 }
 unit AModuleManagerMod;
 
@@ -39,7 +39,7 @@ function AModuleManagerMod_Init(): AError; stdcall;
 implementation
 
 const
-  AModuleManager_Version = $00060100;
+  AModuleManager_Version = $00060200;
 
 const
   Module: AModule_Type = (

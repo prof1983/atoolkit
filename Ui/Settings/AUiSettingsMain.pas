@@ -1,21 +1,27 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 13.12.2012
-@LastMod 26.12.2012
+@LastMod 23.04.2013
 }
 unit AUiSettingsMain;
 
 interface
 
 uses
-  ABase, ABaseTypes, AStrings,
+  ABase,
+  ABaseTypes,
+  AStringMain,
   AUiBase,
   AUiControls,
   AUiDialogs,
   AUiEvents,
   AUiMain,
   AUiMainWindow2,
-  AUiPageControl, AUiSettingsBase, AUiSplitter, AUiTreeView, AUiWindows;
+  AUiPageControl,
+  AUiSettingsBase,
+  AUiSplitter,
+  AUiTreeView,
+  AUiWindows;
 
 // --- AUiSettings ---
 

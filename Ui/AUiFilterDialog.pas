@@ -6,7 +6,7 @@
 }
 unit AUiFilterDialog;
 
-{define AStdCall}
+{$define AStdCall}
 
 interface
 

@@ -2,7 +2,7 @@
 @Abstract Util functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.09.2009
-@LastMod 25.12.2012
+@LastMod 23.04.2013
 }
 unit AUtils;
 
@@ -12,7 +12,11 @@ interface
 
 uses
   SysUtils, {$IFNDEF FPC}Windows,{$ENDIF}
-  ABase, ABaseUtils, AStringUtils, AStrings, ASystem;
+  ABase,
+  ABaseUtils,
+  AStringUtils,
+  AStringMain,
+  ASystem;
 
 // ----
 

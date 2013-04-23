@@ -2,7 +2,7 @@
 @Abstract AStrings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.05.2011
-@LastMod 17.04.2013
+@LastMod 23.04.2013
 }
 unit AStringMain;
 
@@ -26,7 +26,7 @@ function AString_Clear(var S: AString_Type): AError; stdcall;
 
 function AString_Copy(var S: AString_Type; const Value: AString_Type): ASize; stdcall;
 
-function AString_CopyA(var S: AString_Type; const Value: AStr): ASize; stdcall;
+function AString_CopyA(var S: AString_Type; Value: AStr): ASize; stdcall;
 
 function AString_CopyWS(var S: AString_Type; const Value: AWideString): ASize; stdcall;
 
@@ -141,7 +141,7 @@ begin
   Result := 0;
 end;
 
-function AString_CopyA(var S: AString_Type; const Value: AStr): ASize;
+function AString_CopyA(var S: AString_Type; Value: AStr): ASize;
 begin
   try
     S.Str := Value;

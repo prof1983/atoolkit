@@ -2,7 +2,7 @@
 @Abstract ACore
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.10.2009
-@LastMod 22.11.2012
+@LastMod 23.04.2013
 }
 unit ACore;
 
@@ -160,12 +160,19 @@ begin
   if not(ALibrary_GetSymbol(FLib, 'Core_Run', Addr(Core_Run))) then Exit;
   if not(ALibrary_GetSymbol(FLib, 'Core_Done', Addr(Core_Done))) then Exit;
   {$ELSE} // A02
+  {$ifdef A03}
   if not(ALibrary_GetSymbolP(FLib, 'Core_Boot', Addr(Core_Boot))) then Exit;
   if not(ALibrary_GetSymbolP(FLib, 'Core_Fin', Addr(Core_Fin))) then Exit;
   if not(ALibrary_GetSymbolP(FLib, 'Core_Init', Addr(Core_Init))) then Exit;
   if not(ALibrary_GetSymbolP(FLib, 'Core_Run', Addr(Core_Run))) then Exit;
   if not(ALibrary_GetSymbolP(FLib, 'Core_Done', Addr(Core_Done))) then Exit;
   //if not(Library_GetSymbol(FLib, 'Core_Runtime', Addr(Core_Runtime))) then Exit;
+  {$else}
+  if not(ALibrary_GetSymbolP(FLib, 'Core_Boot', Addr(Core_Boot))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'Core_Fin', Addr(Core_Fin))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'Core_Init', Addr(Core_Init))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'Core_Run', Addr(Core_Run))) then Exit;
+  {$endif}
   {$ENDIF A02}
  {$ENDIF A01}
   Result := 0;

@@ -2,7 +2,7 @@
 @Abstract ACollections
 @Author Prof1983 <prof1983@ya.ru>
 @Created 29.06.2011
-@LastMod 18.12.2012
+@LastMod 23.04.2013
 }
 unit ACollections;
 
@@ -12,6 +12,8 @@ uses
   ABase,
   ABaseTypes,
   AStringLists;
+
+function Fin(): AError; stdcall;
 
 function Init(): AError; stdcall;
 
@@ -68,6 +70,11 @@ function StringList_RemoveAt(StringList: AStringList; Index: AInteger): AInteger
 implementation
 
 function Done(): AError; stdcall;
+begin
+  Result := 0;
+end;
+
+function Fin(): AError;
 begin
   Result := 0;
 end;

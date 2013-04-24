@@ -2,20 +2,14 @@
 @Abstract ACore
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.10.2009
-@LastMod 23.04.2013
+@LastMod 24.04.2013
 }
 unit ACore;
 
-{DEFINE A02}
+{define A02}
+{define A03}
+{define A04}
 {DEFINE STATIC}
-
-{$IFNDEF A01}
-  {$IFNDEF A02}
-    {$IFNDEF A03}
-      {$DEFINE A04}
-    {$ENDIF}
-  {$ENDIF}
-{$ENDIF}
 
 interface
 
@@ -94,12 +88,33 @@ function CoreLib_Open(const CoreLibName: string): AInteger;
 
 {$ENDIF STATIC}
 
+// --- ACore ---
+
+function ACore_Boot(): AError; stdcall;
+
+function ACore_Fin(): AError; stdcall;
+
+function ACore_Init(): AError; stdcall;
+
+function ACore_Run(): AError; stdcall;
+
+// --- ACoreLib ---
+
+function ACoreLib_Close(): AError;
+
+function ACoreLib_GetLib(): ALibrary;
+
+function ACoreLib_Open(const CoreLibName: APascalString): AError;
+
 implementation
+
+const
+  ACoreLibNameDef = {$ifdef A01}'ACore01.dll'{$else}{$ifdef A02}'ACore02.dll'{$else}{$ifdef A03}'ACore03.dll'{$else}{$ifdef A04}'ACore04.dll'{$else}'ACore32.dll'{$endif}{$endif}{$endif}{$endif};
 
 {$IFDEF STATIC}
 
 const
-  ACoreLibName = {$IFDEF A01}'ACore01.dll'{$ELSE}'ACore02.dll'{$ENDIF};
+  ACoreLibName = ACoreLibNameDef;
 
 function Core_Boot; external ACoreLibName;
 function Core_BootA; external ACoreLibName;
@@ -110,9 +125,6 @@ function Core_Run; external ACoreLibName;
 function Core_Done; external ACoreLibName;
 
 {$ELSE} // STATIC
-
-const
-  ACoreLibNameDef = {$IFDEF A01}'ACore01.dll'{$ELSE}{$IFDEF A02}'ACore02.dll'{$ELSE}{$IFDEF A03}'ACore03.dll'{$ELSE}'ACore32.dll'{$ENDIF}{$ENDIF}{$ENDIF};
 
 var
   FLib: ALibrary;
@@ -168,10 +180,17 @@ begin
   if not(ALibrary_GetSymbolP(FLib, 'Core_Done', Addr(Core_Done))) then Exit;
   //if not(Library_GetSymbol(FLib, 'Core_Runtime', Addr(Core_Runtime))) then Exit;
   {$else}
+  {$ifdef A04}
   if not(ALibrary_GetSymbolP(FLib, 'Core_Boot', Addr(Core_Boot))) then Exit;
   if not(ALibrary_GetSymbolP(FLib, 'Core_Fin', Addr(Core_Fin))) then Exit;
   if not(ALibrary_GetSymbolP(FLib, 'Core_Init', Addr(Core_Init))) then Exit;
   if not(ALibrary_GetSymbolP(FLib, 'Core_Run', Addr(Core_Run))) then Exit;
+  {$else}
+  if not(ALibrary_GetSymbolP(FLib, 'ACore_Boot', Addr(Core_Boot))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'ACore_Fin', Addr(Core_Fin))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'ACore_Init', Addr(Core_Init))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'ACore_Run', Addr(Core_Run))) then Exit;
+  {$endif}
   {$endif}
   {$ENDIF A02}
  {$ENDIF A01}
@@ -179,5 +198,45 @@ begin
 end;
 
 {$ENDIF STATIC}
+
+// --- ACoreLib ---
+
+function ACoreLib_Close(): AError;
+begin
+  CoreLib_Close();
+  Result := 0;
+end;
+
+function ACoreLib_GetLib(): ALibrary;
+begin
+  Result := CoreLib_GetLib();
+end;
+
+function ACoreLib_Open(const CoreLibName: APascalString): AError;
+begin
+  Result := CoreLib_Open(CoreLibName);
+end;
+
+// --- ACore ---
+
+function ACore_Boot(): AError;
+begin
+  Result := Core_Boot();
+end;
+
+function ACore_Fin(): AError;
+begin
+  Result := Core_Fin();
+end;
+
+function ACore_Init(): AError;
+begin
+  Result := Core_Init();
+end;
+
+function ACore_Run(): AError;
+begin
+  Result := Core_Run();
+end;
 
 end.

@@ -1,7 +1,7 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 12.04.2013
-@LastMod 15.04.2013
+@LastMod 24.04.2013
 }
 unit AErrorObj;
 
@@ -72,7 +72,7 @@ begin
     Result := -3;
     Exit;
   end;
-  Result := AError_InsertP(Er, S + EndLine);
+  Result := AError_InsertP(Er, EndLine + S);
 end;
 
 function AError_InsertP(Er: AError; const S: APascalString): AError;
@@ -82,7 +82,7 @@ begin
     Result := -2;
     Exit;
   end;
-  PError(Er)^.Msg := S + PError(Er)^.Msg;
+  PError(Er)^.Msg := PError(Er)^.Msg + S;
   Result := 0;
 end;
 

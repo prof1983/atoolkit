@@ -1,7 +1,6 @@
 {**
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 23.04.2013
 }
 unit ASettingsMod;
 
@@ -29,7 +28,7 @@ function ASettingsMod_Init(): AError; stdcall;
 implementation
 
 const
-  ASettings_Version = $00060200;
+  ASettings_Version = $00060400;
 
 const
   Module: AModule_Type = (
@@ -84,6 +83,10 @@ begin
   else if (ProcName = 'ASettings_NewRegConfigA') then
     Result := Addr(ASettings_NewRegConfigA)
   {$endif}
+  else if (ProcName = 'ASettings_NewIniConfig') then
+    Result := Addr(ASettings_NewIniSettings)
+  else if (ProcName = 'ASettings_NewIniConfigA') then
+    Result := Addr(ASettings_NewIniSettingsA)
   else if (ProcName = 'ASettings_NewIniSettings') then
     Result := Addr(ASettings_NewIniSettings)
   else if (ProcName = 'ASettings_NewIniSettingsA') then
@@ -91,6 +94,10 @@ begin
   else if (ProcName = 'ASettings_NewRegSettings') then
     Result := Addr(ASettings_NewRegSettings)
   else if (ProcName = 'ASettings_NewRegSettingsA') then
+    Result := Addr(ASettings_NewRegSettingsA)
+  else if (ProcName = 'ASettings_NewRegConfig') then
+    Result := Addr(ASettings_NewRegSettings)
+  else if (ProcName = 'ASettings_NewRegConfigA') then
     Result := Addr(ASettings_NewRegSettingsA)
   else if (ProcName = 'ASettings_ReadBoolDef') then
     Result := Addr(ASettings_ReadBoolDef)

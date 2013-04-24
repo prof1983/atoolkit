@@ -10,7 +10,13 @@ interface
 
 uses
   SysUtils,
-  ABase, ALibraries, ARuntimeBase, ARuntimeMain, ASettings, ASystem;
+  ABase,
+  ALibraries,
+  APluginsBase,
+  ARuntimeBase,
+  ARuntimeMain,
+  ASettings,
+  ASystem;
 
 // --- APlugins ---
 

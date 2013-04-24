@@ -2,7 +2,7 @@
 @Abstract AUi Menus
 @Author Prof1983 <prof1983@ya.ru>
 @Created 16.08.2011
-@LastMod 17.04.2013
+@LastMod 24.04.2013
 }
 unit AUiMenus;
 
@@ -132,6 +132,21 @@ begin
   for I := 0 to TMenuItem(Parent).Count - 1 do
   begin
     if (AMenuItem(TMenuItem(Parent).Items[I]) = Item) then
+    begin
+      Result := I;
+      Exit;
+    end;
+  end;
+  Result := -1;
+end;
+
+function _Find1(Item: AMenuItem): AInt;
+var
+  I: Integer;
+begin
+  for I := 0 to High(FMenuItems) do
+  begin
+    if (FMenuItems[I].MenuItem = Item) then
     begin
       Result := I;
       Exit;
@@ -326,7 +341,7 @@ begin
       Result := 0;
       Exit;
     end;
-    if (Res = 0) then
+    if (Res > 0) then
       FMenuItems[ResIndex].OnClick03 := OnClick;
     Result := FMenuItems[ResIndex].MenuItem;
   except
@@ -348,7 +363,7 @@ function AUiMenu_AddItemExP(ParentMenuItem: AMenuItem; const Name, Text: APascal
     ImageId, Weight, Tag: AInteger; out ResIndex: AInteger): AError;
 begin
   Result := AUiMenu_AddItemEx2P(ParentMenuItem, Name, Text, '', nil, 0, ImageId, Weight, Tag);
-  ResIndex := _Find(ParentMenuItem, Result);
+  ResIndex := _Find1(Result);
 end;
 
 function AUiMenu_AddItemEx2P(ParentMenuItem: AMenuItem; const Name, Text, Hint: APascalString;

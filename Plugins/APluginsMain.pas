@@ -77,23 +77,23 @@ var
   PluginsVersionMask: AVersion;
 
 const
-  PluginsVersionValue1Def = $00030700;
-  PluginsVersionValue2Def = $00040000;
+  PluginsVersionValue1Def = $00060000;
+  PluginsVersionValue2Def = $00060000;
   PluginsVersionMaskDef = $FFFF0000;
 
 implementation
 
 type
   APlugin_Boot05_Proc = function(GetProcByName: ARuntime_GetProcByName_Proc): AError; stdcall;
-  APluginInitProc = function(): AInteger; stdcall;
-  APluginDoneProc = function(): AInteger; stdcall;
-  APluginVersionProc = function(): AInteger; stdcall;
+  APluginInitProc = function(): AError; stdcall;
+  APluginFinProc = function(): AError; stdcall;
+  APluginVersionProc = function(): AError; stdcall;
 
 type
   APlugin_Type = record
     Lib: ALibrary;
     InitProc: APluginInitProc;
-    DoneProc: APluginDoneProc;
+    FinProc: APluginFinProc;
   end;
 
 var
@@ -146,7 +146,7 @@ end;
 function _Plugin_Fin(Index: Integer): Integer;
 begin
   try
-    Result := FPlugins[Index].DoneProc;
+    Result := FPlugins[Index].FinProc();
   except
     //System0.ShowMessage('Error Plugin_Done '+Library_GetName(FPlugins[Index].Lib));
     Result := -1;
@@ -172,7 +172,7 @@ end;
 function DoAfterRun(Obj, Data: AInteger): AError; stdcall;
 begin
   try
-    Result := Plugins_DoneAll();
+    Result := APlugins_FinAll();
   except
     Result := -1;
   end;
@@ -187,7 +187,7 @@ function DoCheckPlugin(Lib: ALibrary): ABoolean; stdcall;
 var
   PluginBootProc: APlugin_Boot05_Proc;
 begin
-  if not(ALibrary_GetSymbolP(Lib, 'Plugin_Boot05', @PluginBootProc)) then
+  if not(ALibrary_GetSymbolP(Lib, 'Plugin_Boot', @PluginBootProc)) then
   begin
     Result := False;
     Exit;
@@ -211,7 +211,7 @@ var
   I: Integer;
   Lib: ALibrary;
   PluginInitProc: APluginInitProc;
-  PluginDoneProc: APluginDoneProc;
+  PluginFinProc: APluginFinProc;
   PluginVersionProc: APluginVersionProc;
   Version: AInteger;
 begin
@@ -228,7 +228,7 @@ begin
       Result := -1;
       Exit;
     end;
-    if not(ALibrary_GetSymbolP(Lib, 'Plugin_Done', @PluginDoneProc)) then
+    if not(ALibrary_GetSymbolP(Lib, 'Plugin_Fin', @PluginFinProc)) then
     begin
       ALibrary_Close(Lib);
       Result := -1;
@@ -271,7 +271,7 @@ begin
     SetLength(FPlugins, I + 1);
     FPlugins[I].Lib := Lib;
     FPlugins[I].InitProc := PluginInitProc;
-    FPlugins[I].DoneProc := PluginDoneProc;
+    FPlugins[I].FinProc := PluginFinProc;
     Result := 0;
   except
     Result := -1;

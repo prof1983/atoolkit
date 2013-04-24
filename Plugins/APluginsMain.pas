@@ -2,7 +2,7 @@
 @Abstract APlugins
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.01.2012
-@LastMod 16.04.2013
+@LastMod 24.04.2013
 }
 unit APluginsMain;
 
@@ -11,9 +11,6 @@ interface
 uses
   SysUtils,
   ABase, ALibraries, ARuntimeBase, ARuntimeMain, ASettings, ASystem;
-
-type
-  TCheckPluginProc = function(Lib: ALibrary): ABoolean; stdcall;
 
 // --- APlugins ---
 

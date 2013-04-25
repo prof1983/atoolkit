@@ -2,10 +2,10 @@
 @Abstract ARuntime
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.08.2012
-@LastMod 15.11.2012
 }
 unit ARuntimeMain;
 
+{define A02}
 {$define AStdCall}
 
 interface
@@ -15,7 +15,9 @@ uses
 
 // --- ARuntime ---
 
+{$ifndef A02}
 function ARuntime_AddModule(const Module: AModule_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+{$endif}
 
 function ARuntime_DeleteModuleByIndex(Index: AInteger): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -23,7 +25,9 @@ function ARuntime_DeleteModuleByName(Name: AStr): AInteger; {$ifdef AStdCall}std
 
 function ARuntime_DeleteModuleByNameWS(const Name: AWideString): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
+{$ifndef A02}
 function ARuntime_DeleteModuleByUid(Uid: AModuleUid): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+{$endif}
 
 {** Finalize Runtime (Shutdown, Work end, Unloading of modules) }
 function ARuntime_Fin(): AError; {$ifdef AStdCall}stdcall;{$endif}
@@ -32,27 +36,39 @@ function ARuntime_FindModuleByName(Name: AStr): AInteger; {$ifdef AStdCall}stdca
 
 function ARuntime_FindModuleByNameWS(const Name: AWideString): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
+{$ifndef A02}
 function ARuntime_FindModuleByUid(Uid: AModuleUid): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+{$endif}
 
 function ARuntime_GetIsShutdown(): ABoolean; {$ifdef AStdCall}stdcall;{$endif}
 
 function ARuntime_GetModuleByName(Name: AStr; out Module: AModule_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
+{$ifndef A02}
 function ARuntime_GetModuleByUid(Uid: AModuleUid; out Module: AModule_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+{$endif}
 
+{$ifndef A02}
 function ARuntime_GetModuleNameByIndex(Index: AInteger; Name: AStr; MaxLen: AInteger): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+{$endif}
 
 function ARuntime_GetModuleNameByIndexP(Index: AInteger): APascalString;
 
 function ARuntime_GetModuleNameByIndexWS(Index: AInteger): AWideString; {$ifdef AStdCall}stdcall;{$endif}
 
+{$ifndef A02}
 function ARuntime_GetModuleNameByUid(Uid: AInteger; Name: AStr; MaxLen: AInteger): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+{$endif}
 
+{$ifndef A02}
 function ARuntime_GetModuleProcsByUid(Uid: AModuleUid): Pointer; {$ifdef AStdCall}stdcall;{$endif}
+{$endif}
 
 function ARuntime_GetModulesCount(): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
+{$ifndef A02}
 function ARuntime_GetModuleUidByIndex(Index: AInteger): AModuleUid; {$ifdef AStdCall}stdcall;{$endif}
+{$endif}
 
 function ARuntime_GetOnAfterRun(): AProc; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -62,7 +78,9 @@ function ARuntime_InitModuleByName(Name: AStr): AInteger; {$ifdef AStdCall}stdca
 
 function ARuntime_InitModuleByNameWS(const ModuleName: AWideString): AInteger; {$ifdef AStdCall}stdcall;{$endif}
 
+{$ifndef A02}
 function ARuntime_InitModuleByUid(Uid: AModuleUid): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+{$endif}
 
 function ARuntime_IsShutdown(): ABoolean; stdcall; deprecated; // Use ARuntime_GetIsShutdown()
 
@@ -76,7 +94,9 @@ function ARuntime_OnBeforeRun_Set(Value: AProc): AError; stdcall; deprecated; //
 
 function ARuntime_OnRun_Set(Value: AProc): AError; stdcall; deprecated; // Use ARuntime_SetOnRun()
 
+{$ifndef A02}
 function ARuntime_RegisterModule(const Module: AModule_Type): AInteger; {$ifdef AStdCall}stdcall;{$endif}
+{$endif}
 
 function ARuntime_Run(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
@@ -97,6 +117,7 @@ var
 
 { Private }
 
+{$ifndef A02}
 function _FindModuleByUid(Uid: AModuleUid): AInteger;
 var
   I: Integer;
@@ -111,6 +132,7 @@ begin
   end;
   Result := -1;
 end;
+{$endif}
 
 function _FindModuleByName(const Name: string): AInteger;
 var
@@ -129,6 +151,7 @@ end;
 
 // --- ARuntime ---
 
+{$ifndef A02}
 function ARuntime_AddModule(const Module: AModule_Type): AInteger;
 begin
   try
@@ -140,13 +163,19 @@ begin
     FModules[Result].Name := Module.Name;
     FModules[Result].Description := Module.Description;
     FModules[Result].Init := Module.Init;
+    {$ifdef A03}
+    FModules[Result].Done := Module.Done;
+    FModules[Result].Reserved06 := Module.Reserved06;
+    {$else}
     FModules[Result].Fin := Module.Fin;
     FModules[Result].GetProc := Module.GetProc;
+    {$endif}
     FModules[Result].Procs := Module.Procs;
   except
     Result := -1;
   end;
 end;
+{$endif}
 
 function ARuntime_DeleteModuleByIndex(Index: AInteger): AInteger;
 var
@@ -177,6 +206,7 @@ begin
   Result := ARuntime_DeleteModuleByIndex(Index);
 end;
 
+{$ifndef A02}
 function ARuntime_DeleteModuleByUid(Uid: AModuleUid): AInteger;
 var
   Index: Integer;
@@ -188,27 +218,40 @@ begin
     Result := -1;
   end;
 end;
+{$endif}
 
 function ARuntime_Fin(): AError;
+{$ifndef A02}
 var
   Uid: AInteger;
   I: AInteger;
+{$endif}
 begin
   try
+    {$ifndef A02}
     while (Length(FModules) > 0) do
     begin
       // Remove the modules from the end of the list. If you want to delete modules from the beginning of the list, then replace the: I := 0;
       I := High(FModules);
       Uid := FModules[I].Uid;
+      {$ifdef A03}
+      if Assigned(FModules[I].Done) then
+      try
+        FModules[I].Done();
+      except
+      end;
+      {$else}
       if Assigned(FModules[I].Fin) then
       try
         FModules[I].Fin();
       except
       end;
+      {$endif}
       // Check, because when performing Module.Done could be done Runtime_Modules_DeleteByUid or Runtime_Modules_DeleteByName
       if (Length(FModules) >= I) and (FModules[I].Uid = Uid) then
         ARuntime_DeleteModuleByIndex(I);
     end;
+    {$endif}
     Result := 0;
   except
     Result := -1;
@@ -229,6 +272,7 @@ begin
   Result := _FindModuleByName(Name);
 end;
 
+{$ifndef A02}
 function ARuntime_FindModuleByUid(Uid: AModuleUid): AInteger;
 begin
   try
@@ -237,6 +281,7 @@ begin
     Result := -1;
   end;
 end;
+{$endif}
 
 function ARuntime_GetIsShutdown(): ABoolean;
 begin
@@ -265,6 +310,7 @@ begin
   end;
 end;
 
+{$ifndef A02}
 function ARuntime_GetModuleByUid(Uid: AModuleUid; out Module: AModule_Type): AInteger;
 var
   I: Integer;
@@ -282,7 +328,9 @@ begin
     Result := -1;
   end;
 end;
+{$endif}
 
+{$ifndef A02}
 function ARuntime_GetModuleNameByIndex(Index: AInteger; Name: AStr; MaxLen: AInteger): AInteger;
 begin
   FillChar(Name^, MaxLen, 0);
@@ -295,6 +343,7 @@ begin
   else
     Result := 0;
 end;
+{$endif}
 
 function ARuntime_GetModuleNameByIndexP(Index: AInteger): APascalString;
 begin
@@ -312,6 +361,7 @@ begin
     Result := '';
 end;
 
+{$ifndef A02}
 function ARuntime_GetModuleNameByUid(Uid: AInteger; Name: AStr; MaxLen: AInteger): AInteger;
 var
   Index: Integer;
@@ -329,7 +379,9 @@ begin
     Result := 0;
   end;
 end;
+{$endif}
 
+{$ifndef A02}
 function ARuntime_GetModuleProcsByUid(Uid: AModuleUid): Pointer;
 var
   Index: Integer;
@@ -340,12 +392,14 @@ begin
   else
     Result := nil;
 end;
+{$endif}
 
 function ARuntime_GetModulesCount(): AInteger;
 begin
   Result := Length(FModules);
 end;
 
+{$ifndef A02}
 function ARuntime_GetModuleUidByIndex(Index: AInteger): AModuleUid;
 begin
   if (Index >= 0) and (Index < Length(FModules)) then
@@ -353,6 +407,7 @@ begin
   else
     Result := 0;
 end;
+{$endif}
 
 function ARuntime_GetOnAfterRun(): AProc;
 begin
@@ -406,6 +461,7 @@ begin
   end;
 end;
 
+{$ifndef A02}
 function ARuntime_InitModuleByUid(Uid: AModuleUid): AInteger;
 var
   I: Integer;
@@ -422,6 +478,7 @@ begin
     Result := -1;
   end;
 end;
+{$endif}
 
 function ARuntime_IsShutdown(): ABoolean;
 begin
@@ -453,6 +510,7 @@ begin
   Result := ARuntime_SetOnRun(Value);
 end;
 
+{$ifndef A02}
 function ARuntime_RegisterModule(const Module: AModule_Type): AInteger;
 begin
   try
@@ -471,6 +529,7 @@ begin
     Result := -1;
   end;
 end;
+{$endif}
 
 function ARuntime_Run(): AError;
 begin

@@ -1,9 +1,7 @@
 {**
-@Abstract()
 @Author(Prof1983 prof1983@ya.ru)
 @Created(01.10.2009)
 @LastMod(30.08.2011)
-@Version(0.5)
 }
 unit ACollectionsStringList;
 

@@ -2,14 +2,20 @@
 @Abstract ACollections
 @Author Prof1983 <prof1983@ya.ru>
 @Created 29.06.2011
-@LastMod 27.07.2012
 }
 unit ACollections;
+
+{$ifndef A0}
+  {$define ALocal}
+{$endif}
 
 interface
 
 uses
-  ABase, ACollectionsBase, ACollectionsStringList, AStrings;
+  ABase,
+  ACollectionsBase,
+  ACollectionsStringList,
+  {$ifdef ALocal}AStrings{$else}AStrings0{$endif};
 
 function Init(): AError; stdcall;
 

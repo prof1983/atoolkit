@@ -3,7 +3,6 @@ Abstract(A define)
 Author(Prof1983 prof1983@ya.ru)
 Created(18.06.2011)
 LastMod(05.06.2012)
-Version(0.5)
 }
 
   // RadStudio XE2

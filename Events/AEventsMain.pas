@@ -2,7 +2,6 @@
 @Abstract AEvents
 @Author Prof1983 <prof1983@ya.ru>
 @Created 19.11.2011
-@LastMod 31.07.2012
 }
 unit AEventsMain;
 
@@ -27,32 +26,6 @@ function _Event_NewS(Obj: Integer; {const} Name: AString): AEvent;
 function _Event_NewW(Obj: Integer; {const} Name: PWideChar): AEvent;
 
 implementation
-
-(*
-type
-  AEventListener = ^AEventListenerType;
-  AEventListenerType = packed record {2x4}
-    Proc: ACallbackProc;
-    Weight: AInteger;
-  end;
-*)
-
-{
-type
-  PEvent = ^AEventType;
-  AEventType = packed record // 4x4
-    Listeners: AArray;
-    Name: AStringA;
-    Obj: AInteger;
-    Reserved03: AInteger;
-  end;
-}
-
-{
-var
-  FEvents: array of TAEvent;
-  //FEvents: array of AEventType;
-}
 
 { Private }
 
@@ -169,11 +142,7 @@ end;
 function _Event_NewA(Obj: Integer; {const} Name: PAnsiChar): AEvent;
 var
   Event: TAEvent;
-  Len: Integer;
 begin
-  Len := 0;
-  while (Name[Len] <> #0) do
-    Inc(Len);
   Event := TAEvent.Create(Obj, AnsiString(Name));
   Result := AEvent(Event);
 end;

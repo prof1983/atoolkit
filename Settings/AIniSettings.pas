@@ -2,8 +2,6 @@
 @Abstract Reading and writing settings from INI file
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.03.2008
-@LastMod 24.07.2012
-Version: 0.3
 }
 unit AIniSettings;
 
@@ -11,7 +9,10 @@ interface
 
 uses
   Classes, IniFiles, SysUtils,
-  ABase, ACollections, ACollectionsBase, AUtils,
+  ABase,
+  {$ifndef A0}ACollections{$else}ACollections0{$endif},
+  ACollectionsBase,
+  {$ifndef A0}AUtils0{$else}AUtils{$endif},
   AAbstractSettings;
 
 type

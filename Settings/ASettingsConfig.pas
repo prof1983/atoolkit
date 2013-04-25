@@ -2,7 +2,6 @@
 @Abstract ASettingsConfig
 @Author Prof1983 <prof1983@ya.ru>
 @Created 06.03.2008
-@LastMod 14.08.2012
 }
 unit ASettingsConfig;
 
@@ -10,7 +9,10 @@ interface
 
 uses
   {$IFDEF MSWINDOWS}Windows, ARegistrySettings,{$ENDIF}
-  ABase, ACollections, ACollectionsBase, AStrings,
+  ABase,
+  {$ifndef A0}ACollections{$else}ACollections0{$endif},
+  ACollectionsBase,
+  {$ifndef A0}AStrings{$else}AStrings{$endif},
   AAbstractSettings, AIniSettings, ASettingsMain;
 
 {deprecated}

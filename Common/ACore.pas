@@ -2,20 +2,13 @@
 @Abstract ACore
 @Author Prof1983 <prof1983@ya.ru>
 @Created 30.10.2009
-@LastMod 21.11.2012
 }
 unit ACore;
 
-{DEFINE A02}
+{define A01}
+{define A02}
+{define A03}
 {DEFINE STATIC}
-
-{$IFNDEF A01}
-  {$IFNDEF A02}
-    {$IFNDEF A03}
-      {$DEFINE A04}
-    {$ENDIF}
-  {$ENDIF}
-{$ENDIF}
 
 interface
 
@@ -52,12 +45,17 @@ type
   ACore_Run = function: Integer; stdcall;
   ACore_Done = function: Integer; stdcall;
   {$ELSE} // A02
+  {$ifdef A03}
+  A_Core_Boot_Proc = AProc;
+  A_Core_Init_Proc = AProc;
+  A_Core_Run_Proc = AProc;
+  A_Core_Done_Proc = AProc;
+  {$else}
   A_Core_Boot_Proc = AProc;
   A_Core_Fin_Proc = AProc;
   A_Core_Init_Proc = AProc;
   A_Core_Run_Proc = AProc;
-  A_Core_Done_Proc = AProc;
-  //A_Core_Runtime_Proc = function: ARuntimeProcs; stdcall;
+  {$endif}
   {$ENDIF A02}
 {$ENDIF A01}
 
@@ -77,12 +75,17 @@ var
   Core_Run: ACore_Run;
   Core_Done: ACore_Done;
   {$ELSE}
+  {$ifdef A03}
+  Core_Boot: A_Core_Boot_Proc;
+  Core_Init: A_Core_Init_Proc;
+  Core_Run: A_Core_Run_Proc;
+  Core_Done: A_Core_Done_Proc;
+  {$else}
   Core_Boot: A_Core_Boot_Proc;
   Core_Fin: A_Core_Fin_Proc;
   Core_Init: A_Core_Init_Proc;
   Core_Run: A_Core_Run_Proc;
-  Core_Done: A_Core_Done_Proc;
-  //Core_Runtime: A_Core_Runtime_Proc;
+  {$endif}
   {$ENDIF A02}
 {$ENDIF A01}
 
@@ -160,12 +163,17 @@ begin
   if not(ALibrary_GetSymbol(FLib, 'Core_Run', Addr(Core_Run))) then Exit;
   if not(ALibrary_GetSymbol(FLib, 'Core_Done', Addr(Core_Done))) then Exit;
   {$ELSE} // A02
+  {$ifdef A03}
+  if not(ALibrary_GetSymbolP(FLib, 'Core_Boot', Addr(Core_Boot))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'Core_Init', Addr(Core_Init))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'Core_Run', Addr(Core_Run))) then Exit;
+  if not(ALibrary_GetSymbolP(FLib, 'Core_Done', Addr(Core_Done))) then Exit;
+  {$else}
   if not(ALibrary_GetSymbolP(FLib, 'Core_Boot', Addr(Core_Boot))) then Exit;
   if not(ALibrary_GetSymbolP(FLib, 'Core_Fin', Addr(Core_Fin))) then Exit;
   if not(ALibrary_GetSymbolP(FLib, 'Core_Init', Addr(Core_Init))) then Exit;
   if not(ALibrary_GetSymbolP(FLib, 'Core_Run', Addr(Core_Run))) then Exit;
-  if not(ALibrary_GetSymbolP(FLib, 'Core_Done', Addr(Core_Done))) then Exit;
-  //if not(Library_GetSymbol(FLib, 'Core_Runtime', Addr(Core_Runtime))) then Exit;
+  {$endif}
   {$ENDIF A02}
  {$ENDIF A01}
   Result := 0;

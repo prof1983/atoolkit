@@ -2,9 +2,25 @@
 @Abstract AStrings
 @Author Prof1983 <prof1983@ya.ru>
 @Created 24.05.2011
-@LastMod 05.09.2012
 }
 unit AStrings;
+
+{define A01}
+{define A02}
+{define A03}
+{define A04}
+
+{$ifdef A01}
+  {$define AStringTypeW}
+{$endif}
+
+{$ifdef A02}
+  {$define AStringTypeW}
+{$endif}
+
+{$ifdef A03}
+  {$define AStringTypeW}
+{$endif}
 
 interface
 
@@ -48,7 +64,9 @@ function AString_ToWideString(const S: AString_Type): WideString; stdcall;
 
 // --- AnsiString ---
 
+{$ifndef AStringTypeW}
 function AnsiString_GetChar(const S: AnsiString; Index: AInt): AChar; stdcall;
+{$endif}
 
 // --- AStrings ---
 
@@ -88,7 +106,9 @@ function Str_ToP({const} S: AString): APascalString; stdcall;
 // Use String_ToUtf8String()
 function Str_ToUtf8String({const} S: AString): UTF8String; stdcall;
 //function Str_ToWS({const} S: AString): WideString; stdcall;
+{$ifndef AStringTypeW}
 function Str_Free({var} S: AString): AError; stdcall;
+{$endif}
 
 (*
 {$IFDEF A03}
@@ -237,6 +257,7 @@ end;
 
 // --- AnsiString ---
 
+{$ifndef AStringTypeW}
 function AnsiString_GetChar(const S: AnsiString; Index: AInt): AChar; stdcall;
 begin
   if (Index >= 1) and (Length(S) >= Index) then
@@ -244,6 +265,7 @@ begin
   else
     Result := #0;
 end;
+{$endif}
 
 // --- AStr ---
 
@@ -271,7 +293,12 @@ end;
 
 function AString_Assign(var S: AString_Type; const Value: AString_Type): AError;
 begin
+  {$ifdef AStringTypeW}
+  S := Value;
+  Result := 0;
+  {$else}
   Result := AString_AssignA(S, Value.Str);
+  {$endif}
 end;
 
 function AString_AssignA(var S: AString_Type; Value: AStr): AError;
@@ -279,6 +306,9 @@ var
   Size: AInt;
 begin
   try
+    {$ifdef AStringTypeW}
+    S.Str := Value;
+    {$else}
     Size := AStr_GetLength(Value)+1;
     if (S.AllocSize < Size) then
     begin
@@ -290,6 +320,7 @@ begin
     S.Len := Size-1;
     S.AllocSize := Size;
     S.Code := AStringCode_Ansi;
+    {$endif}
     Result := 0;
   except
     Result := -1;
@@ -310,7 +341,9 @@ function AString_Clear(var S: AString_Type): AError;
 begin
   try
     S.Str := '';
+    {$ifndef AStringTypeW}
     S.Len := 0;
+    {$endif}
   except
   end;
   Result := 0;
@@ -351,7 +384,11 @@ end;
 function AString_GetLength(const S: AString_Type): AInteger;
 begin
   try
+    {$ifdef AStringTypeW}
+    Result := Length(S.Str);
+    {$else}
     Result := S.Len;
+    {$endif}
   except
     Result := 0;
   end;
@@ -531,10 +568,12 @@ begin
   Result := String_ToWideString(S^);
 end;*)
 
+{$ifndef AStringTypeW}
 function Str_Free({var} S: AString): AError; stdcall;
 begin
   Result := AString_Clear(S^);
 end;
+{$endif}
 
 { A_String }
 

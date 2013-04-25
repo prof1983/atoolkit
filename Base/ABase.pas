@@ -2,19 +2,41 @@
 @abstract Base types and consts
 @author Prof1983 <prof1983@ya.ru>
 @created 06.03.2008
-@lastmod 08.08.2012
 }
 unit ABase;
 
 {$I A.inc}
 
-{DEFINE A01}
-{DEFINE A02}
+{define A01}
+{define A02}
+{define A03}
+{define A04}
+
+{$ifdef A01}
+  {$define AFloat32}
+  {$define AFloat32Real}
+  {$define AWideChar}
+  {$define AStringTypeW}
+{$endif}
+
+{$ifdef A02}
+  {$define AFloat32}
+  {$define AFloat32Real}
+  {$define AWideChar}
+  {$define AStringTypeW}
+{$endif}
+
+{$ifdef A03}
+  {$define AFloat32}
+  {$define AFloat32Real}
+  {$define AWideChar}
+  {$define AStringTypeW}
+{$endif}
 
 interface
 
 type // Simple types
-  AFloat32 = Single;
+  AFloat32 = {$ifdef AFloat32Real}Real{$else}Single{$endif};
   AFloat64 = Double;
   AInt08 = ShortInt;
   AInt16 = SmallInt;
@@ -28,7 +50,7 @@ type // Simple types
 
 type // Simple types
   ABool = Boolean;
-  AChar = AnsiChar; // or UTF-32 (UCS4Char)
+  AChar = {$ifdef AWideChar}WideChar{$else}AnsiChar{$endif}; // or UTF-32 (UCS4Char)
   AInt = Integer;
   ASize = LongWord;
 
@@ -88,11 +110,18 @@ type
   APascalString = {$IFDEF DELPHI_2010_UP}string{$ELSE}WideString{$ENDIF};
 
   { (4x4 = 16 bytes) }
-  AString_Type_Old = packed record
+  AString_Type_A = packed record
     Str: AnsiString;
     Reserved01: AInteger;
     Reserved02: AInteger;
     Code: AInteger;
+  end;
+
+  AString_Type_W = packed record
+    Str: WideString;
+    Reserved01: AInt;
+    Reserved02: AInt;
+    Reserved03: AInt;
   end;
 
     // (4x4 = 16 bytes)
@@ -107,7 +136,11 @@ type
     Code: AStringCode;
   end;
 
+  {$ifdef AStringTypeW}
+  AString_Type = AString_Type_W;
+  {$else}
   AString_Type = AString_Type_4;
+  {$endif}
 
 type
   AStr = PAnsiChar;

@@ -2,7 +2,6 @@
 @Abstract User Interface base types and consts
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 21.11.2012
 }
 unit AUiBase;
 
@@ -12,7 +11,9 @@ uses
   ABase, ABaseTypes;
 
 const
-  AUi_Name = 'AUi';
+  AUi_Name02 = 'UI';
+  AUi_Name03 = 'AUI';
+  AUi_Name = {$ifdef A02}AUi_Name02{$else}{$ifdef A03}AUi_Name03{$else}'AUi'{$endif}{$endif};
   AUi_Uid = $08102501;
 
 // --- Types ---------------------------------------------------------------------------------------

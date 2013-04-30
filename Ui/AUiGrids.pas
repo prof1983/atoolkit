@@ -2,7 +2,6 @@
 @Abstract AUi grids
 @Author Prof1983 <prof1983@ya.ru>
 @Created 11.01.2010
-@LastMod 05.09.2012
 }
 unit AUiGrids;
 
@@ -13,6 +12,18 @@ unit AUiGrids;
 {$ENDIF}
 
 {$define AStdCall}
+
+{$ifdef A01}
+  {$define AWideChar}
+{$endif}
+
+{$ifdef A02}
+  {$define AWideChar}
+{$endif}
+
+{$ifdef A03}
+  {$define AWideChar}
+{$endif}
 
 interface
 
@@ -328,14 +339,20 @@ end;
 
 function AUiGrid_RestoreColPropsWS(Grid: AControl; Config: AConfig; const Key: AWideString;
     Delimer: AWideChar): AError;
+{$ifndef AWideChar}
 var
   S: AnsiString;
-  C: AChar;
+  C: AnsiChar;
+{$endif}
 begin
   try
+    {$ifdef AWideChar}
+    Result := AUiGrid_RestoreColPropsP(Grid, Config, Key, Delimer);
+    {$else}
     S := Delimer;
     C := AnsiString_GetChar(S, 1);
     Result := AUiGrid_RestoreColPropsP(Grid, Config, Key, C);
+    {$endif}
   except
     Result := -1;
   end;
@@ -403,14 +420,20 @@ end;
 
 function AUiGrid_SaveColPropsWS(Grid: AControl; Config: AConfig; const Key: AWideString;
     Delimer: AWideChar): AError;
+{$ifndef AWideChar}
 var
   S: AnsiString;
   C: AChar;
+{$endif}
 begin
   try
+    {$ifdef AWideChar}
+    Result := AUiGrid_RestoreColPropsP(Grid, Config, Key, Delimer);
+    {$else}
     S := Delimer;
     C := AnsiString_GetChar(S, 1);
-    Result := AUiGrid_SaveColPropsP(Grid, Config, Key, C);
+    Result := AUiGrid_RestoreColPropsP(Grid, Config, Key, C);
+    {$endif}
   except
     Result := -1;
   end;

@@ -2,7 +2,6 @@
 @Abstract AUiLabel
 @Author Prof1983 <prof1983@ya.ru>
 @Created 05.09.2012
-@LastMod 05.09.2012
 }
 unit AUiLabels;
 
@@ -19,6 +18,8 @@ uses
 
 {** Создает новый элемент тестового вывода }
 function AUiLabel_New(Parent: AControl): AControl; {$ifdef AStdCall}stdcall;{$endif}
+
+function AUiLabel_SetFontP(TextLabel: AControl; const FontName: APascalString; FontSize: AInt): AError;
 
 // --- AUi_Label ---
 
@@ -48,6 +49,17 @@ begin
   end;
 end;
 
+function AUiLabel_SetFontP(TextLabel: AControl; const FontName: APascalString; FontSize: AInt): AError;
+begin
+  try
+    TLabel(TextLabel).Font.Name := FontName;
+    TLabel(TextLabel).Font.Size := FontSize;
+    Result := 0;
+  except
+    Result := -1;
+  end;
+end;
+
 // --- AUi_Label ---
 
 function AUi_Label_New(Parent: AControl): AControl;
@@ -64,8 +76,7 @@ end;
 
 procedure UI_Label_SetFont(TextLabel: AControl; const FontName: APascalString; FontSize: AInteger); stdcall;
 begin
-  TLabel(TextLabel).Font.Name := FontName;
-  TLabel(TextLabel).Font.Size := FontSize;
+  AUiLabel_SetFontP(TextLabel, FontName, FontSize);
 end;
 
 end.

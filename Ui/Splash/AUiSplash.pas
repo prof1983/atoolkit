@@ -2,14 +2,18 @@
 @Abstract AUi Splash
 @Author Prof1983 <prof1983@ya.ru>
 @Created 08.12.2009
-@LastMod 27.08.2012
 }
 unit AUiSplash;
 
 interface
 
 uses
-  ABase, ASettings, AStringUtils, ASystem, AUi, AUiBase, AUtils;
+  ABase,
+  ASettings,
+  ASystem,
+  AUi,
+  AUiBase,
+  AUtils;
 
 {** Finalize splash }
 function AUiSplash_Fin(): AError; stdcall;

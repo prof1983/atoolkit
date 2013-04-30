@@ -2,7 +2,6 @@
 @Abstract ASystem
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.09.2011
-@LastMod 05.09.2012
 }
 unit ASystemMain;
 
@@ -158,11 +157,14 @@ begin
   end;
 
   if Assigned(FOnProcessMessages03) then
-  try
-    FOnProcessMessages03;
-    Result := 0;
-  except
-    Result := -1;
+  begin
+    try
+      FOnProcessMessages03();
+      Result := 0;
+    except
+      Result := -1;
+    end;
+    Exit;
   end;
 
   Result := 1;
@@ -171,7 +173,11 @@ end;
 
 function ASystem_SetOnProcessMessages(Value: AProc): AError;
 begin
+  {$ifdef A02}
+  FOnProcessMessages02 := Value;
+  {$else}
   FOnProcessMessages03 := Value;
+  {$endif}
   Result := 0;
 end;
 
@@ -236,12 +242,10 @@ begin
     if Assigned(FOnShowErrorA) then
     begin
       FOnShowErrorA(AStr(AnsiString(FTitle)), AStr(AnsiString(UserMessage)), AStr(AnsiString(ExceptMessage)));
-      Result := 0;
     end;
     if Assigned(FOnShowErrorWS) then
     begin
       FOnShowErrorWS(FTitle, UserMessage, ExceptMessage);
-      Result := 0;
     end;
     Result := 0;
   except

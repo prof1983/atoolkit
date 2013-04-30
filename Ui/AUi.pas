@@ -2,7 +2,6 @@
 @Abstract User Interface
 @Author Prof1983 <prof1983@ya.ru>
 @Created 25.10.2008
-@LastMod 06.09.2012
 }
 unit AUi;
 
@@ -685,9 +684,119 @@ function Window_ShowModal(Window: AWindow): ABoolean; stdcall;
 // Заглушка. Реальная функция находится в .\Modules\AUI.pas.
 function UI_Boot(): AError;
 
+// --- UI_Control ---
+
+procedure UI_Control_Free(Control: AControl); stdcall; {deprecated;}
+
+procedure UI_Control_FreeAndNil(var Control: AControl); stdcall; {deprecated;}
+
+function UI_Control_GetColor(Control: AControl): AColor; stdcall; {deprecated;}
+
+function UI_Control_GetEnabled(Control: AControl): ABoolean; stdcall; {deprecated;}
+
+function UI_Control_GetHeight(Control: AControl): AInteger; stdcall; {deprecated;}
+
+function UI_Control_GetHint(Control: AControl): APascalString; stdcall; {deprecated;}
+
+function UI_Control_GetName(Control: AControl): APascalString; stdcall; {deprecated;}
+
+function UI_Control_GetText(Control: AControl): APascalString; stdcall; {deprecated;}
+
+function UI_Control_GetVisible(Control: AControl): ABoolean; stdcall; {deprecated;}
+
+function UI_Control_GetWidth(Control: AControl): AInteger; stdcall; {deprecated;}
+
+procedure UI_Control_SetClientSize(Control: AControl; ClientWidth, ClientHeight: AInteger); stdcall; {deprecated;}
+
+procedure UI_Control_SetColor(Control: AControl; Color: AColor); stdcall; deprecated; // Use Control_SetColor()
+
+procedure UI_Control_SetEnabled(Control: AControl; Value: ABoolean); stdcall; {deprecated;}
+
+function UI_Control_SetFocus(Control: AControl): ABoolean; stdcall; {deprecated;}
+
+procedure UI_Control_SetFont1(Control: AControl; const FontName: APascalString; FontSize: AInteger); stdcall; deprecated; // Use Control_SetFont1()
+
+procedure UI_Control_SetFont2(Control: AControl; const FontName: APascalString; FontSize: AInteger; FontColor: AColor); stdcall; {deprecated;}
+
+function UI_Control_SetHeight(Control: AControl; Value: AInteger): AInteger; stdcall; deprecated; // Use Control_SetHeight()
+
+procedure UI_Control_SetHint(Control: AControl; const Value: APascalString); stdcall; deprecated; // Use Control_SetHint() or UI_Control_SetHint02()
+
+procedure UI_Control_SetName(Control: AControl; const Value: APascalString); stdcall; deprecated; // Use Control_SetName() or UI_Control_SetName02()
+
+procedure UI_Control_SetOnChange(Control: AControl; OnChange: ACallbackProc02); stdcall; deprecated; // Use Control_SetOnChange02()
+
+procedure UI_Control_SetOnChange2(Control: AControl; OnChange: ACallbackProc02; Obj: AInteger = 0); stdcall; deprecated; // Use Control_SetOnChangeEx()
+
+procedure UI_Control_SetOnClick(Control: AControl; Value: ACallbackProc02); stdcall; deprecated; // Use Control_SetOnClick()
+
+procedure UI_Control_SetPosition(Control: AControl; Left, Top: AInteger); stdcall; deprecated; // Use Control_SetPosition()
+
+procedure UI_Control_SetSize(Control: AControl; Width, Height: AInteger); stdcall; deprecated; // Use Control_SetSize()
+
+procedure UI_Control_SetText(Control: AControl; const Value: AWideString); stdcall; deprecated; // Use Control_SetTextP()
+
+procedure UI_Control_SetVisible(Control: AControl; Value: ABoolean); stdcall; deprecated; // Use Control_SetVisible()
+
+function UI_Control_SetWidth(Control: AControl; Value: AInteger): AInteger; stdcall; deprecated; // Use Control_SetWidth()
+
+// --- UI_DataSource ---
+
 function UI_DataSource_New: PADataSource; stdcall;
 //procedure UI_DataSource_SetDataSet(DataSource: PADataSource; Value: PADataSet); stdcall;
 procedure UI_DataSource_SetOnDataChange(DataSource: PADataSource; OnDataChange: ACallbackProc02); stdcall;
+
+// --- UI_Dialog ---
+
+procedure UI_Dialog_About(); stdcall;
+
+function UI_Dialog_About_New(): AWindow; stdcall;
+
+function UI_Dialog_AddButton(Win: AWindow; Left, Width: AInt; const Text: APascalString;
+    OnClick: ACallbackProc): AControl; stdcall;
+
+function UI_Dialog_AddButton02(Win: AWindow; Left, Width: AInt; const Text: APascalString;
+    OnClick: ACallbackProc02): AControl; stdcall;
+
+function UI_Dialog_Calendar(var Date: TDateTime; CenterX, CenterY: AInt): ABool; stdcall;
+
+function UI_Dialog_Color(var Color: AColor): ABool; stdcall;
+
+function UI_Dialog_DateFilter(var Group: AInt; var DateBegin, DateEnd: TDateTime): ABool; stdcall;
+
+procedure UI_Dialog_Error(const Caption, UserMessage, ExceptMessage: APascalString); stdcall;
+
+function UI_Dialog_Font(var FontName: APascalString; var FontSize: AInt;
+    FontColor: AColor): ABoolean; stdcall;
+
+function UI_Dialog_InputBox(const Text: APascalString; var Value: APascalString): ABoolean; stdcall;
+
+function UI_Dialog_InputBox2(const Caption, Text1, Text2: APascalString; var Value1,
+    Value2: APascalString): ABool; stdcall;
+
+function UI_Dialog_InputBox3(const Caption, Text: APascalString; var Value: APascalString): ABool; stdcall;
+
+function UI_Dialog_InputBoxA(const Caption, Text: APascalString; var Value: APascalString): ABool; stdcall; deprecated; // Use UI_Dialog_InputBox3()
+
+function UI_Dialog_Login(var UserName, Password: APascalString; IsSave: ABool): ABool; stdcall;
+
+function UI_Dialog_Message(const Text, Caption: APascalString;
+    Flags: AMessageBoxFlags): ADialogBoxCommands; stdcall;
+
+function UI_Dialog_New(Buttons: AUIWindowButtons): ADialog; stdcall; deprecated; // Use Dialog_New()
+
+function UI_Dialog_OpenFile(const InitialDir, Filter, Title: APascalString;
+    var FileName: APascalString): ABool; stdcall;
+
+function UI_Dialog_OpenFileA(const InitialDir, Filter, DefaultExt, Title: APascalString;
+    var FileName: APascalString; var FilterIndex: AInt): ABoolean; stdcall;
+
+function UI_Dialog_SaveFile(const Dir, Ext, DefFileName: APascalString): APascalString; stdcall;
+
+function UI_Dialog_SaveFileA(const InitialDir, DefExt, DefFileName, Filter: APascalString;
+    var FilterIndex: AInt): APascalString; stdcall;
+
+function UI_Dialog_SelectDirectory(var Directory: APascalString): ABool; stdcall;
 
 // ---
 
@@ -749,9 +858,35 @@ function UI_WaitWin_New(const Caption, Text: APascalString; MaxPosition: Integer
 
 function UI_WaitWin_StepBy(Window: AWindow; Step: AInteger): AInteger; stdcall;
 
+// --- UI_Window ---
+
+procedure UI_Window_Free(Window: AWindow); stdcall; deprecated; // Use Window_Free()
+
+procedure UI_Window_FreeAndNil(var Window: AWindow); stdcall;
+
+function UI_Window_GetMenu(Window: AWindow): AMenu; stdcall; deprecated; // Use Window_GetMenu()
+
+function UI_Window_LoadConfig(Window: AWindow; Config: AConfig): ABool; stdcall; deprecated; // Use Window_LoadConfig()
+
+function UI_Window_LoadConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABool; stdcall; deprecated; // Use Window_LoadConfig2()
+
+function UI_Window_New(): AControl; stdcall; deprecated; // Use Window_New
+
+function UI_Window_SaveConfig(Window: AWindow; Config: AConfig): ABool; stdcall; deprecated; // Use Window_SaveConfig()
+
+function UI_Window_SaveConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABool; stdcall;
+
+procedure UI_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInt); stdcall; deprecated; // Use Window_SetBorderStyle()
+
+procedure UI_Window_SetFormStyle(Window: AWindow; FormStyle: AInt); stdcall; deprecated; // Use Window_SetFormStyle()
+
+procedure UI_Window_SetPosition(Window: AWindow; Position: AInt); stdcall; deprecated; // Use Window_SetPosition()
+
+function UI_Window_ShowModal(Window: AWindow): ABool; stdcall; deprecated; // Use Window_ShowModal()
+
 { Testing }
 
-function SetAboutMemoDefaultSize(Width, Height: AInteger): AError; stdcall;
+function SetAboutMemoDefaultSize(Width, Height: AInt): AError; stdcall;
 
 function SetOnAboutClick(Value: AProc): AError; stdcall;
 
@@ -781,6 +916,14 @@ function UI_InitMainMenu(): AInteger; stdcall;
 function UI_InitMainTrayIcon: AInteger; stdcall;
 
 procedure UI_InitMenus; stdcall;
+
+// --- UI_Label ---
+
+function UI_Label_New(Parent: AControl): AControl; stdcall;
+
+procedure UI_Label_SetFont(TextLabel: AControl; const FontName: APascalString; FontSize: AInt); stdcall; {$IFNDEF A02}deprecated;{$ENDIF}
+
+// --- UI_MainMenuItem ---
 
 function UI_MainMenuItem: AMenuItem; stdcall;
 
@@ -2494,6 +2637,145 @@ begin
   Result := AUi_Shutdown();
 end;
 
+// --- UI_Control ---
+
+procedure UI_Control_Free(Control: AControl);
+begin
+  Control_Free(Control);
+end;
+
+procedure UI_Control_FreeAndNil(var Control: AControl);
+begin
+  Control_Free(Control);
+  Control := 0;
+end;
+
+function UI_Control_GetColor(Control: AControl): AColor;
+begin
+  Result := Control_GetColor(Control);
+end;
+
+function UI_Control_GetEnabled(Control: AControl): ABool;
+begin
+  Result := Control_GetEnabled(Control);
+end;
+
+function UI_Control_GetHeight(Control: AControl): AInt;
+begin
+  Result := Control_GetHeight(Control);
+end;
+
+function UI_Control_GetHint(Control: AControl): APascalString;
+begin
+  Result := Control_GetHintP(Control);
+end;
+
+function UI_Control_GetName(Control: AControl): APascalString;
+begin
+  Result := Control_GetNameP(Control);
+end;
+
+function UI_Control_GetText(Control: AControl): APascalString;
+begin
+  Result := Control_GetTextP(Control);
+end;
+
+function UI_Control_GetVisible(Control: AControl): ABool;
+begin
+  Result := Control_GetVisible(Control);
+end;
+
+function UI_Control_GetWidth(Control: AControl): AInt;
+begin
+  Result := Control_GetWidth(Control);
+end;
+
+procedure UI_Control_SetClientSize(Control: AControl; ClientWidth, ClientHeight: AInt);
+begin
+  Control_SetClientSize(Control, ClientWidth, ClientHeight);
+end;
+
+procedure UI_Control_SetColor(Control: AControl; Color: AColor);
+begin
+  AUIControls.UI_Control_SetColor(Control, Color);
+end;
+
+procedure UI_Control_SetEnabled(Control: AControl; Value: ABool);
+begin
+  Control_SetEnabled(Control, Value);
+end;
+
+function UI_Control_SetFocus(Control: AControl): ABool;
+begin
+  Result := Control_SetFocus(Control);
+end;
+
+procedure UI_Control_SetFont1(Control: AControl; const FontName: APascalString; FontSize: AInt);
+begin
+  AUIControls.UI_Control_SetFont1(Control, FontName, FontSize);
+end;
+
+procedure UI_Control_SetFont2(Control: AControl; const FontName: APascalString; FontSize: AInt; FontColor: AColor);
+begin
+  Control_SetFont2P(Control, FontName, FontSize, FontColor);
+end;
+
+function UI_Control_SetHeight(Control: AControl; Value: AInt): AInt;
+begin
+  AUIControls.UI_Control_SetHeight(Control, Value);
+  Result := 0;
+end;
+
+procedure UI_Control_SetHint(Control: AControl; const Value: APascalString);
+begin
+  AUIControls.UI_Control_SetHint(Control, Value);
+end;
+
+procedure UI_Control_SetName(Control: AControl; const Value: APascalString);
+begin
+  AUIControls.UI_Control_SetName(Control, Value);
+end;
+
+procedure UI_Control_SetOnChange(Control: AControl; OnChange: ACallbackProc02);
+begin
+  AUIControlsA.UI_Control_SetOnChange02(Control, OnChange);
+end;
+
+procedure UI_Control_SetOnChange2(Control: AControl; OnChange: ACallbackProc02; Obj: AInt);
+begin
+  AUIControlsA.UI_Control_SetOnChangeEx02(Control, OnChange, Obj);
+end;
+
+procedure UI_Control_SetOnClick(Control: AControl; Value: ACallbackProc02);
+begin
+  AUIControls.UI_Control_SetOnClick02(Control, Value);
+end;
+
+procedure UI_Control_SetPosition(Control: AControl; Left, Top: AInt);
+begin
+  AUIControls.UI_Control_SetPosition(Control, Left, Top);
+end;
+
+procedure UI_Control_SetSize(Control: AControl; Width, Height: AInt);
+begin
+  AUIControls.UI_Control_SetSize(Control, Width, Height);
+end;
+
+procedure UI_Control_SetText(Control: AControl; const Value: AWideString);
+begin
+  AUIControls.UI_Control_SetTextP(Control, Value);
+end;
+
+procedure UI_Control_SetVisible(Control: AControl; Value: ABool);
+begin
+  AUIControls.UI_Control_SetVisible(Control, Value);
+end;
+
+function UI_Control_SetWidth(Control: AControl; Value: AInt): AInt;
+begin
+  Result := AUIControls.UI_Control_SetWidth(Control, Value);
+end;
+
 { DataSource }
 
 function UI_DataSource_New: PADataSource; stdcall;
@@ -2523,6 +2805,135 @@ begin
   begin
     FDataSources[i].OnDataChange02 := OnDataChange;
   end;
+end;
+
+// --- UI_Dialog ---
+
+procedure UI_Dialog_About();
+begin
+  Dialog_About;
+end;
+
+function UI_Dialog_About_New(): AWindow;
+begin
+  Result := Dialog_About_New();
+end;
+
+function UI_Dialog_AddButton(Win: AWindow; Left, Width: AInt; const Text: APascalString;
+    OnClick: ACallbackProc): AControl;
+begin
+  Result := AUiDialogs.UI_Dialog_AddButton(Win, Left, Width, Text, OnClick);
+end;
+
+function UI_Dialog_AddButton02(Win: AWindow; Left, Width: AInt; const Text: APascalString;
+    OnClick: ACallbackProc02): AControl;
+begin
+  Result := AUiDialogs.UI_Dialog_AddButton02(Win, Left, Width, Text, OnClick);
+end;
+
+function UI_Dialog_Calendar(var Date: TDateTime; CenterX, CenterY: AInt): ABool;
+begin
+  Result := Dialog_Calendar(Date, CenterX, CenterY);
+end;
+
+function UI_Dialog_Color(var Color: AColor): ABool;
+begin
+  Result := Dialog_Color(Color);
+end;
+
+function UI_Dialog_DateFilter(var Group: AInt; var DateBegin, DateEnd: TDateTime): ABool;
+begin
+  Result := Dialog_DateFilter(Group, DateBegin, DateEnd);
+end;
+
+procedure UI_Dialog_Error(const Caption, UserMessage, ExceptMessage: APascalString);
+begin
+  Dialog_ErrorP(Caption, UserMessage, ExceptMessage);
+end;
+
+function UI_Dialog_Font(var FontName: APascalString; var FontSize: AInt; FontColor: AColor): ABool;
+begin
+  Result := Dialog_FontP(FontName, FontSize, FontColor);
+end;
+
+function UI_Dialog_GetWindow(Dialog: ADialog): AWindow;
+begin
+  Result := AUiDialogs.UI_Dialog_GetWindow(Dialog);
+end;
+
+function UI_Dialog_InputBox(const Text: APascalString; var Value: APascalString): ABool;
+begin
+  Result := AUiDialogs.UI_Dialog_InputBox(Text, Value);
+end;
+
+function UI_Dialog_InputBox2(const Caption, Text1, Text2: APascalString; var Value1, Value2: APascalString): ABool;
+begin
+  Result := AUiDialogs.UI_Dialog_InputBox2(Caption, Text1, Text2, Value1, Value2);
+end;
+
+function UI_Dialog_InputBox3(const Caption, Text: APascalString; var Value: APascalString): ABool;
+begin
+  Result := AUiDialogs.UI_Dialog_InputBox3(Caption, Text, Value);
+end;
+
+function UI_Dialog_InputBoxA(const Caption, Text: APascalString; var Value: APascalString): ABool;
+begin
+  Result := UI_Dialog_InputBox3(Caption, Text, Value);
+end;
+
+function UI_Dialog_Login(var UserName, Password: APascalString; IsSave: ABool): ABool;
+begin
+  Result := AUiDialogs.UI_Dialog_Login(UserName, Password, IsSave);
+end;
+
+function UI_Dialog_Message(const Text, Caption: APascalString; Flags: AMessageBoxFlags): ADialogBoxCommands;
+begin
+  Result := AUiDialogs.UI_Dialog_Message(Text, Caption, Flags);
+end;
+
+function UI_Dialog_New(Buttons: AUIWindowButtons): ADialog;
+begin
+  Result := AUiDialogs.UI_Dialog_New(Buttons);
+end;
+
+function UI_Dialog_SelectDirectory(var Directory: APascalString): ABool;
+begin
+  Result := Dialog_SelectDirectoryP(Directory);
+end;
+
+function UI_Dialog_OpenFile(const InitialDir, Filter, Title: APascalString; var FileName: APascalString): ABool;
+var
+  FilterIndex: AInt;
+begin
+  FilterIndex := 0;
+  Result := AUiDialogs.ExecuteOpenDialogA(InitialDir, Filter, '', Title, FileName, FilterIndex);
+end;
+
+function UI_Dialog_OpenFileA(const InitialDir, Filter, DefaultExt, Title: APascalString; var FileName: APascalString; var FilterIndex: AInt): ABool;
+begin
+  Result := AUiDialogs.ExecuteOpenDialogA(InitialDir, Filter, DefaultExt, Title, FileName, FilterIndex);
+end;
+
+function UI_Dialog_SaveFile(const Dir, Ext, DefFileName: APascalString): APascalString;
+begin
+  Result := AUiDialogs.ExecuteSaveFileDialog(Dir, Ext, DefFileName);
+end;
+
+function UI_Dialog_SaveFileA(const InitialDir, DefExt, DefFileName, Filter: APascalString; var FilterIndex: AInt): APascalString;
+begin
+  Result := ExecuteSaveFileDialogA(InitialDir, DefExt, DefFileName, Filter, FilterIndex);
+end;
+
+// --- UI_Label ---
+
+function UI_Label_New(Parent: AControl): AControl;
+begin
+  Result := AUiLabel_New(Parent);
+end;
+
+procedure UI_Label_SetFont(TextLabel: AControl; const FontName: APascalString; FontSize: AInt);
+begin
+  AUiLabel_SetFontP(TextLabel, FontName, FontSize);
 end;
 
 { UI_MainMenuItem }
@@ -2827,6 +3238,69 @@ begin
   TWaitForm(Window).Step;
   Result := 0;
   {ENDIF}
+end;
+
+// --- UI_Window ---
+
+procedure UI_Window_Free(Window: AWindow);
+begin
+  UI_Control_Free(Window);
+end;
+
+procedure UI_Window_FreeAndNil(var Window: AWindow);
+begin
+  UI_Control_Free(Window);
+  Window := 0;
+end;
+
+function UI_Window_GetMenu(Window: AWindow): AMenu;
+begin
+  Result := AUIWindows.UI_Window_GetMenu(Window);
+end;
+
+function UI_Window_LoadConfig(Window: AWindow; Config: AConfig): ABool;
+begin
+  Result := AUIForm.Form_LoadConfig(TForm(Window), Config);
+end;
+
+function UI_Window_LoadConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABool;
+begin
+  Result := Form_LoadConfig2(TForm(Window), Config, ConfigKey);
+end;
+
+function UI_Window_New(): AControl;
+begin
+  Result := AUIWindows.UI_Window_New();
+end;
+
+function UI_Window_SaveConfig(Window: AWindow; Config: AConfig): ABool;
+begin
+  Result := AUIForm.Form_SaveConfig(TForm(Window), Config);
+end;
+
+function UI_Window_SaveConfig2(Window: AWindow; Config: AConfig; const ConfigKey: APascalString): ABool;
+begin
+  Result := Form_SaveConfig2(TForm(Window), Config, ConfigKey);
+end;
+
+procedure UI_Window_SetBorderStyle(Window: AWindow; BorderStyle: AInt);
+begin
+  AUIWindows.UI_Window_SetBorderStyle(Window, BorderStyle);
+end;
+
+procedure UI_Window_SetFormStyle(Window: AWindow; FormStyle: AInt);
+begin
+  AUIWindows.UI_Window_SetFormStyle(Window, FormStyle);
+end;
+
+procedure UI_Window_SetPosition(Window: AWindow; Position: AInt);
+begin
+  AUIWindows.UI_Window_SetPosition(Window, Position);
+end;
+
+function UI_Window_ShowModal(Window: AWindow): ABool;
+begin
+  Result := AUIWindows.UI_Window_ShowModal(Window);
 end;
 
 { WaitWin }

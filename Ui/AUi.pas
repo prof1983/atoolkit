@@ -34,7 +34,13 @@ uses
   AStrings, ASystem,
   AUiBase, AUiBox, AUiButtons, AUiControls, AUiControlsA, AUiData, AUiEvents1, AUiEventsObj, AUiForm,
   AUiImages, AUiInit, AUiLabels, AUiListBox, AUiMain, AUiMainWindow, AUiMainWindow2,
-  AUiPageControl, AUiReports, AUiToolBar, AUiToolMenu, AUiTreeView, AUiWindows;
+  AUiPageControl,
+  AUiReports,
+  AUiSpinEdit,
+  AUiToolBar,
+  AUiToolMenu,
+  AUiTreeView,
+  AUiWindows;
 
 // ---
 
@@ -679,10 +685,13 @@ function Window_SetState(Window: AWindow; State: AInteger): AError; stdcall;
 //** Показывает окно модально.
 function Window_ShowModal(Window: AWindow): ABoolean; stdcall;
 
-{ UI }
+// --- UI_Calendar ---
 
-// Заглушка. Реальная функция находится в .\Modules\AUI.pas.
-function UI_Boot(): AError;
+function UI_Calendar_GetDate(Calendar: AControl): TDateTime; stdcall;
+
+function UI_Calendar_New(Parent: AControl): AControl; stdcall;
+
+procedure UI_Calendar_SetMonth(Calendar: AControl; Value: AInt); stdcall;
 
 // --- UI_Control ---
 
@@ -798,12 +807,74 @@ function UI_Dialog_SaveFileA(const InitialDir, DefExt, DefFileName, Filter: APas
 
 function UI_Dialog_SelectDirectory(var Directory: APascalString): ABool; stdcall;
 
-// ---
+// --- UI_Grid ---
 
-function UI_MainTrayIcon: ATrayIcon; stdcall;
+procedure UI_Grid_AddColumn(Grid: AControl; const FieldName, Title: APascalString; Width: Integer); stdcall;
+
+{ GridType
+    0 - StringGrid
+    1 - DBGrid }
+function UI_Grid_New(Parent: AControl; GridType: AInteger): AControl; stdcall; deprecated; // Use Grid_New()
+
+procedure UI_Grid_RestoreColProps(Grid: AControl; Config: AConfig; const Key: APascalString; Delimer: AChar = '\'); stdcall; deprecated; // Use Grid_RestoreColPropsWS02()
+
+procedure UI_Grid_SaveColProps(Grid: AControl; Config: AConfig; const Key: APascalString; Delimer: AChar); stdcall; // Use Grid_SaveColPropsWS02()
+
+procedure UI_Grid_SetColumnWidth(Grid: AControl; ColumnIndex, Width, Persent, MinWidth: AInteger); stdcall;
+
+procedure UI_Grid_SetColumnWidthA(Grid: AControl; ColumnIndex, Width, Persent, MinWidth, MaxWidth: AInteger); stdcall;
+
+procedure UI_Grid_SetDataSource(Grid: AControl; Value: PADataSource); stdcall;
+
+// --- UI_Image ---
+
+function UI_Image_LoadFromFile(Image: AControl; const FileName: APascalString): ABool; stdcall;
+
+function UI_Image_New(Parent: AControl): AControl; stdcall;
+
+// --- UI_Label ---
+
+function UI_Label_New(Parent: AControl): AControl; stdcall;
+
+procedure UI_Label_SetFont(TextLabel: AControl; const FontName: APascalString; FontSize: AInt); stdcall; {$IFNDEF A02}deprecated;{$ENDIF}
+
+// --- UI_ListBox ---
+
+function UI_ListBox_Add(ListBox: AControl; const Text: APascalString): AInt; stdcall;
+
+procedure UI_ListBox_Clear(ListBox: AControl); stdcall;
+
+procedure UI_ListBox_DeleteItem(ListBox: AControl; Index: AInt); stdcall;
+
+function UI_ListBox_New(Parent: AControl): AControl; stdcall;
+
+{ Typ:
+  0 - ListBox
+  1 - RadioGroup }
+function UI_ListBox_NewA(Parent: AControl; Typ: AInt): AControl; stdcall;
+
+function UI_ListBox_GetCount(ListBox: AControl): AInt; stdcall;
+
+function UI_ListBox_GetItem(ListBox: AControl; Index: AInt): APascalString; stdcall;
+
+function UI_ListBox_GetItemIndex(ListBox: AControl): AInt; stdcall;
+
+procedure UI_ListBox_SetItem(ListBox: AControl; Index: AInt; const Value: APascalString); stdcall;
+
+procedure UI_ListBox_SetItemIndex(ListBox: AControl; Index: AInt); stdcall;
+
+// --- UI_PageControl ---
+
+function UI_PageControl_AddPage(PageControl: AControl; const Name, Text: APascalString): AControl; stdcall; deprecated; // Use PageControl_AddPage()
+
+function UI_PageControl_New(Parent: AControl): AControl; stdcall; deprecated; // Use PageControl_New()
+
+// --- UI_ProgressBar ---
 
 function UI_ProgressBar_New(Parent: AControl; Max: AInteger): AControl;
-function UI_ProgressBar_StepIt(ProgressBar: AControl): AInteger; 
+function UI_ProgressBar_StepIt(ProgressBar: AControl): AInteger;
+
+// --- UI_PropertyBox ---
 
 function UI_PropertyBox_Add(PropertyBox: AControl; const Caption: APascalString): Integer; stdcall;
 function UI_PropertyBox_AddA(PropertyBox: AControl; const Caption, Text, Hint: APascalString; EditWidth: AInteger): AInteger; stdcall;
@@ -812,7 +883,17 @@ function UI_PropertyBox_Item_GetValue(PropertyBox: AControl; Index: Integer): AP
 procedure UI_PropertyBox_Item_SetValue(PropertyBox: AControl; Index: Integer; const Value: APascalString); stdcall;
 function UI_PropertyBox_New(Parent: AControl): AControl; stdcall;
 
+// --- UI_SpinButton ---
+
 function UI_SpinButton_New(Parent: AControl): AControl; stdcall;
+
+// --- UI_SpinEdit ---
+
+function UI_SpinEdit_New(Parent: AControl): AControl; stdcall;
+
+function UI_SpinEdit_NewA(Parent: AControl; Value, MinValue, MaxValue: AInt): AControl; stdcall;
+
+// --- UI_Splitter ---
 
 { SplitterType
     0 - HSplitter (Align=alTop)
@@ -820,6 +901,8 @@ function UI_SpinButton_New(Parent: AControl): AControl; stdcall;
     2 - HSplitter (Align=alBottom)
     3 - VSplitter (Align=alRight) }
 function UI_Splitter_New(Parent: AControl; SplitterType: AUISplitterType): AControl; stdcall;
+
+// --- UI_ToolBar ---
 
 // Use ToolBar_AddButtonWS02()
 function UI_ToolBar_AddButton(ToolBar: AControl; const Name, Text, Hint: APascalString;
@@ -831,6 +914,8 @@ function UI_ToolBar_New(Parent: AControl): AControl; stdcall; deprecated;
 {$IFNDEF UNIX}
 function UI_TrayIcon_GetMenuItems(TrayIcon: ATrayIcon): AMenuItem; stdcall;
 {$ENDIF}
+
+// --- UI_TreeView ---
 
 // Use TreeView_AddItem()
 function UI_TreeView_AddItem(TreeView: AControl; Parent: ATreeNode; Text: APascalString): ATreeNode; stdcall; deprecated;
@@ -911,21 +996,18 @@ procedure Shutdown02(); stdcall;
 
 { UI }
 
+// Заглушка. Реальная функция находится в .\Modules\AUI.pas.
+function UI_Boot(): AError;
+
 function UI_InitMainMenu(): AInteger; stdcall;
 
 function UI_InitMainTrayIcon: AInteger; stdcall;
 
 procedure UI_InitMenus; stdcall;
 
-// --- UI_Label ---
-
-function UI_Label_New(Parent: AControl): AControl; stdcall;
-
-procedure UI_Label_SetFont(TextLabel: AControl; const FontName: APascalString; FontSize: AInt); stdcall; {$IFNDEF A02}deprecated;{$ENDIF}
-
-// --- UI_MainMenuItem ---
-
 function UI_MainMenuItem: AMenuItem; stdcall;
+
+function UI_MainTrayIcon(): ATrayIcon; stdcall;
 
 function UI_GetIsShowApp: ABoolean; stdcall;
 
@@ -2637,6 +2719,23 @@ begin
   Result := AUi_Shutdown();
 end;
 
+// --- UI_Calendar ---
+
+function UI_Calendar_GetDate(Calendar: AControl): TDateTime;
+begin
+  Result := AUiCalendar.UI_Calendar_GetDate(Calendar);
+end;
+
+function UI_Calendar_New(Parent: AControl): AControl;
+begin
+  Result := AUiCalendar.UI_Calendar_New(Parent);
+end;
+
+procedure UI_Calendar_SetMonth(Calendar: AControl; Value: AInt);
+begin
+  AUiCalendar.UI_Calendar_SetMonth(Calendar, Value);
+end;
+
 // --- UI_Control ---
 
 procedure UI_Control_Free(Control: AControl);
@@ -2896,11 +2995,6 @@ begin
   Result := AUiDialogs.UI_Dialog_New(Buttons);
 end;
 
-function UI_Dialog_SelectDirectory(var Directory: APascalString): ABool;
-begin
-  Result := Dialog_SelectDirectoryP(Directory);
-end;
-
 function UI_Dialog_OpenFile(const InitialDir, Filter, Title: APascalString; var FileName: APascalString): ABool;
 var
   FilterIndex: AInt;
@@ -2921,7 +3015,61 @@ end;
 
 function UI_Dialog_SaveFileA(const InitialDir, DefExt, DefFileName, Filter: APascalString; var FilterIndex: AInt): APascalString;
 begin
-  Result := ExecuteSaveFileDialogA(InitialDir, DefExt, DefFileName, Filter, FilterIndex);
+  Result := AUi_ExecuteSaveFileDialog2P(InitialDir, DefExt, DefFileName, Filter, FilterIndex);
+end;
+
+function UI_Dialog_SelectDirectory(var Directory: APascalString): ABool;
+begin
+  Result := Dialog_SelectDirectoryP(Directory);
+end;
+
+// --- UI_Grid ---
+
+procedure UI_Grid_AddColumn(Grid: AControl; const FieldName, Title: APascalString; Width: AInt);
+begin
+  AUiGrid_AddColumnP(Grid, FieldName, Title, Width);
+end;
+
+function UI_Grid_New(Parent: AControl; GridType: AInt): AControl;
+begin
+  Result := AUiGrids.UI_Grid_New(Parent, GridType);
+end;
+
+procedure UI_Grid_RestoreColProps(Grid: AControl; Config: AConfig; const Key: APascalString; Delimer: AChar);
+begin
+  AUiGrid_RestoreColPropsP(Grid, Config, Key, Delimer);
+end;
+
+procedure UI_Grid_SaveColProps(Grid: AControl; Config: AConfig; const Key: APascalString; Delimer: AChar);
+begin
+  AUiGrid_SaveColPropsP(Grid, Config, Key, Delimer);
+end;
+
+procedure UI_Grid_SetColumnWidth(Grid: AControl; ColumnIndex, Width, Persent, MinWidth: AInt);
+begin
+  AUiGrids.UI_Grid_SetColumnWidth(Grid, ColumnIndex, Width, Persent, MinWidth);
+end;
+
+procedure UI_Grid_SetColumnWidthA(Grid: AControl; ColumnIndex, Width, Persent, MinWidth, MaxWidth: AInt);
+begin
+  AUiGrids.UI_Grid_SetColumnWidthA(Grid, ColumnIndex, Width, Persent, MinWidth, MaxWidth);
+end;
+
+procedure UI_Grid_SetDataSource(Grid: AControl; Value: PADataSource);
+begin
+  AUiGrids.UI_Grid_SetDataSource(Grid, Value);
+end;
+
+// --- UI_Image ---
+
+function UI_Image_LoadFromFile(Image: AControl; const FileName: APascalString): ABool;
+begin
+  Result := AUiImages.UI_Image_LoadFromFile(Image, FileName);
+end;
+
+function UI_Image_New(Parent: AControl): AControl;
+begin
+  Result := AUiImages.UI_Image_New(Parent);
 end;
 
 // --- UI_Label ---
@@ -2934,6 +3082,58 @@ end;
 procedure UI_Label_SetFont(TextLabel: AControl; const FontName: APascalString; FontSize: AInt);
 begin
   AUiLabel_SetFontP(TextLabel, FontName, FontSize);
+end;
+
+{ ListBox }
+
+function UI_ListBox_Add(ListBox: AControl; const Text: APascalString): AInt;
+begin
+  Result := AUiListBox.UI_ListBox_Add(ListBox, Text);
+end;
+
+procedure UI_ListBox_Clear(ListBox: AControl);
+begin
+  AUiListBox.UI_ListBox_Clear(ListBox);
+end;
+
+procedure UI_ListBox_DeleteItem(ListBox: AControl; Index: AInt);
+begin
+  AUiListBox.UI_ListBox_DeleteItem(ListBox, Index);
+end;
+
+function UI_ListBox_GetCount(ListBox: AControl): AInt;
+begin
+  Result := AUiListBox.UI_ListBox_GetCount(ListBox);
+end;
+
+function UI_ListBox_GetItem(ListBox: AControl; Index: AInt): APascalString;
+begin
+  Result := AUiListBox.UI_ListBox_GetItem(ListBox, Index);
+end;
+
+function UI_ListBox_GetItemIndex(ListBox: AControl): AInt;
+begin
+  Result := AUiListBox.UI_ListBox_GetItemIndex(ListBox);
+end;
+
+function UI_ListBox_New(Parent: AControl): AControl;
+begin
+  Result := AUiListBox.UI_ListBox_New(Parent);
+end;
+
+function UI_ListBox_NewA(Parent: AControl; Typ: AInt): AControl;
+begin
+  Result := AUiListBox.UI_ListBox_NewA(Parent, Typ)
+end;
+
+procedure UI_ListBox_SetItem(ListBox: AControl; Index: AInt; const Value: APascalString);
+begin
+  AUiListBox.UI_ListBox_SetItem(ListBox, Index, Value);
+end;
+
+procedure UI_ListBox_SetItemIndex(ListBox: AControl; Index: AInt);
+begin
+  AUiListBox.UI_ListBox_SetItemIndex(ListBox, Index);
 end;
 
 { UI_MainMenuItem }
@@ -2955,6 +3155,18 @@ end;
 function UI_Object_Add(Value: AInteger): AInteger; stdcall;
 begin
   Result := AddObject(TObject(Value));
+end;
+
+// --- UI_PageControl ---
+
+function UI_PageControl_AddPage(PageControl: AControl; const Name, Text: APascalString): AControl;
+begin
+  Result := AUiPageControl.UI_PageControl_AddPage(PageControl, Name, Text);
+end;
+
+function UI_PageControl_New(Parent: AControl): AControl;
+begin
+  Result := AUiPageControl.UI_PageControl_New(Parent);
 end;
 
 { ProgressBar }
@@ -3052,6 +3264,18 @@ begin
   Spin.Parent := TWinControl(Parent);
   Result := AControl(Spin);
   {$ENDIF}
+end;
+
+// --- UI_SpinEdit ---
+
+function UI_SpinEdit_New(Parent: AControl): AControl;
+begin
+  Result := AUiSpinEdit.UI_SpinEdit_New(Parent)
+end;
+
+function UI_SpinEdit_NewA(Parent: AControl; Value, MinValue, MaxValue: AInt): AControl;
+begin
+  Result := AUiSpinEdit.UI_SpinEdit_NewA(Parent, Value, MinValue, MaxValue);
 end;
 
 { Splitter }

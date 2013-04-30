@@ -58,6 +58,8 @@ function AString_GetChar(const S: AString_Type; Index: AInt): AChar; stdcall;
 
 function AString_GetLength(const S: AString_Type): AInteger; stdcall;
 
+function AString_ToP(const S: AString_Type): APascalString;
+
 function AString_ToPascalString(const S: AString_Type): APascalString; stdcall;
 
 function AString_ToWideString(const S: AString_Type): WideString; stdcall;
@@ -302,8 +304,10 @@ begin
 end;
 
 function AString_AssignA(var S: AString_Type; Value: AStr): AError;
+{$ifndef AStringTypeW}
 var
   Size: AInt;
+{$endif}
 begin
   try
     {$ifdef AStringTypeW}
@@ -392,6 +396,11 @@ begin
   except
     Result := 0;
   end;
+end;
+
+function AString_ToP(const S: AString_Type): APascalString;
+begin
+  Result := AString_ToPascalString(S);
 end;
 
 function AString_ToPascalString(const S: AString_Type): APascalString; stdcall;

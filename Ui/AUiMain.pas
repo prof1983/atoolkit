@@ -2,7 +2,6 @@
 @Abstract AUi common functions
 @Author Prof1983 <prof1983@ya.ru>
 @Created 26.10.2011
-@LastMod 15.11.2012
 }
 unit AUiMain;
 
@@ -78,11 +77,24 @@ begin
   end;
 end;
 
+procedure DoProcessMessages02(); stdcall;
+begin
+  try
+    Application.ProcessMessages();
+  except
+  end;
+end;
+
 function DoRun(): AInteger; stdcall;
 begin
   _MainWindow_Init();
   Application.Run();
   Result := 0;
+end;
+
+procedure DoRun02(); stdcall;
+begin
+  AUi_Run();
 end;
 
 function DoShowErrorA(Caption, UserMessage, ExceptMessage: AStr): AError; stdcall;
@@ -98,6 +110,11 @@ end;
 function DoShutdown(): AInteger; stdcall;
 begin
   Result := AUi_Shutdown();
+end;
+
+procedure DoShutdown02(); stdcall;
+begin
+  AUi_Shutdown();
 end;
 
 // --- AUi ---
@@ -189,22 +206,24 @@ begin
   FIsShowApp := True;
 
   {$IFDEF A02}
-  ASystem.SetOnProcessMessages02(UI_ProcessMessages02);
+  ASystem_SetOnProcessMessages(DoProcessMessages02);
   {$ELSE}
   ASystem_SetOnProcessMessages(DoProcessMessages);
   {$ENDIF A02}
   ASystem_SetOnShowErrorA(DoShowErrorA);
   ASystem_SetOnShowMessageA(DoShowMessageA);
 
-  ARuntime_SetOnShutdown(DoShutdown);
   {$IFDEF A01}
-    ARuntime.OnRun_Set(UI_Run02);
+  ARuntime_SetOnRun(DoRun02);
+  ARuntime_SetOnShutdown(DoShutdown02);
   {$ELSE}
-    {$IFDEF A02}
-    ARuntime.OnRun_Set(UI_Run02);
-    {$ELSE}
-    ARuntime_SetOnRun(DoRun);
-    {$ENDIF A02}
+  {$IFDEF A02}
+  ARuntime_SetOnRun(DoRun02);
+  ARuntime_SetOnShutdown(DoShutdown02);
+  {$ELSE}
+  ARuntime_SetOnRun(DoRun);
+  ARuntime_SetOnShutdown(DoShutdown);
+  {$ENDIF A02}
   {$ENDIF A01}
 
   {$IFNDEF FPC}

@@ -2,7 +2,6 @@
 @Abstract Report building RichEdit form
 @Author Prof1983 <prof1983@ya.ru>
 @Created 10.11.2008
-@LastMod 27.07.2012
 }
 unit fReport;
 
@@ -670,9 +669,9 @@ begin
       end;
     end;
 
-    if UprStroka='Стр.' then
+    if (UprStroka = 'Page') then
     begin
-      Stroka := 'Стр.' + TVentUtils.ComprStr(format('%4d',[NomStran]));
+      Stroka := 'Page ' + TVentUtils.ComprStr(format('%4d',[NomStran]));
       Editor.Lines[jc] := (Stroka);
     end;
 
@@ -686,7 +685,7 @@ begin
       Editor.Lines.Insert(jc,#12);
       jc := jc+1;
       NomStran := NomStran+1;
-      Stroka := 'Стр.' + TVentUtils.ComprStr(format('%4d',[NomStran]));
+      Stroka := 'Page ' + TVentUtils.ComprStr(format('%4d',[NomStran]));
       Editor.Lines.Insert(jc,Stroka);
       jc := jc+1;
       if Tablica then
@@ -720,11 +719,11 @@ begin
   GetMem(Buffer, Size);
   Buffer := #12 + '~' + #13#10;
   Editor.SetSelTextBuf(Buffer);
-  Clipboard.AsText := 'Стр.' + #13#10;
+  Clipboard.AsText := 'Page ' + #13#10;
   Size := Length(Clipboard.AsText);
   Inc(Size);
   GetMem(Buffer, Size);
-  Buffer := 'Стр.' + #13#10;
+  Buffer := 'Page ' + #13#10;
   Editor.SetSelTextBuf(Buffer);
   }
 end;

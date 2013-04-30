@@ -2,9 +2,20 @@
 @Abstract AUtils - Main
 @Author Prof1983 <prof1983@ya.ru>
 @Created 28.09.2011
-@LastMod 05.09.2012
 }
 unit AUtilsMain;
+
+{$ifdef A01}
+  {$define AFloat32}
+{$endif}
+
+{$ifdef A02}
+  {$define AFloat32}
+{$endif}
+
+{$ifdef A03}
+  {$define AFloat32}
+{$endif}
 
 interface
 

@@ -2,9 +2,20 @@
 @Abstract AUiEdit
 @Author Prof1983 <prof1983@ya.ru>
 @Created 14.01.2010
-@LastMod 05.09.2012
 }
 unit AUiEdit;
+
+{$ifdef A01}
+  {$define AFloat32}
+{$endif}
+
+{$ifdef A02}
+  {$define AFloat32}
+{$endif}
+
+{$ifdef A03}
+  {$define AFloat32}
+{$endif}
 
 interface
 
@@ -106,7 +117,11 @@ end;
 function AUiEdit_CheckFloat(Edit: AControl; out Value: AFloat): AError;
 begin
   try
-    if Edit_CheckFloat(TCustomEdit(Edit), Value) then
+    {$ifdef AFloat32}
+    if Edit_CheckFloat32(TCustomEdit(Edit), Value) then
+    {$else}
+    if Edit_CheckFloat64(TCustomEdit(Edit), Value) then
+    {$endif}
       Result := 0
     else
       Result := 1;
@@ -306,7 +321,7 @@ end;
 
 function UI_Edit_CheckFloat(Edit: AControl; out Value: Double): ABoolean; stdcall;
 begin
-  Result := (AUiEdit_CheckFloat(Edit, Value) = 0);
+  Result := (AUiEdit_CheckFloat64(Edit, Value) = 0);
 end;
 
 function UI_Edit_CheckFloat32(Edit: AControl; out Value: AFloat32): ABoolean;

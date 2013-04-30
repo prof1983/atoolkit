@@ -2,7 +2,6 @@
 @Abstract ASystem config
 @Author Prof1983 <prof1983@ya.ru>
 @Created 29.05.2011
-@LastMod 19.07.2012
 }
 unit ASystemConfig;
 
@@ -15,7 +14,10 @@ unit ASystemConfig;
 interface
 
 uses
-  ABase, ASystemData, ASystemUtils;
+  ABase,
+  ASystemData,
+  ASystemUtils,
+  AUtilsMain;
 
 function System_InitConfig: AInteger;
 function System_DoneConfig: AInteger;
@@ -41,7 +43,11 @@ function System_InitConfig: AInteger;
 var
   S: APascalString;
 begin
-  FConfig := ASettings.IniConfig_NewP(FConfigPath+FProgramName+'.ini');
+  if Utils_FileExists(FExePath+FProgramName+'.ini') then
+    S := FExePath+FProgramName+'.ini'
+  else
+    S := FConfigPath+FProgramName+'.ini';
+  FConfig := ASettings.IniConfig_NewP(S);
 
   S := ASettings.Config_ReadStringDefP(FConfig, 'App', 'DataPath', '');
   if (S <> '') then

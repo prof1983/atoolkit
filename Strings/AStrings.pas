@@ -66,9 +66,7 @@ function AString_ToWideString(const S: AString_Type): WideString; stdcall;
 
 // --- AnsiString ---
 
-{$ifndef AStringTypeW}
-function AnsiString_GetChar(const S: AnsiString; Index: AInt): AChar; stdcall;
-{$endif}
+function AnsiString_GetChar(const S: AnsiString; Index: AInt): AnsiChar; stdcall;
 
 // --- AStrings ---
 
@@ -259,15 +257,13 @@ end;
 
 // --- AnsiString ---
 
-{$ifndef AStringTypeW}
-function AnsiString_GetChar(const S: AnsiString; Index: AInt): AChar; stdcall;
+function AnsiString_GetChar(const S: AnsiString; Index: AInt): AnsiChar;
 begin
   if (Index >= 1) and (Length(S) >= Index) then
     Result := S[Index]
   else
     Result := #0;
 end;
-{$endif}
 
 // --- AStr ---
 

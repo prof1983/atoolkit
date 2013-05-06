@@ -69,6 +69,8 @@ procedure OnRun_Set(Value: AProc); stdcall; deprecated; // Use ARuntime_SetOnRun
 function Module_Register(const Module: AModule_Type): AInteger; stdcall; deprecated; // Use AModule_Register()
 {$endif}
 
+function Module_Register02(const Module: AModule02_Type): AInt; stdcall;
+
 // --- Modules ---
 
 {$ifndef A02}
@@ -81,17 +83,23 @@ function Modules_DeleteByUid(Uid: AModuleUid): AInteger; stdcall; deprecated; //
 
 function Modules_FindByName(Name: PAnsiChar): AInteger; stdcall; deprecated; // Use ARuntime_FindModuleByName()
 
+function Modules_FindByNameWS(const Name: AWideString): AInt; stdcall;
+
 {$ifndef A02}
 function Modules_FindByUid(Uid: AModuleUid): AInteger; stdcall; deprecated; // Use ARuntime_FindModuleByUid()
 {$endif}
 
 function Modules_GetByName(Name: PAnsiChar; out Module: AModule_Type): AInteger; stdcall; deprecated; // Use ARuntime_GetModuleByName()
 
+function Modules_GetByName02(const Name: AWideString; out Module: AModule02_Type): ABool; stdcall; //deprecated;
+
 {$ifndef A02}
 function Modules_GetByUid(Uid: AModuleUid; out Module: AModule_Type): AInteger; stdcall; deprecated; // Use ARuntime_GetModuleByUid()
 {$endif}
 
 function Modules_InitByName(Name: PAnsiChar): AInteger; stdcall; deprecated; // Use ARuntime_InitModuleByName()
+
+function Modules_InitByNameWS(const ModuleName: AWideString): AInt; stdcall; deprecated; // Use ARuntime_InitModuleByName()
 
 {$ifndef A02}
 function Modules_InitByUid(Uid: AModuleUid): AInteger; stdcall; deprecated; // Use ARuntime_InitModuleByUid()
@@ -173,6 +181,11 @@ function Runtime_Modules_InitByUid(Uid: AModuleUid): AInteger; stdcall; deprecat
 
 implementation
 
+{$ifdef A02}
+uses
+  ASystem02;
+{$endif}
+
 // --- AModule ---
 
 {$ifndef A02}
@@ -252,7 +265,11 @@ end;
 
 function Runtime_Modules_GetByName02(const Name: AWideString; out Module: AModule02_Type): ABoolean;
 begin
+  {$ifdef A02}
+  Result := ASystem02.Runtime_Module_GetByName02(Name, Module);
+  {$else}
   Result := False;
+  {$endif}
 end;
 
 function Runtime_Modules_GetByNameP(Name: PAnsiChar; Module: AModule): AInteger;
@@ -335,7 +352,11 @@ end;
 
 function Runtime_Module_Register02(const Module: AModule02_Type): AInt;
 begin
+  {$ifdef A02}
+  Result := ASystem02.Runtime_Module_Register02(Module);
+  {$else}
   Result := -1;
+  {$endif}
 end;
 
 { Public }
@@ -444,6 +465,11 @@ begin
 end;
 {$endif}
 
+function Module_Register02(const Module: AModule02_Type): AInt;
+begin
+  Result := Runtime_Module_Register02(Module);
+end;
+
 { Modules }
 
 {$ifndef A02}
@@ -465,6 +491,11 @@ begin
   Result := ARuntime_FindModuleByName(Name);
 end;
 
+function Modules_FindByNameWS(const Name: AWideString): AInt;
+begin
+  Result := ARuntime_FindModuleByNameWS(Name);
+end;
+
 {$ifndef A02}
 function Modules_FindByUid(Uid: AModuleUid): AInteger; stdcall;
 begin
@@ -477,6 +508,11 @@ begin
   Result := ARuntime_GetModuleByName(Name, Module);
 end;
 
+function Modules_GetByName02(const Name: AWideString; out Module: AModule02_Type): ABool;
+begin
+  Result := Runtime_Modules_GetByName02(Name, Module);
+end;
+
 {$ifndef A02}
 function Modules_GetByUid(Uid: AModuleUid; out Module: AModule_Type): AInteger;
 begin
@@ -487,6 +523,11 @@ end;
 function Modules_InitByName(Name: PAnsiChar): AInteger; stdcall;
 begin
   Result := ARuntime_InitModuleByName(Name);
+end;
+
+function Modules_InitByNameWS(const ModuleName: AWideString): AInt;
+begin
+  Result := ARuntime_InitModuleByNameWS(ModuleName);
 end;
 
 {$ifndef A02}

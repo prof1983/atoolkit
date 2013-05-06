@@ -1,13 +1,13 @@
 ﻿/*
 Author Prof1983 <prof1983@ya.ru>
 Created 17.06.2011
-LastMod 04.03.2013
 */
 
 #ifndef ARuntimeH
 #define ARuntimeH
 
 #include "ABase.h"
+#include "ABase2.h"
 #include "ARuntimeBase.h"
 
 // --- ARuntime ---

@@ -112,9 +112,6 @@ function ARuntime_Shutdown(): AError; {$ifdef AStdCall}stdcall;{$endif}
 
 implementation
 
-var
-  FModules: array of AModule_Type;
-
 { Private }
 
 {$ifndef A02}

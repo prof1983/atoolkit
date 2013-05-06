@@ -8,7 +8,8 @@ unit ARuntimeData;
 interface
 
 uses
-  ABase;
+  ABase,
+  ARuntimeBase;
 
 var
   FIsShutdown: ABoolean;
@@ -18,6 +19,9 @@ var
   FOnRun02: AProc02;
   FOnShutdown: AProc;
   FOnShutdown02: AProc02;
+
+var
+  FModules: array of AModule_Type;
 
 implementation
 

@@ -2,7 +2,6 @@
 @Abstract ASystem
 @Author Prof1983 <prof1983@ya.ru>
 @Created 27.09.2011
-@LastMod 27.03.2013
 }
 unit ASystemMain;
 
@@ -424,6 +423,11 @@ var
   R: AError;
 {$endif}
 begin
+  if FIsPrepare then
+  begin
+    Result := 0;
+    Exit;
+  end;
   try
     ASystem_SetOnShowMessageA(DoShowMessageA);
     {$ifdef UseEvents}

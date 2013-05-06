@@ -82,8 +82,8 @@ begin
     Result := Addr(ASystem_GetExePath)
   else if (ProcName = 'ASystem_GetParamStr') then
     Result := Addr(ASystem_GetParamStr)
-  else if (ProcName = 'ASystem_GetProgramName') then
-    Result := Addr(ASystem_GetProgramName)
+  else if (ProcName = 'ASystem_GetProductName') then
+    Result := Addr(ASystem_GetProductName)
   else if (ProcName = 'ASystem_GetProductVersionStr') then
     Result := Addr(ASystem_GetProductVersionStr)
   else if (ProcName = 'ASystem_GetProgramName') then
@@ -136,6 +136,8 @@ begin
     Result := Addr(ASystem_ShowMessageEx)
   else if (ProcName = 'ASystem_ShowMessageExA') then
     Result := Addr(ASystem_ShowMessageExA)
+  else if (ProcName = 'ASystem_Shutdown') then
+    Result := Addr(ASystem_Shutdown)
   else
     Result := nil;
 end;

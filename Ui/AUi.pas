@@ -996,9 +996,6 @@ procedure Shutdown02(); stdcall;
 
 { UI }
 
-// Заглушка. Реальная функция находится в .\Modules\AUI.pas.
-function UI_Boot(): AError;
-
 function UI_InitMainMenu(): AInteger; stdcall;
 
 function UI_InitMainTrayIcon: AInteger; stdcall;
@@ -2611,11 +2608,6 @@ begin
 end;
 
 { UI Public }
-
-function UI_Boot(): AError;
-begin
-  Result := 0;
-end;
 
 function UI_GetIsShowApp: ABoolean; stdcall;
 begin
